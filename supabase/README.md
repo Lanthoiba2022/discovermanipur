@@ -1,0 +1,85 @@
+# Yening — Supabase setup
+
+The app runs entirely on local seed data until these credentials exist. Nothing
+below is required to build or demo the site — `next build` succeeds with zero
+environment variables set, and every page falls back to the bundled seed
+content.
+
+## 1. Create the project
+Create a Supabase project, then put the keys in `.env.local`:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...   # server-only, never exposed to the client
+```
+
+## 2. Apply the migrations
+In order, via the Supabase SQL editor or `supabase db push`. `_combined.sql`
+concatenates all six for a one-shot apply to an empty project.
+
+1. `0001_schema.sql` — tables, enums, indexes, triggers
+2. `0002_rls.sql` — row level security
+3. `0003_crafts_and_itineraries.sql` — crafts marketplace, saved itineraries
+4. `0004_grants.sql` — API role grants (see the note below)
+5. `0005_hotspot_distance_numeric.sql` — sub-kilometre hotspot distances
+6. `0006_site_content.sql` — editorial content: FAQs, photo credits, page
+   sections, immersive stops
+
+### A note on 0004
+Supabase normally grants `anon`/`authenticated`/`service_role` full DML on new
+tables in `public` via default privileges. Tables created through the
+**Management API** do not always pick that up — they land with only
+`REFERENCES,TRIGGER,TRUNCATE`, and every PostgREST request answers *permission
+denied*. `0004` restores the standard grants and sets `ALTER DEFAULT
+PRIVILEGES` so later migrations inherit them. Applying through the dashboard
+SQL editor does not hit this, but the migration is idempotent either way.
+
+The grants are deliberately coarse. **RLS is what protects the data** — that is
+Supabase's own model and the one `0002`/`0003`/`0006` were written against.
+
+## 3. Seed the catalogue and content
+`npm run db:seed` pushes `src/lib/data/seed/*` plus the FAQ, photo-credit and
+immersive modules into the database with the service-role key. It is idempotent
+— every table upserts on a natural key, so re-running reconciles rather than
+duplicating.
+
+Roughly 240 rows: 156 catalogue (hotspots, homestays, experiences, eateries,
+tours, transport, festivals, crafts, testimonials) and ~88 content (13 site
+sections, 18 photo credits, 8 FAQ groups, 39 FAQ items, 3 immersive stops,
+7 sources).
+
+## 4. How the app reads it
+- `src/lib/data/index.ts` — catalogue. Rows come from `./catalogue.ts`; the
+  filter/sort/search logic runs in memory over them.
+- `src/lib/data/content.ts` — editorial content.
+- Both fall back to the seed modules when Supabase is unconfigured *or* a query
+  fails. Content should go stale before it goes blank.
+- Reads use `src/lib/supabase/public.ts`, a cookie-free anon client. This
+  matters: the cookie-backed client in `server.ts` would opt every route into
+  dynamic rendering. Catalogue and content pages stay statically generated.
+
+### What is deliberately NOT in the database
+Structure, as opposed to content:
+
+- `src/lib/nav.ts` — mirrors the route tree
+- `CATEGORY_LABELS`, `SEASON_LABELS`, `MONTHS` in `components/places/taxonomy.ts`
+  — keyed off TypeScript union types, so a row could never add a member
+- the filter definitions — bound to URL search params
+- `LandmarkId` and the Kangla camera/target values consumed by
+  `kangla-canvas.tsx` — bound to the shipped 3D assets
+
+Icons are stored as lucide-react *names*; `src/lib/icons.ts` maps them back to
+components. A component reference cannot survive a round trip through jsonb, so
+content chooses from a fixed icon vocabulary.
+
+## Security notes
+- The anon key is public by design; RLS is what protects the data.
+- `SUPABASE_SERVICE_ROLE_KEY` bypasses RLS. Use it only in server-side scripts
+  and never import it into a client component.
+- A user cannot escalate their own `role` — `guard_role_change()` blocks it.
+- Catalogue and content tables are world-readable and admin-writable; homestays
+  and crafts are additionally readable/writable by their owning host or maker.
+- `SUPABASE_ACCESS_TOKEN` is **not** needed by the app. If you added one to run
+  migrations through the Management API, revoke it afterwards — it carries
+  org-wide control of your Supabase account.

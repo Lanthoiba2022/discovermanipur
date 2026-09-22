@@ -1,0 +1,431 @@
+/**
+ * Phase 7 — push the local seed catalogue into Supabase.
+ *
+ *   npm run db:seed
+ *
+ * Idempotent: every table upserts on `slug`, so re-running reconciles rather
+ * than duplicating. Uses the service-role key, so it bypasses RLS — this is a
+ * server-side operator script and must never be imported by the app.
+ */
+
+import { createHash } from "node:crypto";
+
+import { createClient } from "@supabase/supabase-js";
+
+import { crafts } from "../src/lib/data/seed/crafts.ts";
+import { eateries } from "../src/lib/data/seed/eateries.ts";
+import { experiences } from "../src/lib/data/seed/experiences.ts";
+import { festivals } from "../src/lib/data/seed/festivals.ts";
+import { homestays } from "../src/lib/data/seed/homestays.ts";
+import { hotspots } from "../src/lib/data/seed/hotspots.ts";
+import { testimonials } from "../src/lib/data/seed/testimonials.ts";
+import { tours } from "../src/lib/data/seed/tours.ts";
+import { transportOptions } from "../src/lib/data/seed/transport.ts";
+import { faqGroups } from "../src/app/faq/faq-data.ts";
+import { PHOTO_CREDITS } from "../src/lib/data/photo-credits.ts";
+import { kanglaStops, kanglaSources } from "../src/lib/immersive/kangla.ts";
+import {
+  aboutPrinciples,
+  aboutThemes,
+  contactChannels,
+  heroSubjects,
+  homeStatement,
+  homeStats,
+  hostFaqs,
+  hostGallery,
+  hostSteps,
+  hostWeHandle,
+  hostWhy,
+  marqueeWords,
+  pledgeItems,
+  responsibleQuickAsks,
+} from "../src/lib/data/seed/site-content.ts";
+
+/**
+ * The testimonial seed ids are human-readable slugs ("ts-priya-sharma") but the
+ * column is a uuid. Derive a stable RFC-4122 v5 uuid from each slug so the
+ * upsert stays idempotent across runs without widening the schema.
+ */
+const SEED_NAMESPACE = "1b4d5f2e-7a63-4c18-9f0e-2c6a8d3b5471";
+
+function uuidV5(name: string, namespace = SEED_NAMESPACE): string {
+  const ns = Buffer.from(namespace.replace(/-/g, ""), "hex");
+  const hash = createHash("sha1").update(ns).update(name, "utf8").digest();
+  const b = Buffer.from(hash.subarray(0, 16));
+  b[6] = (b[6] & 0x0f) | 0x50; // version 5
+  b[8] = (b[8] & 0x3f) | 0x80; // RFC 4122 variant
+  const h = b.toString("hex");
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
+}
+
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!url || !serviceKey) {
+  console.error(
+    "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY.\n" +
+      "Put them in .env.local (see .env.example) before seeding.",
+  );
+  process.exit(1);
+}
+
+const db = createClient(url, serviceKey, {
+  auth: { persistSession: false, autoRefreshToken: false },
+});
+
+async function upsert(table: string, rows: Record<string, unknown>[], conflict = "slug") {
+  if (rows.length === 0) {
+    console.log(`  ${table}: nothing to seed`);
+    return;
+  }
+  const { error } = await db.from(table).upsert(rows, { onConflict: conflict });
+  if (error) {
+    console.error(`  ${table}: FAILED — ${error.message}`);
+    throw error;
+  }
+  console.log(`  ${table}: ${rows.length} rows`);
+}
+
+async function main() {
+  console.log("Seeding Yening catalogue into Supabase…");
+
+  await upsert(
+    "hotspots",
+    hotspots.map((h) => ({
+      slug: h.slug,
+      name: h.name,
+      meitei_name: h.meiteiName ?? null,
+      tagline: h.tagline,
+      description: h.description,
+      history: h.history ?? null,
+      category: h.category,
+      district: h.district,
+      location: h.location,
+      lat: h.coordinates.lat,
+      lng: h.coordinates.lng,
+      images: h.images,
+      best_time: h.bestTimeToVisit,
+      best_seasons: h.bestSeasons,
+      entry_fee: h.entryFee,
+      timings: h.timings,
+      how_to_reach: h.howToReach,
+      distance_km: h.distanceFromImphalKm,
+      duration_hours: h.durationHours,
+      tips: h.tips,
+      accessibility: h.accessibility,
+      tags: h.tags,
+      featured: h.featured,
+      panorama_url: h.panoramaUrl ?? null,
+    })),
+  );
+
+  await upsert(
+    "homestays",
+    homestays.map((h) => ({
+      slug: h.slug,
+      title: h.title,
+      description: h.description,
+      host_name: h.hostName,
+      host_story: h.hostStory ?? null,
+      host_avatar: h.hostAvatar ?? null,
+      location: h.location,
+      district: h.district,
+      lat: h.coordinates.lat,
+      lng: h.coordinates.lng,
+      price_per_night: h.pricePerNight,
+      max_guests: h.maxGuests,
+      bedrooms: h.bedrooms,
+      bathrooms: h.bathrooms,
+      amenities: h.amenities,
+      images: h.images,
+      rating: h.rating,
+      review_count: h.reviewCount,
+      house_rules: h.houseRules,
+      cancellation_policy: h.cancellationPolicy,
+      featured: h.featured,
+      is_active: h.isActive,
+    })),
+  );
+
+  await upsert(
+    "experiences",
+    experiences.map((e) => ({
+      slug: e.slug,
+      title: e.title,
+      description: e.description,
+      category: e.category,
+      host: e.host,
+      location: e.location,
+      district: e.district,
+      duration_hours: e.durationHours,
+      price_per_person: e.pricePerPerson,
+      group_size_max: e.groupSizeMax,
+      languages: e.languages,
+      includes: e.includes,
+      images: e.images,
+      rating: e.rating,
+      review_count: e.reviewCount,
+      featured: e.featured,
+    })),
+  );
+
+  await upsert(
+    "eateries",
+    eateries.map((e) => ({
+      slug: e.slug,
+      name: e.name,
+      description: e.description,
+      cuisines: e.cuisines,
+      location: e.location,
+      district: e.district,
+      lat: e.coordinates.lat,
+      lng: e.coordinates.lng,
+      price_range: e.priceRange,
+      timings: e.timings,
+      phone: e.phone ?? null,
+      images: e.images,
+      rating: e.rating,
+      review_count: e.reviewCount,
+      signature_dishes: e.signatureDishes,
+      accepts_reservations: e.acceptsReservations,
+      featured: e.featured,
+    })),
+  );
+
+  await upsert(
+    "tours",
+    tours.map((t) => ({
+      slug: t.slug,
+      title: t.title,
+      description: t.description,
+      duration_days: t.durationDays,
+      price_per_person: t.pricePerPerson,
+      group_size_max: t.groupSizeMax,
+      difficulty: t.difficulty,
+      themes: t.themes,
+      districts_covered: t.districtsCovered,
+      itinerary: t.itinerary,
+      includes: t.includes,
+      excludes: t.excludes,
+      images: t.images,
+      departure_dates: t.departureDates,
+      rating: t.rating,
+      review_count: t.reviewCount,
+      featured: t.featured,
+    })),
+  );
+
+  await upsert(
+    "transport_options",
+    transportOptions.map((t) => ({
+      slug: t.slug,
+      name: t.name,
+      mode: t.mode,
+      operator: t.operator,
+      description: t.description,
+      seats: t.seats,
+      price_per_day: t.pricePerDay ?? null,
+      price_per_km: t.pricePerKm ?? null,
+      routes: t.routes,
+      includes: t.includes,
+      images: t.images,
+      rating: t.rating,
+      featured: t.featured,
+    })),
+  );
+
+  await upsert(
+    "festivals",
+    festivals.map((f) => ({
+      slug: f.slug,
+      name: f.name,
+      meitei_name: f.meiteiName ?? null,
+      description: f.description,
+      month: f.month,
+      typical_dates: f.typicalDates,
+      location: f.location,
+      district: f.district,
+      significance: f.significance,
+      images: f.images,
+      featured: f.featured,
+    })),
+  );
+
+  await upsert(
+    "crafts",
+    crafts.map((c) => ({
+      slug: c.slug,
+      name: c.name,
+      meitei_name: c.meiteiName ?? null,
+      description: c.description,
+      story: c.story ?? null,
+      category: c.category,
+      price: c.price,
+      price_note: c.priceNote ?? null,
+      maker: c.maker,
+      maker_story: c.makerStory ?? null,
+      location: c.location,
+      district: c.district,
+      phone: c.phone ?? null,
+      website: c.website ?? null,
+      images: c.images,
+      materials: c.materials,
+      made_to_order: c.madeToOrder,
+      lead_time_days: c.leadTimeDays ?? null,
+      gi_tagged: c.giTagged,
+      featured: c.featured,
+      is_active: true,
+    })),
+  );
+
+  // Testimonials have no natural slug; reconcile on the stable seed id.
+  await upsert(
+    "testimonials",
+    testimonials.map((t) => ({
+      id: uuidV5(t.id),
+      name: t.name,
+      origin: t.origin,
+      avatar: t.avatar ?? null,
+      quote: t.quote,
+      rating: t.rating,
+      trip_type: t.tripType,
+      approved: true,
+    })),
+    "id",
+  );
+
+  /* ------------------------------ site content ---------------------------- */
+
+  // Page blocks. Each key holds an array whose shape is that block's own; the
+  // data layer casts it back to the interface the component expects.
+  const sections: [string, string, string, unknown[]][] = [
+    ["about.themes", "About — programme themes", "The six themes the project is built around.", aboutThemes],
+    ["about.principles", "About — editorial principles", "How the writing decides what to claim.", aboutPrinciples],
+    ["host.why", "Host — why list here", "The pitch to a prospective host.", hostWhy],
+    ["host.we_handle", "Host — what we handle", "What Yening does on the host's behalf.", hostWeHandle],
+    ["host.steps", "Host — how it works", "Onboarding, in four steps.", hostSteps],
+    ["host.gallery", "Host — gallery strip", "Images under the host landing hero.", hostGallery],
+    ["contact.channels", "Contact — channels", "Where each kind of message goes.", contactChannels],
+    ["home.stats", "Home — counted facts", "The four figures under the statement.", homeStats],
+    ["home.marquee_words", "Home — marquee", "Scrolling word strip.", marqueeWords.map((w) => ({ word: w }))],
+    ["hero.subjects", "Hero — rotating subjects", "The line that cycles in the hero.", heroSubjects.map((s) => ({ text: s }))],
+    ["responsible.quick_asks", "Responsible travel — quick asks", "The short version, for anyone who reads nothing else.", responsibleQuickAsks],
+    ["pledge.items", "Responsible travel — visitor's pledge", "The commitment checklist.", pledgeItems.map((t) => ({ text: t }))],
+    ["home.statement", "Home — opening statement", "The paragraph under the hero.", [{ text: homeStatement }]],
+  ];
+
+  await upsert(
+    "site_sections",
+    sections.map(([key, label, description, payload], i) => ({
+      key,
+      label,
+      description,
+      payload,
+      sort_order: i,
+    })),
+    "key",
+  );
+
+  await upsert(
+    "photo_credits",
+    PHOTO_CREDITS.map((c) => ({
+      file: c.file,
+      alt: c.alt,
+      subject: c.subject,
+      author: c.author,
+      licence: c.licence,
+      source: c.source,
+    })),
+    "file",
+  );
+
+  /* ---------------------------------- FAQs -------------------------------- */
+  // Groups first, then their items keyed to the returned ids. The host FAQ is
+  // a flat list, so it becomes a single group under the 'host' audience.
+  const groupRows = [
+    ...faqGroups.map((g, i) => ({
+      slug: g.id,
+      audience: "traveller",
+      label: g.label,
+      blurb: g.blurb,
+      sort_order: i,
+    })),
+    {
+      slug: "hosting",
+      audience: "host",
+      label: "Hosting with Yening",
+      blurb: "What hosts ask before they apply.",
+      sort_order: 0,
+    },
+  ];
+  await upsert("faq_groups", groupRows, "audience,slug");
+
+  const { data: savedGroups, error: groupErr } = await db
+    .from("faq_groups")
+    .select("id, slug, audience");
+  if (groupErr) {
+    console.error(`  faq_items: FAILED — could not read back groups: ${groupErr.message}`);
+    throw groupErr;
+  }
+  const groupId = new Map(
+    (savedGroups ?? []).map((g) => [`${g.audience}:${g.slug}`, g.id as string]),
+  );
+
+  const itemRows = [
+    ...faqGroups.flatMap((g) =>
+      g.items.map((it, i) => ({
+        group_id: groupId.get(`traveller:${g.id}`),
+        question: it.q,
+        answer: it.a,
+        sort_order: i,
+      })),
+    ),
+    ...hostFaqs.map((it, i) => ({
+      group_id: groupId.get("host:hosting"),
+      question: it.q,
+      answer: it.a,
+      sort_order: i,
+    })),
+  ];
+  if (itemRows.some((r) => !r.group_id)) {
+    throw new Error("faq_items: a group id failed to resolve — aborting rather than orphaning rows");
+  }
+  await upsert("faq_items", itemRows, "group_id,question");
+
+  /* -------------------------------- immersive ----------------------------- */
+  await upsert(
+    "immersive_stops",
+    kanglaStops.map((s, i) => ({
+      scene: "kangla-fort",
+      slug: s.id,
+      name: s.name,
+      short_name: s.shortName,
+      subtitle: s.subtitle,
+      image: s.image,
+      alt: s.alt,
+      description: s.description,
+      look_for: s.lookFor,
+      reconstruction: s.reconstruction,
+      camera: s.camera,
+      target: s.target,
+      sort_order: i,
+    })),
+    "scene,slug",
+  );
+
+  await upsert(
+    "immersive_sources",
+    kanglaSources.map((s, i) => ({
+      scene: "kangla-fort",
+      title: s.title,
+      href: s.href,
+      note: s.note,
+      sort_order: i,
+    })),
+    "scene,title",
+  );
+
+  console.log("Done.");
+}
+
+main().catch(() => process.exit(1));
