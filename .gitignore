@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+build
+.env
+.env.local
+.env.local
+tsconfig.tsbuildinfo
+.DS_Store
+next-env.d.ts
+.vercel
+.playwright-mcp
+reference/
+assets/

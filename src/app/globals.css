@@ -1,0 +1,573 @@
+@import "tailwindcss";
+
+/* ============================================================
+   MANIPUR TOURISM — Design Tokens
+   "Woven, not painted."
+
+   The palette is taken from the Manipuri handloom rather than
+   from a lake: the deep crimson of the phanek, temple brass,
+   raw ivory, the charcoal of thang-ta, Shirui lily, hill pine.
+   ============================================================ */
+
+:root {
+  /* --- Ningthou: the phanek crimson. The brand chroma. --- */
+  --ningthou-900: #3f0a16;
+  --ningthou-800: #5c1020;
+  --ningthou-700: #7a1729;
+  --ningthou-600: #9b2335;
+  --ningthou-500: #b83a4b;
+  --ningthou-400: #d16273;
+
+  /* --- Ink: warm charcoal. The dark ground. --- */
+  --ink-950: #0e0c0b;
+  --ink-900: #16130f;
+  --ink-800: #221d18;
+  --ink-700: #352d25;
+  --ink-600: #4a4038;
+  --ink-500: #6b5f54;
+  --ink-400: #8c7f72;
+
+  /* --- Ivory: undyed cotton. The light ground. --- */
+  --ivory-50: #fbf8f3;
+  --ivory-100: #f4efe6;
+  --ivory-200: #e8e0d2;
+  --ivory-300: #d6cbb8;
+
+  /* --- Brass: temple and ornament. The accent. --- */
+  --brass-600: #9a6b18;
+  /* Small-text-safe brass: clears 4.5:1 on the ivory ground, including
+     behind the 18% accent wash the Badge uses. */
+  --brass-700: #7d5612;
+  --brass-500: #c08a2e;
+  --brass-400: #d9a441;
+  --brass-300: #e8c173;
+
+  /* --- Lily: Shirui, once a year. The soft highlight. --- */
+  --lily-300: #f0d5da;
+  --lily-400: #dfb0ba;
+  --lily-500: #c4848f;
+
+  /* --- Pine: the hills standing behind everything. --- */
+  --pine-700: #1e3328;
+  --pine-600: #2c4a38;
+  --pine-500: #3e6450;
+  --pine-400: #5c8a70;
+
+  /* ------------------------------------------------------------
+     Legacy scale aliases.
+     The first build named its colours after Loktak. Those names
+     are still referenced in ~500 places across the routes, so they
+     are kept as aliases onto the new palette: every existing screen
+     re-skins with no edit, and rebuilt screens use the new names.
+     Remove an alias only once its last consumer is migrated.
+     ------------------------------------------------------------ */
+  --loktak-900: var(--ink-950);
+  --loktak-800: var(--ink-900);
+  --loktak-700: var(--ink-800);
+  --loktak-600: var(--ningthou-700);
+  --phumdi-600: var(--pine-600);
+  --phumdi-500: var(--pine-500);
+  --phumdi-400: var(--pine-400);
+  --shirui-300: var(--lily-300);
+  --shirui-400: var(--lily-400);
+  --shirui-500: var(--lily-500);
+  --leirum-700: var(--ningthou-900);
+  --leirum-600: var(--ningthou-800);
+  --leirum-500: var(--ningthou-700);
+  --kangla-600: var(--brass-600);
+  --kangla-500: var(--brass-500);
+  --kangla-400: var(--brass-400);
+  --cream-50: var(--ivory-50);
+  --cream-100: var(--ivory-100);
+  --cream-200: var(--ivory-200);
+
+  /* --- Semantic tokens (light) --- */
+  --background: var(--ivory-50);
+  --foreground: var(--ink-900);
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: var(--ivory-100);
+  --border: var(--ivory-200);
+  --border-strong: var(--ivory-300);
+  --muted: var(--ivory-100);
+  --muted-foreground: var(--ink-500);
+
+  --primary: var(--ningthou-800);
+  --primary-foreground: var(--ivory-50);
+  --secondary: var(--pine-600);
+  --secondary-foreground: var(--ivory-50);
+  --accent: var(--brass-500);
+  --accent-foreground: var(--ink-950);
+  --highlight: var(--lily-400);
+  --highlight-foreground: var(--ink-950);
+
+  --success: #2f6b46;
+  --warning: #97621a;
+  --destructive: #9b2335;
+  --destructive-foreground: #ffffff;
+
+  --ring: var(--ningthou-600);
+
+  /* --- Chart surface colours (categorical, fixed order, never cycled) --- */
+  --chart-1: #9b2335;
+  --chart-2: #c08a2e;
+  --chart-3: #2c4a38;
+  --chart-4: #6d4f7c;
+  --chart-good: #2f6b46;
+  --chart-warning: #97621a;
+  --chart-critical: #9b2335;
+  --chart-neutral: #6b5f54;
+
+  /* --- Shape & depth --- */
+  --radius: 0.5rem;
+  --radius-sm: 0.25rem;
+  --radius-lg: 1rem;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(14, 12, 11, 0.06);
+  --shadow-md: 0 8px 24px -8px rgba(14, 12, 11, 0.18);
+  --shadow-lg: 0 24px 60px -20px rgba(14, 12, 11, 0.34);
+
+  /* --- Motion --- */
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 180ms;
+  --dur-base: 380ms;
+  --dur-slow: 600ms;
+
+  /* --- Spacing rhythm (spacious: marketing, not dashboard) --- */
+  --space-section: clamp(5rem, 11vw, 10rem);
+  --space-block: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+:root.dark,
+[data-theme="dark"] {
+  --background: var(--ink-950);
+  --foreground: var(--ivory-50);
+  --surface: #17140f;
+  --surface-raised: #221d18;
+  --surface-sunken: #090807;
+  --border: #2b2520;
+  --border-strong: #3d352c;
+  --muted: #1c1815;
+  --muted-foreground: #a2968a;
+
+  /* The crimson is too dark to carry text on a near-black ground,
+     so dark mode promotes the lily tint into the primary slot. */
+  --primary: #e0919f;
+  --primary-foreground: var(--ink-950);
+  --secondary: var(--pine-400);
+  --secondary-foreground: var(--ink-950);
+  --accent: var(--brass-400);
+  --accent-foreground: var(--ink-950);
+  --highlight: var(--lily-300);
+  --highlight-foreground: var(--ink-950);
+
+  --success: #5cbf88;
+  --warning: #e0a94a;
+  --destructive: #e07a86;
+  --destructive-foreground: var(--ink-950);
+
+  --ring: #e0919f;
+
+  /* Chart steps re-stepped for the dark surface: the light series
+     fails the lightness band against #17140f. */
+  --chart-1: #e0919f;
+  --chart-2: #d9a441;
+  --chart-3: #5c8a70;
+  --chart-4: #b49ac4;
+  --chart-good: #5cbf88;
+  --chart-warning: #e0a94a;
+  --chart-critical: #e07a86;
+  --chart-neutral: #a2968a;
+  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.65);
+  --shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.8);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-highlight: var(--highlight);
+  --color-highlight-foreground: var(--highlight-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+
+  /* Current palette */
+  --color-ningthou-900: var(--ningthou-900);
+  --color-ningthou-800: var(--ningthou-800);
+  --color-ningthou-700: var(--ningthou-700);
+  --color-ningthou-600: var(--ningthou-600);
+  --color-ningthou-500: var(--ningthou-500);
+  --color-ningthou-400: var(--ningthou-400);
+  --color-ink-950: var(--ink-950);
+  --color-ink-900: var(--ink-900);
+  --color-ink-800: var(--ink-800);
+  --color-ink-700: var(--ink-700);
+  --color-ink-600: var(--ink-600);
+  --color-ink-500: var(--ink-500);
+  --color-ink-400: var(--ink-400);
+  --color-ivory-50: var(--ivory-50);
+  --color-ivory-100: var(--ivory-100);
+  --color-ivory-200: var(--ivory-200);
+  --color-ivory-300: var(--ivory-300);
+  --color-brass-600: var(--brass-600);
+  --color-brass-700: var(--brass-700);
+  --color-brass-500: var(--brass-500);
+  --color-brass-400: var(--brass-400);
+  --color-brass-300: var(--brass-300);
+  --color-lily-300: var(--lily-300);
+  --color-lily-400: var(--lily-400);
+  --color-lily-500: var(--lily-500);
+  --color-pine-700: var(--pine-700);
+  --color-pine-600: var(--pine-600);
+  --color-pine-500: var(--pine-500);
+  --color-pine-400: var(--pine-400);
+
+  /* Legacy aliases — see the note in :root */
+  --color-loktak-900: var(--loktak-900);
+  --color-loktak-800: var(--loktak-800);
+  --color-loktak-700: var(--loktak-700);
+  --color-loktak-600: var(--loktak-600);
+  --color-phumdi-600: var(--phumdi-600);
+  --color-phumdi-500: var(--phumdi-500);
+  --color-phumdi-400: var(--phumdi-400);
+  --color-shirui-300: var(--shirui-300);
+  --color-shirui-400: var(--shirui-400);
+  --color-shirui-500: var(--shirui-500);
+  --color-leirum-700: var(--leirum-700);
+  --color-leirum-600: var(--leirum-600);
+  --color-leirum-500: var(--leirum-500);
+  --color-kangla-600: var(--kangla-600);
+  --color-kangla-500: var(--kangla-500);
+  --color-kangla-400: var(--kangla-400);
+  --color-cream-50: var(--cream-50);
+  --color-cream-100: var(--cream-100);
+  --color-cream-200: var(--cream-200);
+
+  --font-display: var(--font-bodoni), "Times New Roman", serif;
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+  --font-mayek: var(--font-mayek), var(--font-geist-sans), sans-serif;
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius-lg);
+
+  --shadow-soft: var(--shadow-md);
+  --shadow-float: var(--shadow-lg);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-bodoni), "Times New Roman", serif;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+}
+
+@layer utilities {
+  /* ---------- Type scale ----------
+     Bodoni is a high-contrast didone: it wants to be either very
+     large or not used at all. The display sizes run tight and the
+     hairlines only survive above ~40px, so nothing below
+     `.text-title` is allowed to use it. */
+  .text-display {
+    font-family: var(--font-bodoni), "Times New Roman", serif;
+    font-size: clamp(3rem, 10vw, 9.5rem);
+    line-height: 0.88;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+  }
+
+  /* Section and inner-page titles. Deliberately well below `.text-display`:
+     this class is used on ~40 routes as the page h1, and at hero scale it
+     swallowed whole screens. */
+  .text-headline {
+    font-family: var(--font-bodoni), "Times New Roman", serif;
+    font-size: clamp(2rem, 3.6vw, 3.25rem);
+    line-height: 1.04;
+    letter-spacing: -0.018em;
+    font-weight: 500;
+  }
+
+  .text-title {
+    font-family: var(--font-bodoni), "Times New Roman", serif;
+    font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    font-weight: 500;
+  }
+
+  /* Uppercase mono micro-label. The workhorse of the editorial
+     register: section tags, indices, dates, coordinates, stats. */
+  .eyebrow {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-feature-settings: "tnum";
+  }
+
+  .mono-label {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    font-feature-settings: "tnum";
+  }
+
+  /* Lead paragraph — the one place body copy gets scale. */
+  .text-lead {
+    font-size: clamp(1.0625rem, 1.5vw, 1.375rem);
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+  }
+
+  .shell {
+    width: 100%;
+    margin-inline: auto;
+    max-width: 88rem;
+    padding-inline: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .shell { padding-inline: 2rem; }
+  }
+
+  /* Narrow measure for long-form reading (~68ch). */
+  .shell-prose {
+    width: 100%;
+    margin-inline: auto;
+    max-width: 44rem;
+    padding-inline: 1rem;
+  }
+
+  /* ---------- Chapter rhythm ----------
+     The page alternates light and dark so the full-bleed photo
+     sections land as events instead of as the default state. */
+  .chapter-light {
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  .chapter-dark {
+    background: var(--ink-950);
+    color: var(--ivory-50);
+    --foreground: var(--ivory-50);
+    --muted-foreground: #a2968a;
+    --border: #2b2520;
+    --border-strong: #463d33;
+    --muted: #1c1815;
+  }
+
+  .chapter-crimson {
+    background: var(--ningthou-900);
+    color: var(--ivory-50);
+    --foreground: var(--ivory-50);
+    /* brass-500 lands at ~4.4:1 on this ground — one step up clears AA. */
+    --accent: var(--brass-400);
+    --muted-foreground: #d5adb4;
+    --border: #5c1020;
+    --border-strong: #7a1729;
+    --muted: #4a0d19;
+  }
+
+  /* Phumdi — organic floating-island mask */
+  .mask-phumdi {
+    -webkit-mask-image: radial-gradient(ellipse 70% 62% at 50% 46%, #000 62%, transparent 100%);
+    mask-image: radial-gradient(ellipse 70% 62% at 50% 46%, #000 62%, transparent 100%);
+  }
+
+  .blob-phumdi {
+    border-radius: 58% 42% 47% 53% / 44% 51% 49% 56%;
+  }
+
+  /* Handloom stripe — Manipuri phanek geometry. The structural
+     motif: used as rules, dividers and section markers. */
+  .weave-rule {
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--accent) 0 2px,
+      transparent 2px 7px,
+      var(--primary) 7px 9px,
+      transparent 9px 16px
+    );
+  }
+
+  /* Full-width woven divider between chapters. */
+  .weave-band {
+    height: 6px;
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--ningthou-700) 0 14px,
+      var(--brass-500) 14px 18px,
+      var(--ink-900) 18px 24px,
+      var(--brass-500) 24px 26px
+    );
+  }
+
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.16;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .glass {
+    background: color-mix(in oklab, var(--surface) 62%, transparent);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  }
+
+  .mist-top {
+    mask-image: linear-gradient(to bottom, transparent, #000 22%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 22%);
+  }
+
+  /* ---------- Adaptive header ----------
+     Pages that open on a dark full-bleed band mark that band with
+     `data-hero-tone="dark"`. While the bar is still over it, these custom
+     properties flip the wordmark and controls to ivory; once the bar has
+     scrolled past it they fall back to the page foreground.
+
+     Done in CSS rather than by reading the DOM in an effect: it is correct on
+     the very first paint (no flash of dark-on-dark), needs no state, and
+     cannot drift out of sync with a hardcoded list of routes. */
+  header[data-site-header] {
+    --hdr-fg: var(--foreground);
+    --hdr-fg-muted: color-mix(in oklab, var(--foreground) 80%, transparent);
+    --hdr-hover: color-mix(in oklab, var(--foreground) 8%, transparent);
+  }
+
+  body:has([data-hero-tone="dark"]) header[data-site-header][data-scrolled="false"] {
+    --hdr-fg: var(--ivory-50);
+    --hdr-fg-muted: color-mix(in oklab, var(--ivory-50) 80%, transparent);
+    --hdr-hover: color-mix(in oklab, var(--ivory-50) 14%, transparent);
+  }
+
+  /* Text scrims — gradients sized to the copy block rather than a flat
+     wash over the whole photo, so the landscape still reads.
+     `scrim-copy` anchors the bottom band; `scrim-reading` darkens only the
+     column the copy actually occupies. Both are needed: over a bright
+     subject (open water, snow, sky) the bottom band alone leaves the
+     eyebrow and lede below 4.5:1. */
+  .scrim-copy {
+    background: linear-gradient(
+      to top,
+      rgba(14, 12, 11, 0.9) 0%,
+      rgba(14, 12, 11, 0.72) 26%,
+      rgba(14, 12, 11, 0.34) 52%,
+      transparent 76%
+    );
+  }
+
+  .scrim-reading {
+    background: linear-gradient(
+      to right,
+      rgba(14, 12, 11, 0.82) 0%,
+      rgba(14, 12, 11, 0.68) 34%,
+      rgba(14, 12, 11, 0.3) 58%,
+      transparent 80%
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --- Radix state animations --- */
+@keyframes accordion-down {
+  from { height: 0; opacity: 0; }
+  to { height: var(--radix-accordion-content-height); opacity: 1; }
+}
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); opacity: 1; }
+  to { height: 0; opacity: 0; }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(2deg); }
+}
+@keyframes drift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@layer utilities {
+  .animate-accordion-down { animation: accordion-down 320ms var(--ease-out-expo); }
+  .animate-accordion-up { animation: accordion-up 260ms var(--ease-out-expo); }
+  .fade-in { animation: fade-in 200ms ease-out; }
+  .fade-out { animation: fade-out 160ms ease-in; }
+  .animate-float-slow { animation: float-slow 9s ease-in-out infinite; }
+  .animate-drift { animation: drift 40s linear infinite; }
+}
