@@ -58,7 +58,7 @@ export const kanglaPlaces: KanglaPlace[] = [
     summary:
       "The paired white guardians — a dragon-lion with a single swept-back horn, a beaded collar and an open jaw — standing before the coronation hall. They are the most recognised image of Manipur.",
     model: "guardians",
-    image: "/file-uploads/11.jpg",
+    image: "/file-uploads/kangla-kanglasha.webp",
     source: "OSM node, tourism=artwork “Kangla Dragon” (the northern of the pair)",
     view: { zoom: 18.4, pitch: 62, bearing: -100 },
   },
