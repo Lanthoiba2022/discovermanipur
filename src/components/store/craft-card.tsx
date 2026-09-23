@@ -1,81 +1,112 @@
-import Image from "next/image";
-import Link from "next/link";
-import { Award, Hammer, MapPin } from "lucide-react";
+import {
+  Award,
+  Drum,
+  Gem,
+  Hammer,
+  Leaf,
+  type LucideIcon,
+  MapPin,
+  Package,
+  Palette,
+  Handshake,
+  Shirt,
+  Wheat,
+} from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { formatINR } from "@/lib/utils";
-import type { Craft } from "@/types";
+import {
+  CARD_SIZES,
+  CardAlias,
+  CardBody,
+  CardDescription,
+  CardEyebrow,
+  CardFact,
+  CardFoot,
+  CardLine,
+  CardMedia,
+  CardMeta,
+  CardPrice,
+  CardShell,
+  CardTitle,
+  MediaChip,
+} from "@/components/cards/card-kit";
+import { formatINR, meiteiAlias } from "@/lib/utils";
+import type { Craft, CraftCategory } from "@/types";
 
 import { craftCategoryLabel, formatLeadTime } from "./craft-filters";
 
-export function CraftCard({ craft, preload = false }: { craft: Craft; preload?: boolean }) {
-  const cover = craft.images[0];
+const CATEGORY_ICON: Record<CraftCategory, LucideIcon> = {
+  handloom: Shirt,
+  pottery: Palette,
+  bamboo: Leaf,
+  jewellery: Gem,
+  sculpture: Hammer,
+  "food-produce": Wheat,
+  instrument: Drum,
+};
+
+export function CraftCard({
+  craft,
+  preload = false,
+  className,
+}: {
+  craft: Craft;
+  preload?: boolean;
+  className?: string;
+}) {
+  const alias = meiteiAlias(craft.name, craft.meiteiName);
+  const Icon = CATEGORY_ICON[craft.category] ?? Package;
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface shadow-[var(--shadow-sm)] transition-shadow duration-300 hover:shadow-[var(--shadow-md)]">
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-sunken">
-        {cover ? (
-          <Image
-            src={cover.src}
-            alt={cover.alt}
-            fill
-            preload={preload}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+    <CardShell tone="terracotta" className={className}>
+      <CardMedia
+        image={craft.images[0]}
+        fallbackAlt={`${craft.name}, ${craft.materials.slice(0, 2).join(" and ")} work made by ${craft.maker} in ${craft.location}, Manipur`}
+        sizes={CARD_SIZES.grid3}
+        preload={preload}
+        status={craft.giTagged ? <MediaChip icon={Award}>GI tagged</MediaChip> : null}
+      />
+
+      <CardBody>
+        <CardEyebrow icon={Icon}>
+          <span>{craftCategoryLabel(craft.category)}</span>
+          <span aria-hidden="true" className="opacity-40">
+            /
+          </span>
+          <span>{craft.district}</span>
+        </CardEyebrow>
+
+        <CardTitle href={`/store/${craft.slug}`}>{craft.name}</CardTitle>
+        {alias && <CardAlias>{alias}</CardAlias>}
+
+        <CardLine icon={MapPin}>
+          {craft.maker} · {craft.location}, {craft.district}
+        </CardLine>
+        <CardDescription>{craft.description}</CardDescription>
+
+        <CardMeta>
+          {craft.madeToOrder ? (
+            <CardFact icon={Hammer} label="Availability">
+              Made to order
+              {craft.leadTimeDays ? ` · ready in ${formatLeadTime(craft.leadTimeDays)}` : ""}
+            </CardFact>
+          ) : (
+            <CardFact icon={Handshake} label="Availability">
+              Ready to collect
+            </CardFact>
+          )}
+          <CardFact icon={Package} label="Made from">
+            {craft.materials.slice(0, 3).join(" · ")}
+          </CardFact>
+        </CardMeta>
+
+        <CardFoot>
+          <CardPrice
+            value={formatINR(craft.price)}
+            unit={craft.priceNote}
+            label={`Price of ${craft.name}`}
           />
-        ) : null}
-        <Badge variant="glass" className="absolute left-4 top-4">
-          {craftCategoryLabel(craft.category)}
-        </Badge>
-        {craft.giTagged && (
-          <Badge variant="glass" className="absolute right-4 top-4">
-            <Award className="size-3.5" aria-hidden="true" />
-            GI tagged
-          </Badge>
-        )}
-      </div>
-
-      <div className="flex flex-1 flex-col gap-3 p-5">
-        <h3 className="font-display text-xl leading-tight">
-          <Link
-            href={`/store/${craft.slug}`}
-            className="after:absolute after:inset-0 focus-visible:outline-none"
-          >
-            {craft.name}
-          </Link>
-        </h3>
-
-        <p className="text-sm text-muted-foreground">
-          Made by <span className="text-foreground">{craft.maker}</span>
-        </p>
-
-        <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-          <MapPin className="size-4 shrink-0" aria-hidden="true" />
-          {craft.location}, {craft.district}
-        </p>
-
-        <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-          {craft.description}
-        </p>
-
-        {craft.madeToOrder && (
-          <p className="mt-auto flex items-center gap-1.5 pt-1 text-sm text-muted-foreground">
-            <Hammer className="size-4 shrink-0" aria-hidden="true" />
-            Made to order
-            {craft.leadTimeDays ? ` · ready in ${formatLeadTime(craft.leadTimeDays)}` : ""}
-          </p>
-        )}
-
-        <div className={craft.madeToOrder ? "" : "mt-auto"}>
-          <p className="border-t border-border pt-3">
-            <span className="font-display text-xl">{formatINR(craft.price)}</span>
-            {craft.priceNote && (
-              <span className="text-sm text-muted-foreground"> · {craft.priceNote}</span>
-            )}
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">Paid direct to the maker</p>
-        </div>
-      </div>
-    </article>
+        </CardFoot>
+      </CardBody>
+    </CardShell>
   );
 }

@@ -21,6 +21,8 @@ export interface MapPoint {
   subtitle: string;
   category: string;
   image?: string;
+  /** Photographer credit, shown under the popup photo. Required for Places photos. */
+  imageCredit?: string;
   lat: number;
   lng: number;
 }
@@ -89,13 +91,26 @@ export default function HotspotMap({
 
     const markers: Marker[] = [];
 
+    /**
+     * The popup photo is 220px wide. `withPhotos` mints Places URLs at the
+     * 1200px default, so without this every popup pulls a 1200px image to show
+     * it at a fifth of that — wasted bytes on a hover interaction.
+     */
+    const narrow = (src: string) =>
+      src.startsWith("/api/place-photo") ? src.replace(/([?&])w=\d+/, "$1w=440") : src;
+
     for (const point of points) {
       const popupNode = document.createElement("div");
       popupNode.style.cssText = "width:220px;font-family:inherit";
       popupNode.innerHTML = `
         ${
           point.image
-            ? `<img src="${escapeHtml(point.image)}" alt="" loading="lazy" style="width:100%;height:110px;object-fit:cover;border-radius:10px;display:block" />`
+            ? `<img src="${escapeHtml(narrow(point.image))}" alt="" loading="lazy" style="width:100%;height:110px;object-fit:cover;border-radius:10px;display:block" />
+               ${
+                 point.imageCredit
+                   ? `<p style="margin:3px 0 0;font-size:9px;color:#8a8279;text-align:right">${escapeHtml(point.imageCredit)}</p>`
+                   : ""
+               }`
             : ""
         }
         <div style="padding-top:10px">

@@ -14,6 +14,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ogImage } from "@/lib/data/photos";
 import { meiteiAlias } from "@/lib/utils";
 import { KanglaTeaser } from "@/components/immersive/kangla-teaser";
 import { MapPanel } from "@/components/map/map-panel";
@@ -60,7 +61,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     };
   }
 
-  const image = hotspot.images[0]?.src ?? PLACEHOLDER_IMAGE;
+  // Only a stable, self-hosted file is safe as an OG image — see `ogImage`.
+  // When the lead photo is a Places ref this is undefined and Next falls back
+  // to the generated opengraph-image route.
+  const og = ogImage(hotspot.images[0]);
   const description = `${hotspot.tagline} ${hotspot.description}`.slice(0, 180).trim();
 
   return {
@@ -70,14 +74,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       title: `${hotspot.name} · ${hotspot.district}, Manipur`,
       description,
       type: "article",
-      images: [
-        {
-          url: image,
-          width: 1200,
-          height: 630,
-          alt: hotspot.images[0]?.alt ?? `${hotspot.name}, Manipur`,
-        },
-      ],
+      images: og
+        ? [{ url: og.src, alt: og.alt ?? `${hotspot.name}, Manipur` }]
+        : undefined,
     },
   };
 }
@@ -97,6 +96,7 @@ export default async function HotspotDetailPage({ params }: { params: Params }) 
       <ParallaxHero
         src={cover?.src ?? PLACEHOLDER_IMAGE}
         alt={cover?.alt ?? `${hotspot.name} in ${hotspot.district}, Manipur`}
+        credit={cover?.credit}
       >
         <Link
           href="/hotspots"

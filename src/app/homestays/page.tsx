@@ -9,7 +9,7 @@ import {
   parseHomestayFilters,
 } from "@/components/homestays/homestay-query";
 import { Reveal } from "@/components/motion/reveal";
-import { ListingHero } from "@/components/content/listing-hero";
+import { PageHero } from "@/components/content/page-hero";
 import { getHomestays } from "@/lib/data";
 import { formatINR } from "@/lib/utils";
 
@@ -49,16 +49,20 @@ export default async function HomestaysPage({
   const hostCount = new Set(rows.map((row) => row.hostName)).size;
 
   return (
-    <div className="pb-24 pt-28 md:pt-32">
-      <ListingHero
-        className="!pt-0"
+    <div className="pb-24">
+      <PageHero
         eyebrow="Stays"
-        title="Sleep where the story is told"
+        title="Homestays"
+        titleScale="display"
+        completion="a room, a place at the table, and a host who knows which road the fog lifts from."
+        image={{
+          src: "/file-uploads/hill-village-valley.webp",
+          alt: "A hill village spread across a wooded valley floor in Manipur under a bright sky.",
+        }}
         lede={
           <p>
-            Every homestay here is a family home first. You get a room, a place at the table and a
-            host who knows which road the fog lifts from — and they get to keep tourism in the
-            village.
+            Every homestay here is a family home first — and every booking keeps the money from
+            tourism inside the village that hosts you.
           </p>
         }
         figures={[
@@ -70,7 +74,7 @@ export default async function HomestaysPage({
       />
 
       <div className="shell">
-        <div className="mt-10 md:mt-12">
+        <div className="mt-12 md:mt-14">
           <HomestayFiltersBar filters={filters} resultCount={results.length} />
         </div>
 

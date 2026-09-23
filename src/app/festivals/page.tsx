@@ -1,6 +1,7 @@
 import { CalendarHeart, PartyPopper } from "lucide-react";
 import type { Metadata } from "next";
 
+import { PageHero } from "@/components/content/page-hero";
 import { FestivalCard } from "@/components/places/festival-card";
 import {
   bucketByMonth,
@@ -46,80 +47,55 @@ export default async function FestivalsPage() {
   const districtCount = new Set(festivals.map((f) => f.district).filter(Boolean)).size;
 
   return (
-    <main id="main">
-      {/* ---------------------------------------------------------- hero band */}
-      <section
-        data-hero-tone="dark"
-        className="relative overflow-hidden bg-leirum-700 text-cream-50 pt-28 md:pt-32"
-      >
-        <div
-          aria-hidden
-          className="blob-phumdi animate-float-slow absolute -left-24 top-0 size-[26rem] bg-shirui-400/25 blur-3xl"
-        />
-        <div className="shell relative pb-16 md:pb-24">
-          <p className="eyebrow mb-5 flex items-center gap-3 text-brass-400">
-            <span className="weave-rule inline-block h-[3px] w-10 rounded-full" />
-            The year in colour
+    <>
+      <PageHero
+        tone="dark"
+        eyebrow="The year in colour"
+        title="Festivals"
+        completion="Manipur measures the year in drums, boat races and bonfires."
+        lede={
+          <p>
+            The whole calendar, January to December, so you can land in the middle of one — the
+            lily on Shirui, the Sangai in Keibul Lamjao, Yaoshang colour across the valley.
           </p>
-          <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
-            <div className="lg:col-span-7">
-              <h1 className="text-display">Festivals</h1>
-              <p className="text-lead mt-7 max-w-[52ch] text-ivory-200">
-                Manipur measures the year in drums, boat races and bonfires. Here is the whole
-                calendar — January to December — so you can land in the middle of one.
-              </p>
-            </div>
-
-            <dl className="grid grid-cols-2 gap-x-8 gap-y-7 self-end lg:col-span-4 lg:col-start-9">
-              <div className="border-t border-ivory-50/20 pt-4">
-                <dd className="font-display text-4xl leading-none text-brass-400">
-                  {festivals.length}
-                </dd>
-                <dt className="eyebrow mt-2.5 text-ivory-200/70">
-                  {festivals.length === 1 ? "Festival mapped" : "Festivals mapped"}
-                </dt>
-              </div>
-              <div className="border-t border-ivory-50/20 pt-4">
-                <dd className="font-display text-4xl leading-none text-brass-400">
-                  {monthsCovered}
-                </dd>
-                <dt className="eyebrow mt-2.5 text-ivory-200/70">Months covered</dt>
-              </div>
-              <div className="border-t border-ivory-50/20 pt-4">
-                <dd className="font-display text-4xl leading-none text-brass-400">
-                  {districtCount}
-                </dd>
-                <dt className="eyebrow mt-2.5 text-ivory-200/70">Districts</dt>
-              </div>
-              <div className="border-t border-ivory-50/20 pt-4">
-                <dd className="font-display text-4xl leading-none text-brass-400">
-                  {spotlightMonth}
-                </dd>
-                <dt className="eyebrow mt-2.5 text-ivory-200/70">
-                  {onNow.length > 0 ? "On now" : "Next up"}
-                </dt>
-              </div>
-            </dl>
-          </div>
-        </div>
-      </section>
+        }
+        image={{
+          src: "/file-uploads/manipuri-dancer-solo.webp",
+          alt: "A Manipuri classical dancer mid-gesture in orange costume against a black stage.",
+        }}
+        figures={[
+          {
+            value: String(festivals.length),
+            label: festivals.length === 1 ? "Festival mapped" : "Festivals mapped",
+          },
+          { value: String(monthsCovered), label: "Months covered" },
+          { value: String(districtCount), label: "Districts" },
+          {
+            value: spotlightMonth ?? "—",
+            label: onNow.length > 0 ? "On now" : "Next up",
+          },
+        ]}
+      />
 
       {/* ------------------------------------------------------- what's on now */}
       {spotlight.length > 0 && (
-        <section className="border-b border-border bg-surface-sunken py-12 md:py-16">
-          <div className="shell">
+        <section
+          aria-labelledby="festivals-spotlight"
+          className="border-b border-border bg-surface-sand py-16 md:py-20"
+        >
+          <div className="shell-mid">
             <Reveal>
-              <p className="eyebrow mb-3 flex items-center gap-2 text-primary">
+              <p className="eyebrow rule-flank rule-flank-start mb-4 text-brass-700 [.dark_&]:text-brass-300">
                 <CalendarHeart className="size-4" aria-hidden />
                 {onNow.length > 0 ? `On now — ${spotlightMonth}` : `Next up — ${spotlightMonth}`}
               </p>
-              <h2 className="font-display text-3xl">
+              <h2 id="festivals-spotlight" className="text-headline">
                 {onNow.length > 0
                   ? "Happening while you plan"
                   : "Nothing this month — here is what comes next"}
               </h2>
             </Reveal>
-            <ul className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <ul className="mt-9 grid grid-cols-1 gap-4 lg:grid-cols-2">
               {spotlight.slice(0, 4).map((festival, index) => (
                 <Reveal as="li" key={festival.id || festival.slug} delayIndex={index}>
                   <FestivalCard festival={festival} highlight className="h-full" />
@@ -131,15 +107,17 @@ export default async function FestivalsPage() {
       )}
 
       {/* ------------------------------------------------------------ calendar */}
-      <section className="shell py-16 md:py-24">
-        <h2 className="sr-only">Festival calendar, January to December</h2>
+      <section aria-labelledby="festival-calendar" className="shell py-16 md:py-24">
+        <h2 id="festival-calendar" className="sr-only">
+          Festival calendar, January to December
+        </h2>
 
         {festivals.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-[var(--radius-lg)] border border-dashed border-border-strong bg-surface-sunken px-6 py-20 text-center">
             <span className="mb-5 grid size-14 place-items-center rounded-full bg-primary/10 text-primary">
               <PartyPopper className="size-6" aria-hidden />
             </span>
-            <p className="font-display text-2xl">The calendar is being filled in</p>
+            <p className="text-title">The calendar is being filled in</p>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
               Sangai, Yaoshang, Lai Haraoba, Kut and the rest of Manipur&apos;s year are being
               catalogued. Check back shortly.
@@ -154,6 +132,6 @@ export default async function FestivalsPage() {
           </div>
         )}
       </section>
-    </main>
+    </>
   );
 }

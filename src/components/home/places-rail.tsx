@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, ArrowRight, MapPin } from "lucide-react";
+import { useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -8,28 +9,49 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Hotspot } from "@/types";
 import { cn, meiteiAlias } from "@/lib/utils";
 
+/**
+ * The featured-places rail.
+ *
+ * Horizontal rails are only safe when they stay a *presentation* choice and
+ * never become the navigation, so this one deliberately holds to four rules:
+ *
+ * - It never scroll-jacks. There is no wheel or touch handler that redirects
+ *   vertical scrolling; the page scrolls past the rail exactly as it would past
+ *   a paragraph.
+ * - Every card is an ordinary link, and the band's masthead carries an "All
+ *   places" route, so there is always a plain vertical path to the same content.
+ * - Arrows AND drag AND native touch/trackpad scrolling all work.
+ * - Under `prefers-reduced-motion` the arrows jump instead of gliding. Reduced
+ *   motion changes only the scroll *behaviour*, never which elements render, so
+ *   the SSR pass and a reduced-motion client agree.
+ */
 export function PlacesRail({ hotspots }: { hotspots: Hotspot[] }) {
+  const reduce = useReducedMotion();
   const trackRef = useRef<HTMLUListElement>(null);
+  const progressRef = useRef<HTMLSpanElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
-  const drag = useRef<{ active: boolean; startX: number; startLeft: number; moved: boolean }>({
-    active: false,
-    startX: 0,
-    startLeft: 0,
-    moved: false,
-  });
+  const drag = useRef({ active: false, startX: 0, startLeft: 0, moved: false });
 
   const sync = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
     setAtStart(el.scrollLeft <= 8);
-    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 8);
+    setAtEnd(el.scrollLeft >= max - 8);
+    // Written straight to the node: scroll fires far too often to route this
+    // through React state, and nothing else renders this element.
+    const bar = progressRef.current;
+    if (bar) {
+      const ratio = max > 0 ? Math.min(1, Math.max(0, el.scrollLeft / max)) : 1;
+      bar.style.transform = `scaleX(${0.16 + ratio * 0.84})`;
+    }
   }, []);
 
   useEffect(() => {
-    sync();
     const el = trackRef.current;
     if (!el) return;
+    sync();
     el.addEventListener("scroll", sync, { passive: true });
     window.addEventListener("resize", sync);
     return () => {
@@ -38,11 +60,17 @@ export function PlacesRail({ hotspots }: { hotspots: Hotspot[] }) {
     };
   }, [sync, hotspots.length]);
 
-  function nudge(direction: 1 | -1) {
-    const el = trackRef.current;
-    if (!el) return;
-    el.scrollBy({ left: direction * Math.max(280, el.clientWidth * 0.66), behavior: "smooth" });
-  }
+  const nudge = useCallback(
+    (direction: 1 | -1) => {
+      const el = trackRef.current;
+      if (!el) return;
+      el.scrollBy({
+        left: direction * Math.max(280, el.clientWidth * 0.7),
+        behavior: reduce ? "auto" : "smooth",
+      });
+    },
+    [reduce],
+  );
 
   function onPointerDown(e: React.PointerEvent<HTMLUListElement>) {
     if (e.pointerType !== "mouse") return;
@@ -67,25 +95,33 @@ export function PlacesRail({ hotspots }: { hotspots: Hotspot[] }) {
 
   return (
     <div className="relative">
-      <div className="mb-6 flex items-center justify-end gap-2">
-        <button
-          type="button"
-          onClick={() => nudge(-1)}
-          disabled={atStart}
-          aria-label="Scroll places left"
-          className="grid size-10 place-items-center rounded-full border border-border-strong text-foreground transition-colors hover:bg-muted disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-        >
-          <ArrowLeft aria-hidden className="size-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => nudge(1)}
-          disabled={atEnd}
-          aria-label="Scroll places right"
-          className="grid size-10 place-items-center rounded-full border border-border-strong text-foreground transition-colors hover:bg-muted disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-        >
-          <ArrowRight aria-hidden className="size-4" />
-        </button>
+      <div className="mb-7 flex items-center gap-6">
+        <span aria-hidden className="h-px flex-1 bg-ivory-50/18">
+          <span
+            ref={progressRef}
+            className="block h-px w-full origin-left bg-brass-400 [transform:scaleX(0.16)]"
+          />
+        </span>
+        <div className="flex shrink-0 items-center gap-2">
+          <button
+            type="button"
+            onClick={() => nudge(-1)}
+            disabled={atStart}
+            aria-label="Scroll places left"
+            className="grid size-11 place-items-center rounded-full border border-ivory-50/28 text-ivory-50 transition-colors duration-200 ease-[var(--ease-flat)] hover:border-brass-400 hover:bg-brass-400 hover:text-ink-950 disabled:pointer-events-none disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          >
+            <ArrowLeft aria-hidden className="size-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => nudge(1)}
+            disabled={atEnd}
+            aria-label="Scroll places right"
+            className="grid size-11 place-items-center rounded-full border border-ivory-50/28 text-ivory-50 transition-colors duration-200 ease-[var(--ease-flat)] hover:border-brass-400 hover:bg-brass-400 hover:text-ink-950 disabled:pointer-events-none disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          >
+            <ArrowRight aria-hidden className="size-4" />
+          </button>
+        </div>
       </div>
 
       <ul
@@ -95,51 +131,71 @@ export function PlacesRail({ hotspots }: { hotspots: Hotspot[] }) {
         onPointerUp={endDrag}
         onPointerLeave={endDrag}
         className={cn(
-          "-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 md:-mx-8 md:gap-6 md:px-8",
+          "-mx-4 flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 active:cursor-grabbing md:-mx-8 md:gap-6 md:px-8",
           "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
         )}
       >
-        {hotspots.map((h) => (
+        {hotspots.map((h, i) => (
           <li
             key={h.id}
-            className="group w-[76vw] shrink-0 snap-start sm:w-[42vw] lg:w-[24rem] xl:w-[25rem]"
+            className="group w-[78vw] shrink-0 snap-start sm:w-[44vw] lg:w-[23rem] xl:w-[24.5rem]"
           >
             <Link
               href={`/hotspots/${h.slug}`}
               onClick={(e) => {
                 if (drag.current.moved) e.preventDefault();
               }}
-              className="block overflow-hidden rounded-[var(--radius-lg)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+              className="block rounded-[var(--radius-lg)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
             >
-              <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[var(--radius-lg)] bg-surface-sunken">
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[var(--radius-lg)] bg-ink-900">
                 {h.images[0]?.src && (
                   <Image
                     src={h.images[0].src}
                     alt={h.images[0].alt || `${h.name}, ${h.location}`}
                     fill
                     draggable={false}
-                    sizes="(max-width: 640px) 76vw, (max-width: 1024px) 42vw, 25rem"
-                    className="object-cover transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+                    sizes="(max-width: 640px) 78vw, (max-width: 1024px) 44vw, 24rem"
+                    className="object-cover transition-transform duration-[600ms] ease-[var(--ease-flat)] group-hover:scale-[1.06]"
                   />
                 )}
+                <div aria-hidden className="scrim-copy absolute inset-0" />
+                {/* A second, shorter scrim over the copy block only. The card
+                    photographs vary from a dark fort to a bright midday aerial,
+                    and the shared gradient alone left the smallest line at
+                    3.97:1 over the brightest of them. */}
                 <div
                   aria-hidden
-                  className="absolute inset-0 bg-gradient-to-t from-loktak-900/92 via-loktak-900/45 to-loktak-900/5"
+                  className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink-950/80 via-ink-950/45 to-transparent"
                 />
+
+                {/* The index gets its own ground rather than relying on the
+                    photograph: over an open sky it measured 2.4:1 unbacked. */}
+                <p className="eyebrow absolute left-5 top-5 rounded-full bg-ink-950/75 px-2.5 py-1.5 text-ivory-50 md:left-6 md:top-6">
+                  {String(i + 1).padStart(2, "0")}
+                </p>
+
                 <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
-                  <p className="flex items-center gap-1.5 text-xs text-cream-50/75">
-                    <MapPin aria-hidden className="size-3.5" />
+                  <p className="flex items-center gap-1.5 text-xs text-ivory-50/90">
+                    <MapPin aria-hidden className="size-3.5 shrink-0" />
                     {h.location}
                   </p>
-                  <h3 className="mt-2 font-display text-2xl leading-tight text-cream-50">
+                  {/* Names are never clamped: a truncated place name is a
+                      broken promise, whatever it does to card heights. */}
+                  <h3 className="mt-2 font-display text-[1.6rem] leading-[1.12] text-ivory-50">
                     {h.name}
                   </h3>
                   {meiteiAlias(h.name, h.meiteiName) && (
-                    <p className="font-mayek text-sm text-kangla-400">{meiteiAlias(h.name, h.meiteiName)}</p>
+                    <p className="font-mayek text-sm text-brass-300">
+                      {meiteiAlias(h.name, h.meiteiName)}
+                    </p>
                   )}
-                  <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-cream-50/70">
+                  <p className="mt-2.5 line-clamp-2 text-sm leading-relaxed text-ivory-50/80">
                     {h.tagline}
                   </p>
+                  <span
+                    aria-hidden
+                    className="mt-5 block h-px w-10 origin-left bg-brass-400 transition-transform duration-[400ms] ease-[var(--ease-flat)] group-hover:scale-x-[3.2]"
+                  />
                 </div>
               </div>
             </Link>

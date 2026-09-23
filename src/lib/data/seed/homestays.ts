@@ -14,7 +14,6 @@ export const homestays: Homestay[] = [
     hostName: "Rajkumar Tomba Singh",
     hostStory:
       "Tomba fished Loktak for twenty years before the family opened two rooms to guests in 2019. He knows every channel through the phumdis and is the reason most visitors here actually understand what they are looking at.",
-    hostAvatar: "/file-uploads/tomba.jpg",
     location: "Thanga Karang, near Moirang",
     district: "Bishnupur",
     coordinates: { lat: 24.5117, lng: 93.8058 },
@@ -24,7 +23,7 @@ export const homestays: Homestay[] = [
     bathrooms: 1,
     amenities: ["lake-view", "local-cuisine", "guided-tours", "parking", "hot-water", "breakfast", "bonfire"],
     images: [
-      { src: "/file-uploads/loktakView.webp", alt: "Verandah view over Loktak Lake from the homestay at Thanga" },
+      { src: "/file-uploads/loktak-phumdi-hut.webp", alt: "A stilted hut on a floating phumdi island, the water this homestay looks out over" },
       { src: "/file-uploads/loktakComplete.png", alt: "Traditional Meitei house beside Loktak Lake" },
       { src: "/file-uploads/h1.jpg", alt: "Simple guest bedroom with wooden floor at the Loktak homestay" },
       { src: "/file-uploads/lok1.jpg", alt: "Canoe moored below the Loktak Lake View Homestay" },
@@ -85,7 +84,6 @@ export const homestays: Homestay[] = [
     hostName: "Thoibi Devi",
     hostStory:
       "Thoibi's grandfather built the house in 1948. She teaches Manipuri dance and will arrange an evening performance in the courtyard for groups who ask ahead.",
-    hostAvatar: "/file-uploads/bina.jpg",
     location: "Wangkhei, Imphal East",
     district: "Imphal East",
     coordinates: { lat: 24.8161, lng: 93.9508 },
@@ -424,7 +422,6 @@ export const homestays: Homestay[] = [
     hostName: "Moirangthem Bina",
     hostStory:
       "Bina has woven Moirang Phee for thirty-two years and trains younger weavers through a self-help group; a share of every stay goes to that group.",
-    hostAvatar: "/file-uploads/bina.jpg",
     location: "Singjamei, Imphal West",
     district: "Imphal West",
     coordinates: { lat: 24.7883, lng: 93.9364 },
@@ -524,7 +521,6 @@ export const homestays: Homestay[] = [
     description:
       "A quiet house at the foot of Heingang hill in Imphal East, with a flat roof set up for stargazing and a telescope the host is happy to bring out. Close to the Marjing polo complex and the Nongmaijing trailhead, and far enough from the city centre for the sky to actually be dark.",
     hostName: "Yumnam Rajen",
-    hostAvatar: "/file-uploads/raj.jpg",
     location: "Heingang, Imphal East",
     district: "Imphal East",
     coordinates: { lat: 24.8619, lng: 93.9583 },
