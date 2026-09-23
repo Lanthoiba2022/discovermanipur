@@ -9,6 +9,7 @@ import {
 import { Toaster } from "sonner";
 
 import { ConciergeWidget } from "@/components/ai/concierge-widget";
+import { isConciergeLive } from "@/lib/ai";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { Providers } from "@/components/providers";
@@ -115,7 +116,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             {children}
           </main>
           <SiteFooter />
-          <ConciergeWidget />
+          <ConciergeWidget live={isConciergeLive} />
           <Toaster position="top-center" richColors closeButton />
         </Providers>
       </body>

@@ -195,10 +195,20 @@ export function Concierge({
     send(seed.text);
   }, [seed, send]);
 
-  // Keep the newest turn in view.
-  useEffect(() => {
+  // Keep the newest turn in view — but only while the reader is already at the
+  // bottom, so scrolling back through a long itinerary isn't yanked forward
+  // again on the next streamed token.
+  const pinnedToBottom = useRef(true);
+
+  const onTranscriptScroll = useCallback(() => {
     const el = logRef.current;
     if (!el) return;
+    pinnedToBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 64;
+  }, []);
+
+  useEffect(() => {
+    const el = logRef.current;
+    if (!el || !pinnedToBottom.current) return;
     el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages, status]);
 
@@ -215,6 +225,10 @@ export function Concierge({
       {/* Transcript */}
       <div
         ref={logRef}
+        onScroll={onTranscriptScroll}
+        // Lenis hijacks wheel events document-wide; without this the transcript
+        // cannot be scrolled with a wheel or trackpad at all.
+        data-lenis-prevent
         role="log"
         aria-live="polite"
         aria-relevant="additions text"
