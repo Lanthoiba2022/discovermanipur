@@ -34,7 +34,7 @@ export function SaveButton({
       className={cn(
         "inline-flex items-center justify-center transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95",
         variant === "overlay"
-          ? "size-9 rounded-full bg-surface/85 backdrop-blur-sm shadow-[var(--shadow-sm)]"
+          ? "size-11 rounded-full bg-surface/85 backdrop-blur-sm shadow-[var(--shadow-sm)]"
           : "gap-2 rounded-full border border-border-strong px-4 py-2 text-sm hover:bg-muted",
         className,
       )}

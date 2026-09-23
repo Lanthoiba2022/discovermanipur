@@ -2,49 +2,132 @@
 
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown } from "lucide-react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, type ReactNode } from "react";
 
-import { HeroMedia } from "./hero-media";
+import { HeroReelControls } from "./hero-reel-controls";
+import { HERO_SLIDES } from "./hero-slides";
+import { HeroStage } from "./hero-stage";
+import { useHeroCarousel } from "./use-hero-carousel";
 import { HeroSearch } from "./hero-search";
 import { RotatingSubjects } from "./rotating-subjects";
-import { useAmbientEnabled } from "./use-ambient-enabled";
 
-const EASE = [0.22, 1, 0.36, 1] as const;
+/**
+ * `--ease-flat` — the house easing for anything being read. The hero never
+ * springs: an overshoot on a headline reads as a toy. Entrances that may
+ * overshoot (`--ease-spring`) are reserved for tiles further down the page.
+ */
+const EASE_FLAT = [0.4, 0, 0.1, 1] as const;
 
-/** Decorative WebGL mist — client-only, idle-mounted, never part of first paint. */
-const HeroShader = dynamic(() => import("./hero-shader"), {
-  ssr: false,
-  loading: () => null,
-});
+/** Per-word reveal: 400ms of travel, 60ms between neighbours. */
+const WORD_DURATION = 0.4;
+const WORD_STAGGER = 0.06;
+const WORD_LEAD = 0.14;
 
-const HEADLINE = [
-  { text: "The islands", key: "a" },
-  { text: "that float.", key: "b" },
+/**
+ * The headline, pre-broken into lines so each word can be its own masked
+ * reveal. The closing line takes the accent — the sentence completes in brass
+ * rather than merely ending, which is the one flourish the fold gets.
+ *
+ * It names four things rather than one place on purpose. The previous line
+ * ("The islands that float") was about Loktak alone, which left the reel
+ * showing hills, a dance and a flower under a headline that did not include
+ * them. Four nouns — water, hills, the handloom, the drum — cover what the
+ * state actually is, and they enumerate straight into the rotating "and …"
+ * line below, so the whole fold reads as one sentence listing Manipur.
+ */
+const HEADLINE_SOURCE: { key: string; words: string[]; accent?: boolean }[] = [
+  { key: "a", words: ["A", "lake,", "a", "hill,"] },
+  { key: "b", words: ["a", "loom,", "a", "drum."], accent: true },
 ];
 
-/** The mono index rail. Information scent on the fold, not just a picture. */
+/**
+ * Flattened once, at module scope, so each word carries its own stagger index
+ * and the render stays a pure map with nothing accumulating across it.
+ */
+let counter = 0;
+const HEADLINE = HEADLINE_SOURCE.map((line) => ({
+  ...line,
+  words: line.words.map((word) => ({ word, index: counter++ })),
+}));
+
+const WORD_COUNT = counter;
+/** Everything below the headline follows the last word rather than racing it. */
+const AFTER_HEADLINE = WORD_LEAD + (WORD_COUNT - 1) * WORD_STAGGER + WORD_DURATION * 0.6;
+
+/** The index rail. Information scent on the fold, not just a picture. */
 const INDEX = [
   { figure: "287", unit: "km²", label: "Loktak Lake" },
   { figure: "16", unit: "", label: "Districts" },
   { figure: "34", unit: "", label: "Tribes" },
 ];
 
+/**
+ * Reduced motion, without a hydration mismatch.
+ *
+ * `useReducedMotion()` is null on the server and true on a reduced-motion
+ * client, so branching `initial={reduce ? false : {...}}` makes the server
+ * emit `opacity: 0` and the client's first render emit `opacity: 1` — React
+ * reports the attributes as mismatched and refuses to patch them. The rule in
+ * `components/motion/reveal.tsx` is that reduced motion must never change what
+ * is rendered; the same applies to the inline style framer writes.
+ *
+ * So `initial` and `animate` are constant and only the *timing* collapses. The
+ * markup is byte-identical either way, and a reduced-motion reader lands on
+ * the finished state in a single frame instead of watching it travel.
+ */
+function timing(reduce: boolean | null, duration: number, delay: number) {
+  return reduce
+    ? { duration: 0, delay: 0 }
+    : { duration, delay, ease: EASE_FLAT };
+}
+
+/**
+ * One masked word. The clip box carries the descender padding and cancels it
+ * with a negative margin, so `float.` is not sheared by its own mask.
+ */
+function Word({
+  children,
+  index,
+  reduce,
+}: {
+  children: ReactNode;
+  index: number;
+  reduce: boolean | null;
+}) {
+  return (
+    <span className="inline-block -mb-[0.16em] overflow-hidden pb-[0.16em] align-bottom">
+      <motion.span
+        className="inline-block"
+        initial={{ y: "108%" }}
+        animate={{ y: 0 }}
+        transition={timing(reduce, WORD_DURATION, WORD_LEAD + index * WORD_STAGGER)}
+      >
+        {children}
+      </motion.span>
+    </span>
+  );
+}
+
 export function Hero({ subjects }: { subjects: string[] }) {
   const reduce = useReducedMotion();
-  const ambient = useAmbientEnabled(1024);
   const ref = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const reel = useHeroCarousel(HERO_SLIDES.length, stageRef);
 
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
 
-  const mediaY = useTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
-  const mediaScale = useTransform(scrollYProgress, [0, 1], [1.04, 1.14]);
-  const contentY = useTransform(scrollYProgress, [0, 1], [0, 70]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  // The parallax is disabled by flattening the *output range*, not by dropping
+  // the `style` prop: at progress 0 both branches resolve to exactly the same
+  // transform, so the server HTML and the first client render agree and only
+  // the subsequent scrolling behaviour differs.
+  const mediaY = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "14%"]);
+  const mediaScale = useTransform(scrollYProgress, [0, 1], [1.04, reduce ? 1.04 : 1.14]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : 70]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, reduce ? 1 : 0]);
 
   return (
     <section
@@ -55,18 +138,22 @@ export function Hero({ subjects }: { subjects: string[] }) {
     >
       {/* Layer 1 — the photograph */}
       <motion.div
+        ref={stageRef}
         className="absolute inset-0 -z-30"
-        style={reduce ? undefined : { y: mediaY, scale: mediaScale }}
+        style={{ y: mediaY, scale: mediaScale }}
       >
-        <HeroMedia />
+        <HeroStage index={reel.index} animated={reel.animated} shown={reel.shown} />
       </motion.div>
 
-      {/* Layer 2 — ambient shader mist (decorative, optional) */}
-      {ambient && !reduce && (
-        <div className="pointer-events-none absolute inset-0 -z-20 opacity-60 mix-blend-screen">
-          <HeroShader />
-        </div>
-      )}
+      {/* Layer 2 — dawn aurora. This replaced a three.js mist plane: it is the
+          same warmth composed from the `--dawn-*` ramp, costs no JavaScript,
+          paints before hydration and needs no reduced-motion branch because it
+          does not move. Inset negatively so its 24px blur has room to fall off
+          instead of banding at the edges of the frame. */}
+      <div
+        aria-hidden
+        className="dawn-wash pointer-events-none absolute -inset-x-24 -top-32 -z-20 h-[72%] opacity-40 mix-blend-screen"
+      />
 
       {/* Layer 3 — scrims. Sized to the copy rather than washed over the
           whole frame, so the phumdi rings still read as water and land. */}
@@ -78,39 +165,38 @@ export function Hero({ subjects }: { subjects: string[] }) {
       <div aria-hidden className="scrim-copy pointer-events-none absolute inset-0 -z-10" />
 
       <motion.div
-        className="shell relative pb-10 pt-40"
-        style={reduce ? undefined : { y: contentY, opacity: contentOpacity }}
+        className="shell relative pb-24 pt-40 sm:pb-10"
+        style={{ y: contentY, opacity: contentOpacity }}
       >
         <motion.p
-          initial={reduce ? false : { opacity: 0, y: 14 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: EASE, delay: 0.1 }}
+          transition={timing(reduce, WORD_DURATION, 0)}
           className="mb-7 flex flex-wrap items-center gap-x-4 gap-y-2 text-ivory-50/85"
         >
-          <span className="font-mayek text-lg leading-none text-brass-400">ꯃꯅꯤꯄꯨꯔ</span>
-          <span aria-hidden className="h-px w-8 bg-brass-400/50" />
+          <span className="font-mayek text-lg leading-none text-brass-300">ꯃꯅꯤꯄꯨꯔ</span>
+          <span aria-hidden className="h-px w-8 bg-brass-300/50" />
           <span className="eyebrow">Manipur · North East India</span>
         </motion.p>
 
         <h1 className="text-display max-w-[16ch] text-ivory-50">
-          {HEADLINE.map((line, i) => (
-            <span key={line.key} className="block overflow-hidden pb-[0.06em]">
-              <motion.span
-                className="block"
-                initial={reduce ? false : { y: "106%" }}
-                animate={{ y: 0 }}
-                transition={{ duration: 0.85, ease: EASE, delay: 0.16 + i * 0.09 }}
-              >
-                {line.text}
-              </motion.span>
+          {HEADLINE.map((line) => (
+            <span key={line.key} className="flex flex-wrap gap-x-[0.26em]">
+              {line.words.map(({ word, index }) => (
+                <span key={index} className={line.accent ? "text-brass-300" : undefined}>
+                  <Word index={index} reduce={reduce}>
+                    {word}
+                  </Word>
+                </span>
+              ))}
             </span>
           ))}
         </h1>
 
         <motion.p
-          initial={reduce ? false : { opacity: 0 }}
+          initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, ease: EASE, delay: 0.55 }}
+          transition={timing(reduce, 0.5, AFTER_HEADLINE)}
           className="text-lead mt-7 flex max-w-2xl items-baseline gap-2.5 text-ivory-50/80"
         >
           <span className="shrink-0">and</span>
@@ -121,49 +207,51 @@ export function Hero({ subjects }: { subjects: string[] }) {
         {/* The instrument rail — search, index figures and the scroll cue
             share one ruled band so the fold ends on a hard horizontal. */}
         <motion.div
-          initial={reduce ? false : { opacity: 0, y: 18 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: EASE, delay: 0.64 }}
+          transition={timing(reduce, 0.5, AFTER_HEADLINE + 0.08)}
           className="mt-12 border-t border-ivory-50/20 pt-8"
         >
           <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between lg:gap-12">
             <HeroSearch />
 
-            <div className="flex items-start gap-8 sm:gap-12">
-              <dl className="flex gap-8 sm:gap-12">
-                {INDEX.map((item) => (
-                  <div key={item.label}>
-                    <dd className="font-display text-3xl leading-none text-ivory-50 sm:text-4xl">
-                      {item.figure}
-                      {item.unit && (
-                        <span className="ml-0.5 align-top text-base text-brass-400">
-                          {item.unit}
-                        </span>
-                      )}
-                    </dd>
-                    <dt className="eyebrow mt-2.5 text-ivory-50/55">{item.label}</dt>
-                  </div>
-                ))}
-              </dl>
-            </div>
+            <dl className="flex gap-8 sm:gap-12">
+              {INDEX.map((item) => (
+                <div key={item.label}>
+                  <dd className="font-display text-3xl leading-none tabular-nums text-ivory-50 sm:text-4xl">
+                    {item.figure}
+                    {item.unit && (
+                      <span className="ml-0.5 align-top text-base text-brass-300">{item.unit}</span>
+                    )}
+                  </dd>
+                  <dt className="eyebrow mt-2.5 text-ivory-50/60">{item.label}</dt>
+                </div>
+              ))}
+            </dl>
           </div>
 
-          <div className="mt-8 flex items-center justify-between pr-0 lg:pr-56">
+          <div className="mt-8 flex flex-col gap-5 md:flex-row md:items-center md:justify-between md:pr-0 lg:pr-56">
             <Link
               href="#layers"
-              className="group inline-flex items-center gap-3 text-ivory-50/70 transition-colors hover:text-ivory-50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+              className="group inline-flex items-center gap-3 text-ivory-50/75 transition-colors duration-[var(--dur-base)] ease-[var(--ease-flat)] hover:text-ivory-50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
             >
-              <span className="grid size-9 place-items-center rounded-full border border-ivory-50/25 transition-colors group-hover:border-brass-400 group-hover:text-brass-400">
+              <span className="grid size-9 place-items-center rounded-full border border-ivory-50/25 transition-colors duration-[var(--dur-base)] ease-[var(--ease-flat)] group-hover:border-brass-300 group-hover:text-brass-300">
                 <ArrowDown aria-hidden className="size-4 animate-float-slow" />
               </span>
               <span className="eyebrow">Manipur in four layers</span>
             </Link>
 
-            {/* Where the photograph was taken. The caption is the detail
-                that makes the image read as reportage, not stock. */}
-            <p className="eyebrow hidden text-ivory-50/40 md:block">
-              Loktak Lake, Bishnupur · 24.5°N 93.8°E
-            </p>
+            {/* Naming the place is what makes the fold read as reportage
+                rather than stock, so the caption travels with the reel. */}
+            <HeroReelControls
+              shown={reel.shown}
+              paused={reel.userPaused}
+              autoplaying={reel.autoplaying}
+              onToggle={reel.togglePaused}
+              onSelect={reel.goTo}
+              holdHandlers={reel.holdHandlers}
+              className="min-w-0"
+            />
           </div>
         </motion.div>
       </motion.div>

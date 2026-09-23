@@ -62,9 +62,9 @@ export const hotspots: Hotspot[] = [
     location: "Khwairamband Bazar, BT Road, Imphal",
     coordinates: { lat: 24.8065, lng: 93.936 },
     images: [
-      { src: "/file-uploads/kha3.jpg", alt: "Rows of women vendors seated with produce inside Ima Keithel, Imphal" },
+      { src: "/file-uploads/kha2.jpg", alt: "Vendors and sacks of produce filling the aisles of the all-women Ima Keithel, Imphal" },
       { src: "/file-uploads/kha1.jpg", alt: "Handloom phanek and shawls stacked at a stall in Khwairamband Bazar" },
-      { src: "/file-uploads/kha2.jpg", alt: "Fresh vegetables and dried fish on display at the all-women Ima Market" },
+      { src: "/file-uploads/kha3.jpg", alt: "The red-roofed halls of Ima Keithel seen from above, in the middle of Imphal" },
     ],
     bestTimeToVisit: "7:00–10:00 AM, when the produce arrives and the halls are at their busiest",
     bestSeasons: ["autumn", "winter", "spring", "summer"],
@@ -102,7 +102,7 @@ export const hotspots: Hotspot[] = [
     location: "Moirang–Sendra, Bishnupur district",
     coordinates: { lat: 24.5231, lng: 93.8038 },
     images: [
-      { src: "/file-uploads/15.jpg", alt: "Circular floating phumdi fish enclosures on Loktak Lake at dawn" },
+      { src: "/file-uploads/15.jpg", alt: "Open water and long green phumdi banks on Loktak Lake, a boat crossing in the distance" },
       { src: "/file-uploads/152.jpg", alt: "A wooden canoe threading between phumdis on Loktak Lake" },
       { src: "/file-uploads/153.jpg", alt: "Panoramic view of Loktak Lake from the Sendra hillock" },
       { src: "/file-uploads/loktak-phumdi-hut.webp", alt: "A fisherman's hut standing on a phumdi island among the open water of Loktak Lake" },
@@ -144,7 +144,7 @@ export const hotspots: Hotspot[] = [
     coordinates: { lat: 24.4833, lng: 93.8167 },
     images: [
       { src: "/file-uploads/sangai-pair-keibul.webp", alt: "A pair of sangai, the brow-antlered deer, standing in the grassland of Keibul Lamjao" },
-      { src: "/file-uploads/16.jpg", alt: "Sangai deer standing on floating phumdi vegetation at Keibul Lamjao" },
+      { src: "/file-uploads/16.jpg", alt: "The painted entrance gate to Keibul Lamjao National Park" },
       { src: "/file-uploads/162.jpg", alt: "Watchtower overlooking the phumdi grassland of Keibul Lamjao National Park" },
       { src: "/file-uploads/163.jpg", alt: "Wetland channels and reed beds inside the world's only floating national park" },
       { src: "/file-uploads/manipur-butterfly.webp", alt: "A large swallowtail butterfly resting on wet rock, one of the park's many insect species" },
@@ -265,9 +265,9 @@ export const hotspots: Hotspot[] = [
     location: "Andro, 25 km east of Imphal",
     coordinates: { lat: 24.7639, lng: 94.0703 },
     images: [
-      { src: "/file-uploads/an2.jpg", alt: "Potter hand-building a black clay vessel at Andro village" },
-      { src: "/file-uploads/an3.jpg", alt: "Traditional thatched house replicas at the Andro Cultural Complex" },
-      { src: "/file-uploads/an1.jpg", alt: "Finished Andro black pottery drying in the sun" },
+      { src: "/file-uploads/pottery.jpg", alt: "Rows of dark fired clay pots drying in the sun, the black pottery Andro is known for" },
+      { src: "/file-uploads/an3.jpg", alt: "Paddy and lotus fields under low hills on the approach to Andro village" },
+      { src: "/file-uploads/pot.jpg", alt: "Stacked unglazed black clay pots and storage jars from Andro" },
     ],
     bestTimeToVisit: "Mid-morning, when the potters are working; avoid heavy monsoon days when firing stops",
     bestSeasons: ["autumn", "winter", "spring"],
@@ -342,7 +342,7 @@ export const hotspots: Hotspot[] = [
     location: "Sendra, near Moirang, Bishnupur district",
     coordinates: { lat: 24.5083, lng: 93.8139 },
     images: [
-      { src: "/file-uploads/loktakView.webp", alt: "Sunrise over Loktak Lake seen from the Sendra hillock" },
+      { src: "/file-uploads/loktakComplete.png", alt: "Loktak Lake from above at dawn, its phumdi rings spread across the water below Sendra" },
       { src: "/file-uploads/lok1.jpg", alt: "Fishing canoes and phumdi rings below Sendra Island" },
       { src: "/file-uploads/loktakComplete.png", alt: "Wide view of Loktak Lake from the Sendra viewpoint" },
     ],

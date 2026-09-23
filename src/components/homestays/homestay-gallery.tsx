@@ -71,6 +71,12 @@ export function HomestayGallery({ images, title }: { images: MediaImage[]; title
             sizes="(min-width: 768px) 50vw, 100vw"
             className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
           />
+          {hero.credit && (
+            /* Required credit for Google Places photos. */
+            <span className="pointer-events-none absolute bottom-1.5 right-2 text-[10px] leading-none text-white/70 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
+              {hero.credit}
+            </span>
+          )}
         </button>
 
         {rest.length > 0 && (
@@ -90,6 +96,11 @@ export function HomestayGallery({ images, title }: { images: MediaImage[]; title
                   sizes="(min-width: 768px) 25vw, 45vw"
                   className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
                 />
+                {img.credit && (
+                  <span className="pointer-events-none absolute bottom-1 right-1.5 text-[9px] leading-none text-white/70 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
+                    {img.credit}
+                  </span>
+                )}
               </button>
             ))}
           </div>

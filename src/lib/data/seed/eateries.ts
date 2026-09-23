@@ -316,7 +316,7 @@ export const eateries: Eatery[] = [
     timings: "10:30 AM – 9:00 PM daily",
     phone: "+91 98561 44770",
     images: [
-      { src: "/file-uploads/foodcarou.jpg", alt: "Manipuri thali served at Luxmi Kitchen, Imphal" },
+      { src: "/file-uploads/manipuri-food-leaf.webp", alt: "A Manipuri meal served on a banana leaf — fried cakes and dried fish" },
       { src: "/file-uploads/herkit.jpg", alt: "A full Meitei spread served on leaf plates at an Imphal restaurant" },
       { src: "/file-uploads/food4.jpg", alt: "Home-style Manipuri dishes on a steel tray" },
     ],
@@ -551,7 +551,7 @@ export const eateries: Eatery[] = [
     timings: "7:00 AM – 8:00 PM daily",
     phone: "+91 98620 90514",
     images: [
-      { src: "/file-uploads/foodcarou.jpg", alt: "Roadside dhaba meal of rice, fish and stew" },
+      { src: "/file-uploads/manipuri-curry-bowl.webp", alt: "A bowl of Manipuri meat curry served with a spoon" },
       { src: "/file-uploads/r135.avif", alt: "Shaded riverside eating area near Thoubal" },
       { src: "/file-uploads/wa3.jpg", alt: "River and trees beside the Thoubal highway" },
     ],
@@ -592,7 +592,7 @@ export const eateries: Eatery[] = [
     timings: "8:00 AM – 8:00 PM, closed Tuesdays",
     phone: "+91 70058 11249",
     images: [
-      { src: "/file-uploads/foodcar1.png", alt: "Coffee and cake at a small Imphal cafe" },
+      { src: "/file-uploads/manipuri-curry-bowl.webp", alt: "A bowl of Manipuri curry served with a spoon" },
       { src: "/file-uploads/food4.jpg", alt: "All-day breakfast plate at Cafe Kangla" },
       { src: "/file-uploads/h113.avif", alt: "Cafe interior with seating near Kangla Fort" },
     ],
@@ -631,7 +631,7 @@ export const eateries: Eatery[] = [
     priceRange: 1,
     timings: "6:00 AM – 8:00 PM daily",
     images: [
-      { src: "/file-uploads/foodcarou.jpg", alt: "Highway kitchen meal of rice, dal and greens" },
+      { src: "/file-uploads/manipuri-food-leaf.webp", alt: "A plate of Manipuri food served on a banana leaf — fried cakes and dried fish" },
       { src: "/file-uploads/senapati-green-hills.webp", alt: "NH-2 hill country near Senapati town" },
       { src: "/file-uploads/g142.avif", alt: "Simple dining room at a highway stop in Senapati" },
     ],

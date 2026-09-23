@@ -13,12 +13,15 @@ import { cn } from "@/lib/utils";
 export function ParallaxHero({
   src,
   alt,
+  credit,
   children,
   className,
   heightClassName = "min-h-[72vh] md:min-h-[82vh]",
 }: {
   src: string;
   alt: string;
+  /** Photographer credit. Required for Google Places photos. */
+  credit?: string;
   children: ReactNode;
   className?: string;
   heightClassName?: string;
@@ -61,6 +64,13 @@ export function ParallaxHero({
         aria-hidden
         className="absolute inset-0 -z-10 bg-gradient-to-b from-ink-950/80 via-ink-900/30 via-35% to-ink-950/88"
       />
+      {credit && (
+        /* Licence condition for Google Places photos, not decoration. Bottom
+           right, clear of the hero copy, quiet enough not to fight it. */
+        <span className="pointer-events-none absolute bottom-2 right-3 z-10 text-[10px] leading-none text-white/55">
+          {credit}
+        </span>
+      )}
       <div className="shell relative w-full pb-14 pt-28 md:pb-20 md:pt-32">
         {children}
       </div>

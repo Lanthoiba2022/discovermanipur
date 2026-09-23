@@ -26,7 +26,7 @@ export const experiences: Experience[] = [
       "Black tea and kabok (puffed rice snack)",
     ],
     images: [
-      { src: "/file-uploads/foodcar1.png", alt: "Meitei dishes laid out at the end of a home cooking class in Imphal" },
+      { src: "/file-uploads/manipuri-food-leaf.webp", alt: "Meitei food served on a banana leaf — fried cakes and dried fish — at the end of a home cooking class" },
       { src: "/file-uploads/food4.jpg", alt: "Pounding chillies and ngari for eromba in a traditional mortar" },
       { src: "/file-uploads/foodcarou.jpg", alt: "Singju salad being tossed with perilla seed and banana flower" },
     ],
@@ -55,7 +55,7 @@ export const experiences: Experience[] = [
       "Explanation of the athaphum fishery",
     ],
     images: [
-      { src: "/file-uploads/loktakView.webp", alt: "Canoe crossing misty water between phumdis on Loktak Lake at dawn" },
+      { src: "/file-uploads/loktak-phumdi-hut.webp", alt: "A stilted fishing hut on a floating phumdi island in the open water of Loktak Lake" },
       { src: "/file-uploads/lok1.jpg", alt: "Fisherman paddling a wooden canoe among Loktak fish rings" },
       { src: "/file-uploads/loktakComplete.png", alt: "Circular athaphum enclosures seen across Loktak Lake" },
     ],
@@ -113,9 +113,9 @@ export const experiences: Experience[] = [
       "Tea and snacks",
     ],
     images: [
-      { src: "/file-uploads/hand.jpg", alt: "Weaver working a traditional loin loom in Imphal" },
+      { src: "/file-uploads/phanek.jpeg", alt: "Folded lengths of Manipuri phanek cloth in magenta, lime, orange and purple, each edged with a woven temple-point border" },
       { src: "/file-uploads/phanek.jpeg", alt: "Handwoven phanek cloth with a patterned border" },
-      { src: "/file-uploads/hand.jpg", alt: "Finished Manipuri handloom shawls" },
+      { src: "/file-uploads/shwal.jpeg", alt: "A white Manipuri handloom shawl with an orange temple-point border and multicoloured floral embroidery" },
     ],
     rating: 4.9,
     reviewCount: 36,
@@ -171,7 +171,7 @@ export const experiences: Experience[] = [
       "Packed breakfast and hot tea",
     ],
     images: [
-      { src: "/file-uploads/16.jpg", alt: "Sangai deer on the floating phumdi at Keibul Lamjao" },
+      { src: "/file-uploads/sangai-pair-keibul.webp", alt: "A pair of sangai, the brow-antlered deer, standing in the grassland of Keibul Lamjao" },
       { src: "/file-uploads/162.jpg", alt: "Watchtower overlooking the Keibul Lamjao grassland" },
       { src: "/file-uploads/163.jpg", alt: "Reed channels inside the floating national park" },
     ],
@@ -200,7 +200,7 @@ export const experiences: Experience[] = [
       "Notes on what is worth buying and what to pay",
     ],
     images: [
-      { src: "/file-uploads/kha3.jpg", alt: "Women vendors seated with produce inside Ima Keithel" },
+      { src: "/file-uploads/kha2.jpg", alt: "Vendors and sacks of produce filling the aisles of Ima Keithel" },
       { src: "/file-uploads/imafoo.jpg", alt: "Local snacks and street food near the Ima Market" },
       { src: "/file-uploads/kha2.jpg", alt: "Dried fish and vegetables on sale at Khwairamband Bazar" },
     ],
@@ -260,7 +260,7 @@ export const experiences: Experience[] = [
     images: [
       { src: "/file-uploads/bamboocrafts.jpeg", alt: "Split bamboo being woven into a basket" },
       { src: "/file-uploads/bamfoo.jpg", alt: "A hill-style plate of rice and curries served in the Ukhrul hills" },
-      { src: "/file-uploads/hand.jpg", alt: "Hands working with cane and bamboo strips" },
+      { src: "/file-uploads/bamboocrafts.jpeg", alt: "Finished cane and bamboo chairs and baskets stacked outside a workshop" },
     ],
     rating: 4.6,
     reviewCount: 24,
@@ -374,8 +374,8 @@ export const experiences: Experience[] = [
       "Tea and snacks",
     ],
     images: [
-      { src: "/file-uploads/manipuri-dancer-solo.webp", alt: "Pung cholom drummers performing in Manipur" },
-      { src: "/file-uploads/kha2.jpg", alt: "Manipuri musicians in a rehearsal space" },
+      { src: "/file-uploads/manipuri-dancer-solo.webp", alt: "A Manipuri classical dancer mid-gesture in orange and gold, lit against a black stage" },
+      { src: "/file-uploads/manipuri-raas-group.webp", alt: "A Manipuri troupe in full potloi costume before a performance" },
       { src: "/file-uploads/shwal.jpeg", alt: "Traditional dress worn for Manipuri performance" },
     ],
     rating: 4.7,

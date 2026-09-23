@@ -30,7 +30,11 @@ export function FilterSelect({
 }) {
   const { get, setParam, isPending } = useFilterParams();
   const id = useId();
-  const current = get(name) ?? ALL;
+  // A shared URL can carry a value this list does not offer (a district with
+  // nothing in it, a stale slug). Radix would then render an empty trigger, so
+  // fall back to the "any" sentinel rather than showing a blank control.
+  const raw = get(name);
+  const current = raw && options.some((o) => o.value === raw) ? raw : ALL;
 
   return (
     <div className={cn("min-w-0", className)}>
@@ -38,7 +42,7 @@ export function FilterSelect({
         {label}
       </label>
       <Select value={current} onValueChange={(value) => setParam(name, value)} disabled={isPending}>
-        <SelectTrigger id={id} aria-label={label} className="min-w-44">
+        <SelectTrigger id={id} aria-label={label} className="min-w-44 border-border-strong">
           <SelectValue placeholder={allLabel} />
         </SelectTrigger>
         <SelectContent>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Compass, MapPinned } from "lucide-react";
 
+import { PageHero } from "@/components/content/page-hero";
 import { MapPanel } from "@/components/map/map-panel";
 import { HotspotCard } from "@/components/places/hotspot-card";
 import { HotspotFilters } from "@/components/places/hotspot-filters";
@@ -69,74 +70,43 @@ export default async function HotspotsPage({
       subtitle: `${h.location} · ${h.district}`,
       category: categoryLabel(h.category),
       image: h.images[0]?.src,
+      imageCredit: h.images[0]?.credit,
       lat: h.coordinates.lat,
       lng: h.coordinates.lng,
     }));
 
   return (
-    <main id="main">
-      {/* ---------------------------------------------------------- hero band */}
-      <section
-        data-hero-tone="dark"
-        className="relative overflow-hidden bg-primary text-primary-foreground pt-28 md:pt-32"
-      >
-        <div
-          aria-hidden
-          className="blob-phumdi animate-float-slow absolute -right-24 -top-16 size-[28rem] bg-secondary/25 blur-3xl"
-        />
-        <div className="shell relative pb-16 md:pb-24">
-          <p className="eyebrow mb-5 flex items-center gap-3 text-brass-400">
-            <span className="weave-rule inline-block h-[3px] w-10 rounded-full" />
-            Discover
+    <>
+      <PageHero
+        tone="crimson"
+        eyebrow="Discover"
+        title="Places"
+        completion="lakes that float, hills that catch the cloud, forts that remember kings."
+        lede={
+          <p>
+            {all.length > 0 ? `${all.length} places` : "A growing map"} across Manipur&rsquo;s
+            sixteen districts, filtered the way you actually travel — by season, by district, and
+            by whether you can get a wheelchair to the water.
           </p>
-          <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
-            <div className="lg:col-span-7">
-              <h1 className="text-display">Places</h1>
-              <p className="text-lead mt-7 max-w-[52ch] text-ivory-200">
-                Floating islands that hold up villages, hills that catch the cloud, forts that
-                remember kings. {all.length > 0 ? `${all.length} places` : "A growing map"} across
-                Manipur&apos;s sixteen districts — filtered the way you actually travel.
-              </p>
-            </div>
+        }
+        image={{
+          src: "/file-uploads/loktak-phumdi-hut.webp",
+          alt: "A fisherman's hut standing on a phumdi island among the open water of Loktak Lake.",
+        }}
+        figures={[
+          {
+            value: String(filtered.length),
+            label: hasFilters ? "Match your filters" : "Places mapped",
+          },
+          { value: String(districts.length), label: "Districts" },
+          { value: String(categories.length), label: "Categories" },
+          { value: String(accessibleCount), label: "Step-free" },
+        ]}
+      />
 
-            {/* brass-400 rather than the brass-500 accent: against the crimson
-                ground the darker step only just clears large-text contrast. */}
-            <dl className="grid grid-cols-2 gap-x-8 gap-y-7 self-end lg:col-span-4 lg:col-start-9">
-              <div className="border-t border-ningthou-700 pt-4">
-                <dd className="font-display text-4xl leading-none text-brass-400">
-                  {filtered.length}
-                </dd>
-                <dt className="eyebrow mt-2.5 text-ivory-200/70">
-                  {hasFilters ? "Match your filters" : "Places mapped"}
-                </dt>
-              </div>
-              <div className="border-t border-ningthou-700 pt-4">
-                <dd className="font-display text-4xl leading-none text-brass-400">
-                  {districts.length}
-                </dd>
-                <dt className="eyebrow mt-2.5 text-ivory-200/70">Districts</dt>
-              </div>
-              <div className="border-t border-ningthou-700 pt-4">
-                <dd className="font-display text-4xl leading-none text-brass-400">
-                  {categories.length}
-                </dd>
-                <dt className="eyebrow mt-2.5 text-ivory-200/70">Categories</dt>
-              </div>
-              <div className="border-t border-ningthou-700 pt-4">
-                <dd className="font-display text-4xl leading-none text-brass-400">
-                  {accessibleCount}
-                </dd>
-                <dt className="eyebrow mt-2.5 text-ivory-200/70">Step-free</dt>
-              </div>
-            </dl>
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------ filters + list */}
-      <section className="shell py-12 md:py-16">
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-          <h2 className="font-display text-2xl">
+      <section aria-labelledby="places-results" className="shell py-16 md:py-24">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
+          <h2 id="places-results" className="text-title">
             {hasFilters ? "Filtered places" : "All places"}
           </h2>
           <ViewSwitch value={view} />
@@ -173,7 +143,7 @@ export default async function HotspotsPage({
           </div>
         </div>
       </section>
-    </main>
+    </>
   );
 }
 
@@ -193,7 +163,7 @@ function EmptyState({
           <Compass className="size-6" aria-hidden />
         )}
       </span>
-      <p className="font-display text-2xl">
+      <p className="text-title">
         {datasetEmpty ? "The map is still being drawn" : "No place matches that combination"}
       </p>
       <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">

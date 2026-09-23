@@ -1,8 +1,9 @@
 import { ArrowUpRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 
-import { Reveal } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
+
+import { Reveal } from "@/components/motion/reveal";
 
 const PREVIEW = [
   {
@@ -23,24 +24,45 @@ const PREVIEW = [
   },
 ];
 
+/**
+ * The concierge conversion moment.
+ *
+ * One call to action, and only one: the panel carries a single accent button
+ * (ink-950 on brass-500 — 6.4:1, comfortably past the 4.5:1 bar for the label
+ * against its own fill). The transcript beside it is `aria-hidden` illustration,
+ * not content, so a screen reader is not read four fake chat messages.
+ */
 export function ConciergeTeaser() {
   return (
-    <section className="py-20 md:py-28">
-      <div className="shell">
-        <Reveal className="grid grid-cols-1 items-center gap-10 overflow-hidden rounded-[var(--radius-lg)] bg-loktak-900 p-7 md:gap-14 md:p-12 lg:grid-cols-2 lg:p-16">
+    <section className="chapter-light py-[clamp(4rem,7vw,6rem)]" aria-label="AI concierge">
+      <div className="shell-tight">
+        <Reveal className="relative isolate grid grid-cols-1 items-center gap-10 overflow-hidden rounded-[var(--radius-lg)] bg-ink-950 p-7 md:gap-14 md:p-12 lg:grid-cols-[0.95fr_1fr] lg:p-14">
+          <div
+            aria-hidden
+            className="dawn-wash pointer-events-none absolute -left-16 -top-24 -z-10 size-[34rem] opacity-40"
+          />
+
           <div>
-            <p className="eyebrow mb-5 inline-flex items-center gap-2 text-kangla-400">
+            <p className="eyebrow rule-flank rule-flank-start mb-6 text-brass-400">
               <Sparkles aria-hidden className="size-4" />
-              AI concierge
+              <span>AI concierge</span>
             </p>
-            <h2 className="font-display text-3xl leading-[1.05] text-cream-50 sm:text-4xl md:text-5xl">
-              Tell it how you travel. Get a Manipur itinerary that actually fits.
+
+            <h2 className="text-ivory-50">
+              <span className="font-display block text-[clamp(1.875rem,1.2rem+2.2vw,3rem)] leading-[1.06] tracking-[-0.018em]">
+                Tell it how you travel.
+              </span>{" "}
+              <span className="section-completion mt-3 block text-brass-300">
+                Get a Manipur itinerary that actually fits.
+              </span>
             </h2>
-            <p className="mt-5 max-w-lg text-base leading-relaxed text-cream-50/72">
-              Days, distances, seasons and opening hours — worked out against real places,
-              stays and experiences on Manipur Tourism, not guesswork.
+
+            <p className="mt-6 max-w-md text-base leading-relaxed text-ivory-50/75">
+              Days, distances, seasons and opening hours — worked out against real
+              places, stays and experiences on Manipur Tourism, not guesswork.
             </p>
-            <Button asChild variant="accent" size="lg" className="mt-8">
+
+            <Button asChild variant="accent" size="lg" className="mt-9">
               <Link href="/plan">
                 Plan with Manipur Tourism
                 <ArrowUpRight aria-hidden className="size-4" />
@@ -48,11 +70,8 @@ export function ConciergeTeaser() {
             </Button>
           </div>
 
-          <div
-            aria-hidden
-            className="glass rounded-[var(--radius-lg)] p-4 md:p-6"
-          >
-            <p className="eyebrow mb-4 flex items-center gap-2 text-foreground/60">
+          <div aria-hidden className="glass rounded-[var(--radius-lg)] p-4 md:p-6">
+            <p className="eyebrow mb-5 flex items-center gap-2 text-foreground/60">
               <span className="size-2 rounded-full bg-success" />
               Manipur Tourism concierge
             </p>
@@ -70,7 +89,7 @@ export function ConciergeTeaser() {
                 </li>
               ))}
             </ul>
-            <p className="mt-4 text-center text-xs text-foreground/50">
+            <p className="mt-5 text-center text-xs text-foreground/50">
               A preview of a real conversation.
             </p>
           </div>

@@ -11,7 +11,7 @@
     "db:seed": "node --env-file=.env.local scripts/seed.ts",
     "maplibre:worker": "node scripts/copy-maplibre-worker.mjs",
     "predev": "node scripts/copy-maplibre-worker.mjs",
-    "prebuild": "node scripts/copy-maplibre-worker.mjs"
+    "prebuild": "node scripts/copy-maplibre-worker.mjs && node scripts/clear-data-cache.mjs"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.58",
