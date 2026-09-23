@@ -6,6 +6,8 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, Box, Check, ChevronLeft, ChevronRight, ExternalLink, Focus, Glasses, Info, LoaderCircle, Maximize, Minus, Pause, Play, Plus, RotateCcw, Smartphone, Sun, Volume2, VolumeX, X } from "lucide-react";
 import { Component, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { kanglaMapUrl, type LandmarkId } from "@/lib/immersive/kangla";
+import { narrationFor, narrationLanguages } from "@/lib/immersive/narration";
+import { useNarration } from "./use-narration";
 import type { ImmersiveStop } from "@/lib/data/content";
 import { KanglaSiteSection } from "./kangla-site-section";
 import type { ViewerApi } from "./kangla-canvas";
@@ -38,8 +40,6 @@ export function KanglaExperience({
   const [photo, setPhoto] = useState(false);
   const [spin, setSpin] = useState(false);
   const [golden, setGolden] = useState(false);
-  const [speaking, setSpeaking] = useState(false);
-  const [speechAvailable, setSpeechAvailable] = useState(false);
   const [status, setStatus] = useState("Drag to look around. Scroll or pinch to get closer.");
   const [support, setSupport] = useState({ vr: false, ar: false, checked: false });
   const [xr, setXr] = useState<"immersive-vr" | "immersive-ar" | null>(null);
@@ -49,6 +49,10 @@ export function KanglaExperience({
   const frame = useRef<HTMLDivElement>(null);
   const overlay = useRef<HTMLDivElement>(null);
   const stop = kanglaStops[index];
+  const { language, setLanguage, active: activeLanguage, text, speaking, canPlay, toggle: narrate, stop: stopNarration } =
+    useNarration(narrationFor(stop.id), `${stop.name}. ${stop.description} ${stop.lookFor}`);
+  /** Falls back to the English field copy when a stop has no translation yet. */
+  const narrationText = text ?? stop.description;
   const onReady = useCallback((value: ViewerApi | null) => setApi(value), []);
   const onError = useCallback((message: string) => setError(message), []);
   const onStatus = useCallback((message: string) => setStatus(message), []);
@@ -66,13 +70,12 @@ export function KanglaExperience({
       ]);
       if (active) {
         setSupport({ vr: results[0].status === "fulfilled" && !!results[0].value, ar: results[1].status === "fulfilled" && !!results[1].value, checked: true });
-        setSpeechAvailable("speechSynthesis" in window);
       }
     }
     void check();
     const fullscreenChanged = () => setFull(document.fullscreenElement === frame.current);
     document.addEventListener("fullscreenchange", fullscreenChanged);
-    return () => { active = false; document.removeEventListener("fullscreenchange", fullscreenChanged); window.speechSynthesis?.cancel(); };
+    return () => { active = false; document.removeEventListener("fullscreenchange", fullscreenChanged); };
   }, []);
   useEffect(() => { api?.landmark(site ? "site" : stop.id); }, [api, stop.id, site]);
   useEffect(() => { api?.rotate(spin); }, [api, spin]);
@@ -95,28 +98,19 @@ export function KanglaExperience({
 
   function select(next: number) {
     if (xr || entering) return;
-    setSite(false); setIndex(next); setSpin(false); setSpeaking(false); window.speechSynthesis?.cancel();
+    setSite(false); setIndex(next); setSpin(false); stopNarration();
     setVisited(old => old.includes(next) ? old : [...old, next]);
     setStatus(`Viewing ${kanglaStops[next].name}. Drag to look around, or compare the reference photograph.`);
   }
   function launch() { setStarted(true); setPhoto(false); setVisited(old => old.includes(index) ? old : [...old, index]); }
   async function immersive(mode: "immersive-vr" | "immersive-ar") {
     if (!api || !overlay.current) return;
-    setEntering(true); window.speechSynthesis?.cancel(); setSpeaking(false); setPhoto(false);
+    setEntering(true); stopNarration(); setPhoto(false);
     await api.enterXR(mode, overlay.current); setEntering(false);
   }
   async function fullscreen() {
     try { if (document.fullscreenElement) await document.exitFullscreen(); else if (frame.current?.requestFullscreen) await frame.current.requestFullscreen(); else setStatus("Fullscreen is not available in this browser. You can still drag and zoom in this view."); }
     catch { setStatus("Fullscreen could not open. Continue exploring in the page."); }
-  }
-  function narrate() {
-    if (!speechAvailable) return;
-    window.speechSynthesis.cancel();
-    if (speaking) { setSpeaking(false); return; }
-    const utterance = new SpeechSynthesisUtterance(`${stop.name}. ${stop.description} ${stop.lookFor}`);
-    utterance.lang = "en-IN"; utterance.rate = .92;
-    utterance.onend = () => setSpeaking(false); utterance.onerror = () => setSpeaking(false);
-    setSpeaking(true); window.speechSynthesis.speak(utterance);
   }
   const controlsReady = !!api && assetProgress === null && !photo && !error && !xr && !entering;
 
@@ -171,9 +165,25 @@ export function KanglaExperience({
             <div className={styles.storyTop}><span className="eyebrow">Your field notes</span><span>0{index + 1} — 03</span></div>
             <p className={styles.subtitle}>{site ? "Geographic context" : stop.subtitle}</p>
             <h2>{site ? "The whole enclosure" : stop.name}</h2>
-            <p className={styles.description}>{site ? "Explore Kangla’s mapped layout in metres: building footprints, water bodies, paths and the river. North runs toward the top of the initial view. Choose a landmark below to open its detailed Blender reconstruction." : stop.description}</p>
+            <p className={`${styles.description} ${site ? "" : activeLanguage.className ?? ""}`} lang={site ? undefined : activeLanguage.lang}>{site ? "Explore Kangla’s mapped layout in metres: building footprints, water bodies, paths and the river. North runs toward the top of the initial view. Choose a landmark below to open its detailed Blender reconstruction." : narrationText}</p>
             <div className={styles.look}><Focus size={18} aria-hidden /><div><h3>Take a closer look</h3><p>{site ? "The overview is a location model. Building heights use an illustrative 6 m elevation; river and path widths are estimates. Use the satellite map below to compare the real landscape." : stop.lookFor}</p></div></div>
-            <button className={styles.listen} disabled={!speechAvailable || site} onClick={narrate}>{speaking ? <VolumeX size={17} aria-hidden /> : <Volume2 size={17} aria-hidden />}{speaking ? "Stop narration" : "Listen to this story"}</button>
+            {!site && (
+              <div className={styles.languageTabs} role="group" aria-label="Narration language">
+                {narrationLanguages.map(item => (
+                  <button
+                    key={item.code}
+                    type="button"
+                    aria-pressed={language === item.code}
+                    lang={item.lang}
+                    className={item.className}
+                    onClick={() => { stopNarration(); setLanguage(item.code); }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            )}
+            <button className={styles.listen} disabled={!canPlay || site} onClick={narrate}>{speaking ? <VolumeX size={17} aria-hidden /> : <Volume2 size={17} aria-hidden />}{speaking ? "Stop narration" : "Listen to this story"}</button>
             <div className={styles.storyNav}><button disabled={index === 0 || !!xr || entering} onClick={() => select(index - 1)} aria-label="Previous landmark"><ChevronLeft size={20} /></button><span>{visited.length} of 3 discovered</span><button disabled={index === 2 || !!xr || entering} onClick={() => select(index + 1)} aria-label="Next landmark"><ChevronRight size={20} /></button></div>
           </aside>
         </div>

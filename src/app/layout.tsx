@@ -8,6 +8,8 @@ import {
 } from "next/font/google";
 import { Toaster } from "sonner";
 
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ConciergeWidget } from "@/components/ai/concierge-widget";
 import { isConciergeLive } from "@/lib/ai";
 import { SiteHeader } from "@/components/layout/site-header";
@@ -119,6 +121,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <ConciergeWidget live={isConciergeLive} />
           <Toaster position="top-center" richColors closeButton />
         </Providers>
+        {/* Vercel Web Analytics (page views) and Speed Insights (Core Web
+            Vitals from real visitors). Both render nothing, are cookieless and
+            no-op off Vercel, so local dev and other hosts are unaffected. */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
