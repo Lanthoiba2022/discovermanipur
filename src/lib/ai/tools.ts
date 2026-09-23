@@ -82,6 +82,36 @@ function inr(value: number): string {
   return `₹${Math.round(value).toLocaleString("en-IN")}`;
 }
 
+/**
+ * Join sentence fragments, skipping the empty ones.
+ *
+ * Catalogue rows legitimately have blank `bestTimeToVisit` / `entryFee` /
+ * `hostName` fields. Interpolating those straight into a template produced
+ * strings like "A Zeme village. . Entry: ." — so each piece is checked before
+ * it earns its full stop.
+ */
+function sentences(...parts: (string | undefined | null)[]): string {
+  return parts
+    .map((part) => part?.trim())
+    .filter((part): part is string => Boolean(part))
+    .map((part) => (/[.!?]$/.test(part) ? part : `${part}.`))
+    .join(" ");
+}
+
+/**
+ * Seed rows carry literal placeholders where a field was never researched
+ * (see `data/research/scripts/build_seed_sql.py`). Printing one back at a
+ * traveller — "Hosted by Host details to be confirmed" — is worse than saying
+ * nothing, so they are treated as absent.
+ */
+const PLACEHOLDERS = new Set(["host details to be confirmed", "tbc", "to be confirmed", "n/a", "unknown"]);
+
+function real(value: string | undefined | null): string | undefined {
+  const text = value?.trim();
+  if (!text || PLACEHOLDERS.has(text.toLowerCase())) return undefined;
+  return text;
+}
+
 function trim(text: string, max = 140): string {
   const clean = text.replace(/\s+/g, " ").trim();
   if (clean.length <= max) return clean;
@@ -311,7 +341,14 @@ export async function assembleItinerary(input: AssembleInput): Promise<Itinerary
         href: `/hotspots/${place.slug}`,
         kind: "place",
         timeOfDay: s === 0 ? "morning" : s === 1 ? "midday" : s === 2 ? "afternoon" : "evening",
-        note: trim(`${place.tagline}. ${place.bestTimeToVisit}. Entry: ${place.entryFee}.`, 180),
+        note: trim(
+          sentences(
+            real(place.tagline),
+            real(place.bestTimeToVisit),
+            real(place.entryFee) ? `Entry: ${real(place.entryFee)}` : undefined,
+          ),
+          180,
+        ),
       });
     }
 
@@ -324,7 +361,13 @@ export async function assembleItinerary(input: AssembleInput): Promise<Itinerary
         href: `/experiences/${exp.slug}`,
         kind: "experience",
         timeOfDay: "evening",
-        note: trim(`${exp.description} (${exp.durationHours}h with ${exp.host}).`, 180),
+        note: trim(
+          sentences(
+            exp.description,
+            exp.durationHours ? `${exp.durationHours}h${real(exp.host) ? ` with ${real(exp.host)}` : ""}` : undefined,
+          ),
+          180,
+        ),
       });
     }
 
@@ -356,7 +399,10 @@ export async function assembleItinerary(input: AssembleInput): Promise<Itinerary
         ? {
             title: stay.title,
             href: `/homestays/${stay.slug}`,
-            note: `${inr(stay.pricePerNight)} a night with ${stay.hostName}.`,
+            note: sentences(
+              stay.pricePerNight > 0 ? `${inr(stay.pricePerNight)} a night` : "Nightly rate on request",
+              real(stay.hostName) ? `Hosted by ${real(stay.hostName)}` : undefined,
+            ),
           }
         : undefined,
       travelNotes: stops.length

@@ -85,7 +85,15 @@ export async function POST(req: Request) {
       stopWhen: stepCountIs(6),
     });
 
-    return result.toUIMessageStreamResponse();
+    // Failures inside the model call surface *in* the stream, not as a throw,
+    // so the catch below never sees them. Log the real cause server-side and
+    // hand the UI something a reader can act on.
+    return result.toUIMessageStreamResponse({
+      onError: (error) => {
+        console.error("[/api/chat] concierge stream failed:", error);
+        return "I couldn't reach the concierge model just now. Browse [places](/hotspots) and [homestays](/homestays) in the meantime.";
+      },
+    });
   } catch {
     return createUIMessageStreamResponse({
       stream: cannedStream(

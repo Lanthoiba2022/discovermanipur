@@ -8,8 +8,8 @@
  *
  * Two providers are supported so the concierge runs whichever key is present:
  *
- * - Google Gemini (`GEMINI_API_KEY`, or the legacy `API_KEY` alias) —
- *   preferred.
+ * - Google Gemini (`GOOGLE_API_KEY`, or the `GEMINI_API_KEY` / `API_KEY`
+ *   aliases) — preferred.
  * - Anthropic (`ANTHROPIC_API_KEY`) — the original provider, kept as a
  *   fallback so deployments that already set it keep working.
  */
@@ -32,7 +32,16 @@ function readAnthropicKey(): string {
 }
 
 function readGeminiKey(): string {
-  return process.env.GEMINI_API_KEY?.trim() || process.env.API_KEY?.trim() || "";
+  // A key dedicated to Gemini wins. `GOOGLE_API_KEY` is last because this
+  // deployment also uses that name for the Maps/Places key (Kangla 3D tiles,
+  // place photos), which may be restricted to those APIs.
+  return (
+    process.env.GEMINI_API_KEY?.trim() ||
+    process.env.GOOGLE_GENERATIVE_AI_API_KEY?.trim() ||
+    process.env.API_KEY?.trim() ||
+    process.env.GOOGLE_API_KEY?.trim() ||
+    ""
+  );
 }
 
 /**
@@ -61,3 +70,16 @@ export function conciergeModel(): LanguageModel {
   }
   return createAnthropic({ apiKey: readAnthropicKey() })(ANTHROPIC_MODEL);
 }
+
+/**
+ * Whether the concierge is allowed to answer live.
+ *
+ * Deliberately opt-*in*: this deployment is a demo, and a half-configured key
+ * produced a chat that looked alive and then failed mid-answer. With the flag
+ * off the UI stops pretending — the floating widget says so plainly and `/plan`
+ * shows a curated sample conversation built from the real catalogue instead.
+ *
+ * Set `AI_CHAT_ENABLED=true` (alongside a working key) to switch it back on.
+ */
+export const isConciergeLive: boolean =
+  process.env.AI_CHAT_ENABLED?.trim().toLowerCase() === "true" && isAIConfigured;
