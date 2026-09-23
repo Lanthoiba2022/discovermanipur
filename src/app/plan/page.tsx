@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { isAIConfigured } from "@/lib/ai";
+import { buildShowcase, isAIConfigured, isConciergeLive } from "@/lib/ai";
 
 import { PlanClient } from "./plan-client";
 
@@ -18,7 +18,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PlanPage() {
+export default async function PlanPage() {
+  // Built on the server so the sample's cards carry real prices and real links.
+  const showcase = isConciergeLive ? [] : await buildShowcase();
+
   return (
     <div className="pb-20 pt-28 md:pb-28 md:pt-32">
       <div className="shell">
@@ -35,7 +38,7 @@ export default function PlanPage() {
           </p>
         </header>
 
-        <PlanClient aiConfigured={isAIConfigured} />
+        <PlanClient aiConfigured={isAIConfigured} live={isConciergeLive} showcase={showcase} />
       </div>
     </div>
   );
