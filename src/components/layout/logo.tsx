@@ -5,10 +5,16 @@ import { cn } from "@/lib/utils";
 /**
  * Manipur Tourism lockup.
  *
- * A woven mark — four bands of a phanek stripe — set against a two-part
- * wordmark: "Manipur" in the display didone, "Tourism" as a mono micro-label
- * underneath. The mark's bands stagger outward on hover, the way a loom
- * opens a shed.
+ * The mark is the outline of the state itself, set beside a two-part wordmark:
+ * "Manipur" in the display oldstyle, "Tourism" as a micro-label beneath it.
+ *
+ * The silhouette is drawn as a CSS mask filled with `currentColor` rather than
+ * as an `<img>`. The supplied file is a single flat crimson shape on alpha, and
+ * that crimson is close to invisible against the dark film the header floats
+ * over on the landing page. Masking lets the one file take the brand crimson on
+ * the ivory header, ivory over the film and ivory again in the footer — no
+ * second asset, no `filter: invert()`, and it stays in step with the
+ * `--hdr-*` custom properties the header already flips on first paint.
  */
 export function Logo({
   className,
@@ -24,35 +30,39 @@ export function Logo({
   const wordmarkTone =
     tone === "inherit" ? "text-current" : inverted ? "text-ivory-50" : "text-foreground";
   const labelTone =
-    tone === "inherit" ? "text-current opacity-60" : inverted ? "text-ivory-50/60" : "text-muted-foreground";
+    tone === "inherit"
+      ? "text-current opacity-60"
+      : inverted
+        ? "text-ivory-50/60"
+        : "text-muted-foreground";
+  // In the header the mark follows `--hdr-mark`, which is crimson on a light
+  // page and ivory while the bar sits over a dark hero.
+  const markTone =
+    tone === "inherit"
+      ? "text-[var(--hdr-mark,var(--color-primary))]"
+      : inverted
+        ? "text-ivory-50"
+        : "text-primary";
 
   return (
     <Link
       href="/"
       aria-label="Manipur Tourism — The Land of Jewels, home"
       className={cn(
-        "group inline-flex items-center gap-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring",
+        "group inline-flex items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring",
         className,
       )}
     >
-      <span aria-hidden className="flex flex-col gap-[3px]">
-        {[
-          { w: "w-6", tone: "bg-ningthou-600" },
-          { w: "w-4", tone: "bg-brass-500" },
-          { w: "w-6", tone: "bg-ningthou-600" },
-          { w: "w-3", tone: "bg-brass-500" },
-        ].map((band, i) => (
-          <span
-            key={i}
-            className={cn(
-              "block h-[3px] rounded-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
-              band.w,
-              band.tone,
-              i % 2 === 0 ? "group-hover:w-3" : "group-hover:w-6",
-            )}
-          />
-        ))}
-      </span>
+      {/* Decorative: the link is already named, and the shape adds nothing a
+          screen reader can use. The box is fixed to the file's 1280×1347
+          ratio so the lockup never reflows while the mask decodes. */}
+      <span
+        aria-hidden
+        className={cn(
+          "logo-mark block h-9 w-[2.14rem] shrink-0 transition-transform duration-[var(--dur-base)] ease-[var(--ease-flat)] group-hover:scale-[1.06]",
+          markTone,
+        )}
+      />
 
       <span className="flex flex-col leading-none">
         <span
@@ -63,14 +73,7 @@ export function Logo({
         >
           Manipur
         </span>
-        <span
-          className={cn(
-            "eyebrow mt-1 leading-none",
-            labelTone,
-          )}
-        >
-          Tourism
-        </span>
+        <span className={cn("eyebrow mt-1 leading-none", labelTone)}>Tourism</span>
       </span>
     </Link>
   );

@@ -20,7 +20,7 @@ import {
   themeOptions,
 } from "@/components/tours/tour-filters";
 import { Button } from "@/components/ui/button";
-import { ListingHero } from "@/components/content/listing-hero";
+import { PageHero } from "@/components/content/page-hero";
 import { getTours } from "@/lib/data";
 import { formatINR } from "@/lib/utils";
 
@@ -50,14 +50,19 @@ export default async function ToursPage({
 
   return (
     <div className="pb-24">
-      <ListingHero
+      <PageHero
         eyebrow="Routes, not packages"
-        title="Multi-day tours of Manipur"
+        title="Tours"
+        titleScale="display"
+        completion="multi-day routes planned around distance, weather and what is on that month."
+        image={{
+          src: "/file-uploads/terraced-valley-dusk.webp",
+          alt: "A terraced valley in the Manipur hills at dusk, paddy steps cut into the slope.",
+        }}
         lede={
           <p>
-            Each route is planned around distance, weather and what is actually happening that
-            month — the lily bloom on Shirui, the Sangai in Keibul Lamjao, Yaoshang in the valley.
-            Small groups, local guides, honest day-by-day plans.
+            The lily bloom on Shirui, the Sangai in Keibul Lamjao, Yaoshang in the valley. Small
+            groups, local guides, and honest day-by-day plans that admit where the road is slow.
           </p>
         }
         figures={[

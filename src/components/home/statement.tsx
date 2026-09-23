@@ -4,8 +4,6 @@ import type { Stat } from "@/lib/data/seed/site-content";
 import { motion, useInView, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-
-
 /** `useLayoutEffect` that degrades to a no-op during SSR. */
 const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
@@ -22,12 +20,12 @@ function Word({
 }) {
   // The unread state is a dimmed *colour*, not a low opacity. At 0.22 opacity
   // the sentence sat around 1.6:1 against the ivory ground — unreadable if the
-  // scroll link never fires. The floor here stays above 4.5:1 throughout.
-  const color = useTransform(
-    progress,
-    [start, end],
-    ["var(--ink-400)", "var(--ink-900)"],
-  );
+  // scroll link never fires. The floor here is `--ink-500` (#6b5f54), which
+  // measures 5.85:1 on `--ivory-50`, so the whole sentence clears 4.5:1 at
+  // every point in the sweep and the reveal is a warming, not a switching on.
+  // `--ink-400` was tried first and only makes 3.68:1 — large-text AA, but the
+  // floor here is deliberately held to the small-text bar.
+  const color = useTransform(progress, [start, end], ["var(--ink-500)", "var(--ink-900)"]);
   // The space has to live OUTSIDE the inline-block: a trailing space that is
   // the last content inside an inline-block is collapsed away, which butts
   // every word up against the next one.
@@ -73,8 +71,13 @@ function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
     return () => cancelAnimationFrame(frame);
   }, [inView, reduce, armed, value]);
 
+  // `tabular-nums` so the digits do not reflow the label under them while the
+  // count runs — the figure animates, the layout does not.
   return (
-    <span ref={ref} className="font-display text-5xl leading-none text-primary md:text-6xl">
+    <span
+      ref={ref}
+      className="font-display text-5xl leading-none tabular-nums text-primary md:text-6xl"
+    >
       {shown >= 1000 ? shown.toLocaleString("en-IN") : shown}
       <span className="text-3xl md:text-4xl">{suffix}</span>
     </span>
@@ -92,19 +95,21 @@ export function Statement({ statement, stats }: { statement: string; stats: Stat
 
   return (
     <section className="chapter-light py-[var(--space-section)]">
-      <div className="shell">
-        {/* Editorial masthead: the section tag and the measure sit on one
-            baseline grid, the way a magazine opener runs a standfirst. */}
-        <div className="grid gap-10 md:grid-cols-[10rem_1fr] md:gap-16">
-          <div>
-            <p className="eyebrow flex items-center gap-3 text-muted-foreground md:flex-col md:items-start md:gap-4">
-              <span className="weave-rule inline-block h-[3px] w-10 rounded-full" />
-              Why Manipur
+      {/* One rung down the measure ladder from the hero's `.shell`: the page
+          starts to narrow here, and the opener runs on an asymmetric 42/58
+          split so the standfirst column and the sentence are visibly unequal
+          rather than two matching halves. */}
+      <div className="shell-mid">
+        <div className="grid gap-10 md:grid-cols-[minmax(0,42fr)_minmax(0,58fr)] md:gap-14 lg:gap-20">
+          <div className="md:pt-3">
+            <p className="rule-flank rule-flank-start eyebrow text-stone-700">Why Manipur</p>
+            <p className="section-completion mt-7 max-w-[22ch] text-terracotta-700">
+              Nowhere else stacks its water, its land and its living this way.
             </p>
           </div>
 
           <div ref={ref}>
-            <p className="max-w-4xl font-display text-[1.75rem] leading-[1.28] tracking-[-0.015em] sm:text-4xl md:text-[2.75rem] md:leading-[1.22]">
+            <p className="font-display text-[1.75rem] leading-[1.3] tracking-[-0.015em] sm:text-[2.125rem] md:text-[2.5rem] md:leading-[1.24]">
               {words.map((word, i) => (
                 <Word
                   key={`${word}-${i}`}

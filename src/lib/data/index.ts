@@ -51,7 +51,21 @@ function paginate<T>(rows: T[], q?: ListQuery) {
   return rows.slice(offset, offset + limit);
 }
 
-function sortRows<T extends { featured?: boolean; rating?: number }>(
+/**
+ * Default ordering is cohort first, then featured.
+ *
+ * `sortWeight` exists so the verified 2026 research rows lead every listing
+ * while the original 2025 seed still appears, appended after them. New rows are
+ * seeded at 100; everything already in the table sits at the column default of
+ * 0. Rows loaded from the bundled seed modules have no weight at all, which
+ * `?? 0` puts in the same cohort as the old database rows — so the fallback
+ * path orders identically to the database path.
+ *
+ * An explicit user sort (price, rating) overrides the cohort entirely: someone
+ * who asked for "cheapest first" means it, and quietly keeping one cohort on top
+ * would just look like the sort is broken.
+ */
+function sortRows<T extends { featured?: boolean; rating?: number; sortWeight?: number }>(
   rows: T[],
   q: ListQuery | undefined,
   priceOf: (row: T) => number,
@@ -65,7 +79,11 @@ function sortRows<T extends { featured?: boolean; rating?: number }>(
     case "rating":
       return out.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
     default:
-      return out.sort((a, b) => Number(b.featured) - Number(a.featured));
+      return out.sort(
+        (a, b) =>
+          (b.sortWeight ?? 0) - (a.sortWeight ?? 0) ||
+          Number(b.featured) - Number(a.featured),
+      );
   }
 }
 

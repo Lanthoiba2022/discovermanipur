@@ -2,13 +2,78 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Map } from "lucide-react";
 
+import { cn } from "@/lib/utils";
+
+/**
+ * The map-collection teaser.
+ *
+ * A conversion moment, so it carries exactly one call to action — the whole
+ * card is the link, and the "Open the 3D map" line inside it is a styled span,
+ * not a second, competing target.
+ *
+ * The imagery uses `.mask-arch` (the Manipuri gateway profile) and
+ * `.media-recede`: the photograph sits back, desaturated and dimmed, until the
+ * card is hovered or focused, at which point it comes fully forward. That is
+ * the payoff, and it costs no JavaScript.
+ *
+ * `compact` is the inline variant used on the Kangla Fort hotspot page.
+ */
 export function KanglaTeaser({ compact = false }: { compact?: boolean }) {
   return (
-    <section className={compact ? "my-10" : "shell py-12 md:py-20"} aria-label="Explore the Kangla map">
-      <Link href="/explore/kangla" className="group relative grid overflow-hidden rounded-2xl bg-loktak-900 text-cream-50 md:grid-cols-2">
-        <div className="relative min-h-64 overflow-hidden"><Image src="/file-uploads/11.jpg" alt="The paired white Kangla Sha guardians in front of the Uttra pavilion at Kangla" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-105" /></div>
-        <div className="flex flex-col justify-center p-7 md:p-10"><span className="eyebrow flex items-center gap-2 text-kangla-400"><Map size={16} aria-hidden /> The map collection · 01</span><h2 className="mt-4 font-display text-4xl md:text-5xl">Kangla, from a new angle.</h2><p className="mt-4 max-w-md text-sm leading-7 text-cream-200">Explore the fort and its immediate surroundings on a 3D map. Tilt, rotate and zoom to find your bearings.</p><span className="mt-7 inline-flex items-center gap-3 text-sm text-kangla-400">Open the 3D map <ArrowUpRight size={19} aria-hidden /></span><span className="mt-2 text-xs text-cream-200">MapTiler · 3D buildings & terrain</span></div>
-      </Link>
+    <section
+      className={cn(
+        compact ? "my-12" : "chapter-light py-[clamp(4.5rem,8vw,7rem)]",
+      )}
+      aria-label="Explore Kangla in 3D"
+    >
+      <div className={compact ? undefined : "shell-mid"}>
+        <Link
+          href="/explore/kangla"
+          className="group relative grid overflow-hidden rounded-[var(--radius-lg)] bg-ink-950 text-ivory-50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring md:grid-cols-[0.85fr_1fr]"
+        >
+          <div className="relative min-h-60 p-5 md:min-h-[22rem] md:p-7">
+            <div className="mask-arch relative size-full min-h-52 overflow-hidden">
+              <Image
+                src="/file-uploads/kangla-kanglasha.webp"
+                alt="The white kanglasha — dragon-lion guardians — standing on the brick forecourt inside Kangla Fort, Imphal."
+                fill
+                sizes="(max-width: 768px) 92vw, 34rem"
+                className="media-recede object-cover transition-transform duration-[600ms] ease-[var(--ease-flat)] group-hover:scale-[1.04] group-focus-visible:scale-[1.04]"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-center p-6 pt-0 md:p-10 md:pl-4 lg:p-14 lg:pl-6">
+            <p className="eyebrow rule-flank rule-flank-start mb-6 text-brass-400">
+              <Map aria-hidden className="size-4" />
+              <span>The map collection · 01</span>
+            </p>
+
+            <h2 className="font-display text-[clamp(1.875rem,1.25rem+2vw,2.75rem)] leading-[1.06] tracking-[-0.015em]">
+              Kangla, from a new angle.
+            </h2>
+
+            <p className="mt-5 max-w-md text-base leading-relaxed text-ivory-50/75">
+              Tilt, rotate and zoom across the fort and its river bank, with the
+              moats, the coronation ground and the shrines pinned where they
+              actually stand.
+            </p>
+
+            <span className="mt-9 inline-flex w-fit items-center gap-2 rounded-full bg-accent px-6 text-sm font-medium text-accent-foreground transition-transform duration-200 ease-[var(--ease-flat)] group-hover:-translate-y-0.5 h-11">
+              Open the 3D map
+              <ArrowUpRight aria-hidden className="size-4" />
+            </span>
+
+            {/* Corrected: the explorer renders Google satellite imagery draped
+                on terrain. Imphal has no 3D building mesh, so promising
+                "3D buildings" would be a promise the map cannot keep. */}
+            <p className="mt-4 text-xs text-ivory-50/55">
+              Google satellite imagery on terrain · landmarks located from
+              OpenStreetMap
+            </p>
+          </div>
+        </Link>
+      </div>
     </section>
   );
 }

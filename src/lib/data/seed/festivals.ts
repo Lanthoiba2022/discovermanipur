@@ -98,8 +98,8 @@ export const festivals: Festival[] = [
     significance:
       "The Meitei new year, marking the agricultural year's start and combining household ritual with a collective hill climb.",
     images: [
-      { src: "/file-uploads/20.jpg", alt: "Families climbing a hill on Cheiraoba afternoon" },
-      { src: "/file-uploads/foodcar1.png", alt: "New year meal prepared for Sajibu Cheiraoba" },
+      { src: "/file-uploads/marjing.png", alt: "Sunrise over the Imphal valley from a hilltop — Cheiraoba afternoon is spent climbing one" },
+      { src: "/file-uploads/manipuri-curry-bowl.webp", alt: "A bowl of Manipuri curry from the new year meal cooked for Sajibu Cheiraoba" },
       { src: "/file-uploads/203.jpg", alt: "Valley view from a hill climbed at Cheiraoba" },
     ],
     featured: true,
@@ -117,7 +117,7 @@ export const festivals: Festival[] = [
     significance:
       "The principal harvest thanksgiving of Manipur's Kuki-Zo communities and a state public holiday.",
     images: [
-      { src: "/file-uploads/kha2.jpg", alt: "Chavang Kut harvest celebration in Manipur" },
+      { src: "/file-uploads/kha2.jpg", alt: "Sacks of produce piled through an Imphal market at the end of the harvest Chavang Kut marks" },
       { src: "/file-uploads/manipuri-dancer-solo.webp", alt: "Traditional dance performed at the Kut festival" },
       { src: "/file-uploads/s73.avif", alt: "Hill community gathering during the harvest season" },
     ],
@@ -196,7 +196,7 @@ export const festivals: Festival[] = [
     images: [
       { src: "/file-uploads/manipuri-raas-group.webp", alt: "Raas Leela dancers in the embroidered potloi and conical veil" },
       { src: "/file-uploads/12.jpg", alt: "Shree Govindajee Temple, principal venue for Ras Leela" },
-      { src: "/file-uploads/hand.jpg", alt: "Embroidered textiles used in Manipuri dance costume" },
+      { src: "/file-uploads/phanek.jpeg", alt: "Folded lengths of Manipuri phanek cloth in magenta, lime, orange and purple, each edged with a woven temple-point border — the cloth tradition behind Manipuri dance costume" },
     ],
     featured: false,
   },

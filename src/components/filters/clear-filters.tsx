@@ -12,7 +12,14 @@ export function ClearFilters({ label = "Clear filters" }: { label?: string }) {
   if (!hasAny) return null;
 
   return (
-    <Button type="button" variant="ghost" size="sm" onClick={clearAll} disabled={isPending}>
+    <Button
+      type="button"
+      variant="ghost"
+      size="pill"
+      onClick={clearAll}
+      disabled={isPending}
+      className="px-4"
+    >
       <X aria-hidden="true" />
       {label}
     </Button>

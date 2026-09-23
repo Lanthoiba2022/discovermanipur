@@ -1,87 +1,99 @@
-import Image from "next/image";
-import Link from "next/link";
-import { CalendarDays, Map, Mountain, Star } from "lucide-react";
+import { CalendarDays, Footprints, Map, Signpost, Users } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
+import {
+  CARD_SIZES,
+  CardBody,
+  CardDescription,
+  CardEyebrow,
+  CardFact,
+  CardFoot,
+  CardLine,
+  CardMedia,
+  CardMeta,
+  CardPrice,
+  CardRating,
+  CardShell,
+  CardTitle,
+  MediaChip,
+} from "@/components/cards/card-kit";
+import { titleCase } from "@/components/filters";
 import { formatINR } from "@/lib/utils";
 import type { Tour } from "@/types";
 
 import { formatDeparture, upcomingDepartures } from "./tour-filters";
 
-export function TourCard({ tour, preload = false }: { tour: Tour; preload?: boolean }) {
-  const cover = tour.images[0];
+const DIFFICULTY_LABEL: Record<Tour["difficulty"], string> = {
+  easy: "Easy going",
+  moderate: "Moderate",
+  challenging: "Challenging",
+};
+
+export function TourCard({
+  tour,
+  preload = false,
+  className,
+}: {
+  tour: Tour;
+  preload?: boolean;
+  className?: string;
+}) {
   const departures = upcomingDepartures(tour.departureDates);
+  const nights = tour.durationDays === 1 ? "1 day" : `${tour.durationDays} days`;
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface shadow-[var(--shadow-sm)] transition-shadow duration-300 hover:shadow-[var(--shadow-md)]">
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-surface-sunken">
-        {cover ? (
-          <Image
-            src={cover.src}
-            alt={cover.alt}
-            fill
-            preload={preload}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-          />
-        ) : null}
-        <Badge variant="glass" className="absolute left-4 top-4">
-          {tour.durationDays} {tour.durationDays === 1 ? "day" : "days"}
-        </Badge>
-      </div>
+    <CardShell tone="crimson" className={className}>
+      <CardMedia
+        image={tour.images[0]}
+        fallbackAlt={`Landscape on the ${tour.title} route through ${tour.districtsCovered[0] ?? "Manipur"}`}
+        sizes={CARD_SIZES.grid3}
+        preload={preload}
+        status={<MediaChip icon={Footprints}>{DIFFICULTY_LABEL[tour.difficulty]}</MediaChip>}
+      />
 
-      <div className="flex flex-1 flex-col gap-3 p-5">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="font-display text-xl leading-tight">
-            <Link
-              href={`/tours/${tour.slug}`}
-              className="after:absolute after:inset-0 focus-visible:outline-none"
-            >
-              {tour.title}
-            </Link>
-          </h3>
-          {tour.rating > 0 && (
-            <span className="flex shrink-0 items-center gap-1 text-sm">
-              <Star className="size-4 fill-accent text-accent" aria-hidden="true" />
-              <span className="font-medium">{tour.rating.toFixed(1)}</span>
-            </span>
+      <CardBody>
+        <CardEyebrow icon={Signpost}>
+          <span>{nights}</span>
+          {tour.themes[0] && (
+            <>
+              <span aria-hidden="true" className="opacity-40">
+                /
+              </span>
+              <span>{titleCase(tour.themes[0])}</span>
+            </>
           )}
-        </div>
+        </CardEyebrow>
 
-        <p className="flex items-start gap-1.5 text-sm text-muted-foreground">
-          <Map className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-          <span>
-            {tour.districtsCovered.length > 0
-              ? tour.districtsCovered.join(" · ")
-              : "Route published soon"}
-          </span>
-        </p>
+        <CardTitle href={`/tours/${tour.slug}`}>{tour.title}</CardTitle>
 
-        <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-          {tour.description}
-        </p>
+        <CardLine icon={Map}>
+          {tour.districtsCovered.length > 0
+            ? tour.districtsCovered.join(" · ")
+            : "Route published soon"}
+        </CardLine>
+        <CardDescription>{tour.description}</CardDescription>
 
-        <p className="flex items-center gap-1.5 text-sm capitalize text-muted-foreground">
-          <Mountain className="size-4" aria-hidden="true" />
-          {tour.difficulty}
-        </p>
-
-        <p className="mt-auto flex items-start gap-1.5 pt-2 text-sm text-muted-foreground">
-          <CalendarDays className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-          <span>
+        <CardMeta>
+          <CardFact icon={CalendarDays} label="Departures">
             {departures.length > 0
               ? `Departs ${departures.slice(0, 2).map(formatDeparture).join(", ")}${
                   departures.length > 2 ? ` +${departures.length - 2} more` : ""
                 }`
               : "Private departures on request"}
-          </span>
-        </p>
+          </CardFact>
+          <CardFact icon={Users} label="Maximum group size">
+            Up to {tour.groupSizeMax}
+          </CardFact>
+        </CardMeta>
 
-        <p className="border-t border-border pt-3">
-          <span className="font-display text-xl">{formatINR(tour.pricePerPerson)}</span>
-          <span className="text-sm text-muted-foreground"> / person</span>
-        </p>
-      </div>
-    </article>
+        <CardFoot>
+          <CardPrice
+            value={formatINR(tour.pricePerPerson)}
+            unit="/ person"
+            label="Price per person"
+          />
+          <CardRating rating={tour.rating} count={tour.reviewCount} />
+        </CardFoot>
+      </CardBody>
+    </CardShell>
   );
 }

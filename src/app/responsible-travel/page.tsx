@@ -283,8 +283,8 @@ export default async function ResponsibleTravelPage() {
           <Reveal className="lg:col-span-5">
             <div className="relative aspect-4/3 overflow-hidden rounded-[var(--radius-lg)] bg-surface-sunken">
               <Image
-                src="/file-uploads/hand.jpg"
-                alt="Hands working a wooden frame loom, drawing weft threads through a striped warp of yellow, pink and white yarn"
+                src="/file-uploads/phanek.jpeg"
+                alt="Folded lengths of Manipuri phanek cloth in magenta, lime, orange and purple, each edged with a woven temple-point border"
                 fill
                 sizes="(max-width: 1024px) 100vw, 38vw"
                 className="object-cover"
