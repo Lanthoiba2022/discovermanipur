@@ -47,6 +47,10 @@
 .look>svg { flex-shrink:0; color:var(--primary); margin-top:.1rem; }
 .look h3 { font-family:inherit; font-size:.72rem; font-weight:600; margin-bottom:.4rem; }
 .look p { font-size:.73rem; line-height:1.7; color:var(--muted-foreground); }
+.languageTabs { margin-top:1rem; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.35rem; padding:.25rem; border:1px solid var(--border); border-radius:2rem; background:var(--surface-sunken); }
+.languageTabs button { min-width:0; min-height:34px; padding:.4rem .5rem; border-radius:2rem; font-size:.65rem; line-height:1.1; color:var(--muted-foreground); cursor:pointer; transition:background-color .2s, color .2s; }
+.languageTabs button:hover { color:var(--foreground); }
+.languageTabs button[aria-pressed=true] { background:var(--primary); color:var(--primary-foreground); }
 .listen { margin:1.25rem 0; display:flex; align-items:center; gap:.6rem; font-size:.73rem; color:var(--primary); cursor:pointer; }
 .storyNav { margin-top:auto; border-top:1px solid var(--border); padding-top:1rem; display:flex; justify-content:space-between; align-items:center; }
 .storyNav button { width:34px; height:34px; border:1px solid var(--border); border-radius:50%; display:grid; place-items:center; cursor:pointer; }
