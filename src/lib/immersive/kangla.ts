@@ -1,6 +1,8 @@
+import { kanglaNarration } from "./narration";
+
 export type LandmarkId = "guardians" | "western-gate" | "pakhangba";
 
-export const kanglaStops = [
+const stops = [
   {
     id: "guardians" as const,
     name: "The Kangla Sha",
@@ -41,6 +43,10 @@ export const kanglaStops = [
     target: [0, 4, 0] as [number, number, number],
   },
 ];
+
+/** Stops carry their recorded narration, looked up by id. */
+export const kanglaStops = stops.map((stop) => ({ ...stop, narration: kanglaNarration[stop.id] }));
+
 
 export const kanglaMapUrl = "https://www.google.com/maps/search/?api=1&query=Kangla+Fort+Imphal";
 export const kanglaSources = [
