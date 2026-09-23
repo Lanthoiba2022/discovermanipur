@@ -235,6 +235,11 @@ export async function getImmersiveStops(scene = "kangla-fort"): Promise<Immersiv
   };
 
   return (rows as Row[]).map((r) => ({
+    // Narration audio lives in the local `kanglaStops` table, not in Supabase —
+    // the row below has no `narration` column, so spreading the matching local
+    // stop first is what keeps the voice tracks when the DB is seeded. Every
+    // field the row does carry then overrides it.
+    ...kanglaStops.find((stop) => stop.id === r.slug),
     id: r.slug,
     name: r.name,
     shortName: r.short_name,
