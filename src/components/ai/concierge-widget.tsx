@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, GripHorizontal, MessageCircle, X } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, GripHorizontal, MessageCircle, PauseCircle, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
@@ -24,6 +24,61 @@ interface Point {
 }
 
 /**
+ * What the panel shows while the concierge is switched off.
+ *
+ * Deliberately not a disabled chat box: there is nothing to type into, so the
+ * reader is never invited to ask a question that will not be answered. It says
+ * what is happening, then sends them to the one place that still demonstrates
+ * the feature.
+ */
+function PausedPanel({ onNavigate }: { onNavigate: () => void }) {
+  return (
+    <div className="flex min-h-0 flex-1 flex-col justify-center gap-4 overflow-y-auto p-5 text-center" data-lenis-prevent>
+      <span
+        aria-hidden
+        className="mx-auto grid size-11 place-items-center rounded-full bg-surface-sunken text-warning"
+      >
+        <PauseCircle className="size-5" />
+      </span>
+
+      <div className="space-y-2">
+        <p className="font-display text-base font-semibold tracking-tight text-foreground">
+          The concierge is resting
+        </p>
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          Live chat is switched off while this site is a demo, so there is no one here to answer just now.
+        </p>
+      </div>
+
+      <Link
+        href="/plan"
+        onClick={onNavigate}
+        className={cn(
+          "mx-auto flex w-fit items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground",
+          "transition-colors hover:bg-primary/90",
+          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+        )}
+      >
+        See a sample conversation
+        <ArrowRight aria-hidden className="size-4" />
+      </Link>
+
+      <p className="text-xs leading-relaxed text-muted-foreground">
+        Everything else is live — browse{" "}
+        <Link href="/hotspots" onClick={onNavigate} className="underline underline-offset-4 hover:text-foreground">
+          places
+        </Link>{" "}
+        and{" "}
+        <Link href="/homestays" onClick={onNavigate} className="underline underline-offset-4 hover:text-foreground">
+          homestays
+        </Link>{" "}
+        as normal.
+      </p>
+    </div>
+  );
+}
+
+/**
  * The floating concierge.
  *
  * A shell, not a second chatbot — the panel renders the very same
@@ -41,11 +96,23 @@ interface Point {
  *    this component, and because the widget lives in the root layout it is
  *    never unmounted by a client navigation — drag it once and it stays put as
  *    you move around the site.
- * 3. **One close control, not two.** The launcher used to stay on screen as a
+ * 3. **It tells the truth when it is off.** With `live={false}` the panel does
+ *    not render a chat at all — an input box that accepts a question and then
+ *    apologises is worse than one that was never offered. It says the concierge
+ *    is paused and points at the sample conversation on `/plan`.
+ * 4. **One close control, not two.** The launcher used to stay on screen as a
  *    "Close" pill while the panel was open, directly below a panel that
  *    already had a close button. The launcher now hides while the panel is up.
  */
-export function ConciergeWidget({ className }: { className?: string }) {
+export function ConciergeWidget({
+  className,
+  live = true,
+}: {
+  className?: string;
+  /** False while the concierge is switched off — the panel says so instead of
+   *  opening a chat that cannot answer. */
+  live?: boolean;
+}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<Point | null>(null);
@@ -194,7 +261,8 @@ export function ConciergeWidget({ className }: { className?: string }) {
           className={cn(
             // Roughly two thirds of the height it used to take: at 86dvh the
             // panel was the page, and the reader lost the site behind it.
-            "mb-3 flex h-[min(68dvh,34rem)] w-[min(92vw,23rem)] flex-col overflow-hidden",
+            "mb-3 flex w-[min(92vw,23rem)] flex-col overflow-hidden",
+            live ? "h-[min(68dvh,34rem)]" : "h-auto",
             "rounded-[var(--radius-lg)] border border-border bg-surface shadow-[var(--shadow-lg)]",
             "fade-in",
           )}
@@ -216,9 +284,10 @@ export function ConciergeWidget({ className }: { className?: string }) {
               </p>
               <Link
                 href="/plan"
+                onClick={close}
                 className="text-[11px] text-muted-foreground underline underline-offset-4 hover:text-foreground"
               >
-                Open the full planner
+                {live ? "Open the full planner" : "See the sample conversation"}
               </Link>
             </div>
 
@@ -232,13 +301,17 @@ export function ConciergeWidget({ className }: { className?: string }) {
             </button>
           </div>
 
-          <Concierge
-            variant="panel"
-            suggestions={WIDGET_SUGGESTIONS}
-            greeting="Khurumjari. Ask me anything about Manipur — or tell me how many days you have and I'll sketch a plan."
-            footerNote="Grounded in Manipur Tourism's own listings."
-            className="min-h-0 flex-1 rounded-none border-0"
-          />
+          {live ? (
+            <Concierge
+              variant="panel"
+              suggestions={WIDGET_SUGGESTIONS}
+              greeting="Khurumjari. Ask me anything about Manipur — or tell me how many days you have and I'll sketch a plan."
+              footerNote="Grounded in Manipur Tourism's own listings."
+              className="min-h-0 flex-1 rounded-none border-0"
+            />
+          ) : (
+            <PausedPanel onNavigate={close} />
+          )}
         </div>
       )}
 
@@ -301,7 +374,7 @@ export function ConciergeWidget({ className }: { className?: string }) {
               }}
               aria-expanded={false}
               aria-controls={panelId}
-              aria-label="Open the Manipur Tourism concierge"
+              aria-label={live ? "Open the Manipur Tourism concierge" : "About the Manipur Tourism concierge"}
               className={cn(
                 "flex h-12 items-center gap-2.5 rounded-full text-sm font-medium",
                 "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
@@ -318,7 +391,7 @@ export function ConciergeWidget({ className }: { className?: string }) {
                   collapsed ? "grid-cols-[0fr]" : "grid-cols-[1fr]",
                 )}
               >
-                <span className="overflow-hidden whitespace-nowrap">Ask the concierge</span>
+                <span className="overflow-hidden whitespace-nowrap">{live ? "Ask the concierge" : "Concierge"}</span>
               </span>
             </button>
 
