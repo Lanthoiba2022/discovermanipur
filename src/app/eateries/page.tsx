@@ -21,7 +21,7 @@ import {
   parseEateryFilters,
 } from "@/components/eateries/eatery-filters";
 import { Button } from "@/components/ui/button";
-import { ListingHero } from "@/components/content/listing-hero";
+import { PageHero } from "@/components/content/page-hero";
 import { getEateries } from "@/lib/data";
 
 export const metadata: Metadata = {
@@ -46,14 +46,19 @@ export default async function EateriesPage({
 
   return (
     <div className="pb-24">
-      <ListingHero
+      <PageHero
         eyebrow="Boiled, fermented, herb-led"
-        title="The food story of Manipur"
+        title="Eat"
+        titleScale="display"
+        completion="Manipuri cooking barely uses oil — it leans on ngari, river fish and herbs picked that morning."
+        image={{
+          src: "/file-uploads/manipuri-food-leaf.webp",
+          alt: "Manipuri food served on a banana leaf — fried cakes and dried fish.",
+        }}
         lede={
           <p>
-            Manipuri cooking barely uses oil. It leans on ngari, on river fish, on chillies roasted
-            over a flame and on herbs picked that morning. This is a guide to what you will be
-            eating first — and then the places that cook it best.
+            A guide to what you will be eating first, and then the kitchens, canteens and hill-town
+            cafés that cook it best.
           </p>
         }
         figures={[
@@ -64,14 +69,14 @@ export default async function EateriesPage({
         ]}
       />
 
-      <div className="shell mt-12">
+      <section aria-label="Dishes to know before you order" className="shell-mid mt-16 md:mt-20">
         <DishesToKnow />
-      </div>
+      </section>
 
-      <div className="shell mt-16 flex flex-col gap-10">
-        <div>
-          <h2 className="font-display text-3xl">Where to eat</h2>
-          <p className="mt-2 max-w-2xl text-muted-foreground">
+      <div className="shell mt-20 flex flex-col gap-10 md:mt-24">
+        <div className="border-b border-border-strong pb-6">
+          <h2 className="text-headline">Where to eat</h2>
+          <p className="text-lead mt-3 text-muted-foreground">
             Family kitchens, market canteens, hill-town cafés and the odd fine-dining room.
           </p>
         </div>

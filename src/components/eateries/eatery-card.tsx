@@ -1,79 +1,101 @@
-import Image from "next/image";
-import Link from "next/link";
-import { CalendarCheck, MapPin, Star } from "lucide-react";
+import { CalendarCheck, Clock, MapPin, Soup, Utensils } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
+import {
+  CARD_SIZES,
+  CardBody,
+  CardDescription,
+  CardEyebrow,
+  CardFact,
+  CardFoot,
+  CardLine,
+  CardMedia,
+  CardMeta,
+  CardPrice,
+  CardRating,
+  CardShell,
+  CardTitle,
+  MediaChip,
+} from "@/components/cards/card-kit";
 import { titleCase } from "@/components/filters";
 import type { Eatery } from "@/types";
 
 import { priceRangeLabel } from "./eatery-filters";
 
-export function EateryCard({ eatery, preload = false }: { eatery: Eatery; preload?: boolean }) {
-  const cover = eatery.images[0];
+const PRICE_WORD: Record<1 | 2 | 3, string> = {
+  1: "Everyday",
+  2: "Mid-range",
+  3: "Special occasion",
+};
+
+/** Opening hours read as a sentence; the card shows the part people scan. */
+function hoursSummary(timings: string): string {
+  const [hours] = timings.split(/,| and /);
+  return hours?.trim() || timings;
+}
+
+export function EateryCard({
+  eatery,
+  preload = false,
+  className,
+}: {
+  eatery: Eatery;
+  preload?: boolean;
+  className?: string;
+}) {
+  const signature = eatery.signatureDishes[0]?.name;
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface shadow-[var(--shadow-sm)] transition-shadow duration-300 hover:shadow-[var(--shadow-md)]">
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-sunken">
-        {cover ? (
-          <Image
-            src={cover.src}
-            alt={cover.alt}
-            fill
-            preload={preload}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-          />
-        ) : null}
-        <Badge variant="glass" className="absolute left-4 top-4">
-          <span aria-hidden="true">{priceRangeLabel(eatery.priceRange)}</span>
-          <span className="sr-only">
-            {eatery.priceRange === 1 ? "Budget" : eatery.priceRange === 2 ? "Mid-range" : "Upmarket"}
+    <CardShell tone="brass" className={className}>
+      <CardMedia
+        image={eatery.images[0]}
+        fallbackAlt={`Food served at ${eatery.name}, a ${titleCase(eatery.cuisines[0] ?? "Manipuri")} kitchen in ${eatery.location}, Manipur`}
+        sizes={CARD_SIZES.grid3}
+        preload={preload}
+        status={
+          signature ? <MediaChip icon={Soup}>Known for {signature}</MediaChip> : null
+        }
+      />
+
+      <CardBody>
+        <CardEyebrow icon={Utensils}>
+          <span>{eatery.cuisines.slice(0, 2).map(titleCase).join(" · ")}</span>
+          <span aria-hidden="true" className="opacity-40">
+            /
           </span>
-        </Badge>
-      </div>
+          <span>{eatery.district}</span>
+        </CardEyebrow>
 
-      <div className="flex flex-1 flex-col gap-3 p-5">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="font-display text-xl leading-tight">
-            <Link
-              href={`/eateries/${eatery.slug}`}
-              className="after:absolute after:inset-0 focus-visible:outline-none"
-            >
-              {eatery.name}
-            </Link>
-          </h3>
-          {eatery.rating > 0 && (
-            <span className="flex shrink-0 items-center gap-1 text-sm">
-              <Star className="size-4 fill-accent text-accent" aria-hidden="true" />
-              <span className="font-medium">{eatery.rating.toFixed(1)}</span>
-            </span>
+        <CardTitle href={`/eateries/${eatery.slug}`}>{eatery.name}</CardTitle>
+
+        <CardLine icon={MapPin}>{eatery.location}</CardLine>
+        <CardDescription>{eatery.description}</CardDescription>
+
+        <CardMeta>
+          <CardFact icon={Clock} label="Opening hours">
+            {hoursSummary(eatery.timings)}
+          </CardFact>
+          {eatery.acceptsReservations && (
+            <CardFact icon={CalendarCheck} label="Booking">
+              Takes reservations
+            </CardFact>
           )}
-        </div>
+        </CardMeta>
 
-        <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-          <MapPin className="size-4" aria-hidden="true" />
-          {eatery.location}
-        </p>
-
-        <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-          {eatery.description}
-        </p>
-
-        <ul className="mt-auto flex flex-wrap gap-2 pt-2">
-          {eatery.cuisines.slice(0, 3).map((cuisine) => (
-            <li key={cuisine}>
-              <Badge variant="outline">{titleCase(cuisine)}</Badge>
-            </li>
-          ))}
-        </ul>
-
-        {eatery.acceptsReservations && (
-          <p className="flex items-center gap-1.5 border-t border-border pt-3 text-sm text-success">
-            <CalendarCheck className="size-4" aria-hidden="true" />
-            Takes table reservations
-          </p>
-        )}
-      </div>
-    </article>
+        <CardFoot>
+          <CardPrice
+            value={
+              <>
+                <span aria-hidden="true">{priceRangeLabel(eatery.priceRange)}</span>
+                <span className="ml-1.5 font-sans text-sm text-muted-foreground">
+                  {PRICE_WORD[eatery.priceRange]}
+                </span>
+              </>
+            }
+            label="Price range"
+          />
+          <CardRating rating={eatery.rating} count={eatery.reviewCount} />
+        </CardFoot>
+      </CardBody>
+    </CardShell>
   );
 }

@@ -75,14 +75,15 @@ export default async function SearchPage({
     <>
       <PageHero
         eyebrow="Search"
-        title={term ? `Results for “${term}”` : "Search all of Manipur."}
-        lede={
+        title={term ? `“${term}”` : "Search"}
+        titleScale="display"
+        completion={
           term
-            ? undefined
-            : "One box across every place, stay, experience, eatery and tour in the catalogue."
+            ? `${all.length} ${all.length === 1 ? "result" : "results"} across the catalogue.`
+            : "one box across every place, stay, experience, eatery and tour."
         }
       >
-        <div className="max-w-xl">
+        <div className="w-full max-w-xl">
           <SearchInput
             defaultValue={term}
             size="lg"
@@ -93,7 +94,7 @@ export default async function SearchPage({
         </div>
       </PageHero>
 
-      <div className="shell pb-28 md:pb-36">
+      <div className="shell pt-14 pb-28 md:pt-20 md:pb-36">
         {/* ------------------------------ Filters ---------------------------- */}
         {term && all.length > 0 && (
           <Reveal className="mb-10 flex flex-wrap items-center gap-2 border-b border-border pb-6">
@@ -144,7 +145,7 @@ export default async function SearchPage({
             {grouped.map((group) => (
               <section key={group.kind} aria-labelledby={`group-${group.kind}`}>
                 <div className="mb-6 flex items-baseline gap-4">
-                  <h2 id={`group-${group.kind}`} className="font-display text-2xl md:text-3xl">
+                  <h2 id={`group-${group.kind}`} className="text-title">
                     {group.heading}
                   </h2>
                   <Badge variant="default">{group.rows.length}</Badge>
@@ -197,7 +198,7 @@ function ResultCard({ result }: { result: SearchResult }) {
   return (
     <Link
       href={result.href}
-      className="group flex h-full gap-4 rounded-[var(--radius-lg)] border border-border bg-surface p-3 transition-all duration-300 ease-[var(--ease-out-expo)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)]"
+      className="group flex h-full gap-4 rounded-[var(--radius-lg)] border border-border bg-surface p-3 transition-all duration-300 ease-[var(--ease-flat)] hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[var(--shadow-md)]"
     >
       <div className="relative size-24 shrink-0 overflow-hidden rounded-[var(--radius)] bg-surface-sunken">
         {result.image && (
@@ -206,7 +207,7 @@ function ResultCard({ result }: { result: SearchResult }) {
             alt=""
             fill
             sizes="96px"
-            className="object-cover transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:scale-105"
+            className="object-cover transition-transform duration-500 ease-[var(--ease-flat)] group-hover:scale-105"
           />
         )}
       </div>
@@ -214,7 +215,7 @@ function ResultCard({ result }: { result: SearchResult }) {
         <span className="eyebrow text-[0.625rem] text-muted-foreground">
           {kindLabel(result.kind)}
         </span>
-        <span className="mt-1.5 font-display text-lg leading-snug text-foreground">
+        <span className="mt-1.5 font-display text-lg leading-snug text-foreground group-hover:text-primary">
           {result.title}
         </span>
         <span className="mt-1 line-clamp-2 text-sm text-muted-foreground">{result.subtitle}</span>
@@ -242,11 +243,11 @@ function EmptyState({
 }) {
   return (
     <Reveal>
-      <div className="rounded-[var(--radius-lg)] border border-dashed border-border-strong px-6 py-16 text-center md:py-20">
+      <div className="rounded-[var(--radius-lg)] border border-dashed border-border-strong bg-surface-sand px-6 py-16 text-center md:py-20">
         {icon && (
           <SearchX className="mx-auto mb-6 size-8 text-muted-foreground" aria-hidden="true" />
         )}
-        <h2 className="font-display text-2xl md:text-3xl">{title}</h2>
+        <h2 className="text-headline">{title}</h2>
         <p className="mx-auto mt-4 max-w-[52ch] leading-relaxed text-muted-foreground">{body}</p>
         {children}
 
@@ -273,7 +274,7 @@ function EmptyState({
               href={entry.href}
               className="bg-surface p-5 text-left transition-colors hover:bg-muted"
             >
-              <span className="block font-display text-lg">{entry.label}</span>
+              <span className="block font-display text-lg text-foreground">{entry.label}</span>
               <span className="mt-1 block text-sm text-muted-foreground">{entry.blurb}</span>
             </Link>
           ))}

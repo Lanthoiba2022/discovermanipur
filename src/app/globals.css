@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/* Bind Tailwind's `dark:` variant to the CLASS next-themes sets, not to the
+   OS preference. The provider runs `attribute="class"` with `enableSystem`
+   off, but Tailwind v4 defaults `dark:` to `prefers-color-scheme` — so before
+   this line every `dark:*` utility in the app fired on the wrong signal:
+   the tokens below flipped on toggle while the utilities did not, leaving
+   e.g. long-form prose dark-on-dark for anyone whose OS was set to light. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ============================================================
    MANIPUR TOURISM — Design Tokens
    "Woven, not painted."
@@ -53,6 +61,22 @@
   --pine-500: #3e6450;
   --pine-400: #5c8a70;
 
+  /* --- Earth: the warm secondaries.
+     Added so category coding (places vs crafts vs food) has somewhere to go
+     other than "more crimson". Measured on the ivory ground:
+       terracotta-500  3.10:1  · stone-500  3.10:1  → UI, fills, rules, icons
+       terracotta-700  5.94:1  · stone-700  5.82:1  → anything carrying text
+     The -500s clear 3:1 for non-text UI; they must never set small copy. --- */
+  --terracotta-500: #c67b5c;
+  --terracotta-700: #8f4f33;
+  --stone-500: #9c8b7a;
+  --stone-700: #6d5f50;
+
+  /* Second warm ground. One ivory flattens a long page — this is the
+     alternating band, the menu panel and the card rest. Ink on it is
+     15.8:1, so everything that works on ivory works here. */
+  --sand-100: #f3ece1;
+
   /* ------------------------------------------------------------
      Legacy scale aliases.
      The first build named its colours after Loktak. Those names
@@ -87,6 +111,7 @@
   --surface: #ffffff;
   --surface-raised: #ffffff;
   --surface-sunken: var(--ivory-100);
+  --surface-sand: var(--sand-100);
   --border: var(--ivory-200);
   --border-strong: var(--ivory-300);
   --muted: var(--ivory-100);
@@ -94,10 +119,16 @@
 
   --primary: var(--ningthou-800);
   --primary-foreground: var(--ivory-50);
+  /* Hover lightens within the hue. Tokenised because the two themes move in
+     OPPOSITE directions: on ivory the crimson lifts toward ningthou-700, but
+     in dark mode primary is already a pale lily and must lift paler still —
+     a fixed hover colour puts dark text on a dark ground in one of the two. */
+  --primary-hover: var(--ningthou-700);
   --secondary: var(--pine-600);
   --secondary-foreground: var(--ivory-50);
   --accent: var(--brass-500);
   --accent-foreground: var(--ink-950);
+  --accent-hover: var(--brass-400);
   --highlight: var(--lily-400);
   --highlight-foreground: var(--ink-950);
 
@@ -127,12 +158,36 @@
   --shadow-md: 0 8px 24px -8px rgba(14, 12, 11, 0.18);
   --shadow-lg: 0 24px 60px -20px rgba(14, 12, 11, 0.34);
 
-  /* --- Motion --- */
+  /* --- Motion ---
+     Two house easings carry almost everything, which is what makes the
+     motion read as one system rather than per-component taste:
+       `--ease-flat`   long flat tail. Hovers, transforms, colour. 180-400ms.
+       `--ease-spring` control point past 1.0, so it overshoots and settles.
+                       Entrances only — never on anything being read. */
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-flat: cubic-bezier(0.4, 0, 0.1, 1);
+  --ease-spring: cubic-bezier(0.2, 0.9, 0.25, 1.1);
   --dur-fast: 180ms;
   --dur-base: 380ms;
   --dur-slow: 600ms;
+
+  /* --- Measure ladder ---
+     The page narrows as it descends. Varying the column per section is the
+     cheapest cure for the endless-identical-bands problem, and costs no JS. */
+  --measure-wide: 88rem;
+  --measure-mid: 75rem;
+  --measure-tight: 62.5rem;
+  --measure-prose: 44rem;
+
+  /* --- Dawn ramp ---
+     Loktak at first light, as five stops. The hero aurora and every soft
+     glow compose from these rather than from hand-tuned inline gradients. */
+  --dawn-1: #f6d9a8;
+  --dawn-2: #eebf9a;
+  --dawn-3: #dc9f8c;
+  --dawn-4: #bd7a7a;
+  --dawn-5: #8a5566;
 
   /* --- Spacing rhythm (spacious: marketing, not dashboard) --- */
   --space-section: clamp(5rem, 11vw, 10rem);
@@ -146,6 +201,7 @@
   --surface: #17140f;
   --surface-raised: #221d18;
   --surface-sunken: #090807;
+  --surface-sand: #1a1512;
   --border: #2b2520;
   --border-strong: #3d352c;
   --muted: #1c1815;
@@ -155,10 +211,12 @@
      so dark mode promotes the lily tint into the primary slot. */
   --primary: #e0919f;
   --primary-foreground: var(--ink-950);
+  --primary-hover: #edb4be;
   --secondary: var(--pine-400);
   --secondary-foreground: var(--ink-950);
   --accent: var(--brass-400);
   --accent-foreground: var(--ink-950);
+  --accent-hover: var(--brass-300);
   --highlight: var(--lily-300);
   --highlight-foreground: var(--ink-950);
 
@@ -189,16 +247,19 @@
   --color-surface: var(--surface);
   --color-surface-raised: var(--surface-raised);
   --color-surface-sunken: var(--surface-sunken);
+  --color-surface-sand: var(--surface-sand);
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-hover: var(--accent-hover);
   --color-highlight: var(--highlight);
   --color-highlight-foreground: var(--highlight-foreground);
   --color-success: var(--success);
@@ -241,6 +302,11 @@
   --color-pine-600: var(--pine-600);
   --color-pine-500: var(--pine-500);
   --color-pine-400: var(--pine-400);
+  --color-terracotta-500: var(--terracotta-500);
+  --color-terracotta-700: var(--terracotta-700);
+  --color-stone-500: var(--stone-500);
+  --color-stone-700: var(--stone-700);
+  --color-sand-100: var(--sand-100);
 
   /* Legacy aliases — see the note in :root */
   --color-loktak-900: var(--loktak-900);
@@ -263,10 +329,11 @@
   --color-cream-100: var(--cream-100);
   --color-cream-200: var(--cream-200);
 
-  --font-display: var(--font-bodoni), "Times New Roman", serif;
-  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-display: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
+  --font-sans: var(--font-figtree), system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
-  --font-mayek: var(--font-mayek), var(--font-geist-sans), sans-serif;
+  --font-mayek: var(--font-mayek), var(--font-figtree), sans-serif;
+  --font-devanagari: var(--font-devanagari), var(--font-newsreader), serif;
 
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius);
@@ -288,15 +355,21 @@
   body {
     background: var(--background);
     color: var(--foreground);
-    font-family: var(--font-geist-sans), system-ui, sans-serif;
+    font-family: var(--font-figtree), system-ui, sans-serif;
+    /* Reading comfort is the whole point of the new pairing: a 1.65 default
+       leading and a hair of positive tracking at text sizes. */
+    font-size: clamp(1rem, 0.965rem + 0.18vw, 1.125rem);
+    line-height: 1.65;
+    letter-spacing: 0.003em;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
   }
 
   h1, h2, h3, h4 {
-    font-family: var(--font-bodoni), "Times New Roman", serif;
+    font-family: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
     font-weight: 500;
-    letter-spacing: -0.015em;
+    line-height: 1.15;
+    letter-spacing: -0.012em;
     text-wrap: balance;
   }
 
@@ -317,45 +390,54 @@
 
 @layer utilities {
   /* ---------- Type scale ----------
-     Bodoni is a high-contrast didone: it wants to be either very
-     large or not used at all. The display sizes run tight and the
-     hairlines only survive above ~40px, so nothing below
-     `.text-title` is allowed to use it. */
+     Newsreader is a low-contrast oldstyle with an `opsz` axis, which is
+     what the scale is built around: each step asks for the optical size
+     it is actually rendered at, so the hero opens up and the small sizes
+     stay sturdy. Unlike the didone it replaces, it is legible all the way
+     down — but the display faces still earn their keep by staying large. */
   .text-display {
-    font-family: var(--font-bodoni), "Times New Roman", serif;
-    font-size: clamp(3rem, 10vw, 9.5rem);
-    line-height: 0.88;
-    letter-spacing: -0.025em;
-    font-weight: 500;
+    font-family: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
+    font-size: clamp(3.25rem, 1.55rem + 7.1vw, 8.5rem);
+    line-height: 0.94;
+    letter-spacing: -0.022em;
+    font-weight: 400;
+    font-variation-settings: "opsz" 72;
+    text-wrap: balance;
   }
 
   /* Section and inner-page titles. Deliberately well below `.text-display`:
      this class is used on ~40 routes as the page h1, and at hero scale it
-     swallowed whole screens. */
+     swallowed whole screens. The ceiling here is held down on purpose. */
   .text-headline {
-    font-family: var(--font-bodoni), "Times New Roman", serif;
-    font-size: clamp(2rem, 3.6vw, 3.25rem);
-    line-height: 1.04;
-    letter-spacing: -0.018em;
-    font-weight: 500;
+    font-family: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
+    font-size: clamp(2rem, 1.42rem + 2.6vw, 3.5rem);
+    line-height: 1.06;
+    letter-spacing: -0.015em;
+    font-weight: 400;
+    font-variation-settings: "opsz" 48;
   }
 
   .text-title {
-    font-family: var(--font-bodoni), "Times New Roman", serif;
-    font-size: clamp(1.5rem, 2.4vw, 2.25rem);
-    line-height: 1.1;
-    letter-spacing: -0.01em;
+    font-family: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
+    font-size: clamp(1.375rem, 1.14rem + 0.98vw, 1.875rem);
+    line-height: 1.2;
+    letter-spacing: -0.008em;
     font-weight: 500;
+    font-variation-settings: "opsz" 28;
   }
 
-  /* Uppercase mono micro-label. The workhorse of the editorial
-     register: section tags, indices, dates, coordinates, stats. */
+  /* Uppercase micro-label. The workhorse of the editorial register:
+     section tags, indices, dates, stats. This used to be set in the code
+     face, which read "terminal" everywhere it was used as decoration —
+     it is the body sans now, and `--font-mono` is kept for text that is
+     genuinely machine-issued (booking references, coordinates, ids). */
   .eyebrow {
-    font-family: var(--font-mono), ui-monospace, monospace;
-    font-size: 0.6875rem;
+    font-family: var(--font-figtree), system-ui, sans-serif;
+    font-size: clamp(0.6875rem, 0.655rem + 0.14vw, 0.8125rem);
     letter-spacing: 0.18em;
+    line-height: 1;
     text-transform: uppercase;
-    font-weight: 500;
+    font-weight: 600;
     font-feature-settings: "tnum";
   }
 
@@ -368,9 +450,22 @@
 
   /* Lead paragraph — the one place body copy gets scale. */
   .text-lead {
-    font-size: clamp(1.0625rem, 1.5vw, 1.375rem);
-    line-height: 1.55;
-    letter-spacing: -0.005em;
+    font-size: clamp(1.125rem, 1.02rem + 0.44vw, 1.375rem);
+    line-height: 1.58;
+    letter-spacing: 0;
+    max-inline-size: 58ch;
+  }
+
+  /* Editorial aside — Newsreader italic at reading size. The one place the
+     display face is allowed below `.text-title`, because an oldstyle italic
+     is a caption voice in a way a didone italic never was. */
+  .text-aside {
+    font-family: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(1rem, 0.95rem + 0.25vw, 1.1875rem);
+    line-height: 1.5;
+    font-variation-settings: "opsz" 16;
   }
 
   .shell {
@@ -491,12 +586,18 @@
     --hdr-fg: var(--foreground);
     --hdr-fg-muted: color-mix(in oklab, var(--foreground) 80%, transparent);
     --hdr-hover: color-mix(in oklab, var(--foreground) 8%, transparent);
+    /* The mark keeps the brand crimson while the wordmark takes the page
+       foreground — they are different colours on purpose. */
+    --hdr-mark: var(--primary);
   }
 
   body:has([data-hero-tone="dark"]) header[data-site-header][data-scrolled="false"] {
     --hdr-fg: var(--ivory-50);
     --hdr-fg-muted: color-mix(in oklab, var(--ivory-50) 80%, transparent);
     --hdr-hover: color-mix(in oklab, var(--ivory-50) 14%, transparent);
+    /* Over the film the crimson silhouette all but disappears, so the mark
+       goes ivory with everything else. */
+    --hdr-mark: var(--ivory-50);
   }
 
   /* Text scrims — gradients sized to the copy block rather than a flat
@@ -513,6 +614,163 @@
       rgba(14, 12, 11, 0.34) 52%,
       transparent 76%
     );
+  }
+
+  /* ---------- Measure ladder ----------
+     `.shell` stays the default 88rem. These are the narrower rungs; a page
+     steps down through them so the reader is funnelled rather than walled. */
+  .shell-mid,
+  .shell-tight {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  .shell-mid { max-width: var(--measure-mid); }
+  .shell-tight { max-width: var(--measure-tight); }
+
+  @media (min-width: 768px) {
+    .shell-mid,
+    .shell-tight { padding-inline: 2rem; }
+  }
+
+  /* ---------- Section opener ----------
+     A two-part heading: a large calm display line, then a completion line
+     that finishes the sentence in the accent. The scale jump does the work
+     that a 900-weight uppercase word does elsewhere — without the shouting,
+     which is the whole point of this typeface change. */
+  .section-word {
+    font-family: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
+    font-size: clamp(2.5rem, 1.6rem + 4vw, 5rem);
+    line-height: 1.0;
+    letter-spacing: -0.028em;
+    font-weight: 400;
+    font-variation-settings: "opsz" 60;
+    text-wrap: balance;
+  }
+
+  /* The payoff line. Sentence case, one step down, in the accent ink. */
+  .section-completion {
+    font-family: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
+    font-style: italic;
+    font-size: clamp(1.25rem, 1.05rem + 0.9vw, 1.75rem);
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+    font-weight: 300;
+    font-variation-settings: "opsz" 24;
+  }
+
+  /* Eyebrow flanked by two short rules — the editorial tick that says
+     "a new chapter starts here" without adding another type size. */
+  .rule-flank {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+  }
+  .rule-flank::before,
+  .rule-flank::after {
+    content: "";
+    height: 1px;
+    width: 2.5rem;
+    flex: none;
+    background: currentColor;
+    opacity: 0.4;
+  }
+  .rule-flank.rule-flank-start::before { display: none; }
+
+  /* ---------- Showcase register ----------
+     The landing page runs a louder rhythm than the rest of the site: each
+     band opens with one enormous uppercase word, then a line that finishes
+     the thought. That structure is borrowed from the national tourism board's
+     page; the VOICE is not. They set the word in a geometric sans at 900 and
+     the subtitle in the same family — here the word is our humanist sans and
+     the subtitle is the oldstyle italic, which inverts the pairing and keeps
+     the band unmistakably ours rather than a reskin. */
+  .display-word {
+    font-family: var(--font-figtree), system-ui, sans-serif;
+    font-size: clamp(2.25rem, 1.1rem + 5.4vw, 5.5rem);
+    line-height: 0.92;
+    letter-spacing: -0.028em;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  /* The line that completes the sentence under a display word. */
+  .display-tail {
+    font-family: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(1.0625rem, 0.95rem + 0.6vw, 1.5rem);
+    line-height: 1.35;
+    letter-spacing: 0;
+    font-variation-settings: "opsz" 24;
+  }
+
+  /* Ghost mark — a huge, very low-contrast motif sitting behind a light band,
+     so the ivory never reads as empty paper. Always decorative. */
+  .ghost-mark {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.045;
+    font-family: var(--font-mayek), sans-serif;
+    font-size: clamp(14rem, 34vw, 30rem);
+    line-height: 0.8;
+    color: var(--foreground);
+  }
+
+  /* ---------- Brand mark ----------
+     The logo is a solid silhouette of the state with an alpha channel, so it
+     is used as a MASK filled with `currentColor` rather than drawn as an
+     image. That is what lets one file be crimson on the ivory header, ivory
+     over the film and ivory again in the footer, with no second asset and no
+     filter hacks — the shape simply inherits whatever colour it is given. */
+  .logo-mark {
+    -webkit-mask-image: url("/ManipurLOGO.webp");
+    mask-image: url("/ManipurLOGO.webp");
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-position: center;
+    mask-position: center;
+    background-color: currentColor;
+  }
+
+  /* ---------- Arch ----------
+     Rounded dome over square shoulders — the profile of a Manipuri gateway
+     arch. Used to mask feature imagery so the shape language is local
+     rather than another generic rounded rectangle. */
+  .mask-arch {
+    border-radius: 48% 48% var(--radius) var(--radius) / 32% 32% var(--radius) var(--radius);
+    overflow: hidden;
+  }
+
+  /* ---------- Depth ----------
+     Background media is pushed back with saturation and brightness, then
+     comes forward on reveal. Gives a payoff moment for no JS at all. */
+  .media-recede {
+    /* The resting state was saturate(.32)/brightness(.62), which read as a
+       payoff on a single feature panel but turned a GRID of photographs grey
+       and lifeless — and vivid photography is most of what makes this kind of
+       site feel premium. Pulled back to a hint of depth that still resolves
+       on hover. Keyboard focus gets the same payoff as the pointer. */
+    filter: saturate(0.78) brightness(0.9);
+    transition: filter 450ms ease;
+  }
+  .group:hover .media-recede,
+  .group:focus-within .media-recede,
+  .media-recede[data-active="true"] {
+    filter: saturate(1) brightness(1);
+  }
+
+  /* Aurora built from the dawn ramp. Decorative, always `aria-hidden`. */
+  .dawn-wash {
+    background-image:
+      radial-gradient(60% 55% at 18% 22%, color-mix(in oklab, var(--dawn-1) 55%, transparent) 0%, transparent 70%),
+      radial-gradient(52% 48% at 78% 18%, color-mix(in oklab, var(--dawn-3) 45%, transparent) 0%, transparent 72%),
+      radial-gradient(70% 60% at 62% 82%, color-mix(in oklab, var(--dawn-5) 38%, transparent) 0%, transparent 75%);
+    filter: blur(24px);
   }
 
   .scrim-reading {
@@ -554,6 +812,21 @@
   from { opacity: 1; }
   to { opacity: 0; }
 }
+/* ---------- The fold's picture reel ----------
+   The reel itself is a horizontal track (see `hero-stage.tsx`); the only
+   thing that needs a keyframe here is the resting frame's slow drift.
+   `hero-drift` pulls the resting frame back FROM a 12% zoom rather than
+   pushing into one. That direction is deliberate: the blanket
+   `prefers-reduced-motion` rule below collapses every animation to its end
+   state, and ending near neutral means a reduced-motion reader lands on an
+   uncropped photograph instead of a permanently zoomed one. It also lets
+   the class stays on the element unconditionally, so reduced motion never
+   changes what is rendered and hydration cannot mismatch. */
+@keyframes hero-drift {
+  from { transform: scale(1.12); }
+  to   { transform: scale(1.01); }
+}
+
 @keyframes float-slow {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50% { transform: translateY(-14px) rotate(2deg); }
@@ -568,6 +841,7 @@
   .animate-accordion-up { animation: accordion-up 260ms var(--ease-out-expo); }
   .fade-in { animation: fade-in 200ms ease-out; }
   .fade-out { animation: fade-out 160ms ease-in; }
+  .hero-drift { animation: hero-drift 9s ease-out both; will-change: transform; }
   .animate-float-slow { animation: float-slow 9s ease-in-out infinite; }
   .animate-drift { animation: drift 40s linear infinite; }
 }

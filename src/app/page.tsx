@@ -1,19 +1,25 @@
-import { getHeroSubjects, getHomeStatement, getHomeStats } from "@/lib/data/content";
 import type { Metadata } from "next";
 
+import { CelebrationBand } from "@/components/landing/bands/celebration";
+import { CraftsBand } from "@/components/landing/bands/crafts";
+import { DestinationsBand } from "@/components/landing/bands/destinations";
+import { DiariesBand } from "@/components/landing/bands/diaries";
+import { ExperiencesBand } from "@/components/landing/bands/experiences";
+import { GetStartedBand } from "@/components/landing/bands/get-started";
+import { ItinerariesBand } from "@/components/landing/bands/itineraries";
+import { LesserKnownBand } from "@/components/landing/bands/lesser-known";
+import { LandingHero } from "@/components/landing/hero";
+import { SideTab } from "@/components/landing/side-tab";
 import { KanglaTeaser } from "@/components/immersive/kangla-teaser";
-import { Hero } from "@/components/hero/hero";
-import { ClosingCta } from "@/components/home/closing-cta";
-import { ConciergeTeaser } from "@/components/home/concierge-teaser";
-import { ExperiencesTeaser } from "@/components/home/experiences-teaser";
-import { FeaturedPlaces } from "@/components/home/featured-places";
-import { FestivalStrip } from "@/components/home/festival-strip";
-import { FourWays } from "@/components/home/four-ways";
-import { LayersNarrative } from "@/components/home/layers-narrative";
-import { MarqueeStrip } from "@/components/home/marquee-strip";
-import { Statement } from "@/components/home/statement";
-import { TestimonialsSection } from "@/components/home/testimonials-section";
-import { getExperiences, getFestivals, getHotspots, getTestimonials } from "@/lib/data";
+import {
+  getCrafts,
+  getExperiences,
+  getFestivals,
+  getHotspots,
+  getTestimonials,
+  getTours,
+} from "@/lib/data";
+import { getHomeStats } from "@/lib/data/content";
 
 export const metadata: Metadata = {
   title: "Manipur Tourism — The Land of Jewels",
@@ -37,34 +43,50 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * The landing page.
+ *
+ * Built to the rhythm of a national tourism board's home page: a full-bleed
+ * film, then a run of bands that each open with one enormous word, finish the
+ * sentence in an italic line, and close on a single pill. What is ours is the
+ * voice inside that frame — an oldstyle serif answering the sans, the Manipuri
+ * gateway arch instead of a generic card, and a ground that alternates
+ * photo → sand → ivory → crimson so the page never marches down one axis the
+ * way the site it borrows from does.
+ *
+ * `LandingHero` must stay first: it carries `data-hero-tone="dark"`, which the
+ * fixed header reads in CSS to flip its wordmark to ivory on the first paint.
+ */
 export default async function HomePage() {
-  const [heroSubjects, homeStatement, homeStats] = await Promise.all([
-    getHeroSubjects(),
-    getHomeStatement(),
-    getHomeStats(),
-  ]);
+  const [featuredSpots, allSpots, experiences, tours, festivals, crafts, testimonials, stats] =
+    await Promise.all([
+      getHotspots({ featured: true, limit: 8 }),
+      getHotspots({ limit: 60 }),
+      getExperiences({ featured: true, limit: 8 }),
+      getTours({ featured: true, limit: 6 }),
+      getFestivals({ featured: true, limit: 8 }),
+      getCrafts({ featured: true, limit: 8 }),
+      getTestimonials(),
+      getHomeStats(),
+    ]);
 
-  const [hotspots, experiences, festivals, testimonials] = await Promise.all([
-    getHotspots({ featured: true, limit: 8 }),
-    getExperiences({ featured: true, limit: 6 }),
-    getFestivals({ featured: true, limit: 6 }),
-    getTestimonials(),
-  ]);
+  // The quiet half of the catalogue — everything the featured rail skips.
+  const lesserKnown = allSpots.filter((spot) => !spot.featured).slice(0, 8);
 
   return (
     <>
-      <Hero subjects={heroSubjects} />
-      <MarqueeStrip />
-      <Statement statement={homeStatement} stats={homeStats} />
-      <FourWays />
-      <FeaturedPlaces hotspots={hotspots} />
-      <LayersNarrative />
+      <LandingHero />
+      <SideTab />
+
+      <DestinationsBand hotspots={featuredSpots} />
+      <ExperiencesBand experiences={experiences} />
+      <ItinerariesBand tours={tours} />
+      <CelebrationBand festivals={festivals} />
       <KanglaTeaser />
-      <ExperiencesTeaser experiences={experiences} />
-      <FestivalStrip festivals={festivals} />
-      <TestimonialsSection testimonials={testimonials} />
-      <ConciergeTeaser />
-      <ClosingCta />
+      <CraftsBand crafts={crafts} />
+      <LesserKnownBand hotspots={lesserKnown} />
+      <DiariesBand testimonials={testimonials} />
+      <GetStartedBand stats={stats} />
     </>
   );
 }

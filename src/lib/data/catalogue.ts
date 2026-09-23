@@ -24,10 +24,14 @@ import type {
   Festival,
   Homestay,
   Hotspot,
+  MediaImage,
+  PhotoRef,
   Testimonial,
   Tour,
   TransportOption,
 } from "@/types";
+
+import { creditLine, placePhotoUrl } from "./photos";
 
 import { getSupabasePublicClient } from "@/lib/supabase/public";
 
@@ -77,12 +81,48 @@ const str = (v: unknown) => (v == null ? "" : String(v));
 const num = (v: unknown) => (v == null ? 0 : Number(v));
 const arr = <T,>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
 
+/**
+ * Give every row a usable `images` array.
+ *
+ * The 2026 research rows carry their photography in `photo_refs` (Google Places
+ * references resolved per request) and have an empty `images`. Every card and
+ * gallery in the app reads `images`, so without this they all fell through to
+ * the shared placeholder — which is why 100+ different places rendered the same
+ * Kangla Sha photo.
+ *
+ * Fixing it here rather than in the ~20 components that render a photo means
+ * each of them keeps working unchanged, and there is one place to reason about
+ * which photo source won.
+ *
+ * Self-hosted files always win: we control the crop, pay no per-render API cost
+ * and owe no attribution overlay. Places refs are only synthesised when `images`
+ * is empty, and each one carries its `credit` so the licence condition travels
+ * with the image instead of being remembered separately.
+ */
+function withPhotos<T extends { images: MediaImage[]; photoRefs?: PhotoRef[] }>(
+  row: T,
+  name: string,
+): T {
+  if (row.images.length > 0 || !row.photoRefs?.length) return row;
+  return {
+    ...row,
+    images: row.photoRefs.map((ref) => ({
+      src: placePhotoUrl(ref.ref),
+      // Places photos come with no description. Naming the place is the honest
+      // ceiling — inventing detail about a photo nobody has looked at would put
+      // false information into a screen-reader's mouth.
+      alt: `${name}, Manipur`,
+      credit: creditLine(ref) ?? undefined,
+    })),
+  };
+}
+
 /* -------------------------------------------------------------- loaders -- */
 
 export const loadHotspots = loader<Hotspot>(
   "hotspots",
   (r) =>
-    ({
+    withPhotos({
       id: str(r.id),
       slug: str(r.slug),
       name: str(r.name),
@@ -110,14 +150,18 @@ export const loadHotspots = loader<Hotspot>(
       tags: arr(r.tags),
       featured: Boolean(r.featured),
       panoramaUrl: (r.panorama_url as string) ?? undefined,
-    }) as Hotspot,
+      photoRefs: arr(r.photo_refs),
+      sortWeight: num(r.sort_weight),
+      verification: (r.verification as Hotspot["verification"]) ?? undefined,
+      sources: arr(r.sources),
+    } as Hotspot, str(r.name)),
   seedHotspots,
 );
 
 export const loadHomestays = loader<Homestay>(
   "homestays",
   (r) =>
-    ({
+    withPhotos({
       id: str(r.id),
       slug: str(r.slug),
       title: str(r.title),
@@ -140,7 +184,11 @@ export const loadHomestays = loader<Homestay>(
       cancellationPolicy: str(r.cancellation_policy),
       featured: Boolean(r.featured),
       isActive: Boolean(r.is_active),
-    }) as Homestay,
+      photoRefs: arr(r.photo_refs),
+      sortWeight: num(r.sort_weight),
+      verification: (r.verification as Homestay["verification"]) ?? undefined,
+      sources: arr(r.sources),
+    } as Homestay, str(r.title)),
   seedHomestays,
 );
 
@@ -172,7 +220,7 @@ export const loadExperiences = loader<Experience>(
 export const loadEateries = loader<Eatery>(
   "eateries",
   (r) =>
-    ({
+    withPhotos({
       id: str(r.id),
       slug: str(r.slug),
       name: str(r.name),
@@ -190,7 +238,10 @@ export const loadEateries = loader<Eatery>(
       signatureDishes: arr(r.signature_dishes),
       acceptsReservations: Boolean(r.accepts_reservations),
       featured: Boolean(r.featured),
-    }) as Eatery,
+      photoRefs: arr(r.photo_refs),
+      sortWeight: num(r.sort_weight),
+      verification: (r.verification as Eatery["verification"]) ?? undefined,
+    } as Eatery, str(r.name)),
   seedEateries,
 );
 
