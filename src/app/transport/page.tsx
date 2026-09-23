@@ -20,7 +20,7 @@ import {
   parseTransportFilters,
 } from "@/components/transport/transport-filters";
 import { Button } from "@/components/ui/button";
-import { ListingHero } from "@/components/content/listing-hero";
+import { PageHero } from "@/components/content/page-hero";
 import { getTransportOptions } from "@/lib/data";
 import { formatINR } from "@/lib/utils";
 
@@ -47,14 +47,15 @@ export default async function TransportPage({
 
   return (
     <div className="pb-24">
-      <ListingHero
+      <PageHero
         eyebrow="Getting around"
-        title="Wheels, permits and hill roads"
+        title="Wheels & permits"
+        titleScale="display"
+        completion="hill roads, shared sumos, and the paperwork you sort before you fly."
         lede={
           <p>
             Manipur rewards people who plan their transport first. Hire a vehicle with a driver who
-            knows the hill stretches, or ride the shared sumos like everyone else — and sort your
-            permit before you fly.
+            knows the hill stretches, or ride the shared sumos like everyone else.
           </p>
         }
         figures={[
@@ -65,14 +66,14 @@ export default async function TransportPage({
         ]}
       />
 
-      <div className="shell mt-12">
+      <section aria-label="How to reach and cross Manipur" className="shell-mid mt-16 md:mt-20">
         <GettingAround />
-      </div>
+      </section>
 
-      <div className="shell mt-16 flex flex-col gap-10">
-        <div>
-          <h2 className="font-display text-3xl">Hire a vehicle</h2>
-          <p className="mt-2 max-w-2xl text-muted-foreground">
+      <div className="shell mt-20 flex flex-col gap-10 md:mt-24">
+        <div className="border-b border-border-strong pb-6">
+          <h2 className="text-headline">Hire a vehicle</h2>
+          <p className="text-lead mt-3 text-muted-foreground">
             Verified operators running valley and hill routes, priced per day or per kilometre.
           </p>
         </div>

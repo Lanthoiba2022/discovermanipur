@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+
+import { isPlacePhoto } from "@/lib/data/photos";
 import { ImageOff } from "lucide-react";
 import { useState } from "react";
 
@@ -39,6 +41,7 @@ export function MediaGallery({
           src={current.src}
           alt={current.alt}
           fill
+          unoptimized={isPlacePhoto(current.src)}
           preload={preload}
           sizes="(max-width: 768px) 100vw, 60vw"
           className="object-cover"

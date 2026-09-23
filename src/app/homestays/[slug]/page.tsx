@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { BedDouble, Bath, MapPin, Star, Users } from "lucide-react";
 
+import { ogImage } from "@/lib/data/photos";
 import { BookingCard } from "@/components/booking/booking-card";
 import { AMENITY_META } from "@/components/homestays/amenities";
 import { HomestayGallery } from "@/components/homestays/homestay-gallery";
@@ -48,7 +49,10 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       title: `${homestay.title} · ${homestay.location}`,
       description,
       url: `/homestays/${homestay.slug}`,
-      images: homestay.images[0] ? [{ url: homestay.images[0].src }] : undefined,
+      // Places refs expire; only self-hosted files are safe for scrapers.
+      images: ogImage(homestay.images[0])
+        ? [{ url: ogImage(homestay.images[0])!.src }]
+        : undefined,
       type: "website",
     },
   };

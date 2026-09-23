@@ -23,7 +23,7 @@ import {
 import { CraftTraditions } from "@/components/store/craft-traditions";
 import { NoCommissionBand } from "@/components/store/no-commission-band";
 import { Button } from "@/components/ui/button";
-import { ListingHero } from "@/components/content/listing-hero";
+import { PageHero } from "@/components/content/page-hero";
 import { getCraftCategories, getCrafts } from "@/lib/data";
 
 export const metadata: Metadata = {
@@ -54,20 +54,21 @@ export default async function StorePage({
 
   return (
     <div className="pb-24">
-      <ListingHero
+      <PageHero
+        tone="sand"
         eyebrow="Crafts · direct from the artisan"
         title="Buy from the maker"
+        titleScale="display"
+        completion="no cart, no commission — the money and the relationship stay in Manipur."
         lede={
           <>
             <p>
-              We take no payment and no commission — every listing below carries the
-              artisan&rsquo;s own contact details, so the money and the relationship stay in
-              Manipur. There is no cart here, and that is the point.
+              A phanek off a loin loom in Moirang, a wheel-less pot fired in an open pit at Andro,
+              cane woven damp so it tightens as it dries.
             </p>
             <p className="mt-4 text-base">
-              A phanek off a loin loom in Moirang, a wheel-less pot fired in an open pit at Andro,
-              cane woven damp so it tightens as it dries. Read the story, then ring the person who
-              made it.
+              Every listing carries the artisan&rsquo;s own contact details. Read the story, then
+              ring the person who made it.
             </p>
           </>
         }
@@ -79,7 +80,7 @@ export default async function StorePage({
         ]}
       />
 
-      <div className="shell mt-12 flex flex-col gap-14">
+      <div className="shell mt-14 flex flex-col gap-16 md:mt-16">
         <FilterBar resultCount={rows.length} resultNoun="craft">
           <FilterChips
             name="category"
@@ -135,6 +136,9 @@ export default async function StorePage({
           </ul>
         )}
 
+      </div>
+
+      <div className="shell-mid mt-16 flex flex-col gap-16 md:mt-20">
         <NoCommissionBand />
         <CraftTraditions />
       </div>

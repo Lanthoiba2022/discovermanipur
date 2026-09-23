@@ -9,10 +9,15 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        // Hovers lighten within their own hue, via tokens that flip per theme
+        // (see --primary-hover in globals.css). The previous pair did neither:
+        // `primary` hovered onto a legacy alias for ink-800, so the crimson
+        // turned near-black; `accent` hovered onto brass-600, which dropped
+        // the dark label to 4.18:1 — under AA.
         primary:
-          "bg-primary text-primary-foreground hover:bg-loktak-700 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5",
+          "bg-primary text-primary-foreground hover:bg-primary-hover shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5",
         accent:
-          "bg-accent text-accent-foreground hover:bg-kangla-600 shadow-[var(--shadow-sm)] hover:-translate-y-0.5",
+          "bg-accent text-accent-foreground hover:bg-accent-hover shadow-[var(--shadow-sm)] hover:-translate-y-0.5",
         outline:
           "border border-border-strong bg-transparent text-foreground hover:bg-muted",
         ghost: "bg-transparent text-foreground hover:bg-muted",

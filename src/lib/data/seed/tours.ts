@@ -42,8 +42,8 @@ export const tours: Tour[] = [
     ],
     excludes: ["Personal expenses", "Camera fees at Keibul Lamjao", "Tips", "Travel insurance"],
     images: [
-      { src: "/file-uploads/loktrek.png", alt: "Loktak Lake and its floating phumdis on the day tour route" },
-      { src: "/file-uploads/16.jpg", alt: "Sangai deer at Keibul Lamjao National Park" },
+      { src: "/file-uploads/sangai-pair-keibul.webp", alt: "A pair of sangai, the brow-antlered deer, standing in the grassland of Keibul Lamjao National Park" },
+      { src: "/file-uploads/loktak-phumdi-hut.webp", alt: "A fisherman's hut on a floating phumdi island in the open water of Loktak Lake" },
       { src: "/file-uploads/loktakView.webp", alt: "Sunrise over Loktak Lake from Sendra" },
     ],
     departureDates: ["2026-10-04", "2026-10-18", "2026-11-08", "2026-11-22", "2026-12-06", "2026-12-20", "2027-01-10"],
@@ -87,7 +87,7 @@ export const tours: Tour[] = [
     ],
     excludes: ["Hotel pick-up outside central Imphal", "Camera fees", "Shopping", "Tips"],
     images: [
-      { src: "/file-uploads/walktrek.png", alt: "Walking route through the heritage centre of Imphal" },
+      { src: "/file-uploads/manipur-temple-front.webp", alt: "The arched frontage of a Manipur temple, visitors crossing the tiled forecourt" },
       { src: "/file-uploads/11.jpg", alt: "Kangla Fort, the first stop on the heritage walk" },
       { src: "/file-uploads/kha3.jpg", alt: "Ima Keithel market interior on the walking tour" },
     ],
@@ -135,7 +135,7 @@ export const tours: Tour[] = [
     ],
     excludes: ["Trekking gear and boots", "Personal insurance", "Tips", "Drinks"],
     images: [
-      { src: "/file-uploads/shiroitrek.png", alt: "Trekking route toward the Shirui hills in Ukhrul" },
+      { src: "/file-uploads/ukhrul-hill-haze.webp", alt: "Layered hills fading into blue haze above a village in Ukhrul district" },
       { src: "/file-uploads/27.jpg", alt: "Summit ridge of Shirui Kashong peak" },
       { src: "/file-uploads/shiroi4.jpg", alt: "Tangkhul hill ranges on the Shirui trek" },
     ],
@@ -190,7 +190,7 @@ export const tours: Tour[] = [
     ],
     excludes: ["Personal trekking gear and sleeping bag", "Insurance", "Tips", "Emergency evacuation costs"],
     images: [
-      { src: "/file-uploads/dztrek.png", alt: "The Dzukou Valley trek route through the hills" },
+      { src: "/file-uploads/dzukou-lily-valley.webp", alt: "A pink lily in flower above the grass of Dzukou Valley, with mist lying along the ridge" },
       { src: "/file-uploads/32.jpg", alt: "Dwarf bamboo slopes of Dzukou Valley" },
       { src: "/file-uploads/322.jpg", alt: "Stream crossing the floor of Dzukou Valley" },
     ],
@@ -234,7 +234,7 @@ export const tours: Tour[] = [
     ],
     excludes: ["Alcohol", "Additional shopping", "Tips"],
     images: [
-      { src: "/file-uploads/foodCarousel.png", alt: "Manipuri dishes prepared on the culinary tour" },
+      { src: "/file-uploads/manipuri-food-leaf.webp", alt: "Manipuri food served on a banana leaf — fried cakes and dried fish" },
       { src: "/file-uploads/kha2.jpg", alt: "Market produce at Ima Keithel at opening time" },
       { src: "/file-uploads/foodcar1.png", alt: "Home cooking session during the Manipuri culinary tour" },
     ],
@@ -321,7 +321,7 @@ export const tours: Tour[] = [
     ],
     excludes: ["Flights to and from Imphal", "Travel insurance", "Alcohol", "Personal shopping", "Tips"],
     images: [
-      { src: "/file-uploads/tourWhole.png", alt: "Overview of the seven-day Manipur grand circuit route" },
+      { src: "/file-uploads/terraced-valley-dusk.webp", alt: "A terraced valley in the Manipur hills at dusk, paddy steps cut into the slope" },
       { src: "/file-uploads/tourcar.png", alt: "Touring vehicle on a Manipur hill road" },
       { src: "/file-uploads/hotspotcar.png", alt: "Landmarks visited on the Manipur grand circuit" },
     ],
@@ -502,7 +502,7 @@ export const tours: Tour[] = [
     excludes: ["Flights", "Additional craft purchases", "Insurance", "Tips"],
     images: [
       { src: "/file-uploads/pottery.jpeg", alt: "Potter at work on the Manipur craft trail" },
-      { src: "/file-uploads/hand.jpg", alt: "Handloom weaving session on the craft trail" },
+      { src: "/file-uploads/phanek.jpeg", alt: "Folded lengths of Manipuri phanek cloth in magenta, lime, orange and purple, each edged with a woven temple-point border, seen on the craft trail" },
       { src: "/file-uploads/bamboocrafts.jpeg", alt: "Bamboo and cane craft workshop in Ukhrul" },
     ],
     departureDates: ["2026-10-15", "2026-11-12", "2026-12-10", "2027-02-11", "2027-03-11"],
@@ -553,7 +553,7 @@ export const tours: Tour[] = [
       "Tips",
     ],
     images: [
-      { src: "/file-uploads/mortrek.png", alt: "Road route to the Moreh border town in eastern Manipur" },
+      { src: "/file-uploads/hill-village-valley.webp", alt: "A hill village spread across a wooded valley floor in Manipur, on the road east toward Moreh" },
       { src: "/file-uploads/hill-village-valley.webp", alt: "Trading street in Moreh near the Myanmar border" },
       { src: "/file-uploads/terraced-valley-dusk.webp", alt: "Shenam saddle hill country on the road to Moreh" },
     ],

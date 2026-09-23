@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Clock, Leaf, MapPin, Phone, Star } from "lucide-react";
 
+import { ogImage } from "@/lib/data/photos";
 import { MediaGallery } from "@/components/shared/media-gallery";
 import {
   mapsHref,
@@ -44,7 +45,10 @@ export async function generateMetadata({
     openGraph: {
       title: eatery.name,
       description: eatery.description.slice(0, 160),
-      images: eatery.images[0] ? [{ url: eatery.images[0].src }] : undefined,
+      // Places refs expire; only self-hosted files are safe for scrapers.
+      images: ogImage(eatery.images[0])
+        ? [{ url: ogImage(eatery.images[0])!.src }]
+        : undefined,
     },
   };
 }

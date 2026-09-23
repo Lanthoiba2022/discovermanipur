@@ -38,6 +38,42 @@ export interface MediaImage {
   blurDataURL?: string;
 }
 
+/**
+ * A photo we are licensed to display but not to store.
+ *
+ * Google Places photos are fetched per request through `/api/place-photo`;
+ * their bytes must not be cached, which is why they are kept apart from
+ * `MediaImage` (files we host ourselves in `public/file-uploads`).
+ *
+ * `attribution` is a condition of the Maps Platform terms — render it wherever
+ * the photo appears.
+ */
+export interface PhotoRef {
+  provider: "google-places";
+  /** `places/<place_id>/photos/<photo_id>` — pass to /api/place-photo?ref= */
+  ref: string;
+  width?: number;
+  height?: number;
+  attribution: { name?: string; uri?: string }[];
+}
+
+/**
+ * How well attested a catalogue row is. `phone-verified` may only be set by a
+ * human who actually rang the business — never by an importer.
+ */
+export type SourceVerification =
+  | "official"
+  | "corroborated"
+  | "single-source"
+  | "phone-verified"
+  | "unverified";
+
+/**
+ * Display cohort. Higher sorts first, ahead of `featured`.
+ * 0 = original 2025 seed, 100 = verified 2026 research pass.
+ */
+export type SortWeight = number;
+
 /* ---------------------------------- Hotspots --------------------------------- */
 
 export type HotspotCategory =
@@ -83,6 +119,12 @@ export interface Hotspot {
   featured: boolean;
   /** Optional 360°/3D asset used by the Phase 8 AR/VR tour. */
   panoramaUrl?: string;
+  /** Externally-hosted photos resolved at request time. See PhotoRef. */
+  photoRefs?: PhotoRef[];
+  /** Display cohort — higher sorts first. */
+  sortWeight?: SortWeight;
+  verification?: SourceVerification;
+  sources?: string[];
 }
 
 /* --------------------------------- Homestays --------------------------------- */
@@ -124,6 +166,10 @@ export interface Homestay {
   cancellationPolicy: string;
   featured: boolean;
   isActive: boolean;
+  photoRefs?: PhotoRef[];
+  sortWeight?: SortWeight;
+  verification?: SourceVerification;
+  sources?: string[];
 }
 
 /* -------------------------------- Experiences -------------------------------- */
@@ -198,6 +244,9 @@ export interface Eatery {
   signatureDishes: MenuItem[];
   acceptsReservations: boolean;
   featured: boolean;
+  photoRefs?: PhotoRef[];
+  sortWeight?: SortWeight;
+  verification?: SourceVerification;
 }
 
 /* ----------------------------------- Tours ----------------------------------- */
