@@ -82,6 +82,13 @@ export function GalleryLightbox({
                 <Expand className="size-5 text-cream-50" aria-hidden />
               </span>
               <span className="sr-only">Enlarge photo {index + 1} of {count}</span>
+              {image.credit && (
+                /* Credit shows on the grid too, not only once the lightbox is
+                   open — the photo is already on screen here. */
+                <span className="pointer-events-none absolute bottom-1 right-1.5 text-[9px] leading-none text-white/70 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
+                  {image.credit}
+                </span>
+              )}
             </button>
           </li>
         ))}

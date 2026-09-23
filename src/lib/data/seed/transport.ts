@@ -54,7 +54,7 @@ export const transportOptions: TransportOption[] = [
       "English or Hindi speaking driver on request",
     ],
     images: [
-      { src: "/file-uploads/expcar.jpg", alt: "Day-hire cab parked in Imphal" },
+      { src: "/file-uploads/terraced-valley-dusk.webp", alt: "A terraced valley in the Manipur hills at dusk — the country a day cab covers on a valley circuit" },
       { src: "/file-uploads/taxi.jpg", alt: "Sedan available for valley sightseeing" },
     ],
     rating: 4.6,
@@ -115,7 +115,7 @@ export const transportOptions: TransportOption[] = [
       "Public liability insurance",
     ],
     images: [
-      { src: "/file-uploads/tourcar.png", alt: "Tempo traveller used for group tours in Manipur" },
+      { src: "/file-uploads/senapati-green-hills.webp", alt: "Rolling green hills in Senapati district under a heavy grey sky, a typical group-hire route" },
       { src: "/file-uploads/stocar.jpg", alt: "Group transport vehicle parked in Imphal" },
     ],
     rating: 4.5,

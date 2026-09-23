@@ -1,0 +1,600 @@
+[
+ {
+  "slug": "kangla-fort",
+  "name": "Kangla Fort",
+  "queries": [
+   "Kangla Fort Imphal",
+   "Kangla Manipur",
+   "Kangla Sha"
+  ],
+  "coords": [
+   24.8073,
+   93.9385
+  ]
+ },
+ {
+  "slug": "ima-keithel",
+  "name": "Ima Keithel (Khwairamband Bazar)",
+  "queries": [
+   "Ima Keithel",
+   "Khwairamband Bazar",
+   "Ima Market Imphal"
+  ],
+  "coords": [
+   24.808,
+   93.939
+  ]
+ },
+ {
+  "slug": "loktak-lake",
+  "name": "Loktak Lake",
+  "queries": [
+   "Loktak Lake",
+   "Loktak phumdi",
+   "Loktak Lake Manipur"
+  ],
+  "coords": [
+   24.5257,
+   93.7906
+  ]
+ },
+ {
+  "slug": "keibul-lamjao-national-park",
+  "name": "Keibul Lamjao National Park",
+  "queries": [
+   "Keibul Lamjao National Park",
+   "Sangai deer Manipur",
+   "Keibul Lamjao"
+  ],
+  "coords": [
+   24.4667,
+   93.8167
+  ]
+ },
+ {
+  "slug": "shirui-kashong-peak",
+  "name": "Shirui Kashong Peak",
+  "queries": [
+   "Shirui Kashong",
+   "Shirui lily",
+   "Siroy Lily Manipur"
+  ],
+  "coords": [
+   25.1167,
+   94.4167
+  ]
+ },
+ {
+  "slug": "dzukou-valley",
+  "name": "Dzukou Valley",
+  "queries": [
+   "Dzukou Valley",
+   "Dzukou lily",
+   "Dzuko Valley"
+  ],
+  "coords": [
+   25.5667,
+   94.05
+  ]
+ },
+ {
+  "slug": "andro-village",
+  "name": "Andro Village",
+  "queries": [
+   "Andro Manipur",
+   "Andro pottery",
+   "Andro village Manipur"
+  ],
+  "coords": [
+   24.7667,
+   94.05
+  ]
+ },
+ {
+  "slug": "ina-memorial-moirang",
+  "name": "INA Memorial Moirang",
+  "queries": [
+   "INA Memorial Moirang",
+   "Indian National Army Moirang",
+   "Moirang INA museum"
+  ],
+  "coords": [
+   24.4954,
+   93.7734
+  ]
+ },
+ {
+  "slug": "sendra-island",
+  "name": "Sendra Island",
+  "queries": [
+   "Sendra Loktak",
+   "Sendra Island Manipur"
+  ],
+  "coords": [
+   24.51,
+   93.8
+  ]
+ },
+ {
+  "slug": "shree-govindajee-temple",
+  "name": "Shree Govindajee Temple",
+  "queries": [
+   "Shree Govindajee Temple",
+   "Govindajee Temple Imphal"
+  ],
+  "coords": [
+   24.805,
+   93.942
+  ]
+ },
+ {
+  "slug": "imphal-war-cemetery",
+  "name": "Imphal War Cemetery",
+  "queries": [
+   "Imphal War Cemetery",
+   "Imphal Indian Army War Cemetery"
+  ],
+  "coords": [
+   24.82,
+   93.945
+  ]
+ },
+ {
+  "slug": "manipur-state-museum",
+  "name": "Manipur State Museum",
+  "queries": [
+   "Manipur State Museum"
+  ],
+  "coords": [
+   24.806,
+   93.937
+  ]
+ },
+ {
+  "slug": "manipur-zoological-garden",
+  "name": "Manipur Zoological Garden",
+  "queries": [
+   "Manipur Zoological Garden",
+   "Iroisemba zoo"
+  ],
+  "coords": [
+   24.8,
+   93.89
+  ]
+ },
+ {
+  "slug": "khonghampat-orchidarium",
+  "name": "Khonghampat Orchidarium",
+  "queries": [
+   "Khonghampat Orchidarium",
+   "Orchidarium Manipur"
+  ]
+ },
+ {
+  "slug": "sadu-chiru-waterfall",
+  "name": "Sadu Chiru Waterfall",
+  "queries": [
+   "Sadu Chiru waterfall",
+   "Leimaram waterfall Manipur"
+  ]
+ },
+ {
+  "slug": "khangkhui-cave",
+  "name": "Khangkhui Cave",
+  "queries": [
+   "Khangkhui cave",
+   "Khangkhui Mangsor"
+  ],
+  "coords": [
+   25.15,
+   94.45
+  ]
+ },
+ {
+  "slug": "tharon-cave",
+  "name": "Tharon Cave",
+  "queries": [
+   "Tharon cave Manipur",
+   "Tharon Tamenglong"
+  ]
+ },
+ {
+  "slug": "khongjom-war-memorial",
+  "name": "Khongjom War Memorial",
+  "queries": [
+   "Khongjom War Memorial",
+   "Khongjom Manipur"
+  ],
+  "coords": [
+   24.65,
+   94.0333
+  ]
+ },
+ {
+  "slug": "moreh-border-town",
+  "name": "Moreh",
+  "queries": [
+   "Moreh Manipur",
+   "Moreh border India Myanmar"
+  ],
+  "coords": [
+   24.25,
+   94.3
+  ]
+ },
+ {
+  "slug": "ukhrul-town",
+  "name": "Ukhrul",
+  "queries": [
+   "Ukhrul",
+   "Ukhrul Manipur town"
+  ],
+  "coords": [
+   25.0466,
+   94.3627
+  ]
+ },
+ {
+  "slug": "barak-waterfall",
+  "name": "Barak Waterfall",
+  "queries": [
+   "Barak waterfall Manipur",
+   "Barak river Tamenglong"
+  ]
+ },
+ {
+  "slug": "zeilad-lake",
+  "name": "Zeilad Lake",
+  "queries": [
+   "Zeilad lake",
+   "Zeilad wildlife sanctuary"
+  ]
+ },
+ {
+  "slug": "buning-meadows",
+  "name": "Buning Meadows",
+  "queries": [
+   "Buning meadow Tamenglong",
+   "Bunning meadow Manipur"
+  ]
+ },
+ {
+  "slug": "imphal-peace-museum",
+  "name": "Imphal Peace Museum",
+  "queries": [
+   "Imphal Peace Museum",
+   "Red Hill Imphal peace museum"
+  ]
+ },
+ {
+  "slug": "mount-koubru",
+  "name": "Mount Koubru",
+  "queries": [
+   "Koubru",
+   "Mount Koubru Manipur"
+  ]
+ },
+ {
+  "slug": "thangjing-hill",
+  "name": "Thangjing Hill",
+  "queries": [
+   "Thangjing hill",
+   "Thangjing Manipur"
+  ]
+ },
+ {
+  "slug": "mapal-kangjeibung",
+  "name": "Mapal Kangjeibung",
+  "queries": [
+   "Mapal Kangjeibung",
+   "Manipur polo ground",
+   "Sagol Kangjei"
+  ]
+ },
+ {
+  "slug": "noney-railway-bridge",
+  "name": "Noney Railway Bridge",
+  "queries": [
+   "Noney bridge Manipur",
+   "Noney railway pier bridge"
+  ]
+ },
+ {
+  "slug": "yangkhullen-hanging-village",
+  "name": "Yangkhullen",
+  "queries": [
+   "Yangkhullen",
+   "Yangkhullen Senapati hanging village"
+  ]
+ },
+ {
+  "slug": "willong-khullen-monoliths",
+  "name": "Willong Khullen Megaliths",
+  "queries": [
+   "Willong Khullen",
+   "Stonehenge of Manipur",
+   "Willong megalith"
+  ]
+ },
+ {
+  "slug": "liyai-khullen",
+  "name": "Liyai Khullen",
+  "queries": [
+   "Liyai Khullen",
+   "Liyai Senapati Manipur"
+  ]
+ },
+ {
+  "slug": "maram-khullen",
+  "name": "Maram Khullen",
+  "queries": [
+   "Maram Khullen",
+   "Maram Naga village"
+  ]
+ },
+ {
+  "slug": "red-hill-lokpaching",
+  "name": "Red Hill (Maibam Lokpa Ching)",
+  "queries": [
+   "Maibam Lokpa Ching",
+   "Red Hill Imphal",
+   "India Peace Memorial Manipur"
+  ]
+ },
+ {
+  "slug": "santhei-natural-park-andro",
+  "name": "Santhei Natural Park Andro",
+  "queries": [
+   "Santhei Natural Park",
+   "Shanthei park Andro"
+  ]
+ },
+ {
+  "slug": "nillai-tea-estate",
+  "name": "Nillai Tea Estate",
+  "queries": [
+   "Nillai tea estate",
+   "Nilai tea estate Ukhrul"
+  ]
+ },
+ {
+  "slug": "longpi-pottery-village",
+  "name": "Longpi Black Pottery Village",
+  "queries": [
+   "Longpi pottery",
+   "Longpi Ham",
+   "Nungbi pottery",
+   "Manipur black pottery"
+  ]
+ },
+ {
+  "slug": "khoupum-valley",
+  "name": "Khoupum Valley",
+  "queries": [
+   "Khoupum valley",
+   "Khoupum waterfall Manipur"
+  ]
+ },
+ {
+  "slug": "ithai-barrage",
+  "name": "Ithai Barrage",
+  "queries": [
+   "Ithai barrage",
+   "Ithai Manipur"
+  ]
+ },
+ {
+  "slug": "nupi-lal-memorial-complex",
+  "name": "Nupi Lal Memorial Complex",
+  "queries": [
+   "Nupi Lal memorial",
+   "Nupi Lan Manipur"
+  ]
+ },
+ {
+  "slug": "loukoi-pat",
+  "name": "Loukoi Pat",
+  "queries": [
+   "Loukoi Pat",
+   "Lakoi pat Manipur"
+  ]
+ },
+ {
+  "slug": "bro-waterfall-chandel",
+  "name": "Bro Waterfall Chandel",
+  "queries": [
+   "Bro waterfall Chandel",
+   "Chandel Manipur waterfall"
+  ]
+ },
+ {
+  "slug": "chingkhei-ching",
+  "name": "Chingkhei Ching",
+  "queries": [
+   "Chingkhei Ching",
+   "Nongmaiching hill"
+  ]
+ },
+ {
+  "slug": "kachouphung-lake",
+  "name": "Kachouphung Lake",
+  "queries": [
+   "Kachouphung lake",
+   "Kachouphung Kamjong"
+  ]
+ },
+ {
+  "slug": "ebudhou-marjing-park",
+  "name": "Ebudhou Marjing Eco-Tourism Park",
+  "queries": [
+   "Marjing polo statue",
+   "Ebudhou Marjing",
+   "Marjing hill Manipur"
+  ]
+ },
+ {
+  "slug": "iskcon-temple-imphal",
+  "name": "ISKCON Temple Imphal",
+  "queries": [
+   "ISKCON Imphal",
+   "ISKCON temple Manipur"
+  ]
+ },
+ {
+  "slug": "hiyangthang-lairembi-temple",
+  "name": "Hiyangthang Lairembi Temple",
+  "queries": [
+   "Hiyangthang Lairembi",
+   "Hiyangthang temple Manipur"
+  ]
+ },
+ {
+  "slug": "lainingthou-sanamahi-kiyong",
+  "name": "Lainingthou Sanamahi Kiyong",
+  "queries": [
+   "Sanamahi Kiyong",
+   "Lainingthou Sanamahi",
+   "Sanamahism temple"
+  ]
+ },
+ {
+  "slug": "langol-peak-garden",
+  "name": "Langol Peak Garden",
+  "queries": [
+   "Langol hill Imphal",
+   "Langol Manipur"
+  ]
+ },
+ {
+  "slug": "rkcs-art-gallery",
+  "name": "RKCS Art Gallery and Museum",
+  "queries": [
+   "RKCS gallery Imphal",
+   "RK Chandrajitsana Singh"
+  ]
+ },
+ {
+  "slug": "shri-mahabali-hanuman-temple",
+  "name": "Shri Mahabali Hanuman Temple",
+  "queries": [
+   "Mahabali temple Imphal",
+   "Hanuman Thakur Imphal"
+  ]
+ },
+ {
+  "slug": "shaheed-minar",
+  "name": "Shaheed Minar Imphal",
+  "queries": [
+   "Shaheed Minar Imphal",
+   "Bir Tikendrajit park Imphal"
+  ]
+ },
+ {
+  "slug": "chingarel-biodiversity-park",
+  "name": "Chingarel Biodiversity Park",
+  "queries": [
+   "Chingarel Manipur",
+   "Chingarel hill"
+  ]
+ },
+ {
+  "slug": "mova-cave",
+  "name": "Mova Cave",
+  "queries": [
+   "Mova cave Manipur",
+   "Mova cave Chandel"
+  ]
+ },
+ {
+  "slug": "phangrei",
+  "name": "Phangrei",
+  "queries": [
+   "Phangrei Ukhrul",
+   "Phangrei Manipur"
+  ]
+ },
+ {
+  "slug": "manipuri-raas-leela",
+  "name": "Manipuri Raas Leela",
+  "queries": [
+   "Manipuri Raas Leela",
+   "Manipuri classical dance"
+  ]
+ },
+ {
+  "slug": "thang-ta",
+  "name": "Thang-Ta",
+  "queries": [
+   "Thang Ta Manipur",
+   "Huyen langlon"
+  ]
+ },
+ {
+  "slug": "sagol-kangjei-polo",
+  "name": "Sagol Kangjei (Manipuri polo)",
+  "queries": [
+   "Sagol Kangjei",
+   "Manipuri pony polo"
+  ]
+ },
+ {
+  "slug": "shirui-lily",
+  "name": "Shirui Lily",
+  "queries": [
+   "Lilium mackliniae",
+   "Shirui lily"
+  ]
+ },
+ {
+  "slug": "sangai-deer",
+  "name": "Sangai deer",
+  "queries": [
+   "Rucervus eldii eldii",
+   "Sangai deer Manipur"
+  ]
+ },
+ {
+  "slug": "phanek-handloom",
+  "name": "Phanek and Manipuri handloom",
+  "queries": [
+   "Phanek Manipur",
+   "Manipuri handloom",
+   "Moirang Phee"
+  ]
+ },
+ {
+  "slug": "yaoshang-festival",
+  "name": "Yaoshang festival",
+  "queries": [
+   "Yaoshang",
+   "Yaoshang Manipur festival"
+  ]
+ },
+ {
+  "slug": "lai-haraoba",
+  "name": "Lai Haraoba",
+  "queries": [
+   "Lai Haraoba",
+   "Lai Haraoba Manipur"
+  ]
+ },
+ {
+  "slug": "manipuri-cuisine",
+  "name": "Manipuri cuisine",
+  "queries": [
+   "Manipuri food",
+   "Eromba",
+   "Singju Manipur",
+   "Chak-hao"
+  ]
+ },
+ {
+  "slug": "loktak-phumdi-fishermen",
+  "name": "Loktak fishermen and phumdis",
+  "queries": [
+   "Loktak fisherman",
+   "Phumdi Loktak",
+   "Loktak fishing"
+  ]
+ }
+]

@@ -20,7 +20,7 @@ import {
   parseExperienceFilters,
 } from "@/components/experiences/experience-filters";
 import { Button } from "@/components/ui/button";
-import { ListingHero } from "@/components/content/listing-hero";
+import { PageHero } from "@/components/content/page-hero";
 import { getExperiences } from "@/lib/data";
 import { formatINR } from "@/lib/utils";
 
@@ -48,14 +48,16 @@ export default async function ExperiencesPage({
 
   return (
     <div className="pb-24">
-      <ListingHero
+      <PageHero
         eyebrow="Do something, not just see something"
-        title="Experiences hosted by Manipuris"
+        title="Experiences"
+        titleScale="display"
+        completion="hosted by the person whose craft it actually is."
         lede={
           <p>
             A day at the loom in Wangkhei, black pottery in Andro, a fisherman&rsquo;s dawn on
-            Loktak, a kitchen where the eromba is pounded in front of you. Every session below is
-            run by the person whose craft it is.
+            Loktak, a kitchen where the eromba is pounded in front of you. Nothing here is a
+            demonstration put on for visitors.
           </p>
         }
         figures={[

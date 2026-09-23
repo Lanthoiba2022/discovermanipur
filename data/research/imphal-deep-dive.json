@@ -1,0 +1,141 @@
+{
+  "$meta": {
+    "dataset": "imphal-deep-dive",
+    "collected": "2026-09-23",
+    "method": "Google Maps place search, Imphal viewport (24.8074,93.9368), four category sweeps: stays, museums/galleries/craft, Manipuri cuisine, temples/parks/viewpoints.",
+    "what_this_adds": "The earlier Imphal eatery data came from wanderlog, a third-party aggregator. This pass went to Maps directly and found (a) review counts an order of magnitude higher than wanderlog reported, (b) a whole heritage layer — art museums, handloom houses, indigenous Meitei temples — that no source in the first two passes touched, and (c) 20 real Imphal homestays, replacing an OTA listing dump.",
+    "warning": "Ratings and review counts are a 2026-09-23 snapshot. Nothing here is phone-verified."
+  },
+
+  "corrections_to_eateries_json": {
+    "note": "The wanderlog figures in eateries.json were stale and had no review counts. Maps direct gives the real picture — and it changes which places deserve top billing. Replace the wanderlog ratings with these.",
+    "items": [
+      { "name": "Luxmi Kitchen", "was": "4.0 (no count)", "now": "4.0 (2,088 reviews)", "price": "₹200–400", "hours": "opens 10 am", "impact": "Over 2,000 reviews. This is the single most-reviewed restaurant in Imphal and fully earns its billing as the authentic-thali anchor." },
+      { "name": "Asian Bowl", "was": "3.9 (no count)", "now": "3.9 (795 reviews)", "impact": "Far more significant than treated. Korean food is clearly a major part of Imphal's eating-out culture, not a novelty." },
+      { "name": "Char-koal Restaurant Manipur", "was": "3.9 (no count)", "now": "3.9 (644 reviews)", "price": "₹200–800", "hours": "opens 1 pm", "note": "Maps categorises it as a North Eastern Indian restaurant, not just barbecue." },
+      { "name": "Mellow Imphal", "was": "3.9 (no count)", "now": "3.9 (374 reviews)", "price": "₹600–1,200", "hours": "opens 11:30 am", "note": "Price band confirms the upper-tier classification." },
+      { "name": "Hotel Imoinu", "was": "4.2 (no count)", "now": "4.2 (201 reviews)", "price": "₹1–200", "hours": "open 24 hours", "impact": "Open 24 hours and genuinely cheap — the obvious late-night and early-departure recommendation." },
+      { "name": "Deccan Resto Imphal", "was": "4.3 (no count)", "now": "4.3 (58 reviews)", "address_fuller": "3rd Floor, Yumnam Building, Moirang Ningthou Leirak, Mayai Lambi Rd" },
+      { "name": "Chakluk Hotel", "was": "4.5 (no count)", "now": "4.5 (15 reviews)", "note": "Reviews: local dishes served on banana leaves. Lower volume than its rating suggested — good, but not an anchor." }
+    ]
+  },
+
+  "new_imphal_eateries": [
+    { "name": "Leirung Resto", "rating": 4.7, "reviews": 972, "price": "₹200–1,200", "category": "Restaurant", "address": "Sangaiprou Mamang Leikai, Airport Road, opposite ISKCON temple", "hours": "opens 11 am", "note": "NEW, and a major omission from every earlier source — 972 reviews at 4.7 makes it the best-rated high-volume restaurant in Imphal. On the airport road, so it works as a first or last meal.", "priority": "highest" },
+    { "name": "East Foodies", "rating": 4.5, "reviews": 88, "price": "₹1–800", "category": "Restaurant", "address": "QXX2+5C2, Keithel Asangbi Leirak", "hours": "opens 12 pm", "note": "Reviews single out the barbecue.", "priority": "high" },
+    { "name": "Taste of Imphal Food Delivery Service", "rating": 4.0, "reviews": 112, "category": "Delivery service", "operator": "Laithang Hazard Pvt Ltd", "hours": "opens 10 am", "note": "A local food-delivery operator — relevant if the platform ever wants in-stay meal ordering.", "priority": "medium" },
+    { "name": "MIC (Multi Indigenous Cuisine)", "rating": 3.5, "reviews": 39, "price": "₹200–400", "category": "Restaurant", "address": "JNIMS Rd", "hours": "opens 10 am", "note": "Explicitly positions itself on indigenous cuisine — worth a call for the food-heritage thread despite the middling rating.", "priority": "medium" },
+    { "name": "Chitra Burmese Restaurant", "rating": 4.4, "reviews": 11, "category": "Burmese", "address": "RW7G+8PH, RIMS Rd", "hours": "closes 9 pm", "note": "The only Burmese restaurant found in Imphal. Given the Moreh border trade, this is a genuine cross-border food story.", "priority": "high" },
+    { "name": "The Platter, Meitei Chakkhum", "rating": 4.3, "reviews": 11, "category": "Catering / Meitei food", "address": "Sagolband Salam Leikai", "hours": "opens 10 am", "note": "Reviews praise the atouba thongba. Caterer rather than sit-down — could supply experiences rather than be listed as a restaurant.", "priority": "medium" },
+    { "name": "MANIPUR KITCHEN", "rating": 4.4, "reviews": 11, "category": "Fast food", "address": "RWHV+MRJ", "hours": "opens 10 am" },
+    { "name": "Emoinu Hotel", "rating": 3.8, "reviews": 10, "category": "Restaurant", "address": "RIMS Rd", "hours": "closes 10 pm" },
+    { "name": "Imoinu Chakluk Manipuri Thali Restaurant", "rating": 3.3, "reviews": 4, "category": "Indian / thali", "address": "RW4M+74", "hours": "opens 10 am", "note": "Distinct from Hotel Imoinu despite the shared name — both on the RW4M block. Verify they are separate businesses." },
+    { "name": "Ready To Eat", "rating": 5.0, "reviews": 4, "category": "Restaurant", "address": "Singjamei – Kongba Rd" },
+    { "name": "Chak'luk", "rating": 5.0, "reviews": 1, "category": "Restaurant", "address": "Palace Compound, near AIR, opposite PAN Manipur", "note": "Distinct from Chakluk Hotel at Pologround." },
+    { "name": "ETHNIC FOOD", "rating": 5.0, "reviews": 1, "category": "Fast food", "address": "Manipur University, near Traffic Island" },
+    { "name": "Manipuri Indigenous Food Rice Hotel", "rating": null, "reviews": 0, "category": "Rice hotel", "address": "Lamdeng Khunou" },
+    { "name": "Adhikarimayum Ibotombi", "rating": null, "reviews": 0, "category": "Restaurant", "address": "Ayangpalli Rd" },
+    { "name": "Taste Tradition", "rating": 2.0, "reviews": 11, "category": "Country food restaurant", "address": "Palace Gate, Nityaiband Chuthek – Konung Mamang Rd", "hours": "closes 8 pm", "note": "Rating too low to recommend — logged so nobody re-adds it from a listicle." }
+  ],
+
+  "not_in_manipur_exclude": {
+    "note": "These surfaced in a Manipuri-cuisine search but are Bengaluru businesses serving the Manipuri diaspora. Easy to mistake for Imphal listings — excluded deliberately.",
+    "items": [
+      { "name": "Tomba Kitchen (Manipuri Cuisine)", "rating": 4.2, "reviews": 941, "address": "29/1, Ejipura Main Rd, Bengaluru" },
+      { "name": "Manipur indigenous food supplier", "rating": 4.1, "reviews": 20, "address": "Bhati Nivash Building, 20th K-cross, Sri Rama Temple Rd, Bengaluru" }
+    ]
+  },
+
+  "imphal_homestays": {
+    "note": "Twenty real Imphal stays with review counts — a direct replacement for the OTA room-type dump the first pass produced, and for the invented properties in seed/homestays.ts.",
+    "items": [
+      { "name": "Hearth of Imphal", "rating": 4.8, "reviews": 72, "category": "Home stay", "indicative_rate": "₹2,129", "amenities": ["free parking", "free breakfast", "free wifi", "air-conditioned"], "confirms": "The Giving Tree by Eventus property already in stays.json — this adds a rate and a review count.", "priority": "highest" },
+      { "name": "Haobam House (Home away Home)", "rating": 4.6, "reviews": 69, "category": "Home stay", "amenities": ["pool", "free parking", "free breakfast", "free wifi"], "note": "NEW. A homestay with a pool is rare anywhere in Manipur.", "priority": "highest" },
+      { "name": "Aheibam HomeStay", "rating": 4.6, "reviews": 63, "category": "Home stay", "address": "Iroishemba Zoological Garden Road", "note": "NEW. Next to the Zoological Garden, which is in the existing hotspot seed — a natural pairing.", "priority": "high" },
+      { "name": "NUNGSHI HOME STAY", "rating": 4.1, "reviews": 61, "category": "Home stay", "address": "QWMH+GV4, Ngangom Leikai", "note": "NEW.", "priority": "high" },
+      { "name": "Imphal Homez", "rating": 4.9, "reviews": 59, "category": "Home stay", "address": "RWJ3+958, Mary Kom Rd", "note": "NEW. Highest-rated Imphal homestay with meaningful volume.", "priority": "highest" },
+      { "name": "Eden Guest House", "rating": 4.2, "reviews": 53, "category": "Lodging", "address": "1st floor, Yumshang Building, Tangkhul Avenue", "note": "NEW." },
+      { "name": "Valley Homestay", "rating": 4.9, "reviews": 18, "category": "Home stay", "address": "Line 2", "note": "NEW." },
+      { "name": "SIDDARTHA GUEST HOUSE", "rating": 4.6, "reviews": 13, "category": "Hotel", "address": "QWW3+CQH", "note": "NEW." },
+      { "name": "Colonial House", "rating": 4.2, "reviews": 13, "category": "Home stay", "address": "RW5M+P4", "note": "NEW. Name suggests a heritage building — worth a call." },
+      { "name": "Joy's BnB", "rating": 4.3, "reviews": 12, "category": "Home stay", "indicative_rate": "₹2,693", "note": "NEW." },
+      { "name": "Nature's Retreat Homestay", "rating": 4.8, "reviews": 11, "category": "Home stay", "note": "NEW." },
+      { "name": "Imphal Homestay", "rating": 5.0, "reviews": 9, "category": "Home stay", "address": "Lane 12, Naoremthong Khumanthem Leikai, Takyel Khongbal Mayai Leikai, near Devson Decor Factory", "note": "NEW." },
+      { "name": "CityView Homestay", "rating": 4.5, "reviews": 8, "category": "Home stay", "indicative_rate": "₹3,110", "note": "NEW." },
+      { "name": "Iranyai Homestay", "rating": 4.9, "reviews": 7, "category": "Home stay", "note": "NEW." },
+      { "name": "John's Home (Home Stay)", "rating": 4.7, "reviews": 6, "category": "Home stay", "amenities": ["free parking", "free wifi", "air-conditioned", "breakfast"], "note": "NEW." },
+      { "name": "Sanatons Homestay (Yum)", "rating": 5.0, "reviews": 3, "category": "Guest house", "note": "NEW. 'Yum' is Meitei for house." },
+      { "name": "MANIPUR HOUSE", "rating": 4.6, "reviews": 330, "category": "3-star hotel", "amenities": ["free parking", "free wifi", "breakfast"], "note": "NEW and substantial — 330 reviews at 4.6, yet absent from the official Manipur Tourism directory.", "priority": "high" },
+      { "name": "Kangla Guest House", "rating": 3.7, "reviews": 11, "category": "Hotel", "address": "RW7V+XWF, North AOC" },
+      { "name": "G.G. GUEST HOUSE", "rating": 3.4, "reviews": 8, "category": "Hotel", "address": "RWPG+9FR" }
+    ],
+    "government": [
+      { "name": "State Guest House, Imphal", "rating": 3.7, "reviews": 48, "category": "Guest house", "note": "Government — likely not open to general tourist booking." },
+      { "name": "Manipur Legislative Assembly Guest House", "rating": 3.6, "reviews": 41, "category": "Guest house", "address": "RW6Q+X49, Majorkhul N St", "note": "Government." }
+    ],
+    "correction": { "name": "Classic Grande Imphal", "maps": "4.3 (3,949 reviews), 4-star, 'a member of Radisson Individuals', pool + spa, 0385 242 2139", "action": "stays.json has it as 171 rooms from the official directory. 3,949 reviews makes it the most-reviewed property in the state — treat as the flagship hotel listing." }
+  },
+
+  "heritage_and_craft": {
+    "note": "An entire category the first two passes missed. For a platform themed on Heritage & Culture, this is arguably the most valuable block in the whole dataset — and none of it appears in the existing hotspot seed.",
+    "museums_and_galleries": [
+      { "name": "RKCS Art Gallery And Museum", "rating": 4.5, "reviews": 400, "category": "Art museum", "address": "RKCS Colony, Nambul River Road, Keishamthong", "note": "NEW. The gallery of RK Chandrajitsana Singh. 400 reviews and no presence in any travel source consulted.", "priority": "highest" },
+      { "name": "Three Mothers Art Gallery", "rating": 4.7, "reviews": 320, "category": "Art museum", "address": "Palace Compound, Three Mothers Art Gallery Leirak, Thangapat Mapal", "phone": "097749 87618", "hours": "opens 10 am", "note": "NEW. Reviews note free entry. Highest-rated museum in Imphal.", "priority": "highest" },
+      { "name": "Imphal Art Gallery", "rating": 4.6, "reviews": 18, "category": "Art gallery", "address": "QWRG+J68, Kwakeithel – Khagempalli Rd", "note": "NEW." },
+      { "name": "Leimayol Art Centre", "rating": 4.3, "reviews": 3, "category": "Performing arts theatre", "address": "QWJP+788", "note": "NEW. A performing-arts venue matters for Manipuri dance, Thang-Ta and Shumang Leela programming." },
+      { "name": "Tribal Research Institute", "rating": 3.9, "reviews": 36, "category": "Research institute", "address": "DM College Campus", "note": "NEW. Research body, not a visitor attraction — but the right first call for tribal cultural content and permissions." },
+      { "name": "Imphal Art College", "rating": 4.0, "reviews": 60, "category": "Government college", "address": "RWCV+QV8, Indo-Myanmar Rd", "phone": "098563 93155" },
+      { "name": "Manipur State Museum", "rating": 4.1, "reviews": 354, "phone": "097749 39859", "hours": "opens 10 am", "confirms": "Already in the hotspot seed — this adds a phone number." }
+    ],
+    "craft_and_handloom": [
+      { "name": "Manipur Handloom & Handicrafts Development Corporation Ltd.", "rating": 4.0, "reviews": 40, "category": "Government corporation / emporium", "address": "RW2P+M84", "phone": "0385 244 2381", "hours": "closes 5 pm", "note": "NEW. The state handloom body. Reviews mention bulk purchase for gifting. The right institutional partner for authenticated craft listings.", "priority": "high" },
+      { "name": "Akhom Handicraft", "rating": 4.5, "reviews": 31, "category": "Handicraft", "address": "Kongba Nandeibam Leikai, Singjamei – Kongba Rd", "phone": "094029 87076", "hours": "closes 6 pm", "note": "NEW.", "priority": "high" },
+      { "name": "Rani Handloom House", "rating": 4.2, "reviews": 46, "category": "Boutique", "address": "QXV3+98Q", "hours": "opens 10 am", "note": "NEW. Reviews describe the owner as a national awardee — verify, it is a strong provenance claim.", "priority": "high" },
+      { "name": "Crafts Handloom Village", "rating": 4.0, "reviews": 43, "category": "Tourist attraction", "address": "GQ4M+R5J", "note": "NEW. The Plus Code puts this in the Moirang/Loktak belt, not Imphal." },
+      { "name": "Cafeteria Crafts Handloom Village", "rating": 4.0, "reviews": 7, "address": "GQ6M+592", "phone": "080149 21286", "note": "The phone number is identical to the registered Loktak Aquamarine Homestay owner's (Ashok Sapamcha). The same operator appears to run the cafeteria at Crafts Handloom Village — one call could confirm a homestay, a campsite and a cafeteria at once.", "priority": "high" }
+    ],
+    "ima_keithel": { "name": "Ima Market", "rating": 4.3, "reviews": 12514, "category": "Tourist attraction", "address": "Mani Tower", "maps_description": "Established, women-run marketplace", "hours": "closes 6 pm", "note": "12,514 reviews — by a wide margin the most-reviewed place in Manipur, ahead of Kangla Fort's 6,734. Already in the seed; this quantifies just how central it is." },
+    "institutional": [
+      { "name": "Tourism Corporation of Manipur Limited", "rating": 4.0, "reviews": 11, "address": "North AOC, near Imphal Hotel", "phone": "0385 242 1794", "hours": "closes 4:30 pm", "note": "The state tourism corporation's own office, with the same number the Directorate publishes. First stop for partnership and for tourist-bungalow booking." },
+      { "name": "Directorate of Arts & Culture", "rating": 4.7, "reviews": 3, "address": "QWXW+J5G", "note": "Permissions and cultural programming." }
+    ]
+  },
+
+  "temples_parks_viewpoints": {
+    "note": "Two finds here matter beyond their ratings: Hiyangthang Lairembi and Lainingthou Sanamahi Kiyong are indigenous Meitei religious sites, not Vaishnav temples. The existing seed covers Govindajee (Vaishnav) but nothing of Sanamahism, which is the older indigenous religion. That is a real gap in the heritage story.",
+    "indigenous_meitei_sites": [
+      { "name": "Hiyangthang Lairembi Temple", "rating": 4.5, "reviews": 385, "category": "Temple", "address": "PWG3+J73", "note": "NEW. Major temple to the goddess Hiyangthang Lairembi, on a hillock south-west of Imphal. 385 reviews and absent from every source in the first two passes.", "priority": "highest" },
+      { "name": "Lainingthou Sanamahi Kiyong Hongba", "rating": 4.7, "reviews": 100, "category": "Place of worship", "address": "R23P+F5, Sanjenbam, Nongmaiching Chingkha Lambi, Sangsabi 795010", "note": "NEW. The Sanamahi temple complex on the Nongmaiching slope — the centre of the indigenous Meitei faith. Highest-rated place of worship found. Approach with care: this is an active religious site, not an attraction.", "priority": "highest" },
+      { "name": "Marjing Polo Statue", "rating": 4.6, "reviews": 157, "category": "Place of worship", "address": "VXH3+QJ", "note": "NEW, and listed separately from Ebudhou Marjing Eco-Tourism Park at the same hill. Marjing is the Meitei deity of polo — the statue and the park together are the strongest single 'Manipur invented polo' asset available.", "priority": "highest" }
+    ],
+    "vaishnav_temples": [
+      { "name": "ISKCON Temple Imphal", "rating": 4.4, "reviews": 1218, "phone": "098560 09357", "hours": "closes 7:30 pm", "note": "On the airport road — reviews point out it is easy to fit in on the way back to the airport." },
+      { "name": "Shri Bijoy Govindajee Temple", "rating": 4.5, "reviews": 113, "address": "Manipur Rd, 795004", "hours": "closes 1:30 pm, reopens 4 pm", "note": "NEW. Reviews call it the largest Vaishnava temple in Imphal — note this is distinct from Shree Shree Govindajee at the Palace Compound." },
+      { "name": "Shree Shree Govindajee Mandir", "rating": 4.5, "reviews": 43, "address": "Palace Compound", "confirms": "Already in the hotspot seed." },
+      { "name": "Shri Mahabali Hanuman Temple", "rating": 4.2, "reviews": 622, "address": "QWWV+979", "hours": "closes 12 pm, reopens 4 pm", "note": "On the bank of the Imphal river. Reviews call it the oldest Hanuman temple in Manipur." },
+      { "name": "Guruaribam Shri Krishna Temple", "rating": 4.6, "reviews": 28, "address": "Thumbu Thong", "note": "NEW." },
+      { "name": "Shani Temple", "rating": 3.9, "reviews": 141, "address": "RW7P+9PX, Thangal Bazar", "note": "NEW." },
+      { "name": "Nar Singh Temple", "rating": 4.1, "reviews": 75, "address": "QW8P+5H2, Indo-Myanmar Road (NH-39), Singjamei", "note": "NEW." },
+      { "name": "Shri Gopinath Temple", "rating": 3.8, "reviews": 4, "address": "QWJJ+3R3" },
+      { "name": "First MR Durga Temple", "rating": 4.5, "reviews": 2, "address": "QWXQ+44V" }
+    ],
+    "parks_and_viewpoints": [
+      { "name": "Shilheipung Garden", "rating": 3.9, "reviews": 634, "category": "Garden", "address": "V3MH+QR7, Imphal – Ukhrul Rd", "phone": "070052 81655", "hours": "closes 5 pm", "resolves": "This is the 'Silheipung Garden, Lamlai' record in places.json, which the official source gave as a bare name with no detail. Now has a rating, 634 reviews, a phone, an address on the Imphal–Ukhrul road and opening hours. Reviews: quiet and refreshing, but needs investment.", "priority": "high" },
+      { "name": "Pinewood Garden", "rating": 4.3, "reviews": 414, "category": "Park", "address": "M2X9+PCW", "note": "NEW. Reviews describe hill views.", "priority": "high" },
+      { "name": "Pheidinga Park", "rating": 4.1, "reviews": 211, "category": "Park", "address": "WV2P+3F2", "hours": "closes 5 pm", "note": "NEW. Reviews mention a children's play area, a restaurant and boating.", "priority": "high" },
+      { "name": "In The Valley", "rating": 4.5, "reviews": 42, "category": "Park", "address": "Sanjenbam, Nongmaijing Ching Makhong, Chingoi", "hours": "open 24 hours", "note": "NEW. On the Nongmaijing slope, near the Sanamahi temple." },
+      { "name": "Langol Laimanai Ching", "rating": 4.5, "reviews": 8, "category": "Hiking area", "address": "RWV9+QH6, Shiv Mandir Rd", "note": "NEW, and the only thing in the whole dataset that Maps categorises as a hiking area inside Imphal. Pairs with Langol Peak Garden." },
+      { "name": "Matai Garden", "rating": 4.0, "reviews": 620, "phone": "093663 85073", "entry_fee": "₹30 adult, ₹10 child (per reviews)", "hours": "opens 10 am", "confirms": "Found in the previous pass — this adds a phone and an entry fee." },
+      { "name": "Santhei Natural Park, Andro", "rating": 4.2, "reviews": 1196, "phone": "070056 23192", "confirms": "Adds a phone number to the places.json record." },
+      { "name": "Ebudhou Marjing Eco-Tourism Park", "rating": 4.4, "reviews": 162, "address": "VXH3+JFX", "caution": "One review dated 11.12.2022 says it was still under construction. Confirm completion before listing." }
+    ]
+  },
+
+  "next_steps": [
+    "Open each place's Maps detail panel to capture phone, website, full address and the weekly hours grid — the card view only shows these sometimes. Roughly one navigation per place.",
+    "Capture lat/lng from each place URL so real map pins can be dropped. Every Plus Code here also resolves to an exact point.",
+    "Call Tourism Corporation of Manipur (0385 242 1794) and the Handloom & Handicrafts Corporation (0385 244 2381) — institutional partners who can authenticate craft and stay listings at scale rather than one business at a time.",
+    "Call 080149 21286 once: it appears to cover Loktak Aquamarine Homestay, the Takmu campsite and the Crafts Handloom Village cafeteria.",
+    "Decide the cultural protocol for Lainingthou Sanamahi Kiyong and Hiyangthang Lairembi before publishing them. These are active indigenous religious sites and should be presented on the community's terms."
+  ]
+}
