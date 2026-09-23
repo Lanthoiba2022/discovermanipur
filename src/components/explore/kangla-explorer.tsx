@@ -4,9 +4,11 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, ChevronDown, ChevronRight, ChevronUp, Compass, Landmark, Minus, Plus, Tags, X } from "lucide-react";
-import { useCallback, useState } from "react";
+import { ArrowLeft, ArrowRight, ChevronDown, ChevronRight, ChevronUp, Compass, Landmark, Minus, Plus, Tags, Volume2, VolumeX, X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { kanglaPlaces, type KanglaPlace } from "@/lib/immersive/kangla-places";
+import { narrationFor, narrationLanguages } from "@/lib/immersive/narration";
+import { useNarration } from "@/components/immersive/use-narration";
 import styles from "./kangla-explorer.module.css";
 
 const Map = dynamic(() => import("./kangla-google-3d"), { ssr: false, loading: () => <div className={styles.loading}>Opening Kangla in 3D…</div> });
@@ -43,6 +45,14 @@ export function KanglaExplorer({ googleKey = "" }: { googleKey?: string }) {
 
   const index = kanglaPlaces.findIndex(place => place.id === selectedId);
   const selected = index >= 0 ? kanglaPlaces[index] : null;
+
+  // Three of the eight landmarks have recorded narration; the rest simply show
+  // no control. No browser fallback here — the summary on screen is site copy,
+  // not a script, so a robot voice reading it would not match the recordings.
+  const narration = useNarration(narrationFor(selectedId));
+  const { stop: stopNarration } = narration;
+  // Moving to another landmark must not leave the previous one talking.
+  useEffect(() => stopNarration(), [selectedId, stopNarration]);
   const step = (delta: number) => choose(kanglaPlaces[(index + delta + kanglaPlaces.length) % kanglaPlaces.length].id);
 
   const slide = reduce
@@ -96,8 +106,38 @@ export function KanglaExplorer({ googleKey = "" }: { googleKey?: string }) {
                     <h2>{selected.name}</h2>
                     {selected.meiteiName && <p className={styles.meitei} lang="mni-Mtei">{selected.meiteiName}</p>}
                     <p className={styles.summary}>{selected.summary}</p>
+
+                    {narration.text && narration.language !== "en" && (
+                      <p className={`${styles.translated} ${narration.active.className ?? ""}`} lang={narration.active.lang}>
+                        {narration.text}
+                      </p>
+                    )}
+
+
                     <p className={styles.source}>Located from {selected.source}</p>
                   </div>
+                  {narrationFor(selected.id) && (
+                    <div className={styles.narration}>
+                      <div className={styles.langTabs} role="group" aria-label="Narration language">
+                        {narrationLanguages.map(item => (
+                          <button
+                            key={item.code}
+                            type="button"
+                            aria-pressed={narration.language === item.code}
+                            lang={item.lang}
+                            className={item.className}
+                            onClick={() => narration.setLanguage(item.code)}
+                          >
+                            {item.label}
+                          </button>
+                        ))}
+                      </div>
+                      <button type="button" className={styles.listen} disabled={!narration.canPlay} onClick={narration.toggle}>
+                        {narration.speaking ? <VolumeX size={15} aria-hidden /> : <Volume2 size={15} aria-hidden />}
+                        {narration.speaking ? "Stop narration" : "Listen to this place"}
+                      </button>
+                    </div>
+                  )}
                   <nav className={styles.stepper} aria-label="Move between landmarks">
                     <button onClick={() => step(-1)}><ArrowLeft size={15} /> Previous</button>
                     <button onClick={() => step(1)}>Next <ArrowRight size={15} /></button>
