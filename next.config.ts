@@ -1,6 +1,20 @@
 import type { NextConfig } from "next";
 
+/**
+ * Neon Auth is on only when both server-side variables are present and the
+ * cookie secret is long enough for `createNeonAuth` (32+ characters) — below
+ * that it throws at import. The browser cannot read either variable, so the
+ * decision is made here once and inlined as a public boolean; no secret
+ * reaches the bundle. See `src/lib/auth/env.ts`.
+ */
+const authConfigured =
+  Boolean(process.env.NEON_AUTH_BASE_URL?.trim()) &&
+  (process.env.NEON_AUTH_COOKIE_SECRET?.trim().length ?? 0) >= 32;
+
 const nextConfig: NextConfig = {
+  env: {
+    NEXT_PUBLIC_AUTH_CONFIGURED: authConfigured ? "true" : "false",
+  },
   images: {
     /**
      * `next/image` refuses a local `src` carrying a query string unless the

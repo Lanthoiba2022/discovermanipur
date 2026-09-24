@@ -17,4 +17,4 @@ export {
   type MagicLinkValues,
   type ProfileValues,
 } from "./schemas";
-export { isSupabaseConfigured } from "@/lib/supabase/env";
+export { isAuthConfigured } from "./env";

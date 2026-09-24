@@ -1,29 +1,24 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { getSupabaseServerClient } from "@/lib/supabase/server";
-
 /**
- * Magic-link / email-confirmation landing. Exchanges the one-time code for a
- * session cookie, then forwards to `?next=`.
+ * Magic-link landing. By the time a request reaches this handler, `proxy.ts`
+ * has already run Neon Auth's middleware on it, which turns the one-time
+ * verifier into a session cookie. All that is left is to forward to `?next=`.
  *
- * Without Supabase configured there is no code to exchange — the demo session
- * is created client-side — so this simply forwards.
+ * Neon Auth reports a bad or expired link with `?error=`; that goes back to
+ * the sign-in page. Without Neon Auth configured the demo session is created
+ * client-side, so this simply forwards.
  */
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
-  const code = searchParams.get("code");
   const nextParam = searchParams.get("next");
   const next = nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//")
     ? nextParam
     : "/account";
 
-  const supabase = await getSupabaseServerClient();
-
-  if (supabase && code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (error) {
-      return NextResponse.redirect(`${origin}/auth?error=${encodeURIComponent(error.message)}`);
-    }
+  const error = searchParams.get("error");
+  if (error) {
+    return NextResponse.redirect(`${origin}/auth?error=${encodeURIComponent(error)}`);
   }
 
   return NextResponse.redirect(`${origin}${next}`);

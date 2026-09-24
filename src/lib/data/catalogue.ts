@@ -2,8 +2,8 @@
  * Catalogue loaders — the database half of the data layer.
  *
  * Each loader pulls a whole table, maps snake_case columns back to the domain
- * types, and falls back to the bundled seed module when Supabase is absent or
- * the query fails.
+ * types, and falls back to the bundled seed module when the database is absent
+ * or the query fails.
  *
  * Why fetch whole tables rather than push filters into SQL: the catalogue is
  * ~160 rows across nine tables, and `index.ts` already implements the exact
@@ -13,9 +13,20 @@
  * it one round trip per table per render.
  *
  * If the catalogue ever grows past a few thousand rows, this is the seam to
- * change: push `matches`/`sortRows`/`paginate` down into PostgREST queries.
+ * change: push `matches`/`sortRows`/`paginate` down into SQL.
+ *
+ * Visibility is enforced here, not by the database. Under Supabase the anon key
+ * only ever saw active homestays and crafts and approved testimonials, because
+ * RLS filtered them. This connection is the table owner and sees every row, so
+ * each loader passes the same filter as `where` — drop one and hidden listings
+ * go public.
+ *
+ * Each mapper receives the table's Drizzle row type, so a renamed or misspelt
+ * column is a type error rather than a silently empty field.
  */
 import { cache } from "react";
+import { eq, type SQL } from "drizzle-orm";
+import type { PgTable } from "drizzle-orm/pg-core";
 
 import type {
   Craft,
@@ -33,7 +44,7 @@ import type {
 
 import { creditLine, placePhotoUrl } from "./photos";
 
-import { getSupabasePublicClient } from "@/lib/supabase/public";
+import { getDb, schema } from "@/lib/db";
 
 import { crafts as seedCrafts } from "./seed/crafts";
 import { eateries as seedEateries } from "./seed/eateries";
@@ -45,23 +56,24 @@ import { testimonials as seedTestimonials } from "./seed/testimonials";
 import { tours as seedTours } from "./seed/tours";
 import { transportOptions as seedTransport } from "./seed/transport";
 
-type Row = Record<string, unknown>;
-
-/** Fetch a whole table, or `null` if Supabase is unavailable or errors. */
-async function loadTable(table: string, columns = "*"): Promise<Row[] | null> {
-  const db = getSupabasePublicClient();
+/** Fetch a whole table, or `null` if the database is unavailable or errors. */
+async function loadTable<TTable extends PgTable>(
+  table: TTable,
+  where?: SQL,
+): Promise<TTable["$inferSelect"][] | null> {
+  const db = getDb();
   if (!db) return null;
   try {
-    const { data, error } = await db.from(table).select(columns);
-    if (error) {
-      console.warn(`[catalogue] ${table} fell back to seed: ${error.message}`);
-      return null;
-    }
-    return (data as unknown as Row[]) ?? null;
+    const query = db.select().from(table as PgTable);
+    return (await (where ? query.where(where) : query)) as TTable["$inferSelect"][];
   } catch (err) {
-    console.warn(`[catalogue] ${table} fell back to seed:`, err);
+    console.warn(`[catalogue] ${tableName(table)} fell back to seed:`, err);
     return null;
   }
+}
+
+function tableName(table: PgTable) {
+  return (table as unknown as { [k: symbol]: string })[Symbol.for("drizzle:Name")] ?? "table";
 }
 
 /**
@@ -69,9 +81,14 @@ async function loadTable(table: string, columns = "*"): Promise<Row[] | null> {
  * falls back, so a half-migrated database shows content rather than a blank
  * catalogue.
  */
-function loader<T>(table: string, map: (row: Row) => T, seed: T[]) {
+function loader<T, TTable extends PgTable>(
+  table: TTable,
+  map: (row: TTable["$inferSelect"]) => T,
+  seed: T[],
+  where?: SQL,
+) {
   return cache(async (): Promise<T[]> => {
-    const rows = await loadTable(table);
+    const rows = await loadTable(table, where);
     if (!rows || rows.length === 0) return seed;
     return rows.map(map);
   });
@@ -119,8 +136,8 @@ function withPhotos<T extends { images: MediaImage[]; photoRefs?: PhotoRef[] }>(
 
 /* -------------------------------------------------------------- loaders -- */
 
-export const loadHotspots = loader<Hotspot>(
-  "hotspots",
+export const loadHotspots = loader(
+  schema.hotspots,
   (r) =>
     withPhotos({
       id: str(r.id),
@@ -158,8 +175,8 @@ export const loadHotspots = loader<Hotspot>(
   seedHotspots,
 );
 
-export const loadHomestays = loader<Homestay>(
-  "homestays",
+export const loadHomestays = loader(
+  schema.homestays,
   (r) =>
     withPhotos({
       id: str(r.id),
@@ -190,10 +207,11 @@ export const loadHomestays = loader<Homestay>(
       sources: arr(r.sources),
     } as Homestay, str(r.title)),
   seedHomestays,
+  eq(schema.homestays.is_active, true),
 );
 
-export const loadExperiences = loader<Experience>(
-  "experiences",
+export const loadExperiences = loader(
+  schema.experiences,
   (r) =>
     ({
       id: str(r.id),
@@ -217,8 +235,8 @@ export const loadExperiences = loader<Experience>(
   seedExperiences,
 );
 
-export const loadEateries = loader<Eatery>(
-  "eateries",
+export const loadEateries = loader(
+  schema.eateries,
   (r) =>
     withPhotos({
       id: str(r.id),
@@ -245,8 +263,8 @@ export const loadEateries = loader<Eatery>(
   seedEateries,
 );
 
-export const loadTours = loader<Tour>(
-  "tours",
+export const loadTours = loader(
+  schema.tours,
   (r) =>
     ({
       id: str(r.id),
@@ -271,8 +289,8 @@ export const loadTours = loader<Tour>(
   seedTours,
 );
 
-export const loadTransportOptions = loader<TransportOption>(
-  "transport_options",
+export const loadTransportOptions = loader(
+  schema.transport_options,
   (r) =>
     ({
       id: str(r.id),
@@ -293,8 +311,8 @@ export const loadTransportOptions = loader<TransportOption>(
   seedTransport,
 );
 
-export const loadFestivals = loader<Festival>(
-  "festivals",
+export const loadFestivals = loader(
+  schema.festivals,
   (r) =>
     ({
       id: str(r.id),
@@ -313,8 +331,8 @@ export const loadFestivals = loader<Festival>(
   seedFestivals,
 );
 
-export const loadCrafts = loader<Craft>(
-  "crafts",
+export const loadCrafts = loader(
+  schema.crafts,
   (r) =>
     ({
       id: str(r.id),
@@ -340,10 +358,11 @@ export const loadCrafts = loader<Craft>(
       featured: Boolean(r.featured),
     }) as Craft,
   seedCrafts,
+  eq(schema.crafts.is_active, true),
 );
 
-export const loadTestimonials = loader<Testimonial>(
-  "testimonials",
+export const loadTestimonials = loader(
+  schema.testimonials,
   (r) =>
     ({
       id: str(r.id),
@@ -355,4 +374,5 @@ export const loadTestimonials = loader<Testimonial>(
       tripType: str(r.trip_type),
     }) as Testimonial,
   seedTestimonials,
+  eq(schema.testimonials.approved, true),
 );

@@ -1,16 +1,21 @@
 /**
- * Phase 7 — push the local seed catalogue into Supabase.
+ * Phase 7 — push the local seed catalogue into the Neon database.
  *
  *   npm run db:seed
  *
- * Idempotent: every table upserts on `slug`, so re-running reconciles rather
- * than duplicating. Uses the service-role key, so it bypasses RLS — this is a
+ * Idempotent: every table upserts on a natural key, so re-running reconciles
+ * rather than duplicating. Connects as the database owner — this is a
  * server-side operator script and must never be imported by the app.
  */
 
 import { createHash } from "node:crypto";
 
-import { createClient } from "@supabase/supabase-js";
+import { getTableColumns, getTableName, sql } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/node-postgres";
+import type { PgTable } from "drizzle-orm/pg-core";
+import pg from "pg";
+
+import * as schema from "../src/lib/db/schema.ts";
 
 import { crafts } from "../src/lib/data/seed/crafts.ts";
 import { eateries } from "../src/lib/data/seed/eateries.ts";
@@ -58,39 +63,61 @@ function uuidV5(name: string, namespace = SEED_NAMESPACE): string {
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
 }
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const url = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL;
 
-if (!url || !serviceKey) {
+if (!url) {
   console.error(
-    "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY.\n" +
-      "Put them in .env.local (see .env.example) before seeding.",
+    "Missing DATABASE_URL.\n" +
+      "Put it in .env.local (see .env.example) and run `npm run db:migrate` before seeding.",
   );
   process.exit(1);
 }
 
-const db = createClient(url, serviceKey, {
-  auth: { persistSession: false, autoRefreshToken: false },
-});
+const pool = new pg.Pool({ connectionString: url, max: 1 });
+const db = drizzle({ client: pool });
 
-async function upsert(table: string, rows: Record<string, unknown>[], conflict = "slug") {
+/**
+ * `INSERT … ON CONFLICT (conflict) DO UPDATE` every column the rows supply.
+ * Rows are checked against the table's insert type, so a seed field that no
+ * longer matches the schema is a type error, not a runtime surprise.
+ */
+async function upsert<TTable extends PgTable>(
+  table: TTable,
+  rows: TTable["$inferInsert"][],
+  conflict: (keyof TTable["$inferSelect"] & string)[] = ["slug" as keyof TTable["$inferSelect"] & string],
+) {
+  const name = getTableName(table);
   if (rows.length === 0) {
-    console.log(`  ${table}: nothing to seed`);
+    console.log(`  ${name}: nothing to seed`);
     return;
   }
-  const { error } = await db.from(table).upsert(rows, { onConflict: conflict });
-  if (error) {
-    console.error(`  ${table}: FAILED — ${error.message}`);
+  const columns = getTableColumns(table) as Record<string, { name: string }>;
+  const supplied = [...new Set(rows.flatMap((r) => Object.keys(r as object)))];
+  const set = Object.fromEntries(
+    supplied
+      .filter((key) => !conflict.includes(key as never))
+      .map((key) => [key, sql.raw(`excluded."${columns[key].name}"`)]),
+  );
+  try {
+    // Batched so one statement never outgrows Postgres's parameter ceiling.
+    for (let i = 0; i < rows.length; i += 100) {
+      await db
+        .insert(table)
+        .values(rows.slice(i, i + 100))
+        .onConflictDoUpdate({ target: conflict.map((key) => columns[key]) as never, set: set as never });
+    }
+  } catch (error) {
+    console.error(`  ${name}: FAILED — ${(error as Error).message}`);
     throw error;
   }
-  console.log(`  ${table}: ${rows.length} rows`);
+  console.log(`  ${name}: ${rows.length} rows`);
 }
 
 async function main() {
-  console.log("Seeding Yening catalogue into Supabase…");
+  console.log("Seeding Yening catalogue into Neon…");
 
   await upsert(
-    "hotspots",
+    schema.hotspots,
     hotspots.map((h) => ({
       slug: h.slug,
       name: h.name,
@@ -120,7 +147,7 @@ async function main() {
   );
 
   await upsert(
-    "homestays",
+    schema.homestays,
     homestays.map((h) => ({
       slug: h.slug,
       title: h.title,
@@ -148,7 +175,7 @@ async function main() {
   );
 
   await upsert(
-    "experiences",
+    schema.experiences,
     experiences.map((e) => ({
       slug: e.slug,
       title: e.title,
@@ -170,7 +197,7 @@ async function main() {
   );
 
   await upsert(
-    "eateries",
+    schema.eateries,
     eateries.map((e) => ({
       slug: e.slug,
       name: e.name,
@@ -193,7 +220,7 @@ async function main() {
   );
 
   await upsert(
-    "tours",
+    schema.tours,
     tours.map((t) => ({
       slug: t.slug,
       title: t.title,
@@ -216,7 +243,7 @@ async function main() {
   );
 
   await upsert(
-    "transport_options",
+    schema.transport_options,
     transportOptions.map((t) => ({
       slug: t.slug,
       name: t.name,
@@ -235,7 +262,7 @@ async function main() {
   );
 
   await upsert(
-    "festivals",
+    schema.festivals,
     festivals.map((f) => ({
       slug: f.slug,
       name: f.name,
@@ -252,7 +279,7 @@ async function main() {
   );
 
   await upsert(
-    "crafts",
+    schema.crafts,
     crafts.map((c) => ({
       slug: c.slug,
       name: c.name,
@@ -280,7 +307,7 @@ async function main() {
 
   // Testimonials have no natural slug; reconcile on the stable seed id.
   await upsert(
-    "testimonials",
+    schema.testimonials,
     testimonials.map((t) => ({
       id: uuidV5(t.id),
       name: t.name,
@@ -291,7 +318,7 @@ async function main() {
       trip_type: t.tripType,
       approved: true,
     })),
-    "id",
+    ["id"],
   );
 
   /* ------------------------------ site content ---------------------------- */
@@ -315,7 +342,7 @@ async function main() {
   ];
 
   await upsert(
-    "site_sections",
+    schema.site_sections,
     sections.map(([key, label, description, payload], i) => ({
       key,
       label,
@@ -323,11 +350,11 @@ async function main() {
       payload,
       sort_order: i,
     })),
-    "key",
+    ["key"],
   );
 
   await upsert(
-    "photo_credits",
+    schema.photo_credits,
     PHOTO_CREDITS.map((c) => ({
       file: c.file,
       alt: c.alt,
@@ -336,7 +363,7 @@ async function main() {
       licence: c.licence,
       source: c.source,
     })),
-    "file",
+    ["file"],
   );
 
   /* ---------------------------------- FAQs -------------------------------- */
@@ -345,56 +372,58 @@ async function main() {
   const groupRows = [
     ...faqGroups.map((g, i) => ({
       slug: g.id,
-      audience: "traveller",
+      audience: "traveller" as const,
       label: g.label,
       blurb: g.blurb,
       sort_order: i,
     })),
     {
       slug: "hosting",
-      audience: "host",
+      audience: "host" as const,
       label: "Hosting with Yening",
       blurb: "What hosts ask before they apply.",
       sort_order: 0,
     },
   ];
-  await upsert("faq_groups", groupRows, "audience,slug");
+  await upsert(schema.faq_groups, groupRows, ["audience", "slug"]);
 
-  const { data: savedGroups, error: groupErr } = await db
-    .from("faq_groups")
-    .select("id, slug, audience");
-  if (groupErr) {
-    console.error(`  faq_items: FAILED — could not read back groups: ${groupErr.message}`);
-    throw groupErr;
-  }
-  const groupId = new Map(
-    (savedGroups ?? []).map((g) => [`${g.audience}:${g.slug}`, g.id as string]),
-  );
+  const savedGroups = await db
+    .select({
+      id: schema.faq_groups.id,
+      slug: schema.faq_groups.slug,
+      audience: schema.faq_groups.audience,
+    })
+    .from(schema.faq_groups);
+  const groupId = new Map(savedGroups.map((g) => [`${g.audience}:${g.slug}`, g.id]));
+
+  /** Resolve a group id, aborting rather than orphaning rows if one is missing. */
+  const groupOf = (key: string) => {
+    const id = groupId.get(key);
+    if (!id) throw new Error(`faq_items: group ${key} failed to resolve — aborting rather than orphaning rows`);
+    return id;
+  };
 
   const itemRows = [
     ...faqGroups.flatMap((g) =>
       g.items.map((it, i) => ({
-        group_id: groupId.get(`traveller:${g.id}`),
+        group_id: groupOf(`traveller:${g.id}`),
         question: it.q,
         answer: it.a,
         sort_order: i,
       })),
     ),
     ...hostFaqs.map((it, i) => ({
-      group_id: groupId.get("host:hosting"),
+      group_id: groupOf("host:hosting"),
       question: it.q,
       answer: it.a,
       sort_order: i,
     })),
   ];
-  if (itemRows.some((r) => !r.group_id)) {
-    throw new Error("faq_items: a group id failed to resolve — aborting rather than orphaning rows");
-  }
-  await upsert("faq_items", itemRows, "group_id,question");
+  await upsert(schema.faq_items, itemRows, ["group_id", "question"]);
 
   /* -------------------------------- immersive ----------------------------- */
   await upsert(
-    "immersive_stops",
+    schema.immersive_stops,
     kanglaStops.map((s, i) => ({
       scene: "kangla-fort",
       slug: s.id,
@@ -410,11 +439,11 @@ async function main() {
       target: s.target,
       sort_order: i,
     })),
-    "scene,slug",
+    ["scene", "slug"],
   );
 
   await upsert(
-    "immersive_sources",
+    schema.immersive_sources,
     kanglaSources.map((s, i) => ({
       scene: "kangla-fort",
       title: s.title,
@@ -422,10 +451,14 @@ async function main() {
       note: s.note,
       sort_order: i,
     })),
-    "scene,title",
+    ["scene", "title"],
   );
 
   console.log("Done.");
 }
 
-main().catch(() => process.exit(1));
+main()
+  .catch(() => {
+    process.exitCode = 1;
+  })
+  .finally(() => pool.end());

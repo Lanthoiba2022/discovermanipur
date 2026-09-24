@@ -10,8 +10,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/lib/auth";
 
 /**
- * Client-side route protection. The Supabase session cookie is refreshed in
- * `src/middleware.ts`; this guard keeps unauthenticated visitors out of the
+ * Client-side route protection. The Neon Auth session cookie is refreshed (and
+ * `/account` guarded server-side) in `src/proxy.ts`; this guard keeps unauthenticated visitors out of the
  * account shell and works identically on the local demo session.
  */
 export function AuthGuard({ children }: { children: ReactNode }) {

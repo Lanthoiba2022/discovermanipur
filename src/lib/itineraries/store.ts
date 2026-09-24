@@ -4,8 +4,8 @@
  * Saved itinerary persistence.
  *
  * Mock-backed today (localStorage, one key per user id), with the async
- * signatures Supabase will have. Phase 7 replaces the bodies with
- * `supabase.from("saved_itineraries")` calls and nothing at the call sites
+ * signatures ready for the database. Moving to `public.saved_itineraries`
+ * means session-checked Server Actions, and nothing at the call sites
  * changes — exactly like `src/lib/booking/bookings.ts`.
  *
  * Reads and writes are wrapped so a blocked or full store never throws: the UI

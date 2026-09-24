@@ -3,9 +3,10 @@
 /**
  * Booking persistence.
  *
- * Mock-backed today (localStorage), with the async signatures Supabase will
- * have. Phase 7 replaces the bodies with `supabase.from("bookings")` calls and
- * nothing at the call sites changes.
+ * Mock-backed today (localStorage), with async signatures ready for the
+ * database. Moving to `public.bookings` means Server Actions that resolve the
+ * user from the session (see `src/lib/auth/profile.ts`) — nothing at the call
+ * sites changes.
  */
 
 import type { Booking, BookingKind, BookingStatus } from "@/types";

@@ -2,7 +2,7 @@
  * Yening content layer — editorial copy, served from the database.
  *
  * Same contract as `./index.ts`: call sites import from here and never reach
- * for the seed modules directly. Every getter tries Supabase first and falls
+ * for the seed modules directly. Every getter tries the database first and falls
  * back to the bundled seed content when the project is unconfigured *or* the
  * query fails.
  *
@@ -12,8 +12,9 @@
  * minute. Content is the one thing safe to serve slightly stale.
  */
 import { cache } from "react";
+import { asc, eq } from "drizzle-orm";
 
-import { getSupabasePublicClient } from "@/lib/supabase/public";
+import { getDb, schema, type Db } from "@/lib/db";
 
 import { faqGroups as seedFaqGroups, type FaqGroup } from "@/app/faq/faq-data";
 import { PHOTO_CREDITS, type PhotoCredit } from "./photo-credits";
@@ -46,26 +47,18 @@ import {
 /* ------------------------------------------------------------------ helper -- */
 
 /**
- * Run a Supabase read, returning `null` if it is unavailable or errors.
- * Wrapped in React's `cache` at each call site so one render hits the network
- * once per key, not once per component.
+ * Run a read, returning its result — or `null` if the database is unavailable
+ * or errors. Wrapped in React's `cache` at each call site so one
+ * render hits the network once per key, not once per component.
+ *
+ * Every table read here is published editorial copy that was world-readable
+ * under Supabase's RLS too, so none of these queries needs a visibility filter.
  */
-async function fromDb<T>(
-  run: (db: NonNullable<ReturnType<typeof getSupabasePublicClient>>) => PromiseLike<{
-    data: T | null;
-    error: { message: string } | null;
-  }>,
-  label: string,
-): Promise<T | null> {
-  const db = getSupabasePublicClient();
+async function fromDb<T>(run: (db: Db) => Promise<T>, label: string): Promise<T | null> {
+  const db = getDb();
   if (!db) return null;
   try {
-    const { data, error } = await run(db);
-    if (error) {
-      console.warn(`[content] ${label} fell back to seed: ${error.message}`);
-      return null;
-    }
-    return data;
+    return await run(db);
   } catch (err) {
     console.warn(`[content] ${label} fell back to seed:`, err);
     return null;
@@ -80,11 +73,16 @@ async function fromDb<T>(
  * key and its expected type are both known.
  */
 const sectionPayload = cache(async (key: string): Promise<unknown[] | null> => {
-  const row = await fromDb(
-    (db) => db.from("site_sections").select("payload").eq("key", key).maybeSingle(),
+  const rows = await fromDb(
+    (db) =>
+      db
+        .select({ payload: schema.site_sections.payload })
+        .from(schema.site_sections)
+        .where(eq(schema.site_sections.key, key))
+        .limit(1),
     `site_sections[${key}]`,
   );
-  const payload = (row as { payload?: unknown } | null)?.payload;
+  const payload = rows?.[0]?.payload;
   return Array.isArray(payload) ? payload : null;
 });
 
@@ -143,11 +141,17 @@ export async function getFaqGroups(
 ): Promise<FaqGroup[]> {
   const rows = await fromDb(
     (db) =>
-      db
-        .from("faq_groups")
-        .select("slug, label, blurb, sort_order, faq_items(question, answer, sort_order)")
-        .eq("audience", audience)
-        .order("sort_order"),
+      db.query.faq_groups.findMany({
+        columns: { slug: true, label: true, blurb: true, sort_order: true },
+        where: eq(schema.faq_groups.audience, audience),
+        orderBy: asc(schema.faq_groups.sort_order),
+        with: {
+          faq_items: {
+            columns: { question: true, answer: true, sort_order: true },
+            orderBy: asc(schema.faq_items.sort_order),
+          },
+        },
+      }),
     `faq_groups[${audience}]`,
   );
 
@@ -157,22 +161,11 @@ export async function getFaqGroups(
       : seedFaqGroups;
   }
 
-  type Row = {
-    slug: string;
-    label: string;
-    blurb: string | null;
-    faq_items: { question: string; answer: string; sort_order: number }[] | null;
-  };
-
-  return (rows as Row[]).map((g) => ({
+  return rows.map((g) => ({
     id: g.slug,
     label: g.label,
     blurb: g.blurb ?? "",
-    // PostgREST does not order an embedded resource by the parent's `order`,
-    // so the nested rows are sorted here.
-    items: [...(g.faq_items ?? [])]
-      .sort((a, b) => a.sort_order - b.sort_order)
-      .map((it) => ({ q: it.question, a: it.answer })),
+    items: g.faq_items.map((it) => ({ q: it.question, a: it.answer })),
   }));
 }
 
@@ -191,7 +184,17 @@ export async function getAllFaqItems(): Promise<QaItem[]> {
 
 export const getPhotoCredits = cache(async (): Promise<PhotoCredit[]> => {
   const rows = await fromDb(
-    (db) => db.from("photo_credits").select("file, alt, subject, author, licence, source"),
+    (db) =>
+      db
+        .select({
+          file: schema.photo_credits.file,
+          alt: schema.photo_credits.alt,
+          subject: schema.photo_credits.subject,
+          author: schema.photo_credits.author,
+          licence: schema.photo_credits.licence,
+          source: schema.photo_credits.source,
+        })
+        .from(schema.photo_credits),
     "photo_credits",
   );
   if (!rows || rows.length === 0) return PHOTO_CREDITS;
@@ -210,32 +213,16 @@ export async function getImmersiveStops(scene = "kangla-fort"): Promise<Immersiv
   const rows = await fromDb(
     (db) =>
       db
-        .from("immersive_stops")
-        .select(
-          "slug, name, short_name, subtitle, image, alt, description, look_for, reconstruction, camera, target",
-        )
-        .eq("scene", scene)
-        .order("sort_order"),
+        .select()
+        .from(schema.immersive_stops)
+        .where(eq(schema.immersive_stops.scene, scene))
+        .orderBy(asc(schema.immersive_stops.sort_order)),
     `immersive_stops[${scene}]`,
   );
   if (!rows || rows.length === 0) return kanglaStops;
 
-  type Row = {
-    slug: string;
-    name: string;
-    short_name: string;
-    subtitle: string;
-    image: string;
-    alt: string;
-    description: string;
-    look_for: string;
-    reconstruction: string;
-    camera: number[];
-    target: number[];
-  };
-
-  return (rows as Row[]).map((r) => ({
-    // Narration audio lives in the local `kanglaStops` table, not in Supabase —
+  return rows.map((r) => ({
+    // Narration audio lives in the local `kanglaStops` table, not in the database —
     // the row below has no `narration` column, so spreading the matching local
     // stop first is what keeps the voice tracks when the DB is seeded. Every
     // field the row does carry then overrides it.
@@ -257,7 +244,15 @@ export async function getImmersiveStops(scene = "kangla-fort"): Promise<Immersiv
 export async function getImmersiveSources(scene = "kangla-fort") {
   const rows = await fromDb(
     (db) =>
-      db.from("immersive_sources").select("title, href, note").eq("scene", scene).order("sort_order"),
+      db
+        .select({
+          title: schema.immersive_sources.title,
+          href: schema.immersive_sources.href,
+          note: schema.immersive_sources.note,
+        })
+        .from(schema.immersive_sources)
+        .where(eq(schema.immersive_sources.scene, scene))
+        .orderBy(asc(schema.immersive_sources.sort_order)),
     `immersive_sources[${scene}]`,
   );
   if (!rows || rows.length === 0) return kanglaSources;

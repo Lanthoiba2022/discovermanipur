@@ -3,7 +3,7 @@
  *
  * These are the contract between the data layer (src/lib/data/*) and every
  * feature route. Phase 0 backs the data layer with typed seed modules; Phase 7
- * swaps the function bodies to Supabase queries without changing these shapes.
+ * swapped the function bodies to database queries without changing these shapes.
  */
 
 export type District =
