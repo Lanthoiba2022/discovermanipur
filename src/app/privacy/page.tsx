@@ -38,7 +38,8 @@ const sections: LegalSection[] = [
             sent to our database.
           </li>
           <li>
-            We count page views with cookieless, privacy-friendly analytics. We do not sell personal
+            We count page views with Vercel&apos;s cookieless analytics, and use Microsoft Clarity
+            to see how pages are used (heatmaps and session recordings). We do not sell personal
             data, and we do not run advertising trackers.
           </li>
           <li>We do not knowingly collect anything from children under 13.</li>
@@ -123,6 +124,22 @@ const sections: LegalSection[] = [
             pages visited, the referring site, approximate country, browser, operating system and
             device type, and page-load measurements. These tools do not use cookies and do not
             follow you across other sites.
+          </li>
+          <li>
+            Interaction data from Microsoft Clarity: clicks, taps, scrolling and mouse movement,
+            the pages you visit, and your browser, device and approximate location. Clarity uses
+            this to build heatmaps and session recordings that show us where pages confuse people.
+            Text you type into form fields is masked before a recording leaves your browser.
+            Clarity runs only on the live site and sets first-party cookies (described below).
+            Microsoft processes this data under its{" "}
+            <a
+              href="https://privacy.microsoft.com/privacystatement"
+              rel="noreferrer noopener"
+              target="_blank"
+            >
+              privacy statement
+            </a>
+            .
           </li>
           <li>
             Some photographs and the 3D map of Kangla are loaded from Google Maps Platform, so
@@ -211,8 +228,11 @@ const sections: LegalSection[] = [
           </li>
         </ul>
         <p>
-          We do not run advertising or cross-site tracking cookies, and our analytics are
-          cookieless. You can clear this storage in your browser settings at any time; the
+          Microsoft Clarity sets first-party cookies (<code>_clck</code> and <code>_clsk</code>)
+          so it can tell a returning visitor and group one visit&apos;s pages into a session, and
+          Microsoft may set its own cookies such as <code>MUID</code>. We do not run advertising
+          cookies, and Vercel&apos;s analytics are cookieless. To stop Clarity, block cookies for
+          this site or use your browser&apos;s tracking protection. You can clear this storage in your browser settings at any time; the
           consequence is that preferences reset, anything saved on the device is lost, and you
           will be signed out.
         </p>
@@ -228,7 +248,11 @@ const sections: LegalSection[] = [
         <ul>
           <li>
             <strong>Vercel</strong>, which hosts the site, keeps server logs and provides the
-            analytics described above;
+            Web Analytics and Speed Insights described above;
+          </li>
+          <li>
+            <strong>Microsoft</strong>, which provides Clarity, the heatmap and session-recording
+            tool described above;
           </li>
           <li>
             <strong>Neon</strong>, which hosts our database and our sign-in service, where account
@@ -273,6 +297,10 @@ const sections: LegalSection[] = [
           <li>
             <strong>Server logs and analytics:</strong> for the retention period set by our hosting
             provider.
+          </li>
+          <li>
+            <strong>Microsoft Clarity:</strong> session recordings for 30 days, and aggregated
+            heatmaps and statistics for up to 13 months, under Microsoft&apos;s retention policy.
           </li>
         </ul>
       </>

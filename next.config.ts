@@ -29,15 +29,18 @@ const isDev = process.env.NODE_ENV === "development";
  * - Scripts: Google Maps JS (Kangla 3D map) from maps.googleapis.com, which
  *   pulls its own modules from *.gstatic.com; Vercel Analytics / Speed
  *   Insights load from the site itself in production and from
- *   va.vercel-scripts.com in development. `'unsafe-inline'` is there because
+ *   va.vercel-scripts.com in development; Microsoft Clarity (production only,
+ *   see layout.tsx) loads its tag from www.clarity.ms and the recorder from
+ *   scripts.clarity.ms. `'unsafe-inline'` is there because
  *   Next.js inlines its bootstrap scripts and a nonce would force every page
  *   to render dynamically; `'wasm-unsafe-eval'` is for the meshopt decoder
  *   that unpacks the Kangla 3D model. `'unsafe-eval'` is development-only
  *   (React uses it for error overlays).
  * - Images are allowed from any https origin: avatars are user-supplied
  *   links, and Places photos redirect to Google's CDN.
- * - Connections: Google map tiles and APIs, OpenStreetMap and Esri tiles and
- *   the MapLibre glyph server for the 2D maps.
+ * - Connections: Google map tiles and APIs, OpenStreetMap and Esri tiles,
+ *   the MapLibre glyph server for the 2D maps, and Clarity's collectors
+ *   (*.clarity.ms, c.bing.com).
  * - `frame-ancestors 'none'` (and X-Frame-Options for old browsers) stops the
  *   site being framed for clickjacking.
  */
@@ -56,6 +59,8 @@ const csp = [
     "https://maps.googleapis.com",
     "https://*.gstatic.com",
     "https://va.vercel-scripts.com",
+    "https://www.clarity.ms",
+    "https://*.clarity.ms",
   ],
   ["style-src", "'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
   ["img-src", "'self'", "data:", "blob:", "https:"],
@@ -74,6 +79,8 @@ const csp = [
     "https://demotiles.maplibre.org",
     "https://va.vercel-scripts.com",
     "https://vitals.vercel-insights.com",
+    "https://*.clarity.ms",
+    "https://c.bing.com",
   ],
   ["worker-src", "'self'", "blob:"],
   ["media-src", "'self'", "data:", "blob:"],
