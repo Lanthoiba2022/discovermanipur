@@ -4,9 +4,9 @@ Two migrations. Nothing existing is modified or deleted.
 
 | File | What |
 |---|---|
-| `supabase/migrations/0007_sort_weight_and_photo_refs.sql` | Adds `sort_weight`, `photo_refs`, `verification`, `sources`. All additive with defaults that reproduce today's behaviour. |
-| `supabase/migrations/0008_seed_2026_research.sql` | 236 rows — 57 hotspots, 36 homestays, 143 eateries. Generated; don't hand-edit. |
-| `supabase/migrations/0009_backfill_photos_and_promote.sql` | Photo refs for 28 pre-existing hotspots; promotes the 2 slugs 0008 skipped as duplicates. |
+| `db/migrations/0007_sort_weight_and_photo_refs.sql` | Adds `sort_weight`, `photo_refs`, `verification`, `sources`. All additive with defaults that reproduce today's behaviour. |
+| `db/migrations/0008_seed_2026_research.sql` | 236 rows — 57 hotspots, 36 homestays, 143 eateries. Generated; don't hand-edit. |
+| `db/migrations/0009_backfill_photos_and_promote.sql` | Photo refs for 28 pre-existing hotspots; promotes the 2 slugs 0008 skipped as duplicates. |
 
 ## Applied
 
@@ -25,7 +25,10 @@ grant or RLS gap.
 Apply:
 
 ```bash
-supabase db push          # or: psql "$DATABASE_URL" -f supabase/migrations/0007_...sql -f 0008_...sql
+# Already applied to production (these files are frozen pre-Drizzle history).
+# To apply REGENERATED research data now, wrap it in a Drizzle custom migration:
+npx drizzle-kit generate --custom --name research_refresh   # then paste the SQL in
+npm run db:migrate
 ```
 
 Regenerate 0008 after changing the research JSON:
@@ -43,7 +46,7 @@ python3 data/research/scripts/build_seed_sql.py
 
 `sortRows` in `src/lib/data/index.ts` now orders `sortWeight desc, featured desc`.
 Rows from the bundled seed modules have no weight, and `?? 0` puts them in the same
-cohort as the old database rows — so the Supabase path and the seed-fallback path
+cohort as the old database rows — so the database path and the seed-fallback path
 order identically.
 
 An explicit user sort (price, rating) overrides the cohort completely. Someone who

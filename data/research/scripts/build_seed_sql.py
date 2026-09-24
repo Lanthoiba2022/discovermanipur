@@ -21,7 +21,11 @@ Design rules, in order of importance:
      `images` (files we host). Storing the bytes would breach the Maps terms.
 
 Usage:
-    python3 build_seed_sql.py            # writes ../../supabase/migrations/0008_seed_2026_research.sql
+    python3 build_seed_sql.py            # writes ../../db/migrations/0008_seed_2026_research.sql
+
+`db/migrations/` is frozen pre-Drizzle history: regenerating 0008 does not apply
+anything. Copy the output into a Drizzle custom migration
+(`npx drizzle-kit generate --custom`) and run `npm run db:migrate`.
 """
 
 import json
@@ -30,7 +34,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 RESEARCH = HERE.parent
-OUT = RESEARCH.parent.parent / "supabase" / "migrations" / "0008_seed_2026_research.sql"
+OUT = RESEARCH.parent.parent / "db" / "migrations" / "0008_seed_2026_research.sql"
 
 WEIGHT = 100
 

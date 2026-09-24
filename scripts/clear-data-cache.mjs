@@ -2,8 +2,12 @@
  * Drop Next's fetch cache before a build.
  *
  * Next caches fetch responses in `.next/cache/fetch-cache` and reuses them
- * across builds. supabase-js reads go through that same patched `fetch`, so a
- * build can prerender pages from catalogue rows captured by an EARLIER build.
+ * across builds. When the catalogue was read through supabase-js, those reads
+ * went through that same patched `fetch`, so a build could prerender pages
+ * from catalogue rows captured by an EARLIER build. Catalogue reads now use
+ * node-postgres (`src/lib/db`), which bypasses `fetch` and so this cache — but
+ * any other `fetch` a page makes at build time is still cached, so the step
+ * stays.
  *
  * That is not theoretical. After seeding new hotspots, `generateStaticParams`
  * saw the fresh list while the page bodies were handed the stale one, and every
@@ -13,7 +17,7 @@
  *
  * Setting `cache: "no-store"` on the client is the obvious fix and the wrong
  * one: it opts every catalogue route out of static rendering, which is the
- * whole point of `lib/supabase/public.ts` being cookie-free.
+ * whole point of the catalogue reads being cookie-free.
  *
  * Clearing the cache before the build keeps static generation intact and costs
  * one extra round of queries per build — a handful of whole-table reads.

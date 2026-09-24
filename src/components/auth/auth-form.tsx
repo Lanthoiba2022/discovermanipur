@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  isSupabaseConfigured,
+  isAuthConfigured,
   magicLinkSchema,
   signInSchema,
   signInWithMagicLink,
@@ -163,7 +163,7 @@ export function AuthForm({ next }: { next: string }) {
         concierge.
       </p>
 
-      {!isSupabaseConfigured && <DemoModeNotice className="mt-6" />}
+      {!isAuthConfigured && <DemoModeNotice className="mt-6" />}
 
       {sent && (
         <div

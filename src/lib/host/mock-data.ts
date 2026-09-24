@@ -3,7 +3,7 @@
  *
  * This is deliberately separate from `@/lib/data` (the public catalogue): it
  * models the back-office — applications in review, a host's own listings, and
- * the booking ledger. Swap these arrays for Supabase queries in Phase 7; the
+ * the booking ledger. Swap these arrays for database queries (`@/lib/db`); the
  * shapes are already the ones the UI consumes.
  */
 

@@ -3,7 +3,7 @@ import { FlaskConical } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * Shown whenever Supabase credentials are absent. The mock session is real
+ * Shown whenever Neon Auth credentials are absent. The mock session is real
  * enough to click through, and the label makes sure nobody mistakes it for a
  * secure account.
  */

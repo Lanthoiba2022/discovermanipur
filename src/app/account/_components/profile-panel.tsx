@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  isSupabaseConfigured,
+  isAuthConfigured,
   profileSchema,
   updateProfile,
   useAuth,
@@ -68,7 +68,7 @@ export function ProfilePanel() {
         booking is confirmed.
       </p>
 
-      {!isSupabaseConfigured && <DemoModeNotice className="mt-6" />}
+      {!isAuthConfigured && <DemoModeNotice className="mt-6" />}
 
       <form onSubmit={onSubmit} noValidate className="mt-8 space-y-5">
         <div className="flex items-center gap-4">
