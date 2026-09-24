@@ -12,6 +12,8 @@
     "audio:kangla:openai": "node scripts/generate-kangla-audio.mjs",
     "audio:kangla:indic": "python scripts/generate-kangla-audio-indic-parler.py",
     "db:seed": "node --env-file=.env.local scripts/seed.ts",
+    "photos:ttl": "node --env-file=.env.local scripts/probe-place-photo-ttl.mjs",
+    "photos:ttl:check": "node scripts/probe-place-photo-ttl.mjs --check",
     "maplibre:worker": "node scripts/copy-maplibre-worker.mjs",
     "predev": "node scripts/copy-maplibre-worker.mjs",
     "prebuild": "node scripts/copy-maplibre-worker.mjs && node scripts/clear-data-cache.mjs"
