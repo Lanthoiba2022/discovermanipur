@@ -22,9 +22,31 @@
  */
 
 export const runtime = "nodejs";
-// The upstream URL is signed and short-lived; let the CDN hold our redirect for
-// a day rather than paying for a Places call on every card render.
-export const revalidate = 86400;
+
+/*
+ * Caching, in two layers. Google bills per Places call, so the aim is one call
+ * per photo per PHOTO_URI_TTL, however many people view it.
+ *
+ *   1. Server: the Places response (the signed `photoUri`, never the image) is
+ *      held in Next's data cache via `fetch(..., { next: { revalidate } })`.
+ *      That cache is keyed by the upstream URL, so it is shared across every
+ *      visitor. A segment-level `export const revalidate` would do nothing
+ *      here: reading `request.url` makes this handler dynamic.
+ *
+ *   2. Browser and CDN: the redirect carries its own Cache-Control, so repeat
+ *      views within REDIRECT_MAX_AGE never reach this function at all.
+ *
+ * Google does not document how long a `photoUri` stays valid; the image it
+ * points at is served with `max-age=86400`. PHOTO_URI_TTL sits under that with
+ * margin, and REDIRECT_MAX_AGE is short enough that a CDN copy plus the server
+ * copy together stay inside it. `scripts/probe-place-photo-ttl.mjs` measures the
+ * real lifetime — raise PHOTO_URI_TTL only once it shows URLs outliving it.
+ *
+ * Note `prebuild` clears the data cache, so every deploy re-resolves each
+ * photo on first view.
+ */
+const PHOTO_URI_TTL = 12 * 60 * 60;
+const REDIRECT_MAX_AGE = 60 * 60;
 
 /** `places/<id>/photos/<id>` — anything else is a caller bug or a probe. */
 const REF = /^places\/[A-Za-z0-9_-]+\/photos\/[A-Za-z0-9_-]+$/;
@@ -55,7 +77,7 @@ export async function GET(request: Request) {
     `?maxWidthPx=${width}&skipHttpRedirect=true&key=${key}`;
 
   try {
-    const res = await fetch(endpoint, { next: { revalidate } });
+    const res = await fetch(endpoint, { next: { revalidate: PHOTO_URI_TTL } });
     if (!res.ok) {
       return new Response("Upstream photo unavailable", { status: 502 });
     }
@@ -68,7 +90,15 @@ export async function GET(request: Request) {
       return new Response("Upstream photo unavailable", { status: 502 });
     }
 
-    return Response.redirect(photoUri, 307);
+    // Built by hand: `Response.redirect` returns immutable headers, so it
+    // cannot carry the Cache-Control that lets browsers and CDNs keep it.
+    return new Response(null, {
+      status: 307,
+      headers: {
+        Location: photoUri,
+        "Cache-Control": `public, max-age=${REDIRECT_MAX_AGE}, s-maxage=${REDIRECT_MAX_AGE}`,
+      },
+    });
   } catch {
     return new Response("Upstream photo unavailable", { status: 502 });
   }
