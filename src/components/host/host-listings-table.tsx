@@ -1,9 +1,12 @@
 "use client";
 
+import { ImageOff } from "lucide-react";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import Link from "next/link";
+import { useMemo, useOptimistic, useState, useTransition } from "react";
 import { toast } from "sonner";
 
+import { setHomestayPaused } from "@/app/host/dashboard/actions";
 import {
   EmptyRow,
   PlainHeader,
@@ -14,18 +17,32 @@ import {
   type SortState,
 } from "@/components/admin/table-parts";
 import { Button } from "@/components/ui/button";
-import { HOST_TYPE_LABEL, type HostListingRecord } from "@/lib/host/types";
+import { HOST_TYPE_LABEL, type HostDashboardListing } from "@/lib/host/types";
 import { formatINR } from "@/lib/utils";
 
-type SortKey = "title" | "kind" | "pricePerNight" | "occupancyPct" | "rating";
+type SortKey = "title" | "kind" | "price" | "rating";
 
-export function HostListingsTable({ initial }: { initial: HostListingRecord[] }) {
-  const [rows, setRows] = useState(initial);
-  const [sort, setSort] = useState<SortState<SortKey>>({ key: "occupancyPct", direction: "desc" });
+export function HostListingsTable({
+  listings,
+  emptyTitle,
+  emptyBody,
+}: {
+  listings: HostDashboardListing[];
+  emptyTitle: string;
+  emptyBody: string;
+}) {
+  const [optimistic, setOptimistic] = useOptimistic(
+    listings,
+    (rows, change: { id: string; isActive: boolean }) =>
+      rows.map((r) => (r.id === change.id ? { ...r, isActive: change.isActive } : r)),
+  );
+  const [pendingId, setPendingId] = useState<string | null>(null);
+  const [, startTransition] = useTransition();
+  const [sort, setSort] = useState<SortState<SortKey>>({ key: "title", direction: "asc" });
 
   const sorted = useMemo(
-    () => [...rows].sort((a, b) => sortCompare(a[sort.key], b[sort.key], sort.direction)),
-    [rows, sort],
+    () => [...optimistic].sort((a, b) => sortCompare(a[sort.key], b[sort.key], sort.direction)),
+    [optimistic, sort],
   );
 
   function toggleSort(key: SortKey) {
@@ -34,30 +51,30 @@ export function HostListingsTable({ initial }: { initial: HostListingRecord[] })
     );
   }
 
-  function togglePause(id: string) {
-    setRows((prev) =>
-      prev.map((r) => {
-        if (r.id !== id) return r;
-        const next = r.status === "live" ? ("paused" as const) : ("live" as const);
-        toast.success(
-          next === "paused" ? `${r.title} paused` : `${r.title} is taking bookings again`,
-          {
-            description:
-              next === "paused"
-                ? "Existing bookings stand; no new ones can be made."
-                : "It is back in search results.",
-          },
-        );
-        return { ...r, status: next };
-      }),
-    );
+  function togglePause(row: HostDashboardListing) {
+    const paused = row.isActive;
+    setPendingId(row.id);
+    startTransition(async () => {
+      setOptimistic({ id: row.id, isActive: !paused });
+      const result = await setHomestayPaused({ listingId: row.id, paused });
+      setPendingId(null);
+      if (!result.ok) {
+        toast.error(result.message);
+        return;
+      }
+      toast.success(paused ? `${row.title} paused` : `${row.title} is taking bookings again`, {
+        description: paused
+          ? "It is hidden from travellers. Bookings already made still stand."
+          : "It is back on the public homestay pages.",
+      });
+    });
   }
 
   return (
     <TableScroller label="Your listings">
-      <table className="w-full min-w-[52rem] border-collapse text-sm">
+      <table className="w-full min-w-[48rem] border-collapse text-sm">
         <caption className="sr-only">
-          Your listings with type, price, occupancy, rating and whether they are taking bookings
+          Your listings with type, price, rating and whether they are taking bookings
         </caption>
         <thead className="border-b border-border bg-surface-sunken text-left">
           <tr>
@@ -67,11 +84,8 @@ export function HostListingsTable({ initial }: { initial: HostListingRecord[] })
             <SortableHeader columnKey="kind" sort={sort} onSort={toggleSort}>
               Type
             </SortableHeader>
-            <SortableHeader columnKey="pricePerNight" sort={sort} onSort={toggleSort} align="right">
+            <SortableHeader columnKey="price" sort={sort} onSort={toggleSort} align="right">
               Price
-            </SortableHeader>
-            <SortableHeader columnKey="occupancyPct" sort={sort} onSort={toggleSort} align="right">
-              Occupancy
             </SortableHeader>
             <SortableHeader columnKey="rating" sort={sort} onSort={toggleSort} align="right">
               Rating
@@ -82,26 +96,40 @@ export function HostListingsTable({ initial }: { initial: HostListingRecord[] })
         </thead>
         <tbody>
           {sorted.length === 0 ? (
-            <EmptyRow
-              colSpan={7}
-              title="No listings yet"
-              body="Once your application is approved, the listings you publish appear here."
-            />
+            <EmptyRow colSpan={6} title={emptyTitle} body={emptyBody} />
           ) : (
             sorted.map((row) => (
-              <tr key={row.id} className="border-b border-border/70 last:border-0 hover:bg-muted/50">
+              <tr key={`${row.kind}:${row.id}`} className="border-b border-border/70 last:border-0 hover:bg-muted/50">
                 <th scope="row" className="px-4 py-3 text-left font-medium text-foreground">
                   <span className="flex items-center gap-3">
-                    <Image
-                      src={row.image}
-                      alt={row.imageAlt}
-                      width={56}
-                      height={56}
-                      sizes="56px"
-                      className="size-12 shrink-0 rounded-[var(--radius-sm)] object-cover"
-                    />
+                    {row.image ? (
+                      <Image
+                        src={row.image.src}
+                        alt={row.image.alt}
+                        width={56}
+                        height={56}
+                        sizes="56px"
+                        className="size-12 shrink-0 rounded-[var(--radius-sm)] object-cover"
+                      />
+                    ) : (
+                      <span
+                        aria-hidden="true"
+                        className="flex size-12 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-muted text-muted-foreground"
+                      >
+                        <ImageOff className="size-4" />
+                      </span>
+                    )}
                     <span>
-                      {row.title}
+                      {row.isActive ? (
+                        <Link
+                          href={`/${row.kind === "homestay" ? "homestays" : "experiences"}/${row.slug}`}
+                          className="underline-offset-4 hover:underline"
+                        >
+                          {row.title}
+                        </Link>
+                      ) : (
+                        row.title
+                      )}
                       <span className="block text-xs font-normal text-muted-foreground">
                         {row.location}
                       </span>
@@ -110,30 +138,40 @@ export function HostListingsTable({ initial }: { initial: HostListingRecord[] })
                 </th>
                 <td className="px-4 py-3 text-muted-foreground">{HOST_TYPE_LABEL[row.kind]}</td>
                 <td className="px-4 py-3 text-right tabular-nums text-muted-foreground">
-                  {formatINR(row.pricePerNight)}
+                  {formatINR(row.price)}
+                  <span className="block text-xs">
+                    {row.kind === "homestay" ? "per night" : "per person"}
+                  </span>
                 </td>
                 <td className="px-4 py-3 text-right tabular-nums text-muted-foreground">
-                  {row.occupancyPct}%
-                </td>
-                <td className="px-4 py-3 text-right tabular-nums text-muted-foreground">
-                  {row.rating.toFixed(1)} ({row.reviewCount})
+                  {row.reviewCount > 0 ? `${row.rating.toFixed(1)} (${row.reviewCount})` : "No reviews"}
                 </td>
                 <td className="px-4 py-3">
-                  <StatusPill status={row.status} />
+                  <span className="flex flex-wrap items-center gap-2">
+                    <StatusPill status={row.isActive ? "live" : "paused"} />
+                    {row.featured && (
+                      <span className="text-xs text-muted-foreground">Featured</span>
+                    )}
+                  </span>
                 </td>
                 <td className="px-4 py-3 text-right">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => togglePause(row.id)}
-                    aria-label={
-                      row.status === "live"
-                        ? `Pause bookings for ${row.title}`
-                        : `Resume bookings for ${row.title}`
-                    }
-                  >
-                    {row.status === "live" ? "Pause" : "Resume"}
-                  </Button>
+                  {row.canPause ? (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={pendingId === row.id}
+                      onClick={() => togglePause(row)}
+                      aria-label={
+                        row.isActive
+                          ? `Pause bookings for ${row.title}`
+                          : `Resume bookings for ${row.title}`
+                      }
+                    >
+                      {row.isActive ? "Pause" : "Resume"}
+                    </Button>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">Ask an admin to pause</span>
+                  )}
                 </td>
               </tr>
             ))
