@@ -22,6 +22,7 @@ import type {
 } from "@/types";
 
 import {
+  loadAllHomestaySlugs,
   loadCrafts,
   loadEateries,
   loadExperiences,
@@ -110,6 +111,10 @@ export async function getHomestays(q?: ListQuery): Promise<Homestay[]> {
     (h) => h.isActive && matches(h, q, `${h.title} ${h.description} ${h.location} ${h.district}`),
   );
   return paginate(sortRows(rows, q, (r) => r.pricePerNight), q);
+}
+
+export async function getAllHomestaySlugs(): Promise<string[]> {
+  return loadAllHomestaySlugs();
 }
 
 export async function getHomestayBySlug(slug: string): Promise<Homestay | null> {

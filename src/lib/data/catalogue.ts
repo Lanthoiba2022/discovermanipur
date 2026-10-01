@@ -208,6 +208,17 @@ export const loadHomestays = loader(
   eq(schema.homestays.is_active, true),
 );
 
+/**
+ * Every homestay slug, inactive ones included. The detail route prerenders all
+ * of them, so a listing an admin or host switches back on renders after
+ * revalidation instead of 404ing until the next deploy; the page itself still
+ * 404s while the listing is inactive.
+ */
+export const loadAllHomestaySlugs = cache(async (): Promise<string[]> => {
+  const rows = await loadTable(schema.homestays);
+  return rows?.length ? rows.map((r) => r.slug) : seedHomestays.map((h) => h.slug);
+});
+
 export const loadExperiences = loader(
   schema.experiences,
   (r) =>
