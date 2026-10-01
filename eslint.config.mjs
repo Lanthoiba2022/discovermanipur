@@ -19,6 +19,8 @@ const eslintConfig = defineConfig([
     "reference/**",
     "assets/**",
     ".claude/worktrees/**",
+    // Local photo store and test scripts (git-ignored).
+    ".data/**",
   ]),
 ]);
 

@@ -12,8 +12,9 @@ export const metadata: Metadata = {
 
 /**
  * Where `requireRole` (`@/lib/auth/dal`) sends a signed-in visitor whose role
- * does not cover the page, or anyone at all when this deployment has no
- * sign-in server. Signed-out visitors go to /auth instead.
+ * does not cover the host dashboard, or anyone at all when this deployment has
+ * no sign-in server. Signed-out visitors go to /auth instead. The admin area
+ * never sends anyone here: it answers 404 so it is not advertised.
  */
 export default async function AccessDeniedPage({
   searchParams,
@@ -21,25 +22,18 @@ export default async function AccessDeniedPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-  const area = params.area === "host" ? "host" : "admin";
   const unavailable = params.reason === "unavailable";
   const user = unavailable ? null : await getSessionUser();
-  const isHost = user?.role === "host" || user?.role === "admin";
 
   const copy = unavailable
     ? {
         title: "Sign-in is not set up here",
-        body: "This deployment has no sign-in server connected, so the admin and host areas are closed. Everything else on the site works as normal.",
+        body: "This deployment has no sign-in server connected, so the host dashboard is closed. Everything else on the site works as normal.",
       }
-    : area === "admin"
-      ? {
-          title: "Admin access only",
-          body: "This area is limited to the Discover Manipur operations team. If you host with us, your own listings and bookings live in the host dashboard.",
-        }
-      : {
-          title: "For approved hosts",
-          body: "The host dashboard opens once your host application is approved. Until then you can apply, or read the standards every listing is held to.",
-        };
+    : {
+        title: "For approved hosts",
+        body: "The host dashboard opens once your host application is approved. Until then you can apply, or read the standards every listing is held to.",
+      };
 
   return (
     <div className="shell pb-24 pt-28 md:pt-32">
@@ -57,11 +51,7 @@ export default async function AccessDeniedPage({
             <Button asChild>
               <Link href="/">Back to Discover Manipur</Link>
             </Button>
-          ) : area === "admin" && isHost ? (
-            <Button asChild>
-              <Link href="/host/dashboard">Go to host dashboard</Link>
-            </Button>
-          ) : area === "host" ? (
+          ) : (
             <>
               <Button asChild>
                 <Link href="/host/apply">Apply to host</Link>
@@ -70,10 +60,6 @@ export default async function AccessDeniedPage({
                 <Link href="/host/guidelines">Hosting standards</Link>
               </Button>
             </>
-          ) : (
-            <Button asChild>
-              <Link href="/account">Go to your account</Link>
-            </Button>
           )}
         </div>
       </div>

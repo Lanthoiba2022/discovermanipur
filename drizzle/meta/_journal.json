@@ -15,6 +15,13 @@
       "when": 1790855768492,
       "tag": "0001_rename_to_discover_manipur",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790873026941,
+      "tag": "0002_community_places",
+      "breakpoints": true
     }
   ]
 }

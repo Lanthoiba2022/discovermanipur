@@ -9,6 +9,7 @@ import {
   getHotspots,
   getTours,
 } from "@/lib/data";
+import { listPublishedSlugs } from "@/lib/community/queries";
 import { SITE_URL } from "@/lib/site";
 
 type Entry = MetadataRoute.Sitemap[number];
@@ -24,6 +25,7 @@ const STATIC_ROUTES: { path: string; priority: number; changeFrequency: Entry["c
     { path: "/tours", priority: 0.8, changeFrequency: "weekly" },
     { path: "/festivals", priority: 0.8, changeFrequency: "monthly" },
     { path: "/store", priority: 0.8, changeFrequency: "weekly" },
+    { path: "/community", priority: 0.7, changeFrequency: "daily" },
     { path: "/transport", priority: 0.6, changeFrequency: "monthly" },
     { path: "/plan", priority: 0.7, changeFrequency: "monthly" },
     { path: "/host", priority: 0.5, changeFrequency: "monthly" },
@@ -39,15 +41,18 @@ const STATIC_ROUTES: { path: string; priority: number; changeFrequency: Entry["c
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // The data layer is still being populated; every one of these may legitimately
   // return an empty array, which simply yields a sitemap of the static routes.
-  const [hotspots, homestays, experiences, eateries, tours, festivals, crafts] = await Promise.all([
-    getHotspots(),
-    getHomestays(),
-    getExperiences(),
-    getEateries(),
-    getTours(),
-    getFestivals(),
-    getCrafts(),
-  ]);
+  // `listPublishedSlugs` returns [] when there is no database or the query fails.
+  const [hotspots, homestays, experiences, eateries, tours, festivals, crafts, community] =
+    await Promise.all([
+      getHotspots(),
+      getHomestays(),
+      getExperiences(),
+      getEateries(),
+      getTours(),
+      getFestivals(),
+      getCrafts(),
+      listPublishedSlugs(),
+    ]);
 
   const lastModified = new Date();
 
@@ -75,5 +80,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...detail("/tours", tours, 0.7),
     ...detail("/festivals", festivals, 0.6),
     ...detail("/store", crafts, 0.7),
+    ...community.map(
+      (row): Entry => ({
+        url: `${SITE_URL}/community/${row.slug}`,
+        lastModified: new Date(row.updatedAt),
+        changeFrequency: "monthly",
+        priority: 0.6,
+      }),
+    ),
   ];
 }

@@ -38,6 +38,7 @@ use and has no paid tier.
 - [Scripts](#scripts)
 - [Project structure](#project-structure)
 - [Data and content](#data-and-content)
+- [Community places](#community-places)
 - [Contributing and Hacktoberfest](#contributing-and-hacktoberfest)
 - [Community](#community)
 - [Security](#security)
@@ -54,13 +55,15 @@ use and has no paid tier.
 | `/hotspots`, `/hotspots/[slug]` | Places to visit across the 16 districts, with timings, fees, how to reach, accessibility notes and sources |
 | `/homestays`, `/eateries`, `/experiences`, `/tours`, `/transport`, `/festivals` | The other catalogue verticals, each with an index (filters, sorting) and a detail page |
 | `/store`, `/store/[slug]` | Handloom and craft makers |
+| `/community`, `/community/[slug]` | Places added by the community and verified by it (see [Community places](#community-places)) |
+| `/community/new`, `/community/verify` | List a place with photos; upvote new places waiting for verification |
 | `/search` | Search across the whole catalogue |
 | `/plan` | Trip planner. The AI concierge is switched off by default; the page then shows a sample conversation built from the real catalogue |
 | `/explore/kangla` | Kangla Fort in a tilted 3D satellite view (Google Maps 3D), with the fort's landmarks pinned and narration for some of them. See [docs/kangla-map-explorer.md](docs/kangla-map-explorer.md) |
-| `/account/*` | Profile, saved listings, bookings and saved itineraries |
+| `/account/*` | Profile, saved listings, bookings, saved itineraries and the places you have listed |
 | `/host`, `/host/apply`, `/host/guidelines` | Information for homestay owners, eateries and guides, and the host application form |
 | `/host/dashboard` | Host dashboard (host or admin role) |
-| `/admin/*` | Listings, bookings and host applications (admin role) |
+| `/admin/*` | Community place review, contributors, every uploaded photo, listings, bookings and host applications. Admin role only; anyone else gets a 404 |
 | `/faq`, `/about`, `/contact`, `/responsible-travel`, `/accessibility`, `/privacy`, `/terms` | Editorial and policy pages |
 
 With a database and Neon Auth configured, as on the live site, bookings, saved places,
@@ -131,6 +134,7 @@ cp .env.example .env.local
 | `GOOGLE_API_KEY` | browser | Maps JavaScript API and Map Tiles API for `/explore/kangla`. Sent to the browser, so restrict it by HTTP referrer and to those two APIs |
 | `GOOGLE_PLACES_API_KEY` | server | Places API (New) for listing photos via `/api/place-photo`. Falls back to `GOOGLE_API_KEY`; a separate key is safer |
 | `CONTACT_INBOX_EMAIL` | server | Delivers `/contact` messages through Brevo (needs the Brevo variables too) |
+| `BLOB_READ_WRITE_TOKEN` | server | Vercel Blob store for community photo uploads (stored privately). Without it, development writes to `.data/` and production switches uploads off |
 
 Rules that matter:
 
@@ -175,6 +179,7 @@ src/lib/auth/       Neon Auth, the session data-access layer and the local fallb
 src/lib/host/       Role checks (requireAdmin, requireHost), host applications, dashboard queries
 src/lib/booking/    Server-side pricing, booking requests and the saved list
 src/lib/ai/         Concierge model config, prompt, tools, itinerary schema and fallbacks
+src/lib/community/  Community places: verification rules, queries, actions, photo storage
 src/lib/immersive/  Kangla landmarks, bounds and narration
 src/types/          Shared TypeScript types
 drizzle/            Drizzle migrations (the live migration history)
@@ -204,9 +209,34 @@ public/             Images, 3D models, audio and video
   Places photos are display-only: they are fetched per request through
   `/api/place-photo`, never stored, and shown with their attribution. See
   [CONTRIBUTING.md](CONTRIBUTING.md#photos-and-attribution).
+- **Community places.** Anyone signed in with a verified email can list a place. See
+  [Community places](#community-places) below.
 - **Map data.** Map imagery is attributed to its providers on the map itself. The Kangla
   3D models are approximate, photo-referenced reconstructions, not surveys; see
   [docs/kangla-immersive.md](docs/kangla-immersive.md).
+
+## Community places
+
+Anyone can list a place in Manipur: an attraction or hidden gem, a cafe or restaurant, a
+homestay or resort, or a handloom, craft or traditional wear shop. Listing needs an account
+with a verified email address, and owners are welcome as long as they say so.
+
+Every new place goes through the same public verification:
+
+- It is visible only to signed-in users with a verified email, who can upvote it. Nobody can
+  vote for a place they listed.
+- It is published once it has **10 upvotes from distinct verified users within 48 hours**
+  of being listed.
+- Otherwise it is hidden from public view and held for review by an admin. Nothing is
+  deleted, and nothing unverified is shown to the public.
+- An admin can also publish, hold or reject a place by hand at any stage, and every such
+  decision records who made it.
+
+The rules are the same for everyone and live in one file,
+[src/lib/community/rules.ts](src/lib/community/rules.ts). Photos are resized and re-encoded
+on the server, which strips location and other metadata, and are stored privately: every
+photo is served through `/api/community/photos/[id]`, which applies the same visibility rules
+as the place itself.
 
 ## Contributing and Hacktoberfest
 

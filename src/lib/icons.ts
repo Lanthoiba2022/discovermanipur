@@ -31,6 +31,7 @@ import {
   ShieldCheck,
   Smartphone,
   Sparkles,
+  Users,
   Wallet,
   type LucideIcon,
 } from "lucide-react";
@@ -56,6 +57,7 @@ export const ICONS = {
   ShieldCheck,
   Smartphone,
   Sparkles,
+  Users,
   Wallet,
 } as const satisfies Record<string, LucideIcon>;
 
