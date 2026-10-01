@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, ArrowRight, Check, ImagePlus, Loader2, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -10,6 +11,10 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  submitHostApplication,
+  type SubmitApplicationResult,
+} from "@/lib/host/application-actions";
 import {
   DRAFT_KEY,
   STEPS,
@@ -20,7 +25,6 @@ import {
 } from "@/lib/host/application-schema";
 import { DISTRICTS, HOST_TYPE_LABEL } from "@/lib/host/types";
 import { cn } from "@/lib/utils";
-import type { HostApplication } from "@/types";
 
 interface Photo {
   id: string;
@@ -49,20 +53,49 @@ function sanitizeDraft(raw: unknown): Partial<ApplicationValues> {
   return out;
 }
 
-export function ApplyWizard() {
+interface ApplyWizardProps {
+  /**
+   * `live` sends the application to the server for the signed-in `account`;
+   * `local` (no database or sign-in on this deployment) only shows a reference.
+   */
+  mode: "live" | "local";
+  account?: { name: string; email: string };
+}
+
+interface Submitted {
+  reference: string;
+  hostType: ApplicationValues["hostType"];
+  propertyName: string;
+}
+
+const SEND_FAILED: SubmitApplicationResult = {
+  ok: false,
+  message: "We could not send your application just now. Try again in a moment.",
+};
+
+export function ApplyWizard({ mode, account }: ApplyWizardProps) {
+  const live = mode === "live";
+  const router = useRouter();
   const [step, setStep] = useState(0);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState<{ reference: string; application: HostApplication } | null>(
-    null,
-  );
+  const [submitted, setSubmitted] = useState<Submitted | null>(null);
   const [restored, setRestored] = useState(false);
   const photosRef = useRef<Photo[]>([]);
   photosRef.current = photos;
 
+  // The server files a live application under the account's email whatever
+  // the form says, so the field shows that address and cannot be edited.
+  const accountEmail = account?.email;
+  const accountName = account?.name;
+
   const form = useForm<ApplicationValues>({
     resolver: zodResolver(applicationSchema),
-    defaultValues: emptyApplication,
+    defaultValues: {
+      ...emptyApplication,
+      ...(accountEmail ? { email: accountEmail } : {}),
+      ...(accountName ? { applicantName: accountName } : {}),
+    },
     mode: "onTouched",
   });
   const {
@@ -73,6 +106,7 @@ export function ApplyWizard() {
     watch,
     getValues,
     setValue,
+    setError,
     formState: { errors },
   } = form;
 
@@ -85,7 +119,13 @@ export function ApplyWizard() {
         const parsed = JSON.parse(stored) as { values?: unknown; step?: unknown };
         const values = sanitizeDraft(parsed.values);
         if (Object.keys(values).length > 0) {
-          reset({ ...emptyApplication, ...values, agree: false });
+          reset({
+            ...emptyApplication,
+            ...(accountName ? { applicantName: accountName } : {}),
+            ...values,
+            agree: false,
+            ...(accountEmail ? { email: accountEmail } : {}),
+          });
           if (typeof parsed.step === "number") {
             setStep(Math.min(Math.max(0, parsed.step), STEPS.length - 1));
           }
@@ -98,7 +138,7 @@ export function ApplyWizard() {
       // A blocked or corrupt store simply means starting fresh.
     }
     setRestored(true);
-  }, [reset]);
+  }, [reset, accountEmail, accountName]);
 
   useEffect(() => {
     if (!restored) return;
@@ -171,33 +211,65 @@ export function ApplyWizard() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  async function onSubmit(values: ApplicationValues) {
-    setSubmitting(true);
-    // No backend yet — nothing is sent anywhere. The File objects stay in memory
-    // and the record is shaped like a `HostApplication`.
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    const reference = makeReference();
-    const application: HostApplication = {
-      id: reference,
-      userId: "pending-auth",
-      hostType: values.hostType,
-      propertyName: values.propertyName,
-      propertyAddress: values.propertyAddress,
-      district: values.district,
-      description: values.description,
-      status: "pending",
-      createdAt: new Date().toISOString(),
-    };
+  function clearDraft() {
     try {
       window.localStorage.removeItem(DRAFT_KEY);
     } catch {
       // Nothing to clear.
     }
-    setSubmitted({ reference, application });
+  }
+
+  async function onSubmit(values: ApplicationValues) {
+    setSubmitting(true);
+
+    if (!live) {
+      // Nothing is sent anywhere; the photos stay in this tab's memory.
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      const reference = makeReference();
+      clearDraft();
+      setSubmitted({ reference, hostType: values.hostType, propertyName: values.propertyName });
+      setSubmitting(false);
+      toast.success("Application ready", {
+        description: `Your reference is ${reference}. This copy of the site sends applications nowhere, so nobody will contact you about it.`,
+      });
+      return;
+    }
+
+    let result: SubmitApplicationResult;
+    try {
+      result = await submitHostApplication(values);
+    } catch {
+      result = SEND_FAILED;
+    }
     setSubmitting(false);
-    toast.success("Application ready", {
-      description: `Your reference is ${reference}. Applications aren't sent or reviewed yet, so nobody will contact you about it.`,
+
+    if (!result.ok) {
+      if (result.needsSignIn) {
+        router.push(`/auth?next=${encodeURIComponent("/host/apply")}`);
+        return;
+      }
+      const fieldErrors = result.fieldErrors;
+      if (fieldErrors) {
+        for (const [field, message] of Object.entries(fieldErrors)) {
+          setError(field as keyof ApplicationValues, { message });
+        }
+        const first = STEPS.findIndex((s) =>
+          (s.fields as readonly string[]).some((f) => f in fieldErrors),
+        );
+        if (first !== -1) setStep(first);
+      }
+      toast.error(result.message);
+      return;
+    }
+
+    clearDraft();
+    const reference = result.reference ?? "";
+    setSubmitted({ reference, hostType: values.hostType, propertyName: values.propertyName });
+    toast.success("Application sent", {
+      description: `Your reference is ${reference}. Come back to this page to see when it has been decided.`,
     });
+    // No refresh needed: the action revalidates /host/apply, and the re-render
+    // that comes back with it swaps this form for the status panel.
   }
 
   /* ------------------------------ success screen ---------------------------- */
@@ -210,9 +282,10 @@ export function ApplyWizard() {
         </span>
         <h2 className="font-display text-3xl">Thank you for applying</h2>
         <p className="mt-4 text-muted-foreground">
-          Applications are not sent to or reviewed by anyone yet, so nobody will call or visit
-          about this one. Hosting is free — no fee and no commission — and guests pay you
-          directly. Questions? Ask on the{" "}
+          {live
+            ? "Your application has been sent to the Discover Manipur team, who will approve or reject it. You can check its status on this page. Your photos were not sent with it — photo upload is not built yet."
+            : "This copy of the site has no database or sign-in connected, so this application was not sent to anyone and nobody will call or visit about it."}{" "}
+          Questions? Ask on the{" "}
           <a
             href="https://discord.gg/hgGfm6UpU"
             target="_blank"
@@ -234,17 +307,19 @@ export function ApplyWizard() {
           <div>
             <dt className="text-xs uppercase tracking-wider text-muted-foreground">Host type</dt>
             <dd className="mt-1 text-sm text-foreground">
-              {HOST_TYPE_LABEL[submitted.application.hostType]}
+              {HOST_TYPE_LABEL[submitted.hostType]}
             </dd>
           </div>
           <div>
             <dt className="text-xs uppercase tracking-wider text-muted-foreground">Listing</dt>
-            <dd className="mt-1 text-sm text-foreground">{submitted.application.propertyName}</dd>
+            <dd className="mt-1 text-sm text-foreground">{submitted.propertyName}</dd>
           </div>
           <div>
-            <dt className="text-xs uppercase tracking-wider text-muted-foreground">Photos held</dt>
+            <dt className="text-xs uppercase tracking-wider text-muted-foreground">
+              Photos (not uploaded)
+            </dt>
             <dd className="mt-1 text-sm text-foreground">
-              {photos.length} {photos.length === 1 ? "photo" : "photos"}
+              {photos.length} {photos.length === 1 ? "photo" : "photos"} on this device
             </dd>
           </div>
         </dl>
@@ -255,7 +330,7 @@ export function ApplyWizard() {
 
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button asChild>
-            <Link href="/host/dashboard">Open the host dashboard</Link>
+            <Link href="/host">Back to hosting</Link>
           </Button>
           <Button asChild variant="outline">
             <Link href="/host/guidelines">Read the hosting standards</Link>
@@ -304,7 +379,7 @@ export function ApplyWizard() {
         <fieldset className="space-y-4">
           <legend className="font-display text-2xl">What kind of host are you?</legend>
           <p className="text-sm text-muted-foreground">
-            Pick the closest one. You can add the others later from your dashboard.
+            Pick the closest one. If you offer more than one, apply for the main one first.
           </p>
           <div className="grid gap-3 sm:grid-cols-2">
             {(Object.keys(HOST_TYPE_LABEL) as (keyof typeof HOST_TYPE_LABEL)[]).map((type) => {
@@ -467,9 +542,16 @@ export function ApplyWizard() {
                 type="email"
                 autoComplete="email"
                 className="mt-1.5"
+                readOnly={Boolean(accountEmail)}
                 aria-invalid={Boolean(errors.email)}
+                aria-describedby={accountEmail ? "email-help" : undefined}
                 {...register("email")}
               />
+              {accountEmail && (
+                <p id="email-help" className="mt-1.5 text-xs text-muted-foreground">
+                  The email on your account, which your application is filed under.
+                </p>
+              )}
               {errors.email && (
                 <p className="mt-1.5 text-sm text-destructive">{errors.email.message}</p>
               )}
@@ -494,8 +576,8 @@ export function ApplyWizard() {
           <div>
             <Label htmlFor="photos">Photos of your place</Label>
             <p className="mt-1.5 text-xs text-muted-foreground">
-              Up to 10 images, 8 MB each. Phone photos in daylight are fine. Photos stay on your
-              device — nothing is uploaded yet.
+              Up to 10 images, 8 MB each. Phone photos in daylight are fine. Photo upload is not
+              built yet, so these stay on your device and are not sent with your application.
             </p>
             <label
               htmlFor="photos"
@@ -559,7 +641,7 @@ export function ApplyWizard() {
               ["Your name", values.applicantName],
               ["Email", values.email],
               ["Phone", values.phone],
-              ["Photos", `${photos.length} attached`],
+              ["Photos", `${photos.length} on this device (not uploaded)`],
             ].map(([label, value]) => (
               <div key={label} className="grid gap-1 p-4 sm:grid-cols-3">
                 <dt className="text-sm text-muted-foreground">{label}</dt>
@@ -620,7 +702,7 @@ export function ApplyWizard() {
           ) : (
             <Button type="submit" disabled={submitting}>
               {submitting && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
-              {submitting ? "Sending" : "Submit application"}
+              {submitting ? (live ? "Sending" : "Preparing") : "Submit application"}
             </Button>
           )}
         </div>
@@ -637,7 +719,11 @@ export function ApplyWizard() {
             } catch {
               // Nothing to clear.
             }
-            reset(emptyApplication);
+            reset({
+              ...emptyApplication,
+              ...(accountEmail ? { email: accountEmail } : {}),
+              ...(accountName ? { applicantName: accountName } : {}),
+            });
             setValue("hostType", "homestay");
             setStep(0);
             toast.success("Draft cleared");
