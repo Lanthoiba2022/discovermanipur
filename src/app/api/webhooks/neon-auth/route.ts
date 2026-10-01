@@ -8,11 +8,11 @@ import { clientIp, jsonError, readBodyText } from "@/lib/security/request";
  * Neon Auth webhook. Subscribed events (Console → Auth → Configuration →
  * Webhooks, URL `https://<site>/api/webhooks/neon-auth`):
  *
- * - `user.before_create` (blocking) — refuses any signup that is not an
+ * - `user.before_create` (blocking): refuses any signup that is not an
  *   allowed domain. Runs inside Neon Auth before the user row is written, so
  *   it also stops signups sent straight to the Neon Auth URL. FAIL-CLOSED: if
  *   this endpoint is down or answers badly, every signup is refused.
- * - `send.otp` (blocking) — Neon Auth hands us the code instead of mailing it
+ * - `send.otp` (blocking): Neon Auth hands us the code instead of mailing it
  *   itself; we deliver it through Brevo. If delivery fails we answer 5xx, Neon
  *   retries, and after that the user sees an error rather than waiting for an
  *   email that will never come.
@@ -35,7 +35,7 @@ const MAX_BODY_BYTES = 64 * 1024;
  * Neon retries a blocking event with the same id when a response is lost,
  * and a captured signed request could be replayed inside the timestamp
  * window. Remembering delivered ids for longer than that window keeps either
- * from emailing a second code. Per instance only — a duplicate that lands on
+ * from emailing a second code. Per instance only: a duplicate that lands on
  * another instance may still resend, which costs a duplicate email, not a
  * failure.
  */
@@ -69,15 +69,15 @@ const RATE = { limit: 120, windowMs: 60_000 };
 const PURPOSE: Record<string, { subject: string; lead: string }> = {
   "email-verification": {
     subject: "Your Discover Manipur verification code",
-    lead: "Use this code to verify your email and finish creating your account.",
+    lead: "Enter this code to verify your email address and finish creating your account.",
   },
   "sign-in": {
     subject: "Your Discover Manipur sign-in code",
-    lead: "Use this code to sign in.",
+    lead: "Enter this code to sign in to your account.",
   },
   "forget-password": {
     subject: "Your Discover Manipur password reset code",
-    lead: "Use this code to reset your password.",
+    lead: "Enter this code to reset your password.",
   },
 };
 
@@ -90,18 +90,19 @@ function otpEmail(code: string, otpType: string, expiresAt?: string) {
   const minutes = expiresAt
     ? Math.max(1, Math.round((new Date(expiresAt).getTime() - Date.now()) / 60_000))
     : null;
-  const expiry = minutes ? `It expires in ${minutes} minute${minutes === 1 ? "" : "s"}.` : "";
-  const ignore = "If you didn't ask for this, you can ignore this email.";
-  const automated = "Please don't reply — this email is sent automatically. For help, ask on our community Discord:";
+  const expiry = minutes ? `This code expires in ${minutes} minute${minutes === 1 ? "" : "s"}.` : "";
+  const notice = `${expiry} Do not share it with anyone.`.trim();
+  const ignore = "If you did not request this code, you can safely ignore this email.";
+  const automated = "This is an automated message. Please do not reply. For help, contact us on Discord:";
   return {
     subject,
-    text: `${lead}\n\n${code}\n\n${expiry}\n${ignore}\n\n${automated} ${DISCORD_URL}`.trim(),
+    text: `${lead}\n\n${code}\n\n${notice}\n${ignore}\n\n${automated} ${DISCORD_URL}`,
     html: `<!doctype html><html><body style="margin:0;padding:24px;background:#f6f4ef;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1f1d1a">
   <div style="max-width:440px;margin:0 auto;background:#ffffff;border-radius:12px;padding:32px">
     <p style="margin:0 0 8px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#7a7369">Discover Manipur</p>
     <p style="margin:0 0 24px;font-size:16px;line-height:1.5">${lead}</p>
     <p style="margin:0 0 24px;font-size:34px;font-weight:700;letter-spacing:.3em;font-family:ui-monospace,SFMono-Regular,Menlo,monospace">${code}</p>
-    <p style="margin:0;font-size:14px;line-height:1.5;color:#7a7369">${expiry} ${ignore}</p>
+    <p style="margin:0;font-size:14px;line-height:1.5;color:#7a7369">${notice} ${ignore}</p>
     <p style="margin:24px 0 0;padding-top:16px;border-top:1px solid #ece8e1;font-size:12px;line-height:1.5;color:#7a7369">${automated} <a href="${DISCORD_URL}" style="color:#7a7369">${DISCORD_URL.replace("https://", "")}</a></p>
   </div>
 </body></html>`,
