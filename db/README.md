@@ -187,7 +187,7 @@ webhooks on needs a tunnel (ngrok), or a Neon branch without them.
     Action and never trust an id from the client; see `profile.ts`;
   - nothing lets a user set their own `profiles.role`; only
     `npm run db:set-role` changes it.
-  Bookings, host applications, saved items and itineraries are still
-  browser-local; wiring them to their tables must follow the same pattern.
+  Bookings, saved items, itineraries and community places all follow this
+  pattern; new user-owned tables must too.
 - `DATABASE_URL` carries the owner password. Never prefix it with
   `NEXT_PUBLIC_` or import `@/lib/db` into a client component.

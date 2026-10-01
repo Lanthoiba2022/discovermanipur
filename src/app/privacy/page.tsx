@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     "What Discover Manipur collects, why, how long we keep it, who we share it with, and the rights you have over it. Written in plain English for an open-source, community-run platform.",
 };
 
-const LAST_UPDATED = "1 October 2026";
+const LAST_UPDATED = "2 October 2026";
 
 const GITHUB_URL = "https://github.com/Lanthoiba2022/discovermanipur";
 const DISCORD_URL = "https://discord.gg/hgGfm6UpU";
@@ -113,13 +113,6 @@ const sections: LegalSection[] = [
             stored with your account so they follow you across devices. When you are signed out,
             they are kept in your browser&apos;s local storage instead. Places you saved while
             signed out are moved into your account the next time you sign in.
-          </li>
-          <li>
-            <strong>Host applications:</strong> the draft is saved in your browser as you fill it
-            in. When you submit it (you must be signed in), the details you entered are stored
-            with your account and reviewed by our admins. They include your name, phone number,
-            the place you would host and what you offer. Photos you pick stay on your device and
-            are not uploaded.
           </li>
           <li>
             <strong>Places you list:</strong> when you add a place, its details, any links and
@@ -251,8 +244,8 @@ const sections: LegalSection[] = [
           <li>a session cookie that keeps you signed in, if you have an account;</li>
           <li>your light or dark theme preference;</li>
           <li>
-            your host application draft, and (while you are signed out) any bookings, saved trip
-            plans and saved places, kept in your browser&apos;s local storage.
+            while you are signed out, any bookings, saved trip plans and saved places, kept in your
+            browser&apos;s local storage.
           </li>
         </ul>
         <p>
@@ -317,8 +310,8 @@ const sections: LegalSection[] = [
             remove an account that breaks the <Link href="/terms">terms of use</Link>.
           </li>
           <li>
-            <strong>Booking requests, saved trip plans, saved places and host applications held
-            with your account:</strong> until you remove them (you can delete saved plans and
+            <strong>Booking requests, saved trip plans and saved places held with your
+            account:</strong> until you remove them (you can delete saved plans and
             places yourself, and cancel a booking request) or ask us to delete your account.
             Anything kept only in your browser stays there until you remove it or clear your
             browser storage.

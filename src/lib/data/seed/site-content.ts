@@ -11,6 +11,9 @@
 
 import type { IconName } from "@/lib/icons";
 
+// Relative, not `@/`, so `scripts/seed.ts` resolves it the same way the app does.
+import { LIMITS, UPVOTES_REQUIRED, VOTING_WINDOW_HOURS } from "../../community/rules";
+
 export interface IconCard {
   icon: IconName;
   title: string;
@@ -139,7 +142,7 @@ export const hostWeHandle: IconCard[] = [
   {
     icon: "Camera",
     title: "A listing page that explains the place",
-    body: "When hosting opens, your story and your own photographs get a page written with the same care as the rest of the site, in Meiteilon, Hindi or English. There is no photographer visit.",
+    body: `Once the community verifies your place, it gets its own public page with your description and up to ${LIMITS.photosPerPlace} of your own photographs. Write it in Meiteilon, Hindi or English. There is no photographer visit.`,
   },
   {
     icon: "ShieldCheck",
@@ -174,24 +177,24 @@ export const hostGallery: ImageItem[] = [
 /** Host landing: how it works, in four steps. */
 export const hostSteps: IconCard[] = [
   {
+    icon: "Mail",
+    title: "Sign in with a verified email",
+    body: "Create an account or sign in, and confirm your email address. Only verified accounts can add places or vote on them.",
+  },
+  {
+    icon: "Home",
+    title: "Add your place",
+    body: `Use Add a place to describe your homestay, kitchen, workshop or the place you look after, and say that you own it or work there. Add up to ${LIMITS.photosPerPlace} of your own photographs so voters can see it is real.`,
+  },
+  {
+    icon: "Users",
+    title: "The community verifies it",
+    body: `Verified members vote on it. It is published once ${UPVOTES_REQUIRED} of them upvote it within ${VOTING_WINDOW_HOURS} hours; otherwise it is held for an admin to review. Nothing is deleted, and you cannot vote for your own place.`,
+  },
+  {
     icon: "ClipboardList",
-    title: "Tell us what you have",
-    body: "Fifteen minutes, four short steps. A room, a kitchen table, a loom, a route you have walked since childhood: that is enough to start. Sign in, fill it in, and our admins review it. Your draft is saved in this browser as you go.",
-  },
-  {
-    icon: "Handshake",
-    title: "Join the community",
-    body: "Hosting is being planned in the open on the community Discord (https://discord.gg/hgGfm6UpU). That is where you will hear first when applications start being reviewed, and how.",
-  },
-  {
-    icon: "CalendarCheck",
-    title: "You set the rules",
-    body: "Your price, your dates, your house rules. Block the days of a family shraddha or Yaoshang whenever you need to.",
-  },
-  {
-    icon: "Wallet",
-    title: "Free, and it stays between you and the guest",
-    body: "Discover Manipur charges no fee and keeps no commission. Any payment is agreed between you and your guest directly.",
+    title: "Follow it under My places",
+    body: "See where your place stands at any time under My places. If an admin decides not to publish it, the reason is shown there. Listing is free: Discover Manipur charges no fee and keeps no commission.",
   },
 ];
 
@@ -199,7 +202,7 @@ export const hostSteps: IconCard[] = [
 export const hostFaqs: QaItem[] = [
   {
     q: "Do I need a registered guest house or a licence?",
-    a: "Not to apply. What you need before taking paying guests depends on your municipality or village council, and the state's Directorate of Tourism registers homestays. Check with them directly: Discover Manipur does not issue or check licences.",
+    a: "Not to list your place. What you need before taking paying guests depends on your municipality or village council, and the state's Directorate of Tourism registers homestays. Check with them directly: Discover Manipur does not issue or check licences.",
   },
   {
     q: "What does Discover Manipur actually take?",
@@ -219,7 +222,7 @@ export const hostFaqs: QaItem[] = [
   },
   {
     q: "How long does approval take?",
-    a: "There is no fixed timeline: applications are reviewed by volunteer admins, and you can check yours on the application page at any time. If something is missing, the reviewer's note tells you what to fix before you apply again. Questions are welcome on the community Discord.",
+    a: `A place you add has ${VOTING_WINDOW_HOURS} hours to collect ${UPVOTES_REQUIRED} upvotes from verified members. If it does, it is published straight away. If it does not, it is held for a volunteer admin to review, with no fixed timeline. You can see where it stands under My places, and if an admin decides not to publish it, the reason is shown there. Questions are welcome on the community Discord.`,
   },
   {
     q: "Do I have to serve food?",

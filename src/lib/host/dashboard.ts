@@ -1,6 +1,6 @@
 /**
- * Reads for the host dashboard: the signed-in host's own listings, the bookings
- * on them and their latest application.
+ * Reads for the host dashboard: the signed-in host's own listings and the
+ * bookings on them.
  *
  * Not a `"use server"` module: every export of one is a public endpoint, and
  * these take a host id. Callers pass the id from `requireHost`, never one from
@@ -9,14 +9,13 @@
  * of another's rows.
  */
 
-import { and, asc, desc, eq, gte, inArray, or, type SQL } from "drizzle-orm";
+import { and, asc, eq, gte, inArray, or, type SQL } from "drizzle-orm";
 
 import type { MediaImage } from "@/types";
 
 import { getDb, schema } from "@/lib/db";
 
 import type {
-  HostDashboardApplication,
   HostDashboardBooking,
   HostDashboardData,
   HostDashboardListing,
@@ -123,7 +122,6 @@ export function emptyDashboard(state: HostDashboardData["state"]): HostDashboard
     upcoming: [],
     byMonth,
     stats: computeStats([], [], byMonth),
-    application: null,
   };
 }
 
@@ -138,7 +136,7 @@ export async function getHostDashboard(hostId: string): Promise<HostDashboardDat
   if (!db) return emptyDashboard("no-database");
 
   try {
-    const [homestays, experiences, applications] = await Promise.all([
+    const [homestays, experiences] = await Promise.all([
       db
         .select({
           id: schema.homestays.id,
@@ -172,20 +170,6 @@ export async function getHostDashboard(hostId: string): Promise<HostDashboardDat
         .from(schema.experiences)
         .where(eq(schema.experiences.host_id, hostId))
         .orderBy(asc(schema.experiences.title)),
-      db
-        .select({
-          id: schema.host_applications.id,
-          hostType: schema.host_applications.host_type,
-          propertyName: schema.host_applications.property_name,
-          district: schema.host_applications.district,
-          status: schema.host_applications.status,
-          adminNotes: schema.host_applications.admin_notes,
-          createdAt: schema.host_applications.created_at,
-        })
-        .from(schema.host_applications)
-        .where(eq(schema.host_applications.user_id, hostId))
-        .orderBy(desc(schema.host_applications.created_at))
-        .limit(1),
     ]);
 
     const listings: HostDashboardListing[] = [
@@ -223,9 +207,6 @@ export async function getHostDashboard(hostId: string): Promise<HostDashboardDat
 
     const today = todayInIndia();
     const { upcoming, byMonth } = await loadBookings(db, listings, today);
-    const application: HostDashboardApplication | null = applications[0]
-      ? { ...applications[0], adminNotes: applications[0].adminNotes ?? null }
-      : null;
 
     return {
       state: "ok",
@@ -233,7 +214,6 @@ export async function getHostDashboard(hostId: string): Promise<HostDashboardDat
       upcoming,
       byMonth,
       stats: computeStats(listings, upcoming, byMonth),
-      application,
     };
   } catch (err) {
     console.error("[host-dashboard] read failed:", err);

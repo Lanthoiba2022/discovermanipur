@@ -157,10 +157,8 @@ async.
 - **Never trust an id from the client.** Resolve the user from the session cookie on the
   server (see `src/lib/auth/profile.ts`). Do not accept `userId`, `role` or `hostId`
   from a form.
-- **Roles are never self-assigned.** The only place the app writes `profiles.role` is
-  an admin approving a host application, which promotes a `user` to `host` inside an
-  admin-only action. Every other change goes through `npm run db:set-role`. Keep it
-  that way.
+- **Roles are never self-assigned.** The app never writes `profiles.role`; every
+  change goes through `npm run db:set-role`. Keep it that way.
 - There is no Row Level Security: the app connects as the table owner, so these checks
   in code are the only protection.
 - Every export of a `"use server"` file becomes a callable endpoint. Keep helpers that

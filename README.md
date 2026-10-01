@@ -61,13 +61,13 @@ use and has no paid tier.
 | `/plan` | Trip planner. The AI concierge is switched off by default; the page then shows a sample conversation built from the real catalogue |
 | `/explore/kangla` | Kangla Fort in a tilted 3D satellite view (Google Maps 3D), with the fort's landmarks pinned and narration for some of them. See [docs/kangla-map-explorer.md](docs/kangla-map-explorer.md) |
 | `/account/*` | Profile, saved listings, bookings, saved itineraries and the places you have listed |
-| `/host`, `/host/apply`, `/host/guidelines` | Information for homestay owners, eateries and guides, and the host application form |
+| `/host`, `/host/guidelines` | Information for homestay owners, eateries and guides. Owners list their place through `/community/new`, like anyone else |
 | `/host/dashboard` | Host dashboard (host or admin role) |
-| `/admin/*` | Community place review, contributors, every uploaded photo, listings, bookings and host applications. Admin role only; anyone else gets a 404 |
+| `/admin/*` | Community place review, contributors, every uploaded photo, listings and bookings. Admin role only; anyone else gets a 404 |
 | `/faq`, `/about`, `/contact`, `/responsible-travel`, `/accessibility`, `/privacy`, `/terms` | Editorial and policy pages |
 
 With a database and Neon Auth configured, as on the live site, bookings, saved places,
-saved trip plans and host applications are stored with the traveller's account, and the
+and saved trip plans are stored with the traveller's account, and the
 admin and host dashboards read real data. A fresh clone without those services keeps
 them in the browser instead.
 
@@ -176,7 +176,7 @@ src/lib/data/       The data layer: catalogue reads, seed fallback, photo credit
 src/lib/data/seed/  Bundled seed content, one file per vertical
 src/lib/db/         Drizzle schema, relations and the server-only database client
 src/lib/auth/       Neon Auth, the session data-access layer and the local fallback session
-src/lib/host/       Role checks (requireAdmin, requireHost), host applications, dashboard queries
+src/lib/host/       Role checks (requireAdmin, requireHost) and host dashboard queries
 src/lib/booking/    Server-side pricing, booking requests and the saved list
 src/lib/ai/         Concierge model config, prompt, tools, itinerary schema and fallbacks
 src/lib/community/  Community places: verification rules, queries, actions, photo storage

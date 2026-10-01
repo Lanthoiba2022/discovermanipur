@@ -13,8 +13,8 @@ Before starting, find (or open) the matching GitHub issue and ask to be assigned
 page calls `requireAdmin` / `requireHost` itself, Server Actions are public endpoints, and
 the user always comes from the session, never from a client-supplied id.
 
-Moving bookings, saved places, saved plans, host applications and the admin and host
-dashboards to the database is done (issues #14 to #20). Their Server Actions, for
+Moving bookings, saved places, saved plans and the admin and host dashboards to the
+database is done (issues #14 to #20). Their Server Actions, for
 example `src/lib/booking/actions.ts`, are the pattern to follow for new persisted
 features.
 

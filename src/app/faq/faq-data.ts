@@ -1,3 +1,6 @@
+// Relative, not `@/`, so `scripts/seed.ts` resolves it the same way the app does.
+import { LIMITS, UPVOTES_REQUIRED, VOTING_WINDOW_HOURS } from "../../lib/community/rules";
+
 export interface FaqItem {
   q: string;
   /** Plain text, also used for the FAQPage JSON-LD, so keep it prose. */
@@ -169,7 +172,7 @@ export const faqGroups: FaqGroup[] = [
     items: [
       {
         q: "Can I list my homestay or experience?",
-        a: "Yes. Sign in and fill in the host application. It is saved with your account and reviewed by our admins, and you can check its status on the application page. Once approved, your account can use the host dashboard. Listing is free and there is no commission. Photos are not uploaded yet, so keep yours ready; questions are welcome on the community Discord.",
+        a: `Yes. Sign in with a verified email address, use Add a place and say that you own it, and add up to ${LIMITS.photosPerPlace} of your own photographs. Verified members vote on it: it is published once ${UPVOTES_REQUIRED} of them upvote it within ${VOTING_WINDOW_HOURS} hours, and otherwise it is held for an admin to review. You can follow it under My places. Add a place covers homestays, cafes and restaurants, attractions and craft workshops; there is no separate category for experiences yet. Listing is free and there is no commission. Questions are welcome on the community Discord.`,
       },
       {
         q: "What would you expect from a host?",

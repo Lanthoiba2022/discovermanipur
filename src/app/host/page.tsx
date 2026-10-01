@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
+import { UPVOTES_REQUIRED, VOTING_WINDOW_HOURS } from "@/lib/community/rules";
 import { getHostGallery, getHostWeHandle, getHostWhy } from "@/lib/data/content";
 import { iconFor } from "@/lib/icons";
 import { EarningsEstimator } from "@/components/host/earnings-estimator";
@@ -51,8 +52,8 @@ export default async function HostLandingPage() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg">
-                <Link href="/host/apply">
-                  Start your application
+                <Link href="/community/new">
+                  Add your place
                   <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               </Button>
@@ -61,7 +62,7 @@ export default async function HostLandingPage() {
               </Button>
             </div>
             <p className="mt-5 text-sm text-muted-foreground">
-              Free to apply · no commission · reviewed by our admins
+              Free to list · no commission · verified by the community
             </p>
           </div>
 
@@ -142,7 +143,7 @@ export default async function HostLandingPage() {
         <EarningsEstimator />
       </Section>
 
-      <Section eyebrow="How it works" title="Four steps, about fifteen minutes to begin">
+      <Section eyebrow="How it works" title="Four steps from signing in to a published place">
         <HowItWorks />
       </Section>
 
@@ -180,14 +181,14 @@ export default async function HostLandingPage() {
               Ready when you are
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-primary-foreground/80">
-              Start the application now, save it half-finished in this browser, and come back to
-              it. When you submit, our admins review it; nothing is published until it is approved,
-              and nothing is ever charged.
+              Sign in with a verified email, add your place and say that you own it. It is published
+              once {UPVOTES_REQUIRED} verified members upvote it within {VOTING_WINDOW_HOURS} hours;
+              otherwise it is held for an admin to review. Nothing is ever charged.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Button asChild size="lg" variant="accent">
-                <Link href="/host/apply">
-                  Apply to host
+                <Link href="/community/new">
+                  Add your place
                   <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               </Button>

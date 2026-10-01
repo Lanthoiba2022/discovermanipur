@@ -1,17 +1,9 @@
-import type { BookingKind, BookingStatus, HostType, UserRole } from "@/types";
+import type { BookingKind, BookingStatus, UserRole } from "@/types";
 
 import type { MonthPoint } from "@/lib/host/types";
 
-export type ApplicationStatus = "pending" | "approved" | "rejected";
-
 export interface AdminOverview {
   listings: { activeHomestays: number; inactiveHomestays: number; experiences: number };
-  applications: {
-    total: number;
-    byStatus: Record<ApplicationStatus, number>;
-    byHostType: Record<HostType, number>;
-    byMonth: MonthPoint[];
-  };
   bookings: { total: number; bookedValue: number; byMonth: MonthPoint[] };
   accounts: { total: number; byRole: Record<UserRole, number>; joinedThisMonth: number };
   /** The months the charts cover, e.g. "Nov 2025 to Oct 2026". */

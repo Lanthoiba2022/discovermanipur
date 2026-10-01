@@ -15,7 +15,7 @@ import { formatINR } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Host dashboard",
   description:
-    "Your Discover Manipur listings, the bookings on them, and the status of your host application.",
+    "Your Discover Manipur listings and the bookings on them.",
 };
 
 const DISCORD_URL = "https://discord.gg/hgGfm6UpU";
@@ -30,24 +30,6 @@ function formatDay(date: string) {
   });
 }
 
-function formatTimestamp(value: string) {
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return value;
-  return d.toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    timeZone: "Asia/Kolkata",
-  });
-}
-
-const APPLICATION_COPY = {
-  pending: "Waiting for review. You can follow progress on the community Discord.",
-  approved:
-    "Approved. An admin links your homestays and experiences to this account, and they appear below once linked.",
-  rejected: "Not approved this time. You are welcome to apply again.",
-} as const;
-
 function DashboardNotice({ data }: { data: HostDashboardData }) {
   let title: string;
   let body: string;
@@ -61,7 +43,7 @@ function DashboardNotice({ data }: { data: HostDashboardData }) {
   } else if (data.listings.length === 0) {
     title = "No listings are linked to your account yet";
     body =
-      "Listings are linked to hosts by a Discover Manipur admin, usually after your application is approved. Until then this dashboard stays empty. Ask on the community Discord if you are waiting on one.";
+      "Listings appear here when a Discover Manipur admin links a listing to your account. Until then this dashboard stays empty. To put a new place on the site, use Add a place. Ask on the community Discord if you are waiting on a link.";
   } else {
     return null;
   }
@@ -89,7 +71,7 @@ export default async function HostDashboardPage() {
   const user = await requireHost("/host/dashboard");
   // Scoped to the session user's id, never one from the request.
   const data = await getHostDashboard(user.id);
-  const { stats, application, upcoming, byMonth, listings } = data;
+  const { stats, upcoming, byMonth, listings } = data;
 
   const delta = stats.bookedLastMonth
     ? Math.round(((stats.bookedThisMonth - stats.bookedLastMonth) / stats.bookedLastMonth) * 100)
@@ -176,55 +158,26 @@ export default async function HostDashboardPage() {
         </section>
 
         <section
-          aria-labelledby="application-heading"
+          aria-labelledby="add-place-heading"
           className="rounded-[var(--radius-lg)] border border-border bg-surface p-6"
         >
-          <h2 id="application-heading" className="font-display text-2xl">
-            Your application
+          <h2 id="add-place-heading" className="font-display text-2xl">
+            Adding a place
           </h2>
-          {application ? (
-            <>
-              <dl className="mt-5 space-y-4 text-sm">
-                <div>
-                  <dt className="text-xs uppercase tracking-wider text-muted-foreground">Submitted</dt>
-                  <dd className="mt-1 text-foreground">{formatTimestamp(application.createdAt)}</dd>
-                </div>
-                <div>
-                  <dt className="text-xs uppercase tracking-wider text-muted-foreground">
-                    {HOST_TYPE_LABEL[application.hostType]} · {application.district}
-                  </dt>
-                  <dd className="mt-1 text-foreground">{application.propertyName}</dd>
-                </div>
-                <div>
-                  <dt className="text-xs uppercase tracking-wider text-muted-foreground">Status</dt>
-                  <dd className="mt-1.5">
-                    <StatusPill status={application.status} />
-                  </dd>
-                </div>
-              </dl>
-              <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
-                {APPLICATION_COPY[application.status]}
-              </p>
-              {application.adminNotes && (
-                <p className="mt-3 rounded-[var(--radius)] bg-surface-sunken p-4 text-sm text-muted-foreground">
-                  <span className="font-medium text-foreground">Note from Discover Manipur: </span>
-                  {application.adminNotes}
-                </p>
-              )}
-            </>
-          ) : (
-            <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
-              {data.state === "ok"
-                ? "There is no host application on file for this account."
-                : "Your application status is not available right now."}
-            </p>
-          )}
+          <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
+            To put a new place on the site, use Add a place and say that you own it. Verified members
+            vote on it before it is published, and you can follow it under My places.
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            This dashboard shows the listings a Discover Manipur admin has linked to your account.
+          </p>
           <div className="mt-6 flex flex-wrap gap-2">
-            {data.state === "ok" && (!application || application.status === "rejected") && (
-              <Button asChild size="sm">
-                <Link href="/host/apply">Apply to host</Link>
-              </Button>
-            )}
+            <Button asChild size="sm">
+              <Link href="/community/new">Add your place</Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/account/places">My places</Link>
+            </Button>
             <Button asChild variant="outline" size="sm">
               <Link href="/host/guidelines">Hosting standards</Link>
             </Button>

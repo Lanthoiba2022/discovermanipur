@@ -13,14 +13,14 @@
 import { and, asc, count, desc, eq, sql, type SQLWrapper } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 
-import type { BookingKind, HostType, UserRole } from "@/types";
+import type { BookingKind, UserRole } from "@/types";
 
 import { getDb, schema } from "@/lib/db";
 
 import { ADMIN_TIME_ZONE, fillMonths, recentMonths, windowLabel } from "./months";
-import type { AdminBookingRow, AdminOverview, ApplicationStatus, ModerationRow } from "./types";
+import type { AdminBookingRow, AdminOverview, ModerationRow } from "./types";
 
-const { bookings, eateries, experiences, homestays, host_applications, profiles, tours, transport_options } = schema;
+const { bookings, eateries, experiences, homestays, profiles, tours, transport_options } = schema;
 
 // The zone is inlined, not bound: Postgres matches a GROUP BY expression to
 // the SELECT list textually, and two `$n` parameters never count as equal.
@@ -33,8 +33,6 @@ function tally<K extends string>(keys: readonly K[], rows: { key: K; value: numb
   return out;
 }
 
-const APPLICATION_STATUSES = ["pending", "approved", "rejected"] as const satisfies readonly ApplicationStatus[];
-const HOST_TYPES = ["homestay", "eatery", "guide", "experience"] as const satisfies readonly HostType[];
 const ROLES = ["user", "host", "admin"] as const satisfies readonly UserRole[];
 
 export async function getAdminOverview(now = new Date()): Promise<AdminOverview | null> {
@@ -46,22 +44,13 @@ export async function getAdminOverview(now = new Date()): Promise<AdminOverview 
   const thisMonth = months[months.length - 1].key;
 
   try {
-    const [homestayRows, [experienceRow], applicationRows, applicationMonths, [bookingRow], bookingMonths, roleRows, [joinedRow]] =
+    const [homestayRows, [experienceRow], [bookingRow], bookingMonths, roleRows, [joinedRow]] =
       await Promise.all([
         db
           .select({ isActive: homestays.is_active, value: count() })
           .from(homestays)
           .groupBy(homestays.is_active),
         db.select({ value: count() }).from(experiences),
-        db
-          .select({ status: host_applications.status, hostType: host_applications.host_type, value: count() })
-          .from(host_applications)
-          .groupBy(host_applications.status, host_applications.host_type),
-        db
-          .select({ month: monthOf(host_applications.created_at), value: count() })
-          .from(host_applications)
-          .where(sql`${monthOf(host_applications.created_at)} >= ${firstMonth}`)
-          .groupBy(monthOf(host_applications.created_at)),
         db
           .select({
             value: count(),
@@ -80,10 +69,6 @@ export async function getAdminOverview(now = new Date()): Promise<AdminOverview 
           .where(sql`${monthOf(profiles.created_at)} = ${thisMonth}`),
       ]);
 
-    const byStatus = tally(
-      APPLICATION_STATUSES,
-      applicationRows.map((r) => ({ key: r.status, value: r.value })),
-    );
     const byRole = tally(ROLES, roleRows.map((r) => ({ key: r.role, value: r.value })));
 
     return {
@@ -91,12 +76,6 @@ export async function getAdminOverview(now = new Date()): Promise<AdminOverview 
         activeHomestays: homestayRows.find((r) => r.isActive)?.value ?? 0,
         inactiveHomestays: homestayRows.find((r) => !r.isActive)?.value ?? 0,
         experiences: experienceRow?.value ?? 0,
-      },
-      applications: {
-        total: APPLICATION_STATUSES.reduce((sum, s) => sum + byStatus[s], 0),
-        byStatus,
-        byHostType: tally(HOST_TYPES, applicationRows.map((r) => ({ key: r.hostType, value: r.value }))),
-        byMonth: fillMonths(months, applicationMonths),
       },
       bookings: {
         total: bookingRow?.value ?? 0,
