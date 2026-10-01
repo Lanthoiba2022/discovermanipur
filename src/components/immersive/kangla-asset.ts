@@ -35,8 +35,8 @@ export function disposeKanglaAsset(root: THREE.Group) {
  *
  * These are the transforms the original hand-modelled statue nodes occupied.
  * That statue read as a lumpy quadruped rather than the sculpture, so it was
- * cut out of the baked scene (see assets/kanglasha-ai/README.md) and this
- * photo-derived one is instanced into the same two places instead. The
+ * cut out of the baked scene and this photo-derived one is instanced into the
+ * same two places instead. The
  * courtyard, pavilion and trees around them are untouched.
  */
 const KANGLA_SHA_URL = "/models/kangla/kangla-sha.glb";

@@ -1,5 +1,5 @@
 /**
- * Model + configuration for the Manipur Tourism concierge.
+ * Model + configuration for the Discover Manipur concierge.
  *
  * Nothing in here throws at import time. The environment may be missing both
  * provider keys in development, in CI and during `next build`; the route
@@ -8,10 +8,9 @@
  *
  * Two providers are supported so the concierge runs whichever key is present:
  *
- * - Google Gemini (`GOOGLE_API_KEY`, or the `GEMINI_API_KEY` / `API_KEY`
- *   aliases) — preferred.
- * - Anthropic (`ANTHROPIC_API_KEY`) — the original provider, kept as a
- *   fallback so deployments that already set it keep working.
+ * - Google Gemini (`GEMINI_API_KEY`, or `GOOGLE_GENERATIVE_AI_API_KEY`) —
+ *   preferred.
+ * - Anthropic (`ANTHROPIC_API_KEY`) — used when no Gemini key is set.
  */
 
 import { createAnthropic } from "@ai-sdk/anthropic";
@@ -32,14 +31,12 @@ function readAnthropicKey(): string {
 }
 
 function readGeminiKey(): string {
-  // A key dedicated to Gemini wins. `GOOGLE_API_KEY` is last because this
-  // deployment also uses that name for the Maps/Places key (Kangla 3D tiles,
-  // place photos), which may be restricted to those APIs.
+  // Never `GOOGLE_API_KEY`: that is the Maps key, and the Kangla map hands it
+  // to the browser. A key anyone can copy out of the page must not also be
+  // able to bill Gemini, so the LLM key has to be a separate, server-only one.
   return (
     process.env.GEMINI_API_KEY?.trim() ||
     process.env.GOOGLE_GENERATIVE_AI_API_KEY?.trim() ||
-    process.env.API_KEY?.trim() ||
-    process.env.GOOGLE_API_KEY?.trim() ||
     ""
   );
 }
@@ -53,10 +50,7 @@ function readGeminiKey(): string {
  */
 export const isAIConfigured: boolean = readGeminiKey().length > 0 || readAnthropicKey().length > 0;
 
-/**
- * The model name in use, for logging/display. Gemini wins because it is the
- * key the deployment actually ships.
- */
+/** The model name in use, for logging/display. */
 export const CONCIERGE_MODEL: string = readGeminiKey().length > 0 ? GEMINI_MODEL : ANTHROPIC_MODEL;
 
 /**
@@ -74,12 +68,14 @@ export function conciergeModel(): LanguageModel {
 /**
  * Whether the concierge is allowed to answer live.
  *
- * Deliberately opt-*in*: this deployment is a demo, and a half-configured key
- * produced a chat that looked alive and then failed mid-answer. With the flag
- * off the UI stops pretending — the floating widget says so plainly and `/plan`
- * shows a curated sample conversation built from the real catalogue instead.
+ * Deliberately opt-*in*: every live answer is a paid model call, and a
+ * half-configured key produced a chat that looked alive and then failed
+ * mid-answer. With the flag off the UI says so plainly, `/plan` shows a
+ * curated sample conversation built from the real catalogue instead, and the
+ * `/api/chat` and `/api/itinerary` routes never call a model — so the switch
+ * also caps spend, not just what the UI shows.
  *
- * Set `AI_CHAT_ENABLED=true` (alongside a working key) to switch it back on.
+ * Set `AI_CHAT_ENABLED=true` (alongside a working key) to switch it on.
  */
 export const isConciergeLive: boolean =
   process.env.AI_CHAT_ENABLED?.trim().toLowerCase() === "true" && isAIConfigured;

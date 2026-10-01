@@ -38,8 +38,9 @@ export default async function FaqPage() {
     <>
       <script
         type="application/ld+json"
-        // Static, build-time content from our own module — no user input.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        // FAQ rows come from the database: escape "<" so a "</script>" in an
+        // answer cannot close this tag.
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}
       />
 
       <PageHero
@@ -59,7 +60,7 @@ export default async function FaqPage() {
               <p>
                 Inner Line Permit categories and Protected Area rules for foreign nationals have
                 both changed by notification in recent years. Confirm what applies to you with the
-                Government of Manipur, Manipur Tourism and — for non-Indian passports — the Ministry
+                Government of Manipur, Discover Manipur and — for non-Indian passports — the Ministry
                 of Home Affairs before you book travel.
               </p>
             </NoteBox>

@@ -29,10 +29,9 @@ const WORD_LEAD = 0.14;
  * reveal. The closing line takes the accent — the sentence completes in brass
  * rather than merely ending, which is the one flourish the fold gets.
  *
- * It names four things rather than one place on purpose. The previous line
- * ("The islands that float") was about Loktak alone, which left the reel
- * showing hills, a dance and a flower under a headline that did not include
- * them. Four nouns — water, hills, the handloom, the drum — cover what the
+ * It names four things rather than one place on purpose: the reel shows
+ * water, hills, a dance and a flower, so a headline about one place would not
+ * cover it. Four nouns — water, hills, the handloom, the drum — cover what the
  * state actually is, and they enumerate straight into the rotating "and …"
  * line below, so the whole fold reads as one sentence listing Manipur.
  */
@@ -84,7 +83,8 @@ function timing(reduce: boolean | null, duration: number, delay: number) {
 
 /**
  * One masked word. The clip box carries the descender padding and cancels it
- * with a negative margin, so `float.` is not sheared by its own mask.
+ * with a negative margin, so a trailing comma or full stop is not sheared by
+ * its own mask.
  */
 function Word({
   children,
@@ -145,8 +145,7 @@ export function Hero({ subjects }: { subjects: string[] }) {
         <HeroStage index={reel.index} animated={reel.animated} shown={reel.shown} />
       </motion.div>
 
-      {/* Layer 2 — dawn aurora. This replaced a three.js mist plane: it is the
-          same warmth composed from the `--dawn-*` ramp, costs no JavaScript,
+      {/* Layer 2 — dawn aurora. Composed from the `--dawn-*` ramp: it costs no JavaScript,
           paints before hydration and needs no reduced-motion branch because it
           does not move. Inset negatively so its 24px blur has room to fall off
           instead of banding at the edges of the frame. */}

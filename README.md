@@ -1,148 +1,236 @@
-# Yening — Manipur Tourism
+# Discover Manipur
 
-A production-grade tourism platform for Manipur, *The Land of Jewels*. Yening brings the
-state's hotspots, homestays, eateries, festivals, tours, transport and craft makers into one
-catalogue, adds an AI travel concierge that builds day-by-day itineraries, and puts a real
-3D map and photo-referenced 3D reconstruction of Kangla Fort in the browser.
+[![CI](https://github.com/Lanthoiba2022/Manipur-Tourism-2026/actions/workflows/ci.yml/badge.svg)](https://github.com/Lanthoiba2022/Manipur-Tourism-2026/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Hacktoberfest](https://img.shields.io/badge/Hacktoberfest-2026-orange.svg)](CONTRIBUTING.md#hacktoberfest)
+[![Discord](https://img.shields.io/badge/chat-Discord-5865F2.svg)](https://discord.gg/hgGfm6UpU)
 
-Built with Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, Neon (Lakebase Postgres + Neon Auth) with Drizzle ORM,
-MapLibre GL and Three.js.
+An open-source, community-built guide to Manipur, *the land of jewels*. It brings the
+state's places, homestays, eateries, experiences, tours, transport, festivals and craft
+makers into one catalogue that anyone can browse, correct and add to.
 
----
+It is for two kinds of people:
 
-## Highlights
+- **Visitors** planning a trip, who need honest, sourced information about where to go,
+  how to get there and what it costs.
+- **People who live in Manipur**, discovering corners of their own state and adding the
+  places they know.
 
-**Full travel catalogue.** Seven browsable verticals — hotspots, homestays, eateries,
-experiences, tours, transport, festivals and a crafts marketplace — each with index and
-detail pages, filtering, search and photo provenance. 236 listings come from a verified
-2026 research pass (57 hotspots, 36 homestays, 143 eateries) with sources recorded per row.
+The codebase is called *Yening* internally (package name `yening`). The site is free to
+use and has no paid tier.
 
-**AI travel concierge.** A streaming chat assistant (Vercel AI SDK + Claude) with tool access
-to the live catalogue, producing structured, schema-validated itineraries that link back to
-real listings. Also available as a standalone planner at `/plan`.
-
-**Kangla 3D map explorer** (`/explore/kangla`). MapTiler vector tiles through MapLibre GL,
-with the camera clamped to a ~1.4 × 1.6 km box around the moated enclosure. Building
-extrusions are generated from OpenStreetMap footprints and labelled by height provenance —
-buildings with no recorded height are shaded differently and disclosed in the legend, so the
-map never claims a roof it does not know.
-
-**Kangla immersive experience** (`/immersive/kangla-fort`). Three separately explorable
-Three.js landmark studies — the Kangla Sha / Uttra pavilion, the western gateway and
-Pakhangba Laishang. Three.js loads only on demand; photographs and narration work fully
-without WebGL. The UI discloses that this is an approximate, photo-referenced
-reconstruction rather than a scanned digital twin, and links its references.
-
-**Accounts, bookings and hosting.** Neon Auth (email/password, magic links), saved listings, saved
-itineraries, a booking flow, a host application and dashboard, and an admin area for
-listings, bookings and applications.
-
-**Graceful degradation by design.** The app builds and runs with **zero environment
-variables**. Without a database it falls back to bundled seed content and a clearly labelled
-local demo session; without an AI key the concierge streams a canned response and a real
-sample itinerary, so the interface never appears broken.
+> **Not an official government service.** Discover Manipur is an independent community
+> project. It is not run by, or speaking for, the Government of Manipur or its Department
+> of Tourism. Always confirm permits, timings and fees with the official source before you
+> travel.
 
 ---
 
-## Getting started
+## Contents
 
-Requires Node.js 20 or newer.
+- [Features](#features)
+- [Tech stack](#tech-stack)
+- [Quick start](#quick-start)
+- [Optional services](#optional-services)
+- [Scripts](#scripts)
+- [Project structure](#project-structure)
+- [Data and content](#data-and-content)
+- [Contributing and Hacktoberfest](#contributing-and-hacktoberfest)
+- [Community](#community)
+- [Security](#security)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
+
+---
+
+## Features
+
+| Route | What it is |
+| --- | --- |
+| `/` | Home: featured places, seasons, crafts and festivals |
+| `/hotspots`, `/hotspots/[slug]` | Places to visit across the 16 districts, with timings, fees, how to reach, accessibility notes and sources |
+| `/homestays`, `/eateries`, `/experiences`, `/tours`, `/transport`, `/festivals` | The other catalogue verticals, each with an index (filters, sorting) and a detail page |
+| `/store`, `/store/[slug]` | Handloom and craft makers |
+| `/search` | Search across the whole catalogue |
+| `/plan` | Trip planner. The AI concierge is switched off by default; the page then shows a sample conversation built from the real catalogue |
+| `/explore/kangla` | Kangla Fort in a tilted 3D satellite view (Google Maps 3D), with the fort's landmarks pinned and narration for some of them. See [docs/kangla-map-explorer.md](docs/kangla-map-explorer.md) |
+| `/account/*` | Profile, saved listings, bookings and saved itineraries |
+| `/host`, `/host/apply`, `/host/guidelines` | Information for homestay owners, eateries and guides, and the host application form |
+| `/host/dashboard` | Host dashboard (host or admin role) |
+| `/admin/*` | Listings, bookings and host applications (admin role) |
+| `/faq`, `/about`, `/contact`, `/responsible-travel`, `/accessibility`, `/privacy`, `/terms` | Editorial and policy pages |
+
+What is still incomplete, and open for contributors, is listed in
+[docs/GOOD_FIRST_ISSUES.md](docs/GOOD_FIRST_ISSUES.md). In short: bookings, saved items,
+itineraries and host applications are stored in the browser only, and the admin and host
+dashboards show sample data.
+
+## Tech stack
+
+- [Next.js 16](https://nextjs.org) (App Router, Server Components, Server Actions), React 19, TypeScript (strict)
+- Tailwind CSS v4, Radix UI primitives, Framer Motion, GSAP, Lenis
+- [Neon](https://neon.tech) Postgres with [Drizzle ORM](https://orm.drizzle.team), and Neon Auth for accounts
+- Vercel AI SDK for the concierge (Google Gemini or Anthropic Claude)
+- Google Maps JavaScript API (3D) for the Kangla map; Three.js for the Kangla landmark models
+- Brevo for transactional email (sign-up verification codes)
+
+## Quick start
+
+You need **Node.js 20.9 or newer** (Next.js 16's minimum) and npm. No accounts, keys or
+database are required.
 
 ```bash
-npm install
+git clone https://github.com/Lanthoiba2022/Manipur-Tourism-2026.git
+cd Manipur-Tourism-2026
+npm ci
 npm run dev
 ```
 
-Open <http://localhost:3000>. Use port 3000 specifically — the Kangla map key is
-origin-restricted to it.
+Open <http://localhost:3000>.
 
-### Configuration
+With no environment variables set, the app still builds and runs:
 
-All environment variables are optional. Copy the template and fill in what you need:
+- The catalogue is read from the seed data bundled in `src/lib/data/seed/`.
+- In development, sign-in uses a local session that lives only in your browser, so you
+  can try accounts, saved items and bookings. A production build without auth
+  configured switches sign-in off instead. The admin and host dashboards check roles on
+  the server, so they need real auth (Neon) and a role set with `db:set-role`.
+- The AI concierge shows a recorded sample instead of answering live.
+- The Kangla map asks for a `GOOGLE_API_KEY`; everything else on that page still works.
+
+## Optional services
+
+Copy the template and fill in only what you need. Every variable is optional, and
+[.env.example](.env.example) explains each one.
 
 ```bash
 cp .env.example .env.local
 ```
 
-| Variable | Scope | Purpose |
+| Variable | Scope | What it unlocks |
 | --- | --- | --- |
-| `DATABASE_URL` | **server only** | Neon pooled connection string — app reads and writes |
-| `DATABASE_URL_UNPOOLED` | **server only** | Neon direct connection — migrations and seeding |
-| `NEON_AUTH_BASE_URL` | **server only** | Neon Auth URL for the branch |
-| `NEON_AUTH_COOKIE_SECRET` | **server only** | Signs the session cookie cache (32+ chars) |
-| `ANTHROPIC_API_KEY` | **server only** | AI concierge |
-| `NEXT_PUBLIC_SITE_URL` | public | Canonical origin for metadata and sitemaps |
-| `MAP_TILER_API_KEY` | browser | Kangla map tiles; protected by an origin allowlist |
-| `GOOGLE_API_KEY` | browser | Maps Platform key, origin-restricted |
+| `DATABASE_URL` | server | Neon Postgres (pooled URL). The catalogue is read from the database instead of the seed files; needed for `db:*` scripts |
+| `NEON_AUTH_BASE_URL`, `NEON_AUTH_COOKIE_SECRET` | server | Real accounts through Neon Auth. The secret must be 32+ characters (`openssl rand -base64 32`) |
+| `BREVO_API_KEY`, `BREVO_SENDER_EMAIL`, `BREVO_SENDER_NAME` | server | Sends sign-up verification codes |
+| `GEMINI_API_KEY` or `ANTHROPIC_API_KEY` | server | A model for the AI concierge |
+| `AI_CHAT_ENABLED` | server | Set to `true` (with a model key) to turn the live concierge on |
+| `GEMINI_MODEL` | server | Override the Gemini model (default `gemini-2.5-flash`) |
+| `GOOGLE_API_KEY` | browser | Maps JavaScript API and Map Tiles API for `/explore/kangla`. Sent to the browser, so restrict it by HTTP referrer and to those two APIs |
+| `GOOGLE_PLACES_API_KEY` | server | Places API (New) for listing photos via `/api/place-photo`. Falls back to `GOOGLE_API_KEY`; a separate key is safer |
+| `CONTACT_INBOX_EMAIL` | server | Delivers `/contact` messages through Brevo (needs the Brevo variables too) |
 
-Server-only keys must never be prefixed with `NEXT_PUBLIC_` or imported into a client
-component. `/explore/kangla` is prerendered, so a map key change requires a rebuild, not
-just a restart.
+Rules that matter:
 
----
+- Server-only values must never get a `NEXT_PUBLIC_` prefix or be imported into a client
+  component.
+- Keep the Maps key separate from your Gemini key. A Maps key restricted to Maps APIs will
+  not work for Gemini.
+- `/explore/kangla` is prerendered, so changing the Maps key needs a rebuild. The key is
+  referrer-restricted, so run the dev server on the port your key allows (3000 by default).
+
+Full database and auth setup, including the Neon Auth webhook and the order to switch
+things on, is in [db/README.md](db/README.md).
 
 ## Scripts
 
-| Command | Description |
+| Command | What it does |
 | --- | --- |
-| `npm run dev` | Development server |
+| `npm run dev` | Development server on port 3000 |
 | `npm run build` | Production build |
 | `npm run start` | Serve the production build |
 | `npm run lint` | ESLint |
-| `npm run typecheck` | TypeScript, no emit |
-| `npm run db:generate` | Write the next migration from `src/lib/db/schema.ts` |
-| `npm run db:migrate` | Apply pending `drizzle/` migrations to Neon |
+| `npm run typecheck` | Generates route types (`next typegen`), then TypeScript with no emit |
+| `npm run db:generate` | Write the next migration from `src/lib/db/schema.ts` into `drizzle/` |
+| `npm run db:migrate` | Apply pending migrations |
 | `npm run db:studio` | Browse the database in Drizzle Studio |
-| `npm run db:seed` | Push seed content to Neon (overwrites matching live rows) |
-| `npm run audio:kangla` | Regenerate Kangla narration audio |
+| `npm run db:seed` | Push the seed files into the database. Overwrites matching rows |
+| `npm run db:set-role -- <email> <user\|host\|admin>` | Give an account a role. The app never lets anyone change their own role |
+| `npm run photos:ttl` | Probe how long Google Places photo URLs stay valid |
+| `npm run audio:kangla` | Regenerate the Kangla narration audio |
 
-Note that catalogue content is read from Neon when configured — editing the seed files
-alone does not change a live database until `npm run db:seed` runs.
-
----
+The `db:*`, `photos:ttl` and `audio:kangla:openai` scripts read `.env.local`.
 
 ## Project structure
 
 ```
-src/app/          App Router routes, layouts and API handlers
-src/components/   UI components (Radix primitives + Tailwind)
-src/lib/ai/       Concierge model config, prompt, tools and itinerary schema
-src/lib/data/     Catalogue access and seed content
-src/lib/auth/     Neon Auth, profiles and the local demo session fallback
-src/lib/db/       Drizzle schema, relations and the server-only database client
-src/lib/immersive/  Kangla places, bounds and generated building data
-src/lib/maps/     Map loaders and helpers
-drizzle/          Drizzle Kit migrations (the live migration history)
-db/               Database and auth setup guide; frozen pre-Drizzle SQL
-scripts/          Seeding, asset generation and verification scripts
-data/research/    2026 research pass: sources, raw notes and photo indexes
-docs/             Kangla map and immersive experience documentation
-public/           Images, 3D models, audio and video
+src/app/            Routes, layouts, Route Handlers (api/) and Server Actions
+src/components/     UI, grouped by feature (ui/ holds the shared primitives)
+src/lib/data/       The data layer: catalogue reads, seed fallback, photo credits
+src/lib/data/seed/  Bundled seed content, one file per vertical
+src/lib/db/         Drizzle schema, relations and the server-only database client
+src/lib/auth/       Neon Auth, the session data-access layer and the local fallback session
+src/lib/host/       Role checks (requireAdmin, requireHost) and dashboard sample data
+src/lib/booking/    Pricing, bookings and the saved list (browser storage for now)
+src/lib/ai/         Concierge model config, prompt, tools, itinerary schema and fallbacks
+src/lib/immersive/  Kangla landmarks, bounds and narration
+src/types/          Shared TypeScript types
+drizzle/            Drizzle migrations (the live migration history)
+db/                 Database and auth setup guide; optional research-data SQL (db/research-seed/)
+scripts/            Seeding, roles, asset generation and browser checks
+data/research/      The 2026 research pass: sourced listings and photo indexes
+docs/               Feature documentation and the contributor task list
+public/             Images, 3D models, audio and video
 ```
 
----
+## Data and content
 
-## Database
+- **Seed files vs the database.** `src/lib/data/seed/*.ts` is the bundled catalogue. When
+  `DATABASE_URL` is set, the app reads the Neon database instead, and falls back to the
+  seed files if a query fails. A database can also load the verified 2026 research
+  listings from `data/research/` (about 240 hotspots, homestays and eateries) with the SQL
+  in `db/research-seed/`; those are not in the seed files yet, so a zero-config local run
+  shows a smaller catalogue than the live site.
+- **Editing content.** Change the seed file and open a pull request. Merging it does not
+  change the live site by itself: the live site reads its database, and a maintainer
+  applies the change there. `npm run db:seed` overwrites every matching row, so it is for
+  your own database, not for refreshing production (see [db/README.md](db/README.md)).
+  If you only want to report a mistake, use the *Content correction* issue form.
+- **Sources.** Research listings record their sources and verification. Please include
+  a public source for any fact you add.
+- **Photos and credit.** Only use photos you have the right to use. Wikimedia Commons
+  photos are credited in `src/lib/data/photo-credits.ts` and shown on `/terms`. Google
+  Places photos are display-only: they are fetched per request through
+  `/api/place-photo`, never stored, and shown with their attribution. See
+  [data/research/PHOTOS.md](data/research/PHOTOS.md).
+- **Map data.** Map imagery is attributed to its providers on the map itself. The Kangla
+  3D models are approximate, photo-referenced reconstructions, not surveys; see
+  [docs/kangla-immersive.md](docs/kangla-immersive.md).
 
-`db/README.md` documents the setup. The schema is `src/lib/db/schema.ts`; Drizzle Kit
-generates migrations into `drizzle/` (`npm run db:generate`) and applies them
-(`npm run db:migrate`). The app connects as the table owner, so there is no Row
-Level Security: visibility and ownership checks live in the queries and Server Actions (see
-`db/README.md`).
+## Contributing and Hacktoberfest
 
----
+Contributions of all sizes are welcome: code, content corrections, new places, photos you
+own, translations and accessibility fixes.
 
-## Further reading
+1. Read [CONTRIBUTING.md](CONTRIBUTING.md).
+2. Pick a task from [docs/GOOD_FIRST_ISSUES.md](docs/GOOD_FIRST_ISSUES.md) or the issue
+   tracker, and ask to be assigned.
+3. Fork, branch, and open a pull request against `main`.
 
-- [`docs/kangla-map-explorer.md`](docs/kangla-map-explorer.md) — how the 3D map is built, what is real data versus assumption, and the automated checks
-- [`docs/kangla-immersive.md`](docs/kangla-immersive.md) — the 3D reconstruction, its references and its stated accuracy limits
-- [`db/README.md`](db/README.md) — database and auth setup, migration order
-- [`data/research/README.md`](data/research/README.md) — the 2026 research pass and its sources
+During Hacktoberfest, maintainers add the `hacktoberfest-accepted` label to pull requests
+that are merged or approved. Low-effort pull requests are labelled `spam` or `invalid`.
+The rules are in [CONTRIBUTING.md](CONTRIBUTING.md#hacktoberfest).
 
----
+Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md).
 
-## Accuracy and attribution
+## Community
 
-Listings carry source and verification metadata. Map imagery is attributed to MapTiler and
-OpenStreetMap, photographs to their contributors, and the Kangla 3D scenes state plainly
-where geometry is interpreted rather than surveyed.
+Join the [Discord](https://discord.gg/hgGfm6UpU) to ask questions, discuss ideas and find
+something to work on.
+
+## Security
+
+Please do not report security problems in public issues. Use GitHub's private
+vulnerability reporting; [SECURITY.md](SECURITY.md) has the details.
+
+## License
+
+Released under the MIT License. See the [LICENSE](LICENSE) file. Photographs credited to
+third parties stay under their own licences, as recorded in
+`src/lib/data/photo-credits.ts`.
+
+## Acknowledgements
+
+Discover Manipur began at *Re-Imagining Manipur: Hackathon 2026*. Thanks to MTIF and the
+Departments of Tourism and IT, Government of Manipur, for that opportunity. Thanks also
+to the photographers on Wikimedia Commons whose work is credited on the site, the
+OpenStreetMap contributors, and everyone who has corrected or added a listing.

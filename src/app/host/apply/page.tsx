@@ -5,7 +5,7 @@ import { ApplyWizard } from "@/components/host/apply-wizard";
 export const metadata: Metadata = {
   title: "Apply to host",
   description:
-    "Four short steps to list your homestay, kitchen, guided walk or craft experience on Manipur Tourism. Free to apply, and your draft is saved as you go.",
+    "Four short steps to apply to list your homestay, kitchen, guided walk or craft experience on Discover Manipur. Free to apply, and your draft is saved as you go.",
 };
 
 export default function HostApplyPage() {
@@ -16,10 +16,20 @@ export default function HostApplyPage() {
           <span className="weave-rule inline-block h-[3px] w-10 rounded-full" />
           Host application
         </p>
-        <h1 className="text-headline">Apply to host with Manipur Tourism</h1>
+        <h1 className="text-headline">Apply to host with Discover Manipur</h1>
         <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-          About fifteen minutes. Nothing is published and nothing is charged — a coordinator from
-          your district calls within three working days to take it forward.
+          About fifteen minutes. Nothing is published and nothing is charged. Applications are not
+          sent to a reviewer yet — the review process is still being built in the open — so if you
+          want to be listed, say hello on the{" "}
+          <a
+            href="https://discord.gg/hgGfm6UpU"
+            rel="noreferrer noopener"
+            target="_blank"
+            className="underline underline-offset-4 hover:text-foreground"
+          >
+            community Discord
+          </a>{" "}
+          as well.
         </p>
       </header>
       <ApplyWizard />

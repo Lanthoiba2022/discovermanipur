@@ -59,9 +59,9 @@ if (process.argv.includes("--check")) {
     console.log(`${status === 200 ? "ok  " : "DEAD"} age ${hours(age)}  status ${status}  ${entry.resolvedAt}`);
   }
 } else {
-  const key = process.env.GOOGLE_API_KEY;
+  const key = process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_API_KEY;
   if (!key) {
-    console.error("GOOGLE_API_KEY is not set. Run with --env-file=.env.local.");
+    console.error("GOOGLE_PLACES_API_KEY (or GOOGLE_API_KEY) is not set. Run with --env-file=.env.local.");
     process.exit(1);
   }
   const ref = process.argv[2] || DEFAULT_REF;

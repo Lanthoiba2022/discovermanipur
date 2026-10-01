@@ -6,7 +6,7 @@ import { footerNav } from "@/lib/nav";
 /**
  * No top margin on the footer: the weave band is the divider, and a margin
  * here showed as a strip of page background wherever the last section is a
- * dark or crimson band — which the landing page now ends on.
+ * dark or crimson band — which the landing page ends on.
  */
 export function SiteFooter() {
   return (
@@ -33,7 +33,8 @@ export function SiteFooter() {
               Join us on Discord
             </a>
             <p className="mt-8 text-sm text-ivory-50/50">
-              A demonstration site · Not an official government service
+              An open-source public platform, built for public use · Not an official government
+              service
             </p>
           </div>
 
@@ -61,7 +62,7 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-16 flex flex-col gap-4 border-t border-white/10 pt-8 text-sm text-ivory-50/50 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Manipur Tourism. Travel gently.</p>
+          <p>© {new Date().getFullYear()} Discover Manipur. Travel gently.</p>
           <p className="font-mayek text-base text-ivory-50/65">ꯃꯅꯤꯄꯨꯔ</p>
         </div>
       </div>

@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 export const metadata: Metadata = {
   title: "Hosting standards",
   description:
-    "The standards every Manipur Tourism host agrees to: safety, cleanliness, honest pricing, cultural respect for guests and neighbours, accessibility and cancellation conduct.",
+    "The standards every Discover Manipur host agrees to: safety, cleanliness, honest pricing, cultural respect for guests and neighbours, accessibility and cancellation conduct.",
 };
 
 interface GuidelineSection {
@@ -23,7 +23,7 @@ const SECTIONS: GuidelineSection[] = [
     id: "eligibility",
     title: "1. Who can host",
     intro:
-      "Hosting on Manipur Tourism is open to anyone in Manipur with something real to share and the right to share it.",
+      "Hosting on Discover Manipur is open to anyone in Manipur with something real to share and the right to share it.",
     rules: [
       "You are 18 or older and can show one government photo ID.",
       "You own the place, or you have the written consent of whoever does.",
@@ -66,14 +66,13 @@ const SECTIONS: GuidelineSection[] = [
     id: "pricing",
     title: "4. Honest pricing",
     intro:
-      "The price a guest sees is the price a guest pays. Manipur Tourism will remove listings that work around this.",
+      "The price a guest sees is the price a guest pays. Discover Manipur will remove listings that work around this.",
     rules: [
       "Your listed rate includes everything a guest must pay to stay or take part. Taxes and cleaning charges go in the rate or are listed as a named extra before booking.",
       "No separate price for foreign, out-of-state or Manipuri guests, and no asking for more after arrival.",
       "Optional extras — an airport pickup, a boat ride, dinner, a guide for the day — are priced on the listing before the guest books.",
-      "Cash asked for off-platform is a breach: it strips the guest of every protection they booked with and it ends the listing.",
-      "Manipur Tourism's fee is 10% of the booking, deducted at payout. There is no listing fee, no photography fee and no charge for a district visit.",
-      "Payouts reach your account within five working days of checkout.",
+      "Never ask for a deposit, advance or extra charge that is not stated on your listing.",
+      "Discover Manipur charges no fee: no listing fee and no commission. No money moves through the platform — guests pay you directly, on the terms stated on your listing.",
     ],
   },
   {
@@ -124,11 +123,11 @@ const SECTIONS: GuidelineSection[] = [
       "Manipur travel breaks sometimes — a bandh, a landslide, a flight cancelled at Tulihal. How you handle it is the measure of a host.",
     rules: [
       "Honour every confirmed booking. Cancel only for a genuine emergency, illness or bereavement, or a safety situation — never because a longer or better-paying booking came along.",
-      "If you must cancel, tell Manipur Tourism and the guest the same day. We refund in full and help find them somewhere else.",
+      "If you must cancel, tell the guest the same day, refund anything they have paid you in full, and help them find somewhere else.",
       "Repeated host cancellations cost you your featured placement, then your listing.",
-      "When a bandh, blockade or weather event makes travel unsafe, we waive the guest's cancellation charge and you are not penalised. Tell us early.",
+      "When a bandh, blockade or weather event makes travel unsafe, waive the guest's cancellation charge. A host is not penalised for cancelling in that situation either.",
       "Your own cancellation terms for guests must be stated on the listing and applied the same way to everyone.",
-      "If something goes wrong during a stay, fix what you can, tell the guest what you cannot, and call your district coordinator rather than arguing at the gate.",
+      "If something goes wrong during a stay, fix what you can, tell the guest what you cannot, and ask for help rather than arguing at the gate.",
     ],
   },
   {
@@ -139,10 +138,10 @@ const SECTIONS: GuidelineSection[] = [
     rules: [
       "Never write, buy or ask for a fake review, and never offer a discount for a good one. Asking a happy guest to review you honestly is fine.",
       "Retaliating against an honest review — a threat, a call, a review of their conduct in return — ends the listing.",
-      "Listings are removed for: false information, a safety failure, a discrimination complaint we can substantiate, taking money off-platform, or a pattern of complaints left unfixed.",
+      "Listings are removed for: false information, a safety failure, a discrimination complaint we can substantiate, charging money not stated on the listing, or a pattern of complaints left unfixed.",
       "You will always be told why, in writing, and you can put it right and reapply.",
     ],
-    note: "Questions, a complaint about another host, or something you are unsure about: hosts@example.com, or your district coordinator.",
+    note: "Questions, a complaint about another host, or something you are unsure about: ask the maintainers on the community Discord, linked at the foot of every page.",
   },
 ];
 
@@ -154,13 +153,15 @@ export default function HostingGuidelinesPage() {
           <span className="weave-rule inline-block h-[3px] w-10 rounded-full" />
           Hosting standards
         </p>
-        <h1 className="text-headline">What we ask of every Manipur Tourism host</h1>
+        <h1 className="text-headline">What we ask of every Discover Manipur host</h1>
         <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-          These are the standards you agree to when you list. They are written plainly on purpose:
+          These are the standards you agree to when you list. Listing is not open yet — host
+          applications are not reviewed — but the standards are published now so you know what to
+          expect. They are written plainly on purpose:
           a host should be able to read this once and know exactly what is expected — and a guest
           should be able to read it too.
         </p>
-        <p className="mt-4 text-sm text-muted-foreground">Last reviewed 20 September 2026</p>
+        <p className="mt-4 text-sm text-muted-foreground">Last reviewed 1 October 2026</p>
       </header>
 
       <Separator className="mx-auto my-10 max-w-3xl" />
@@ -212,8 +213,8 @@ export default function HostingGuidelinesPage() {
         <h2 className="font-display text-2xl">Can you meet these?</h2>
         <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
           Most homes in Manipur already do. If one or two things are missing — a smoke alarm, a
-          handrail, a filter — apply anyway and say so. The district team helps hosts close those
-          gaps before going live.
+          handrail, a filter — apply anyway and say so. Applications are not reviewed yet, so there
+          is time to close those gaps before listing opens.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Button asChild>

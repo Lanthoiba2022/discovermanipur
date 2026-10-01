@@ -1,5 +1,5 @@
 /**
- * Phase 7 — push the local seed catalogue into the Neon database.
+ * Push the local seed catalogue and editorial content into the database.
  *
  *   npm run db:seed
  *
@@ -63,7 +63,7 @@ function uuidV5(name: string, namespace = SEED_NAMESPACE): string {
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
 }
 
-const url = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL;
+const url = process.env.DATABASE_URL;
 
 if (!url) {
   console.error(

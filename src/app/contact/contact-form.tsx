@@ -31,6 +31,10 @@ function FieldError({ id, message }: { id: string; message?: string }) {
 
 export function ContactForm() {
   const [sent, setSent] = React.useState(false);
+  // Bot traps checked by `submitContactForm`: a hidden field only bots fill,
+  // and when the form appeared, since nobody writes an enquiry in seconds.
+  const [website, setWebsite] = React.useState("");
+  const [startedAt] = React.useState(() => Date.now());
 
   const {
     register,
@@ -51,7 +55,7 @@ export function ContactForm() {
   });
 
   const onSubmit = handleSubmit(async (values) => {
-    const result = await submitContactForm(values);
+    const result = await submitContactForm({ ...values, website, startedAt });
 
     if (!result.ok) {
       if (result.fieldErrors) {
@@ -63,13 +67,25 @@ export function ContactForm() {
       return;
     }
 
-    toast.success("Thanks — we have your message.", { description: result.message });
+    toast.success("Thanks for writing.", { description: result.message });
     setSent(true);
     reset();
   });
 
   return (
-    <form onSubmit={onSubmit} noValidate className="space-y-6">
+    <form onSubmit={onSubmit} noValidate className="relative space-y-6">
+      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label>
+          Website
+          <input
+            name="website"
+            tabIndex={-1}
+            autoComplete="off"
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+          />
+        </label>
+      </div>
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <Label htmlFor="contact-name">Your name</Label>
@@ -180,8 +196,8 @@ export function ContactForm() {
         </Button>
         <p aria-live="polite" className="text-sm text-muted-foreground">
           {sent
-            ? "Sent. You can send another if you missed something."
-            : "We usually reply within two working days."}
+            ? "Done. You can send another if you missed something."
+            : "Not delivered to an inbox yet — see the note below."}
         </p>
       </div>
     </form>

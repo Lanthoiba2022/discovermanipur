@@ -1,8 +1,8 @@
-> Restored as the optional Landmark Studio. Start with the [map explorer](./kangla-map-explorer.md), then open a model through a landmark card. The detailed model limitations below still apply.
-
 # Kangla immersive experience
 
-Route: `/immersive/kangla-fort`. Entry points: homepage and `/hotspots/kangla-fort`.
+> **Status:** `/immersive/kangla-fort` currently redirects to the [Kangla 3D map](./kangla-map-explorer.md). The Three.js landmark studies described here are still in the tree (`src/components/immersive/`, `public/models/kangla/`) but no route renders them. Bringing them back as an optional landmark studio, opened from a landmark on the map, is listed in [GOOD_FIRST_ISSUES.md](./GOOD_FIRST_ISSUES.md). The accuracy notes below apply whenever they are shown.
+
+Route: `/immersive/kangla-fort` (redirected for now). Main component: `src/components/immersive/kangla-experience.tsx`.
 
 Three separately explorable exterior studies: Kangla Sha / Uttra pavilion, western gateway, and Pakhangba Laishang. The viewer loads Three.js only after **Enter 3D experience**. Photographs and stories work without WebGL or XR.
 
@@ -50,23 +50,12 @@ Requires HTTPS or localhost and a WebXR-capable browser/device. Capability detec
 From the project root:
 
 ```sh
-npm run typecheck
+npm run lint
+npx next typegen && npm run typecheck
 npm run build
-npx eslint src/components/immersive src/lib/immersive src/app/immersive scripts/check-kangla.mjs
 ```
 
-Browser regression checks require Playwright / Chromium and a running app:
-
-```sh
-# Terminal 1
-npm run dev -- --port 3001
-# Terminal 2, in an environment where Playwright is installed
-node scripts/check-kangla.mjs
-```
-
-Optional `PLAYWRIGHT_MODULE` points to an installed Playwright module entry file; `BROWSER_EXECUTABLE` points to Chromium; `TEST_BASE_URL` selects another server.
-
-The browser script covers lazy loading, landmark switching, controls, reference photos, 375px overflow, Google map toggle, no-WebGL fallback and mocked AR/VR permission denial. Actual scene screenshots were inspected at desktop and mobile widths. **Physical headset rendering and phone surface placement still require on-device verification; browser tests do not establish hardware compatibility.**
+`scripts/check-kangla.mjs` now tests the Google 3D map, not these scenes (see [kangla-map-explorer.md](./kangla-map-explorer.md#checks)). When the studies are wired back to a route, they need their own browser checks covering lazy loading, landmark switching, controls, reference photos, 375px overflow, the no-WebGL fallback and AR/VR permission denial. **Physical headset rendering and phone surface placement require on-device testing; browser tests do not establish hardware compatibility.**
 
 ## September 22 site viewer update
 

@@ -30,7 +30,7 @@ export function HostCard({ homestay }: { homestay: Homestay }) {
           </h2>
           <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
             <ShieldCheck className="size-3.5 text-success" aria-hidden="true" />
-            Verified Manipur Tourism host in {homestay.district}
+            Verified Discover Manipur host in {homestay.district}
           </p>
         </div>
       </div>

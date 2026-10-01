@@ -1,12 +1,11 @@
 /**
- * Manipur Tourism data layer — the single boundary between content and UI.
+ * Discover Manipur data layer — the single boundary between content and UI.
  *
  * Every route imports from here and never from `./seed/*` directly.
  *
  * Rows come from Neon via `./catalogue`, which falls back to the bundled
  * seed data when the project is unconfigured or a query fails. The filter,
- * sort, paginate and search logic below is unchanged from the seed-backed
- * version — only the source of the rows moved.
+ * sort, paginate and search logic below runs in memory over either source.
  */
 
 import type {

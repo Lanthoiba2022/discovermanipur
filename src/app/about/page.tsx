@@ -13,15 +13,13 @@ import { Button } from "@/components/ui/button";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Manipur Tourism is a travel platform for Manipur. Why Manipur, what we are building, and how the six focus areas shape it.",
+    "Discover Manipur is an open-source, community-run travel platform for Manipur. Why Manipur, what we are building, and how the six focus areas shape it.",
   openGraph: {
-    title: "About Manipur Tourism — a demonstration project about Manipur",
+    title: "About Discover Manipur — an open-source platform for Manipur",
     description:
       "Why Manipur, what the platform does, and how it puts local hosts and honest information first.",
   },
 };
-
-
 
 export default async function AboutPage() {
   const [themes, principles] = await Promise.all([getAboutThemes(), getAboutPrinciples()]);
@@ -44,7 +42,6 @@ export default async function AboutPage() {
         </div>
       </PageHero>
 
-      {/* ---------------------------------------------------------------- */}
       <Section className="pt-10 md:pt-14">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <Reveal className="lg:col-span-5">
@@ -84,7 +81,6 @@ export default async function AboutPage() {
         </div>
       </Section>
 
-      {/* ---------------------------------------------------------------- */}
       <section className="relative">
         <div className="shell">
           <Reveal className="grid gap-4 md:grid-cols-12 md:gap-6">
@@ -110,11 +106,10 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
       <Section
-        eyebrow="What Manipur Tourism does"
+        eyebrow="What Discover Manipur does"
         title="Six things, done properly, instead of twenty done thinly."
-        description="Everything below exists in the prototype. Nothing here describes a feature we have only talked about."
+        description="Everything below is built and in the codebase. Nothing here describes a feature we have only talked about."
       >
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
           <Reveal className="lg:col-span-7">
@@ -138,7 +133,8 @@ export default async function AboutPage() {
               <p>
                 Give it your dates, your pace and what you care about, and it drafts an itinerary
                 from the same catalogue the rest of the site uses — so it cannot recommend a
-                homestay that does not exist.
+                homestay that does not exist. It is paused on the live site for now, and the{" "}
+                <Link href="/plan">planner</Link> shows a sample conversation instead.
               </p>
 
               <h3>A responsible-travel layer that is not decorative</h3>
@@ -168,7 +164,6 @@ export default async function AboutPage() {
         </div>
       </Section>
 
-      {/* ---------------------------------------------------------------- */}
       <Section
         className="bg-surface-sunken"
         eyebrow="Local hosts"
@@ -184,7 +179,7 @@ export default async function AboutPage() {
                 else.
               </p>
               <p>
-                Manipur Tourism is built so that a host does not need a marketing budget or a booking
+                Discover Manipur is built so that a host does not need a marketing budget or a booking
                 system to be found. A listing is a page: their story, their photographs, their
                 rules, their price, their district. The platform&apos;s job is to be the road
                 between that page and the person looking for it.
@@ -217,7 +212,6 @@ export default async function AboutPage() {
         </div>
       </Section>
 
-      {/* ---------------------------------------------------------------- */}
       <Section
         eyebrow="What we focus on"
         title="The six briefs, and what we built against each."
@@ -243,7 +237,6 @@ export default async function AboutPage() {
         </ul>
       </Section>
 
-      {/* ---------------------------------------------------------------- */}
       <Section eyebrow="How we work" title="Four rules we hold ourselves to.">
         <dl className="grid gap-x-16 gap-y-12 md:grid-cols-2">
           {principles.map((p, i) => (
@@ -255,7 +248,6 @@ export default async function AboutPage() {
         </dl>
       </Section>
 
-      {/* ---------------------------------------------------------------- */}
       <Section className="pb-28 pt-0 md:pb-36">
         <Reveal>
           <div className="relative overflow-hidden rounded-[var(--radius-lg)] border border-border bg-loktak-900 p-8 text-cream-50 md:p-14">
@@ -263,17 +255,20 @@ export default async function AboutPage() {
             <div className="relative max-w-[62ch]">
               <p className="eyebrow mb-5 text-kangla-400">An honest note</p>
               <Lede className="text-cream-50 dark:text-cream-50">
-                Manipur Tourism is a demonstration project, not a tour operator.
+                Discover Manipur is a community project, not a tour operator.
               </Lede>
               <div className="mt-6 space-y-5 leading-relaxed text-cream-200/90">
                 <p>
                   We do not run properties, employ guides, take payments or hold commercial
-                  partnerships with any of the businesses described on this site. Bookings made
-                  here are prototype records, not contracts, and nothing on the platform should be
-                  treated as a confirmed reservation.
+                  partnerships with any of the businesses described on this site. It is open source
+                  and run by volunteers, and it is not an official government service. A booking
+                  made here is a request saved in your browser, not a contract, and nothing on the
+                  platform should be treated as a confirmed reservation.
                 </p>
                 <p>
-                  Listings, prices and timings are illustrative content assembled to demonstrate the platform. Before you travel, check permit requirements, road conditions and
+                  Some stay, food, experience and transport listings are still sample entries rather
+                  than real businesses, and prices and timings can be out of date. Before you travel,
+                  check permit requirements, road conditions and
                   current government travel advisories with official sources — we say this on every
                   page where it matters, and we mean it.
                 </p>

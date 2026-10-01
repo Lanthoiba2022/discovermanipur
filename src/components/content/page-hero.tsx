@@ -10,9 +10,7 @@ import { cn } from "@/lib/utils";
  * `light` and `sand` are the two editorial grounds; `dark` and `crimson` are
  * full-bleed opening bands. The mood is the ONLY thing this switches — the
  * structure, the type ramp and the figure index are identical across all four,
- * which is the point: before this there were three unrelated hero patterns on
- * the listing routes (a light `ListingHero`, a light `PageHero`, and two
- * hand-rolled dark bands that re-implemented the figure index by hand).
+ * so every listing route opens with the same hero pattern.
  */
 export type HeroTone = "light" | "sand" | "dark" | "crimson";
 
@@ -217,14 +215,12 @@ export function PageHero({
                 )}
               </h1>
 
-              {/* The standfirst sits directly under the title.
-                  It used to be pushed to the foot of the column (`mt-auto` plus
-                  a 3rem pad) so its baseline met the bottom of the photo, which
-                  left a screen-deep hole between the italic line and the copy on
-                  a wide viewport. Only the copy moved; the photo, the grid and
-                  the spacing are unchanged.
-                  Without a photo the standfirst still moves into the right
-                  column and fills the measure. */}
+              {/* The standfirst sits directly under the title. Pinning it to
+                  the foot of the column (`mt-auto`) so its baseline meets the
+                  bottom of the photo leaves a screen-deep hole between the
+                  italic line and the copy on a wide viewport.
+                  Without a photo the standfirst moves into the right column
+                  and fills the measure. */}
               {image && lede && (
                 <div className="text-lead mt-7 text-muted-foreground">{lede}</div>
               )}

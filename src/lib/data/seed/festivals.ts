@@ -1,7 +1,7 @@
 import type { Festival } from "@/types";
 
 /**
- * Manipur Tourism festival seed data — 12 festivals across Manipur's communities.
+ * Discover Manipur festival seed data — 12 festivals across Manipur's communities.
  * Many follow lunar or agricultural calendars, so dates shift year to year.
  */
 export const festivals: Festival[] = [

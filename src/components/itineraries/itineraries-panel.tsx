@@ -18,7 +18,7 @@ export function ItinerariesPanel() {
         Saved itineraries
       </h2>
       <p className="mt-2 text-muted-foreground">
-        Plans you built with the Manipur Tourism concierge. Open one to see the day-by-day timeline, rename
+        Plans you built with the Discover Manipur concierge. Open one to see the day-by-day timeline, rename
         it, or copy it for your travel group.
       </p>
 

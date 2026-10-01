@@ -2,19 +2,21 @@ export { useAuth, type UseAuth } from "./use-auth";
 export {
   signInWithPassword,
   signUpWithPassword,
-  signInWithMagicLink,
+  verifyEmailCode,
+  resendVerificationCode,
   signOut,
   updateProfile,
   type AuthResult,
+  type VerifyResult,
 } from "./actions";
 export {
   signInSchema,
   signUpSchema,
-  magicLinkSchema,
+  verifyEmailSchema,
   profileSchema,
   type SignInValues,
   type SignUpValues,
-  type MagicLinkValues,
+  type VerifyEmailValues,
   type ProfileValues,
 } from "./schemas";
-export { isAuthConfigured } from "./env";
+export { isAuthConfigured, isDemoAuth } from "./env";

@@ -98,8 +98,8 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
       });
       setReview(false);
       setConfirmed(booking.id);
-      toast.success("Request sent to your host", {
-        description: `${homestay.title} · ${format(checkIn, "d MMM")} – ${format(checkOut, "d MMM yyyy")}`,
+      toast.success("Request saved in this browser", {
+        description: `${homestay.title} · ${format(checkIn, "d MMM")} – ${format(checkOut, "d MMM yyyy")}. It has not been sent to your host.`,
       });
     } catch {
       toast.error("We could not save that request. Please try again.");
@@ -114,11 +114,12 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
         <span className="mb-4 flex size-12 items-center justify-center rounded-full bg-success/12 text-success">
           <CircleCheck className="size-6" aria-hidden="true" />
         </span>
-        <h2 className="font-display text-xl">Request sent</h2>
+        <h2 className="font-display text-xl">Request saved</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          {homestay.hostName || "Your host"} has {quote.nights}{" "}
-          {quote.nights === 1 ? "night" : "nights"} for {guests}{" "}
-          {guests === 1 ? "guest" : "guests"} to confirm. You have not been charged.
+          Your request for {quote.nights} {quote.nights === 1 ? "night" : "nights"} for {guests}{" "}
+          {guests === 1 ? "guest" : "guests"} is saved in this browser. Online booking is not
+          connected yet, so {homestay.hostName || "your host"} has not been told — please contact
+          them directly to book. You have not been charged.
         </p>
         <div className="mt-6 flex flex-col gap-2">
           <Button asChild variant="primary" className="w-full">
@@ -229,24 +230,26 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
         </Button>
 
         <p className="text-center text-xs text-muted-foreground" aria-live="polite">
-          {blockedReason ?? "You will not be charged yet — your host confirms first."}
+          {blockedReason ?? "You will not be charged."}
         </p>
 
-        {demo && (
-          <p className="flex items-start gap-2 rounded-[var(--radius-sm)] bg-muted px-3 py-2 text-xs text-muted-foreground">
-            <ShieldCheck className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
-            Demo mode — requests are stored in this browser only until the booking backend is
-            connected.
-          </p>
-        )}
+        <p className="flex items-start gap-2 rounded-[var(--radius-sm)] bg-muted px-3 py-2 text-xs text-muted-foreground">
+          <ShieldCheck className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
+          <span>
+            {demo && "Local development mode. "}
+            Requests are saved in this browser for now — online booking is not connected yet, so
+            your host is not notified.
+          </span>
+        </p>
       </form>
 
       <Dialog open={review} onOpenChange={setReview}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Confirm your request</DialogTitle>
+            <DialogTitle>Check your request</DialogTitle>
             <DialogDescription>
-              One last look before it reaches {homestay.hostName || "your host"}.
+              One last look. This saves the request in this browser only — it is not sent to{" "}
+              {homestay.hostName || "your host"} yet.
             </DialogDescription>
           </DialogHeader>
 
@@ -280,10 +283,10 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
             <Button onClick={confirm} disabled={submitting}>
               {submitting ? (
                 <>
-                  <Loader2 className="size-4 animate-spin" aria-hidden="true" /> Sending…
+                  <Loader2 className="size-4 animate-spin" aria-hidden="true" /> Saving…
                 </>
               ) : (
-                "Confirm request"
+                "Save request"
               )}
             </Button>
           </DialogFooter>

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   description:
     "Every lake, hill, fort, cave and market worth the drive — filter Manipur's destinations by category, district, season and step-free access, then browse them as cards or on a map.",
   openGraph: {
-    title: "Places to visit in Manipur · Manipur Tourism",
+    title: "Places to visit in Manipur · Discover Manipur",
     description:
       "Filter Manipur's lakes, hills, forts and markets by district and season, then browse them as cards or on a live map.",
     images: [{ url: PLACEHOLDER_IMAGE, width: 1200, height: 630, alt: "A view across Manipur" }],

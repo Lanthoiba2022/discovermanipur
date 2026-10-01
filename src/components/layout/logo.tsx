@@ -3,10 +3,11 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 /**
- * Manipur Tourism lockup.
+ * Discover Manipur lockup.
  *
  * The mark is the outline of the state itself, set beside a two-part wordmark:
- * "Manipur" in the display oldstyle, "Tourism" as a micro-label beneath it.
+ * "Discover" as a micro-label above "Manipur" in the display oldstyle, so the
+ * two read in order and the large word keeps the lockup's original width.
  *
  * The silhouette is drawn as a CSS mask filled with `currentColor` rather than
  * as an `<img>`. The supplied file is a single flat crimson shape on alpha, and
@@ -47,7 +48,7 @@ export function Logo({
   return (
     <Link
       href="/"
-      aria-label="Manipur Tourism — The Land of Jewels, home"
+      aria-label="Discover Manipur — The Land of Jewels, home"
       className={cn(
         "group inline-flex items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring",
         className,
@@ -65,6 +66,7 @@ export function Logo({
       />
 
       <span className="flex flex-col leading-none">
+        <span className={cn("eyebrow mb-1 leading-none", labelTone)}>Discover</span>
         <span
           className={cn(
             "font-display text-[1.375rem] leading-none tracking-tight transition-colors",
@@ -73,7 +75,6 @@ export function Logo({
         >
           Manipur
         </span>
-        <span className={cn("eyebrow mt-1 leading-none", labelTone)}>Tourism</span>
       </span>
     </Link>
   );

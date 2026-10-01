@@ -42,14 +42,14 @@ export function PlanClient({
             <>
               <p className="mb-3 flex w-fit items-center gap-1.5 rounded-full bg-warning/10 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.08em] text-warning">
                 <PauseCircle aria-hidden className="size-3" />
-                Paused for this demo
+                Paused for now
               </p>
               <h2 className="font-display text-xl font-semibold tracking-tight text-foreground">
                 Here&apos;s what it does
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                The live concierge is switched off while this site is a demo. The conversation beside this is a real
-                one — every card in it was built from Manipur Tourism&apos;s own catalogue, and every link works.
+                The live concierge is switched off on this site for now. The conversation beside this is a sample with
+                hand-written replies — every card in it was built from Discover Manipur&apos;s own catalogue, and every link works.
               </p>
 
               <div className="my-5 h-px bg-border" />

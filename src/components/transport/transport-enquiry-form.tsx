@@ -37,7 +37,7 @@ const makeSchema = (seats: number) =>
     phone: z
       .string()
       .trim()
-      .regex(/^(\+\d{1,3}[\s-]?)?\d{7,12}$/, "Enter a contact number we can reach you on"),
+      .regex(/^(\+\d{1,3}[\s-]?)?\d{7,12}$/, "Enter a valid phone number"),
     notes: z.string().trim().max(500, "Keep notes under 500 characters").optional(),
   });
 
@@ -79,12 +79,12 @@ export function TransportEnquiryForm({ option }: { option: TransportOption }) {
   const estimate = option.pricePerDay ? option.pricePerDay * Math.max(0, days) : null;
 
   async function onSubmit(values: EnquiryValues) {
-    // No backend yet — acknowledged locally.
+    // No backend yet — nothing is sent or stored, and the toast says so.
     await new Promise((resolve) => setTimeout(resolve, 500));
-    toast.success("Enquiry sent to the operator", {
-      description: `${option.name} · ${values.days} day${values.days === 1 ? "" : "s"} from ${
+    toast.success("Thanks — one more step", {
+      description: `Online enquiries aren't connected yet, so this wasn't sent. To hire ${option.name} for ${values.days} day${values.days === 1 ? "" : "s"} from ${
         values.pickupDate
-      }, pick-up at ${values.pickup}. ${option.operator} will call you back.`,
+      } (pick-up at ${values.pickup}), please contact ${option.operator} directly.`,
     });
     reset({
       pickupDate: "",
@@ -250,10 +250,11 @@ export function TransportEnquiryForm({ option }: { option: TransportOption }) {
 
       <Button type="submit" size="lg" disabled={isSubmitting} className="w-full">
         {isSubmitting && <Loader2 className="animate-spin" aria-hidden="true" />}
-        {isSubmitting ? "Sending…" : "Send enquiry"}
+        {isSubmitting ? "One moment…" : "Enquire"}
       </Button>
       <p className="text-center text-xs text-muted-foreground">
-        Fuel, tolls and driver allowance vary by route — the operator confirms a final quote.
+        Fuel, tolls and driver allowance vary by route, so ask the operator for a final quote.
+        Online enquiries are not connected yet — please contact {option.operator} directly.
       </p>
     </form>
   );

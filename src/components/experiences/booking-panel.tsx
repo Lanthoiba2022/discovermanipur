@@ -58,10 +58,10 @@ export function ExperienceBookingPanel({ experience }: { experience: Experience 
   const fees = Math.round(subtotal * 0.05);
 
   async function onSubmit(values: BookingValues) {
-    // No backend yet — this resolves locally and confirms optimistically.
+    // No backend yet — nothing is sent or stored, and the toast says so.
     await new Promise((resolve) => setTimeout(resolve, 500));
-    toast.success("Request sent to the host", {
-      description: `${experience.title} · ${values.guests} guest${values.guests === 1 ? "" : "s"} on ${values.date}. ${experience.host} will confirm by email.`,
+    toast.success("Thanks — one more step", {
+      description: `Online requests aren't connected yet, so this wasn't sent. To book ${experience.title} for ${values.guests} guest${values.guests === 1 ? "" : "s"} on ${values.date}, please contact ${experience.host} directly.`,
     });
     reset({ date: "", guests: 1, name: "", email: "" });
   }
@@ -164,7 +164,7 @@ export function ExperienceBookingPanel({ experience }: { experience: Experience 
           <dd>{formatINR(subtotal)}</dd>
         </div>
         <div className="flex items-center justify-between">
-          <dt className="text-muted-foreground">Manipur Tourism service fee</dt>
+          <dt className="text-muted-foreground">Discover Manipur service fee</dt>
           <dd>{formatINR(fees)}</dd>
         </div>
         <div className="flex items-center justify-between border-t border-border pt-2 text-base font-medium">
@@ -175,10 +175,11 @@ export function ExperienceBookingPanel({ experience }: { experience: Experience 
 
       <Button type="submit" size="lg" disabled={isSubmitting} className="w-full">
         {isSubmitting && <Loader2 className="animate-spin" aria-hidden="true" />}
-        {isSubmitting ? "Sending request…" : "Request to book"}
+        {isSubmitting ? "One moment…" : "Request to book"}
       </Button>
       <p className="text-center text-xs text-muted-foreground">
-        You will not be charged now. The host confirms availability first.
+        You will not be charged. Online requests are not connected yet, so please contact the host
+        directly to book.
       </p>
     </form>
   );

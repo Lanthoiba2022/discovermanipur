@@ -1,10 +1,12 @@
 /**
- * Mock operations data for the host + admin slice.
+ * Invented sample data for the host dashboard and the admin pages.
  *
- * This is deliberately separate from `@/lib/data` (the public catalogue): it
- * models the back-office — applications in review, a host's own listings, and
- * the booking ledger. Swap these arrays for database queries (`@/lib/db`); the
- * shapes are already the ones the UI consumes.
+ * None of this is real: the people, properties, bookings and figures are made
+ * up, and nothing here is read from or written to the database. It is kept
+ * separate from `@/lib/data` (the public catalogue) and models the back-office —
+ * applications in review, a host's own listings, and the booking ledger. To wire
+ * these pages up, replace the arrays with database queries that return the same
+ * shapes.
  */
 
 import type {

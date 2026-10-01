@@ -48,12 +48,14 @@ export function TableReservationForm({ eatery }: { eatery: Eatery }) {
   });
 
   async function onSubmit(values: ReservationValues) {
-    // No backend yet — the request is acknowledged locally.
+    // No backend yet — nothing is sent or stored, and the toast says so.
     await new Promise((resolve) => setTimeout(resolve, 500));
-    toast.success("Table request sent", {
-      description: `${eatery.name} · ${values.partySize} guest${
+    toast.success("Thanks — one more step", {
+      description: `Online requests aren't connected yet, so this wasn't sent. To book ${values.partySize} guest${
         values.partySize === 1 ? "" : "s"
-      } on ${values.date} at ${values.time}. You will get a confirmation call.`,
+      } on ${values.date} at ${values.time}, please contact ${eatery.name} directly${
+        eatery.phone ? ` on ${eatery.phone}` : ""
+      }.`,
     });
     reset({ date: "", time: "", partySize: 2, name: "", phone: "" });
   }
@@ -182,10 +184,19 @@ export function TableReservationForm({ eatery }: { eatery: Eatery }) {
 
       <Button type="submit" size="lg" disabled={isSubmitting} className="w-full">
         {isSubmitting && <Loader2 className="animate-spin" aria-hidden="true" />}
-        {isSubmitting ? "Sending…" : "Request table"}
+        {isSubmitting ? "One moment…" : "Request table"}
       </Button>
       <p className="text-center text-xs text-muted-foreground">
-        Requests are confirmed by the restaurant, usually within a couple of hours.
+        Online requests are not connected yet — please contact the restaurant directly to book
+        {eatery.phone ? (
+          <>
+            {" "}on{" "}
+            <a className="text-primary underline underline-offset-4" href={`tel:${eatery.phone}`}>
+              {eatery.phone}
+            </a>
+          </>
+        ) : null}
+        .
       </p>
     </form>
   );

@@ -1,6 +1,6 @@
 import { nightsBetween } from "@/lib/utils";
 
-/** Manipur Tourism's platform fee, applied to the stay subtotal. */
+/** Discover Manipur's platform fee, applied to the stay subtotal. */
 export const SERVICE_FEE_RATE = 0.08;
 
 export interface StayQuote {

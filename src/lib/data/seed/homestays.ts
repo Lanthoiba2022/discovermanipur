@@ -1,7 +1,7 @@
 import type { Homestay } from "@/types";
 
 /**
- * Manipur Tourism homestay seed data — 20 family-run stays across the valley and hills.
+ * Discover Manipur homestay seed data — 20 family-run stays across the valley and hills.
  * Prices are per night in INR for the base room, inclusive of taxes.
  */
 export const homestays: Homestay[] = [

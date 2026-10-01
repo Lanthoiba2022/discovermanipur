@@ -8,10 +8,13 @@ import { PageHero } from "@/components/content/page-hero";
 export const metadata: Metadata = {
   title: "Privacy notice",
   description:
-    "What Manipur Tourism collects, why, how long we keep it, who we share it with, and the rights you have over it. Written for a demonstration site, honestly.",
+    "What Discover Manipur collects, why, how long we keep it, who we share it with, and the rights you have over it. Written in plain English for an open-source, community-run platform.",
 };
 
-const LAST_UPDATED = "20 September 2026";
+const LAST_UPDATED = "1 October 2026";
+
+const GITHUB_URL = "https://github.com/Lanthoiba2022/Manipur-Tourism-2026";
+const DISCORD_URL = "https://discord.gg/hgGfm6UpU";
 
 const sections: LegalSection[] = [
   {
@@ -20,22 +23,30 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          Manipur Tourism is a demonstration site. It is
-          not a commercial travel business, it does not take payments, and it collects as little
-          about you as it can get away with.
+          Discover Manipur is an open-source public platform, run by volunteers, that helps visitors
+          and local people find places to see in Manipur. It is not a commercial travel business and
+          not an official government service. It does not take payments, and it collects as little
+          about you as it can.
         </p>
         <ul>
-          <li>We ask for your name, email and message only when you choose to contact us.</li>
-          <li>We do not sell personal data, and we do not run advertising trackers.</li>
+          <li>
+            You can browse the whole site without an account. If you create one, we store your
+            name, email address and the optional profile details you add.
+          </li>
+          <li>
+            Bookings, saved itineraries and saved places stay in your own browser. They are not
+            sent to our database.
+          </li>
+          <li>
+            We count page views with cookieless, privacy-friendly analytics. We do not sell personal
+            data, and we do not run advertising trackers.
+          </li>
           <li>We do not knowingly collect anything from children under 13.</li>
           <li>
             You can ask us what we hold, ask for it to be corrected, or ask for it to be deleted.
           </li>
         </ul>
-        <p>
-          The rest of this notice is the detail. If anything here is unclear, ask us through the{" "}
-          <Link href="/contact">contact form</Link>.
-        </p>
+        <p>The rest of this notice is the detail.</p>
       </>
     ),
   },
@@ -45,14 +56,22 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          Manipur Tourism is a student and volunteer project developed for an initiative focused on tourism in
-          Manipur, India, released around World Tourism Day. The team operates remotely and does not
-          maintain a public office.
+          Discover Manipur is a community project about tourism in Manipur, India. It began as a
+          student and volunteer project around World Tourism Day 2026 and is now developed in the
+          open: the source code is public on{" "}
+          <a href={GITHUB_URL} rel="noreferrer noopener" target="_blank">
+            GitHub
+          </a>
+          , so anyone can check how the site handles data. The maintainers work remotely and there is
+          no company or public office behind it.
         </p>
         <p>
-          For any question about this notice or about data we may hold, write to us at{" "}
-          <strong>privacy@example.com</strong> — a placeholder address for the prototype — or use
-          the <Link href="/contact">contact form</Link>, which reaches the same place.
+          For a question about this notice or about data we may hold, ask the maintainers on our{" "}
+          <a href={DISCORD_URL} rel="noreferrer noopener" target="_blank">
+            community Discord
+          </a>{" "}
+          or open an issue on GitHub. Please do not post personal details in a public channel or
+          issue — say what you need and a maintainer will contact you privately.
         </p>
       </>
     ),
@@ -65,21 +84,31 @@ const sections: LegalSection[] = [
         <h3>Information you give us</h3>
         <ul>
           <li>
+            <strong>Account details:</strong> if you create an account, your email address, your
+            name and your password. Sign-in is handled by our authentication provider, which stores
+            the password in hashed form; we never see or store it in readable form. Your profile
+            also holds any phone number or profile-photo link you choose to add, your account role
+            (traveller, host or admin) and when the account was created and last updated.
+          </li>
+          <li>
+            <strong>Email verification:</strong> when you sign up, your email address is passed to
+            our email provider so it can send you a one-time verification code.
+          </li>
+          <li>
             <strong>Contact form:</strong> your name, email address, enquiry type, subject and
-            message.
+            message. At the moment the form checks these on the server and then discards them —
+            nothing is stored and nothing is forwarded to an inbox, because no mail provider is
+            connected to it yet.
           </li>
           <li>
-            <strong>Account details</strong>, if account features are enabled in the demo: your
-            name, email address and an authentication identifier. We never store a plaintext
-            password.
+            <strong>Bookings, itineraries and saved places:</strong> the dates, guest counts and
+            listings you choose are kept in your browser&apos;s local storage on your device. They
+            are not sent to our database, and a booking is a request on your own device, not a
+            reservation with a property.
           </li>
           <li>
-            <strong>Prototype bookings and itineraries:</strong> the dates, guest counts and
-            listings you select while trying the booking or AI planning flows.
-          </li>
-          <li>
-            <strong>Host applications:</strong> the property or service details you submit if you
-            walk through the hosting flow.
+            <strong>Host applications:</strong> the draft is saved in your browser as you go.
+            Submitting it does not currently send it anywhere.
           </li>
         </ul>
 
@@ -87,13 +116,18 @@ const sections: LegalSection[] = [
         <ul>
           <li>
             Standard server and hosting logs, which typically include an IP address, a timestamp,
-            the page requested and a user-agent string. These are generated by our hosting provider
-            rather than by us.
+            the page requested and a user-agent string. These are generated by our hosting provider.
           </li>
           <li>
-            Aggregate, privacy-respecting usage counts, if analytics are enabled on the deployment —
-            for example how many people opened the responsible travel page. We do not build
-            advertising profiles.
+            Aggregate usage and performance data from Vercel Web Analytics and Speed Insights: the
+            pages visited, the referring site, approximate country, browser, operating system and
+            device type, and page-load measurements. These tools do not use cookies and do not
+            follow you across other sites.
+          </li>
+          <li>
+            Some photographs and the 3D map of Kangla are loaded from Google Maps Platform, so
+            Google receives your IP address and browser details when they load, under Google&apos;s
+            own privacy policy.
           </li>
         </ul>
 
@@ -112,24 +146,21 @@ const sections: LegalSection[] = [
       <>
         <ul>
           <li>
-            <strong>To reply to you.</strong> If you send a message, we use your email to answer it.
-          </li>
-          <li>
-            <strong>To operate the prototype.</strong> Saved itineraries, demo bookings and host
-            applications only work if they are stored against something.
+            <strong>To run your account.</strong> We need your email address to sign you in and to
+            verify that the address is yours, and your role to decide which pages you can open.
           </li>
           <li>
             <strong>To keep the site working and safe.</strong> Logs help us find errors and abuse.
           </li>
           <li>
-            <strong>To improve the product.</strong> Aggregate usage tells us which pages are worth
-            writing more of.
+            <strong>To improve the platform.</strong> Aggregate usage tells us which pages are worth
+            writing more of and which are slow.
           </li>
         </ul>
         <p>
-          Where a legal basis is required, we rely on your consent for optional features, on
-          legitimate interests for security and for improving the service, and on the steps
-          necessary to respond to your request where you have contacted us.
+          Where a legal basis is required, we rely on your consent for optional features such as an
+          account, on legitimate interests for security and for improving the service, and on the
+          steps necessary to respond to a request you have made.
         </p>
       </>
     ),
@@ -140,11 +171,17 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          The AI concierge drafts itineraries from the prompt you give it together with our own
-          catalogue of places, stays and experiences. Your prompt is sent to a third-party model
-          provider to generate the response.
+          The site includes an AI concierge that drafts itineraries from the prompt you give it
+          together with our own catalogue of places, stays and experiences. It is switched off on
+          the live site at the moment: the planner page shows a sample conversation instead, and
+          nothing you type is sent to an AI provider.
         </p>
+        <p>If the concierge is switched on in future:</p>
         <ul>
+          <li>
+            Your messages will be sent to a third-party model provider (Google Gemini, or Anthropic
+            as a fallback) to generate the response.
+          </li>
           <li>Do not put anything sensitive into the planner — treat it as a public message.</li>
           <li>
             Generated itineraries are suggestions. They can be wrong about timings, prices, opening
@@ -164,14 +201,19 @@ const sections: LegalSection[] = [
     title: "Cookies and local storage",
     body: (
       <>
+        <p>We use the smallest set of cookies and browser storage that makes the site work:</p>
+        <ul>
+          <li>a session cookie that keeps you signed in, if you have an account;</li>
+          <li>your light or dark theme preference;</li>
+          <li>
+            your bookings, saved itineraries, saved places and any host application draft, kept in
+            your browser&apos;s local storage.
+          </li>
+        </ul>
         <p>
-          We use the smallest set of cookies and browser storage that makes the site work: a
-          preference for light or dark theme, and — where account features are enabled — a session
-          cookie that keeps you signed in.
-        </p>
-        <p>
-          We do not run advertising or cross-site tracking cookies. You can clear this storage in
-          your browser settings at any time; the only consequence is that preferences reset and you
+          We do not run advertising or cross-site tracking cookies, and our analytics are
+          cookieless. You can clear this storage in your browser settings at any time; the
+          consequence is that preferences reset, anything saved on the device is lost, and you
           will be signed out.
         </p>
       </>
@@ -184,15 +226,25 @@ const sections: LegalSection[] = [
       <>
         <p>We share personal data only with the service providers that make the site run:</p>
         <ul>
-          <li>our hosting and content-delivery provider, which serves the pages and keeps logs;</li>
-          <li>our database provider, where prototype records are stored;</li>
-          <li>the AI model provider, for prompts you submit to the planner;</li>
-          <li>an email provider, if and when one is connected to the contact form.</li>
+          <li>
+            <strong>Vercel</strong>, which hosts the site, keeps server logs and provides the
+            analytics described above;
+          </li>
+          <li>
+            <strong>Neon</strong>, which hosts our database and our sign-in service, where account
+            and profile records are stored;
+          </li>
+          <li>
+            <strong>Brevo</strong>, which sends account verification emails;
+          </li>
+          <li>
+            <strong>Google</strong>, which serves some photographs and the Kangla 3D map and, only
+            if the AI concierge is switched on, processes the prompts you send it.
+          </li>
         </ul>
         <p>
           We do not sell personal data, we do not trade it, and we do not pass it to homestays,
-          guides or tour operators unless you have explicitly asked us to make an introduction. We
-          may disclose information where we are legally required to.
+          guides or tour operators. We may disclose information where we are legally required to.
         </p>
         <p>
           Some of these providers operate outside India. Where data is transferred internationally,
@@ -208,22 +260,21 @@ const sections: LegalSection[] = [
       <>
         <ul>
           <li>
-            <strong>Contact messages:</strong> for as long as it takes to resolve the conversation,
-            and up to twelve months afterwards.
+            <strong>Accounts and profiles:</strong> until you ask us to delete them, or until we
+            remove an account that breaks the <Link href="/terms">terms of use</Link>.
           </li>
           <li>
-            <strong>Prototype accounts, itineraries and demo bookings:</strong> until you ask us to
-            delete them, or until the demonstration deployment is taken down — whichever comes first.
+            <strong>Bookings, itineraries and saved places:</strong> on your device, until you
+            remove them or clear your browser storage. We never hold a copy.
           </li>
           <li>
-            <strong>Server logs:</strong> for the short retention period set by our hosting
-            provider, typically a matter of weeks.
+            <strong>Contact messages:</strong> not kept at all while the form has no mail provider.
+          </li>
+          <li>
+            <strong>Server logs and analytics:</strong> for the retention period set by our hosting
+            provider.
           </li>
         </ul>
-        <p>
-          When the project&apos;s demo deployment ends, the associated database is intended to be
-          deleted rather than archived.
-        </p>
       </>
     ),
   },
@@ -239,10 +290,20 @@ const sections: LegalSection[] = [
           rights under the Digital Personal Data Protection framework.
         </p>
         <p>
-          To exercise any of them, email <strong>privacy@example.com</strong> or use the{" "}
-          <Link href="/contact">contact form</Link> and choose &ldquo;Something else&rdquo;. We aim
-          to respond within 30 days. We will ask you to confirm your identity before acting on a
-          request, so that nobody can use this route to access someone else&apos;s data.
+          You can correct your name, phone number and profile photo yourself on your account&apos;s
+          profile page. For anything else — a copy of your data, or deleting your account — ask the
+          maintainers on{" "}
+          <a href={DISCORD_URL} rel="noreferrer noopener" target="_blank">
+            Discord
+          </a>{" "}
+          or through a{" "}
+          <a href={`${GITHUB_URL}/issues`} rel="noreferrer noopener" target="_blank">
+            GitHub issue
+          </a>
+          , without posting personal details publicly. The maintainers are volunteers; we aim to
+          respond within 30 days. We will ask you to confirm your identity — usually by writing from
+          the email address on the account — before acting on a request, so that nobody can use
+          this route to access someone else&apos;s data.
         </p>
       </>
     ),
@@ -254,13 +315,15 @@ const sections: LegalSection[] = [
       <>
         <p>
           The site is served over HTTPS, secrets are held in environment variables rather than in the
-          codebase, and access to the database is restricted to the team. Passwords, where accounts
-          exist, are handled by our authentication provider and are never stored by us in readable
-          form.
+          codebase, access to the database is restricted to the maintainers, and pages for hosts and
+          admins check your role on the server. Passwords are handled by our authentication provider
+          and are never stored by us in readable form.
         </p>
         <p>
-          That said: this is a prototype built as a demonstration, not a hardened production
-          system. Please do not enter anything into it that you would be unhappy to see disclosed.
+          That said: this is a community-run project that has not had an independent security
+          audit. Please do not enter anything into it that you would be unhappy to see disclosed. If
+          you find a security problem, report it privately to a maintainer rather than in a public
+          issue.
         </p>
       </>
     ),
@@ -271,7 +334,7 @@ const sections: LegalSection[] = [
     body: (
       <p>
         The site is not directed at children under 13 and we do not knowingly collect their personal
-        data. If you believe a child has sent us information, contact us and we will delete it.
+        data. If you believe a child has created an account, contact us and we will delete it.
       </p>
     ),
   },
@@ -281,8 +344,9 @@ const sections: LegalSection[] = [
     body: (
       <p>
         If this notice changes materially, we will update the date at the top of the page and, where
-        the change is significant, note it on the site. Continuing to use Manipur Tourism after a change
-        means you accept the updated notice.
+        the change is significant, note it on the site. Because the site is open source, every change
+        to this page is also visible in the repository&apos;s history. Continuing to use Discover
+        Manipur after a change means you accept the updated notice.
       </p>
     ),
   },
@@ -294,12 +358,12 @@ export default function PrivacyPage() {
       <PageHero
         eyebrow={`Privacy · Last updated ${LAST_UPDATED}`}
         title="What we collect, and — mostly — what we don't."
-        lede="A short notice for a small project. We would rather describe exactly what a demonstration site does than borrow a policy written for a company we are not."
+        lede="A short notice for a community project. We would rather describe exactly what this site does than borrow a policy written for a company we are not."
       >
         <NoteBox title="Plain summary" className="my-0 max-w-[60ch]">
           <p>
-            Contact details only if you send us something. No advertising trackers. No sale of data.
-            Ask us and we will delete what we hold.
+            An account only if you want one. Bookings stay in your browser. No advertising trackers.
+            No sale of data. Ask us and we will delete what we hold.
           </p>
         </NoteBox>
       </PageHero>

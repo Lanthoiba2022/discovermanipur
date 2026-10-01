@@ -4,9 +4,8 @@ import { cn } from "@/lib/utils";
 /**
  * Marquee motion policy.
  *
- * Infinite decorative motion has three obligations, and the plain
- * `animation: drift 40s linear infinite` this band used to run met one of
- * them. All three are settled here, in CSS, with no client component:
+ * Infinite decorative motion has three obligations. All three are settled
+ * here, in CSS, with no client component:
  *
  *  1. PAUSE ON HOVER / FOCUS — `animation-play-state`, driven off the strip so
  *     a pointer anywhere on the band and a tab stop inside it both stop it.

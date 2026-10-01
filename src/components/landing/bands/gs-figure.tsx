@@ -9,8 +9,7 @@ const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffec
 /**
  * One counting figure in the closing band's index.
  *
- * The contract, lifted wholesale from `home/statement.tsx` because it is the
- * one that is already right:
+ * The same contract as `home/statement.tsx`:
  *
  *  - The SERVER renders the TRUE number. A reader with no JavaScript, a reader
  *    on reduced motion, and a reader whose observer never fires because the

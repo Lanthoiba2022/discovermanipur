@@ -2,14 +2,14 @@
 
 /* Bind Tailwind's `dark:` variant to the CLASS next-themes sets, not to the
    OS preference. The provider runs `attribute="class"` with `enableSystem`
-   off, but Tailwind v4 defaults `dark:` to `prefers-color-scheme` — so before
-   this line every `dark:*` utility in the app fired on the wrong signal:
-   the tokens below flipped on toggle while the utilities did not, leaving
-   e.g. long-form prose dark-on-dark for anyone whose OS was set to light. */
+   off, but Tailwind v4 defaults `dark:` to `prefers-color-scheme` — without
+   this line the tokens below flip on toggle while the `dark:*` utilities do
+   not, leaving e.g. long-form prose dark-on-dark for anyone whose OS is set
+   to light. */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================================
-   MANIPUR TOURISM — Design Tokens
+   DISCOVER MANIPUR — Design Tokens
    "Woven, not painted."
 
    The palette is taken from the Manipuri handloom rather than
@@ -356,7 +356,7 @@
     background: var(--background);
     color: var(--foreground);
     font-family: var(--font-figtree), system-ui, sans-serif;
-    /* Reading comfort is the whole point of the new pairing: a 1.65 default
+    /* Reading comfort is the point of this pairing: a 1.65 default
        leading and a hair of positive tracking at text sizes. */
     font-size: clamp(1rem, 0.965rem + 0.18vw, 1.125rem);
     line-height: 1.65;
@@ -393,8 +393,8 @@
      Newsreader is a low-contrast oldstyle with an `opsz` axis, which is
      what the scale is built around: each step asks for the optical size
      it is actually rendered at, so the hero opens up and the small sizes
-     stay sturdy. Unlike the didone it replaces, it is legible all the way
-     down — but the display faces still earn their keep by staying large. */
+     stay sturdy. It is legible all the way down, but the display faces
+     still earn their keep by staying large. */
   .text-display {
     font-family: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
     font-size: clamp(3.25rem, 1.55rem + 7.1vw, 8.5rem);
@@ -427,10 +427,9 @@
   }
 
   /* Uppercase micro-label. The workhorse of the editorial register:
-     section tags, indices, dates, stats. This used to be set in the code
-     face, which read "terminal" everywhere it was used as decoration —
-     it is the body sans now, and `--font-mono` is kept for text that is
-     genuinely machine-issued (booking references, coordinates, ids). */
+     section tags, indices, dates, stats. Set in the body sans; `--font-mono`
+     is kept for text that is genuinely machine-issued (booking references,
+     coordinates, ids). */
   .eyebrow {
     font-family: var(--font-figtree), system-ui, sans-serif;
     font-size: clamp(0.6875rem, 0.655rem + 0.14vw, 0.8125rem);
@@ -458,7 +457,7 @@
 
   /* Editorial aside — Newsreader italic at reading size. The one place the
      display face is allowed below `.text-title`, because an oldstyle italic
-     is a caption voice in a way a didone italic never was. */
+     reads naturally as a caption voice. */
   .text-aside {
     font-family: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
     font-style: italic;
@@ -636,8 +635,7 @@
   /* ---------- Section opener ----------
      A two-part heading: a large calm display line, then a completion line
      that finishes the sentence in the accent. The scale jump does the work
-     that a 900-weight uppercase word does elsewhere — without the shouting,
-     which is the whole point of this typeface change. */
+     that a 900-weight uppercase word does elsewhere, without the shouting. */
   .section-word {
     font-family: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
     font-size: clamp(2.5rem, 1.6rem + 4vw, 5rem);
@@ -679,12 +677,8 @@
 
   /* ---------- Showcase register ----------
      The landing page runs a louder rhythm than the rest of the site: each
-     band opens with one enormous uppercase word, then a line that finishes
-     the thought. That structure is borrowed from the national tourism board's
-     page; the VOICE is not. They set the word in a geometric sans at 900 and
-     the subtitle in the same family — here the word is our humanist sans and
-     the subtitle is the oldstyle italic, which inverts the pairing and keeps
-     the band unmistakably ours rather than a reskin. */
+     band opens with one enormous uppercase word in the humanist sans, then a
+     line in the oldstyle italic that finishes the thought. */
   .display-word {
     font-family: var(--font-figtree), system-ui, sans-serif;
     font-size: clamp(2.25rem, 1.1rem + 5.4vw, 5.5rem);
@@ -750,11 +744,8 @@
      Background media is pushed back with saturation and brightness, then
      comes forward on reveal. Gives a payoff moment for no JS at all. */
   .media-recede {
-    /* The resting state was saturate(.32)/brightness(.62), which read as a
-       payoff on a single feature panel but turned a GRID of photographs grey
-       and lifeless — and vivid photography is most of what makes this kind of
-       site feel premium. Pulled back to a hint of depth that still resolves
-       on hover. Keyboard focus gets the same payoff as the pointer. */
+    /* Only a hint of depth: anything stronger turns a GRID of photographs
+       grey and lifeless. Keyboard focus gets the same payoff as the pointer. */
     filter: saturate(0.78) brightness(0.9);
     transition: filter 450ms ease;
   }

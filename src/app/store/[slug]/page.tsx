@@ -38,7 +38,7 @@ export async function generateMetadata({
   const craft = await getCraftBySlug(slug);
   if (!craft) return { title: "Craft not found" };
 
-  const description = `${craft.description.slice(0, 140)} Made by ${craft.maker} in ${craft.location}. Enquire with the maker directly — Manipur Tourism takes no commission.`;
+  const description = `${craft.description.slice(0, 140)} Made by ${craft.maker} in ${craft.location}. Enquire with the maker directly — Discover Manipur takes no commission.`;
 
   return {
     title: `${craft.name} by ${craft.maker}`,
@@ -162,7 +162,7 @@ export default async function CraftDetailPage({ params }: { params: Promise<Para
 
             <p className="flex items-start gap-2 rounded-[var(--radius)] border border-dashed border-border-strong p-4 text-sm leading-relaxed text-muted-foreground">
               <Info className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-              Contact details in this prototype are placeholders, not verified numbers. Manipur Tourism never
+              Maker phone numbers and websites are placeholders until each maker&apos;s real details are verified. Discover Manipur never
               holds your money: you agree the price and the delivery with the maker yourself.
             </p>
           </div>

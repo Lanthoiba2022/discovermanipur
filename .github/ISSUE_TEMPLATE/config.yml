@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a question or discuss an idea
+    url: https://discord.gg/hgGfm6UpU
+    about: Questions, ideas and help getting started are best on our Discord.
+  - name: Report a security vulnerability
+    url: https://github.com/Lanthoiba2022/Manipur-Tourism-2026/security/advisories/new
+    about: Please report security problems privately, never in a public issue. See SECURITY.md.

@@ -33,7 +33,7 @@ export interface SearchInputProps {
 export function SearchInput({
   defaultValue = "",
   placeholder = "Search places, stays, food, experiences…",
-  label = "Search Manipur Tourism",
+  label = "Search Discover Manipur",
   autoFocus = false,
   onNavigate,
   className,

@@ -3,7 +3,7 @@ import type { Craft } from "@/types";
 /**
  * Crafts listed by Manipuri makers.
  *
- * Manipur Tourism takes no payment and no commission — each listing carries the maker's
+ * Discover Manipur takes no payment and no commission — each listing carries the maker's
  * own contact details. Phone numbers and websites are deliberately placeholder
  * values until real artisans opt in; the shape is real so that swapping in a
  * verified maker is a data change, not a code change.

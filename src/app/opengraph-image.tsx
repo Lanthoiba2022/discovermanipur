@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
 export const alt =
-  "Manipur Tourism — discover Manipur: floating islands, cloud-caught hills and a thousand-year weave";
+  "Discover Manipur — floating islands, cloud-caught hills and a thousand-year weave";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -76,7 +76,7 @@ export default async function OpengraphImage() {
                 color: CREAM_200,
               }}
             >
-              Manipur Tourism · Manipur
+              Discover Manipur
             </div>
           </div>
 
@@ -130,7 +130,7 @@ export default async function OpengraphImage() {
                 fontSize: 22,
               }}
             >
-              manipurtourism.example
+              discovermanipur.example
             </div>
             <div style={{ display: "flex", fontSize: 22, color: CREAM_200 }}>
               The Land of Jewels

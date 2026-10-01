@@ -1,10 +1,9 @@
 /**
- * Yening — editorial page content.
+ * Editorial page content.
  *
- * Single source of truth for the copy that used to sit inline in page and
- * component files. `npm run db:seed` pushes all of it into `site_sections`,
- * and the data layer reads it back, so a wording fix is a content change
- * rather than a deploy.
+ * Seed copy for the page blocks. `npm run db:seed` pushes all of it into
+ * `site_sections`, and the data layer reads it back, so a wording fix is a
+ * content change rather than a deploy.
  *
  * Icons are lucide-react *names*, not component references: a component
  * cannot survive a round trip through jsonb. `@/lib/icons` maps them back.
@@ -112,21 +111,21 @@ export const aboutPrinciples: Principle[] = [
   },
   {
     title: "Built to be handed over",
-    body: "A demonstration site is only useful if someone can keep running it. The data layer, the content and the design tokens are separated so they can be.",
+    body: "An open-source platform is only useful if other people can keep running it. The data layer, the content and the design tokens are separated so they can.",
   },
 ];
 
-/** Host landing — why list with Yening. */
+/** Host landing — why list here. */
 export const hostWhy: IconCard[] = [
   {
     icon: "BadgeCheck",
-    title: "Income that stays in the leikai",
-    body: "Ninety per cent of what a guest pays reaches you. No agent between your gate and the traveller, and no commission stacked on commission.",
+    title: "Free, with no commission",
+    body: "Discover Manipur charges hosts nothing and takes no cut. No money passes through the platform: what a guest pays is between you and the guest.",
   },
   {
     icon: "CalendarRange",
     title: "You keep control",
-    body: "Your rate, your calendar, your house rules, your guests. Block a festival week or a family function and nothing can be booked on it.",
+    body: "Your rate, your house rules, your guests. The listing carries your family's name and story, not a brand laid over it.",
   },
   {
     icon: "Megaphone",
@@ -135,27 +134,27 @@ export const hostWhy: IconCard[] = [
   },
 ];
 
-/** Host landing — what Yening takes care of. */
+/** Host landing — what the platform does, and what is still planned. */
 export const hostWeHandle: IconCard[] = [
   {
     icon: "Camera",
-    title: "Photography and your listing page",
-    body: "A Manipur Tourism photographer visits once, free, and we write your listing with you — in Meiteilon, Hindi or English.",
+    title: "A listing page that explains the place",
+    body: "When hosting opens, your story and your own photographs get a page written with the same care as the rest of the site, in Meiteilon, Hindi or English. There is no photographer visit.",
   },
   {
     icon: "ShieldCheck",
-    title: "Verified guests and a safety line",
-    body: "Every traveller is ID-verified before booking. A district coordinator is reachable by phone for the whole stay.",
+    title: "Honest verification labels",
+    body: "Every listing shows how well it has been checked, from official records to a single source, so guests know what is confirmed. Guest ID checks are not in place.",
   },
   {
     icon: "Languages",
-    title: "Translation, both ways",
-    body: "Guest messages arrive in your language and your replies reach them in theirs. You never have to write in English.",
+    title: "Translation, planned",
+    body: "Translating listings and guest messages into your language is on the roadmap but not built yet. Ask on the community Discord if you want help with wording.",
   },
   {
     icon: "LifeBuoy",
-    title: "Payments, cancellations and disputes",
-    body: "We collect the money, release your payout within five working days, and mediate if something goes wrong.",
+    title: "No payments to chase",
+    body: "We take no payment and hold no money, so there is no payout to wait for. Questions and problems go to the community Discord.",
   },
 ];
 
@@ -177,22 +176,22 @@ export const hostSteps: IconCard[] = [
   {
     icon: "ClipboardList",
     title: "Tell us what you have",
-    body: "Fifteen minutes, four short steps. A room, a kitchen table, a loom, a route you have walked since childhood — that is enough to start.",
+    body: "Fifteen minutes, four short steps. A room, a kitchen table, a loom, a route you have walked since childhood — that is enough to start. For now the form is saved in this browser: applications are not sent or reviewed yet.",
   },
   {
     icon: "Handshake",
-    title: "We visit and verify",
-    body: "Someone from the Manipur Tourism district team calls within three working days and visits within two weeks. We check safety and water, and help you photograph the place properly.",
+    title: "Join the community",
+    body: "Hosting is being planned in the open on the community Discord (https://discord.gg/hgGfm6UpU). That is where you will hear first when applications start being reviewed, and how.",
   },
   {
     icon: "CalendarCheck",
-    title: "You go live and set the rules",
-    body: "Your price, your calendar, your house rules. Block the days of a family shraddha or Yaoshang and nobody can book them.",
+    title: "You set the rules",
+    body: "Your price, your dates, your house rules. Block the days of a family shraddha or Yaoshang whenever you need to.",
   },
   {
     icon: "Wallet",
-    title: "Guests arrive, you get paid",
-    body: "Payouts reach your bank account within five working days of checkout. Manipur Tourism keeps 10%, stated up front, and nothing else.",
+    title: "Free, and it stays between you and the guest",
+    body: "Discover Manipur charges no fee and keeps no commission. Any payment is agreed between you and your guest directly.",
   },
 ];
 
@@ -200,27 +199,27 @@ export const hostSteps: IconCard[] = [
 export const hostFaqs: QaItem[] = [
   {
     q: "Do I need a registered guest house or a licence?",
-    a: "Not to apply. A homestay with up to six rooms is treated as a home enterprise in Manipur, and our district team will tell you exactly which municipal or village-council paper you need before you go live — and help you get it.",
+    a: "Not to apply. What you need before taking paying guests depends on your municipality or village council, and the state's Directorate of Tourism registers homestays. Check with them directly: Discover Manipur does not issue or check licences.",
   },
   {
-    q: "What does Manipur Tourism actually take?",
-    a: "Ten per cent of what a guest pays, deducted at payout. There is no listing fee, no photography fee and no charge for the district visit. If we ever add a charge, we will tell you before it applies to a booking you have taken.",
+    q: "What does Discover Manipur actually take?",
+    a: "Nothing. There is no commission, no listing fee and no photography fee, and no money passes through the platform. If that ever changes, it will be announced publicly well before it applies to anyone.",
   },
   {
     q: "I do not speak much English. Can I still host?",
-    a: "Yes. Your listing can be written in Meiteilon or Hindi and we translate it. Guest messages are translated both ways, and the district team can join a call if a guest needs something explained.",
+    a: "Yes. Your listing can be written in Meiteilon or Hindi. Translating listings and guest messages is planned but not built yet; until then, ask on the community Discord if you want help with wording.",
   },
   {
     q: "What if a guest damages something?",
-    a: "Report it within 48 hours of checkout with photos. Manipur Tourism mediates, holds the guest liable for repair or replacement, and can bar a guest from the platform. We do not take a host's side or a guest's side before both have been heard.",
+    a: "Discover Manipur does not take bookings or payments, so it cannot hold a deposit or make a guest pay for repairs. Agree a deposit and house rules with your guest directly. If a guest behaves badly, report it on the community Discord.",
   },
   {
     q: "Can I block dates for family or festival days?",
-    a: "Always. Your calendar is yours. Block Yaoshang, Ningol Chakouba, a shraddha or a wedding and nobody can book those nights. Blocking dates never affects your ranking.",
+    a: "Always. Your calendar is yours. Block Yaoshang, Ningol Chakouba, a shraddha or a wedding whenever you need to.",
   },
   {
     q: "How long does approval take?",
-    a: "A call within three working days and a district visit within two weeks. Most applications are decided within twenty days. If we say no, you get a written reason and can reapply once it is fixed.",
+    a: "Applications are not being reviewed yet. The form saves your details in this browser so you are ready; join the community Discord to hear when reviews begin and how they will work.",
   },
   {
     q: "Do I have to serve food?",
@@ -228,35 +227,35 @@ export const hostFaqs: QaItem[] = [
   },
   {
     q: "When do I get paid?",
-    a: "Within five working days of the guest checking out, straight to your bank account by NEFT. You can see every upcoming payout in your host dashboard.",
+    a: "Directly by your guest, on terms you agree together. Discover Manipur takes no payment and keeps nothing, so there is no payout schedule.",
   },
 ];
 
 /** Contact — where each kind of message goes. */
 export const contactChannels: Channel[] = [
   {
-    icon: "Mail",
-    label: "General enquiries",
-    value: "hello@example.com",
-    detail: "Placeholder address for the prototype — use the form and it reaches the same place.",
+    icon: "Megaphone",
+    label: "Community Discord",
+    value: "https://discord.gg/hgGfm6UpU",
+    detail: "Trip questions, hosting, contributing, or just saying hello. The quickest way to reach the volunteers who run the site.",
   },
   {
-    icon: "Home",
-    label: "Hosting",
-    value: "hosts@example.com",
-    detail: "Homestays, experiences, guiding and transport. Nothing is being onboarded yet.",
+    icon: "ClipboardList",
+    label: "Corrections and bugs",
+    value: "https://github.com/Lanthoiba2022/Manipur-Tourism-2026/issues",
+    detail: "A wrong fact, a broken page or an idea. Issues are public, so leave out phone numbers and other personal details.",
   },
   {
     icon: "ShieldAlert",
     label: "Accessibility",
-    value: "access@example.com",
-    detail: "Something on the site you cannot use? This goes to the top of the pile.",
+    value: "Discord or a GitHub issue",
+    detail: "Something on the site you cannot use? Say it is about accessibility so it is looked at first.",
   },
   {
     icon: "MapPin",
     label: "Where we are",
-    value: "Imphal, Manipur (remote team)",
-    detail: "No public office. We have not invented a street address for a demonstration project.",
+    value: "Imphal, Manipur (volunteers, working remotely)",
+    detail: "No public office, so we have not invented a street address.",
   },
 ];
 

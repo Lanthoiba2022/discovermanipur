@@ -1,5 +1,5 @@
 /**
- * Public surface of the Manipur Tourism AI slice.
+ * Public surface of the Discover Manipur AI slice.
  *
  * Server code imports from here. Client components should import types (and
  * only types) from `@/lib/ai/schema`, which pulls in no catalogue data.

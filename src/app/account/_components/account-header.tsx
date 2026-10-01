@@ -14,7 +14,7 @@ export function AccountHeader() {
     <div className="flex flex-wrap items-center justify-between gap-5">
       <div className="flex min-w-0 items-center gap-4">
         <Avatar className="size-14">
-          {user?.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
+          {user?.avatarUrl?.startsWith("https://") && <AvatarImage src={user.avatarUrl} alt="" />}
           <AvatarFallback className="bg-primary/12 text-primary">{initials}</AvatarFallback>
         </Avatar>
         <div className="min-w-0">

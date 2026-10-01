@@ -2,21 +2,15 @@ import Image from "next/image";
 import type { Metadata } from "next";
 
 import { AuthForm } from "@/components/auth/auth-form";
+import { safeRedirectPath } from "@/lib/security/redirect";
 
 export const metadata: Metadata = {
   title: "Sign in",
   description:
-    "Sign in or create your Manipur Tourism account to book Manipuri homestays, save places and keep your itineraries.",
+    "Sign in or create your Discover Manipur account to book Manipuri homestays, save places and keep your itineraries.",
   alternates: { canonical: "/auth" },
   robots: { index: false, follow: true },
 };
-
-function safeNext(value: string | string[] | undefined) {
-  const raw = Array.isArray(value) ? value[0] : value;
-  // Only same-origin, absolute-path redirects — never an external URL.
-  if (raw && raw.startsWith("/") && !raw.startsWith("//")) return raw;
-  return "/account";
-}
 
 export default async function AuthPage({
   searchParams,
@@ -24,7 +18,7 @@ export default async function AuthPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-  const next = safeNext(params.next);
+  const next = safeRedirectPath(params.next);
 
   return (
     <div className="grid min-h-[100svh] lg:grid-cols-2">

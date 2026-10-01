@@ -13,13 +13,12 @@ import { ContactForm } from "./contact-form";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Questions about a trip, about hosting, about an accessibility problem or about a correction to the site — send them here and we will reply.",
+    "Questions about a trip, about hosting, about an accessibility problem or about a correction to the site — the quickest way to reach the volunteers who run Discover Manipur.",
   openGraph: {
-    title: "Contact Manipur Tourism",
+    title: "Contact Discover Manipur",
     description: "Ask about a trip, about hosting, or tell us what we got wrong.",
   },
 };
-
 
 export default async function ContactPage() {
   const channels = await getContactChannels();
@@ -29,11 +28,11 @@ export default async function ContactPage() {
       <PageHero
         eyebrow="Contact"
         title="Tell us what you are trying to do."
-        lede="Trip planning, hosting, a correction, an accessibility problem or a question the FAQ did not answer — all of it lands in the same inbox and gets read."
+        lede="Trip planning, hosting, a correction, an accessibility problem or a question the FAQ did not answer. Discover Manipur is run by volunteers, and the quickest way to reach them is the community Discord or a GitHub issue."
       >
         <div className="flex flex-wrap gap-3">
-          <Badge variant="outline">Replies in ~2 working days</Badge>
-          <Badge variant="accent">Demonstration site</Badge>
+          <Badge variant="outline">Volunteer-run</Badge>
+          <Badge variant="accent">Open source</Badge>
         </div>
       </PageHero>
 
@@ -54,12 +53,22 @@ export default async function ContactPage() {
 
             <NoteBox title="What happens to your message">
               <p>
-                Manipur Tourism is a demonstration project and has no mail provider connected yet. The form
-                validates your details and calls a real server action, but nothing is dispatched to
-                an inbox and nothing is stored — we would rather tell you that than show a
-                confirmation that is not true. See our{" "}
-                <Link href="/privacy">privacy notice</Link> for what the prototype does and does not
-                collect.
+                The contact form has no mail provider connected yet. It checks your details on the
+                server, but nothing is sent to an inbox and nothing is stored — we would rather tell
+                you that than show a confirmation that is not true. Until it is connected, ask on the{" "}
+                <a href="https://discord.gg/hgGfm6UpU" rel="noreferrer noopener" target="_blank">
+                  community Discord
+                </a>{" "}
+                or open an issue on{" "}
+                <a
+                  href="https://github.com/Lanthoiba2022/Manipur-Tourism-2026/issues"
+                  rel="noreferrer noopener"
+                  target="_blank"
+                >
+                  GitHub
+                </a>
+                . See our <Link href="/privacy">privacy notice</Link> for what the site does and does
+                not collect.
               </p>
             </NoteBox>
           </Reveal>
@@ -97,25 +106,25 @@ export default async function ContactPage() {
               <div className="mt-8 rounded-[var(--radius-lg)] border border-border bg-surface-sunken p-6 md:p-7">
                 <div className="flex items-center gap-3">
                   <Clock className="size-5 text-primary" aria-hidden="true" />
-                  <h2 className="font-display text-xl">Office hours</h2>
+                  <h2 className="font-display text-xl">Where to find us</h2>
                 </div>
                 <dl className="mt-5 space-y-3 text-sm">
                   <div className="flex items-baseline justify-between gap-4 border-b border-border pb-3">
-                    <dt className="text-muted-foreground">Monday – Friday</dt>
-                    <dd className="font-medium">09:00 – 18:00 IST</dd>
+                    <dt className="text-muted-foreground">Discord</dt>
+                    <dd className="font-medium">Questions and help</dd>
                   </div>
                   <div className="flex items-baseline justify-between gap-4 border-b border-border pb-3">
-                    <dt className="text-muted-foreground">Saturday</dt>
-                    <dd className="font-medium">10:00 – 14:00 IST</dd>
+                    <dt className="text-muted-foreground">GitHub issues</dt>
+                    <dd className="font-medium">Bugs and corrections</dd>
                   </div>
                   <div className="flex items-baseline justify-between gap-4">
-                    <dt className="text-muted-foreground">Sunday & public holidays</dt>
-                    <dd className="font-medium">Closed</dd>
+                    <dt className="text-muted-foreground">Contact form</dt>
+                    <dd className="font-medium">Not delivered yet</dd>
                   </div>
                 </dl>
                 <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
-                  India Standard Time is UTC+5:30. Messages sent outside these hours are answered
-                  on the next working day. Local festival days — Yaoshang, Cheiraoba, Ningol
+                  There are no office hours: the people who run the site are volunteers, so replies
+                  come when someone is free. Local festival days — Yaoshang, Cheiraoba, Ningol
                   Chakkouba — usually mean a slower reply.
                 </p>
               </div>

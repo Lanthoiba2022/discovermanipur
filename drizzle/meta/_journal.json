@@ -8,6 +8,13 @@
       "when": 1790271814504,
       "tag": "0000_baseline",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790855768492,
+      "tag": "0001_rename_to_discover_manipur",
+      "breakpoints": true
     }
   ]
 }

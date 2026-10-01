@@ -1,0 +1,11 @@
+# Default owner for everything in the repository.
+# https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+* @Lanthoiba2022
+
+# Areas where a careful review matters most.
+/src/lib/auth/ @Lanthoiba2022
+/src/lib/db/ @Lanthoiba2022
+/src/proxy.ts @Lanthoiba2022
+/src/app/api/ @Lanthoiba2022
+/drizzle/ @Lanthoiba2022
+/.github/ @Lanthoiba2022

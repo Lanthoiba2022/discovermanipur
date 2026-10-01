@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * Saved list (wishlist). Persisted locally for now; the same async surface
- * will be backed by a `saved_items` table in Phase 7.
+ * Saved list (wishlist). Persisted in localStorage for now; the same surface
+ * is what a `saved_items` table would sit behind.
  */
 
 import { useCallback, useSyncExternalStore } from "react";

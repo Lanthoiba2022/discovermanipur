@@ -1,13 +1,11 @@
-// Regenerates the Kangla narration tracks with OpenAI TTS.
+// Regenerates the Kangla narration tracks with OpenAI TTS (paid; needs
+// OPENAI_API_KEY in .env.local or the shell).
 //
-// This is the preferred generator. The English and Hindi tracks originally
-// shipped from `generate-kangla-audio-indic-parler.py`, whose English read is
-// halting and flat — Indic Parler is tuned for Indic languages, and its English
-// inserted half-second pauses mid-phrase. Running THIS script re-records all
-// three languages with one engine, which also removes the voice mismatch
-// between languages.
+//   npm run audio:kangla:openai
 //
-//   OPENAI_API_KEY=sk-... npm run audio:kangla
+// Unlike the free Edge generator (`npm run audio:kangla`, English and Hindi
+// only), this re-records all three languages, Meiteilon included, with one
+// voice, so switching language does not switch speaker.
 //
 // Output lands directly in public/audio/kangla/<lang>/<stop>.mp3.
 

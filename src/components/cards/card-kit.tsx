@@ -147,10 +147,10 @@ export function CardMedia({
         /* Google Places photos resolve through `/api/place-photo`, which answers
            with a 307 to a short-lived signed Google URL rather than proxying the
            bytes — the Places terms allow caching the reference, not the image.
-           Next's optimizer will not follow that hop, so it returned 400 and the
-           card rendered an empty frame. Sending these straight to the browser
+           Next's optimizer will not follow that hop: it returns 400 and the
+           card renders an empty frame. Sending these straight to the browser
            lets it follow the redirect itself. Our own files still go through the
-           optimizer as before. */
+           optimizer. */
         unoptimized={(image?.src ?? "").startsWith("/api/place-photo")}
         preload={preload}
         sizes={sizes}

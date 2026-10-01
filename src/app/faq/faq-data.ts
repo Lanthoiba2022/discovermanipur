@@ -27,7 +27,7 @@ export const faqGroups: FaqGroup[] = [
       },
       {
         q: "Where should I verify all of this?",
-        a: "Use official sources: the Government of Manipur and Manipur Tourism for permits and local notifications, the Ministry of Home Affairs for Protected Area rules, and your own government's travel advisory for the security picture. Manipur Tourism is a demonstration project and does not have a live feed of any of these, so we point you at the source rather than printing a number that may be out of date.",
+        a: "Use official sources: the Government of Manipur and Manipur Tourism for permits and local notifications, the Ministry of Home Affairs for Protected Area rules, and your own government's travel advisory for the security picture. Discover Manipur is a volunteer-run community platform and does not have a live feed of any of these, so we point you at the source rather than printing a number that may be out of date.",
       },
       {
         q: "Is it safe to travel in Manipur right now?",
@@ -69,19 +69,19 @@ export const faqGroups: FaqGroup[] = [
   {
     id: "stays",
     label: "Stays & booking",
-    blurb: "How homestays work here, and what booking on Manipur Tourism means.",
+    blurb: "How homestays work here, and what booking on Discover Manipur means.",
     items: [
       {
         q: "What is a Manipuri homestay actually like?",
         a: "Usually a family home with one to three guest rooms, home-cooked meals eaten with the household, and hosts who will happily reorganise your itinerary over breakfast. Expect warmth and local knowledge rather than hotel service: hot water may be by bucket, the wifi may be slow, and the day tends to start early.",
       },
       {
-        q: "Can I book through Manipur Tourism?",
-        a: "Manipur Tourism is a demonstration site. You can browse listings, build an itinerary and go through the booking flow, but no payment is taken and no reservation is created with a real property. Nothing generated here is a contract. Treat it as planning, then contact a host directly to confirm.",
+        q: "Can I book through Discover Manipur?",
+        a: "Not yet. You can browse listings, build an itinerary and go through the booking flow, but a booking is saved only in your own browser as a request: no payment is taken, nothing is sent to the property and no reservation is created. Nothing generated here is a contract. Treat it as planning, then contact a host directly to confirm.",
       },
       {
         q: "Are listings verified?",
-        a: "No. The listings on this site are illustrative content assembled to demonstrate the platform. We do not inspect properties, hold commercial partnerships or take a commission, and we say so rather than implying a verification process we do not run.",
+        a: "No. Places are researched by volunteers from public sources, but some stay, food, experience and transport listings are still sample entries that show how the platform works and do not describe a real business. We do not inspect properties, hold commercial partnerships or take a commission, and we say so rather than implying a verification process we do not run.",
       },
       {
         q: "What house rules should I expect?",
@@ -149,7 +149,7 @@ export const faqGroups: FaqGroup[] = [
         a: "Honestly, mixed. Museums, memorials and some parks in Imphal are manageable; footpaths are uneven, kerb ramps are inconsistent, and most hill viewpoints, village homes and boat jetties are not step-free. Travelling with a companion and a hired vehicle makes a great deal more possible than public transport does.",
       },
       {
-        q: "Does Manipur Tourism tell me which places are accessible?",
+        q: "Does Discover Manipur tell me which places are accessible?",
         a: "Each place listing carries a wheelchair-accessible flag and a written note, because a yes or no on its own is misleading. The note is where we describe the gravel, the three steps at the entrance or the absence of an accessible toilet. Where we do not know, we say we do not know.",
       },
       {
@@ -169,7 +169,7 @@ export const faqGroups: FaqGroup[] = [
     items: [
       {
         q: "Can I list my homestay or experience?",
-        a: "The host application flow exists in the prototype and you are welcome to walk through it. Because Manipur Tourism is a demonstration project rather than an operating business, an application is not currently reviewed or onboarded — we are showing how it would work, not running it.",
+        a: "The host application form is live and you are welcome to fill it in, but applications are not sent to anyone or reviewed yet — the review process is still being built in the open. If you want to be listed, say hello on the community Discord in the meantime.",
       },
       {
         q: "What would you expect from a host?",
@@ -177,11 +177,11 @@ export const faqGroups: FaqGroup[] = [
       },
       {
         q: "Would you take a commission?",
-        a: "No commission is taken now, because no money moves. If the project were ever operated for real, the commercial terms would be published in full before anyone was asked to list.",
+        a: "No. No money moves through Discover Manipur, so there is nothing to take a commission on. If that ever changed, the terms would be published in full before anyone was asked to list.",
       },
       {
         q: "I run a guiding or transport business. Can I be listed?",
-        a: "Same answer: the data model supports guides, drivers and transport operators, and we would like to hear from you, but nothing is being onboarded commercially at this stage. Use the contact form and tell us what you do.",
+        a: "Same answer: the data model supports guides, drivers and transport operators, and we would like to hear from you, but nobody is being onboarded yet. Tell us what you do on the community Discord.",
       },
     ],
   },

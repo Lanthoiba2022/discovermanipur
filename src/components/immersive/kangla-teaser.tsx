@@ -64,7 +64,7 @@ export function KanglaTeaser({ compact = false }: { compact?: boolean }) {
               <ArrowUpRight aria-hidden className="size-4" />
             </span>
 
-            {/* Corrected: the explorer renders Google satellite imagery draped
+            {/* The explorer renders Google satellite imagery draped
                 on terrain. Imphal has no 3D building mesh, so promising
                 "3D buildings" would be a promise the map cannot keep. */}
             <p className="mt-4 text-xs text-ivory-50/55">

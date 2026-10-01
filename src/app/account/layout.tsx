@@ -7,7 +7,7 @@ import { AccountNav } from "./_components/account-nav";
 
 export const metadata: Metadata = {
   title: "Your account",
-  description: "Your Manipur Tourism profile, bookings and saved places.",
+  description: "Your Discover Manipur profile, bookings and saved places.",
   robots: { index: false, follow: false },
 };
 

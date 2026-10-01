@@ -92,7 +92,7 @@ export function ApplicationsTable({ initial }: { initial: HostApplicationRecord[
       });
       return;
     }
-    // Optimistic: flip local state immediately; the write lands in Phase 7.
+    // Local state only: decisions are not persisted anywhere yet.
     setRows((prev) =>
       prev.map((r) =>
         r.id === id ? { ...r, status: next, adminNotes: trimmed || undefined } : r,

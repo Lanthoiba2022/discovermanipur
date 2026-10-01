@@ -128,7 +128,7 @@ export function KanglaExperience({
         <div className={styles.workspace}>
           <div ref={frame} className={styles.viewer} aria-label="Kangla interactive viewer">
             {started && !error && <SceneBoundary key={retry} onError={onError}><Canvas onReady={onReady} onError={onError} onStatus={onStatus} onSession={onSession} onInteract={onInteract} onLoading={onLoading} /></SceneBoundary>}
-            {(!started || photo || error) && <div className={styles.photograph}><Image src={stop.image} alt={stop.alt} fill sizes="(min-width: 1024px) 72vw, 100vw" className="object-contain" priority />{started && <div className={styles.photoCredit}>Existing Manipur Tourism photo archive · {stop.shortName}</div>}</div>}
+            {(!started || photo || error) && <div className={styles.photograph}><Image src={stop.image} alt={stop.alt} fill sizes="(min-width: 1024px) 72vw, 100vw" className="object-contain" priority />{started && <div className={styles.photoCredit}>Existing Discover Manipur photo archive · {stop.shortName}</div>}</div>}
             {started && !error && assetProgress !== null && <div className={styles.assetLoading} role="status"><LoaderCircle className="animate-spin" size={22} aria-hidden /><strong>Loading the 3D scene</strong><span>{assetProgress < 90 ? `${assetProgress}% · Downloading detailed geometry & materials` : "Preparing materials and lighting…"}</span></div>}
             <div className={styles.viewerTop}>
               <span className={styles.liveBadge}><span />{photo || !started || error ? "Reference photograph" : "Interactive 3D"}</span>

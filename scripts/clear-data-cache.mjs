@@ -2,25 +2,20 @@
  * Drop Next's fetch cache before a build.
  *
  * Next caches fetch responses in `.next/cache/fetch-cache` and reuses them
- * across builds. When the catalogue was read through supabase-js, those reads
- * went through that same patched `fetch`, so a build could prerender pages
- * from catalogue rows captured by an EARLIER build. Catalogue reads now use
- * node-postgres (`src/lib/db`), which bypasses `fetch` and so this cache — but
- * any other `fetch` a page makes at build time is still cached, so the step
- * stays.
+ * across builds, so a build can prerender a page from data an EARLIER build
+ * fetched. The catalogue itself is read through node-postgres (`src/lib/db`),
+ * which bypasses `fetch` and this cache, but any `fetch` a page makes at build
+ * time is still cached.
  *
- * That is not theoretical. After seeding new hotspots, `generateStaticParams`
- * saw the fresh list while the page bodies were handed the stale one, and every
- * new slug prerendered as "Place not found". Later, updating a single row's
- * photo produced a page that still showed the old placeholder. Both looked like
- * application bugs and were not.
+ * The symptom is a page that disagrees with its own data: `generateStaticParams`
+ * sees fresh rows while the page body renders a stale response, so a new slug
+ * prerenders as "not found" or an updated photo never appears.
  *
- * Setting `cache: "no-store"` on the client is the obvious fix and the wrong
- * one: it opts every catalogue route out of static rendering, which is the
- * whole point of the catalogue reads being cookie-free.
+ * Setting `cache: "no-store"` instead would opt those routes out of static
+ * rendering. Clearing the cache before the build keeps static generation and
+ * costs one fresh round of requests per build.
  *
- * Clearing the cache before the build keeps static generation intact and costs
- * one extra round of queries per build — a handful of whole-table reads.
+ * Run from `prebuild`.
  */
 import { rm } from "node:fs/promises";
 import { join } from "node:path";

@@ -25,9 +25,9 @@ import { CraftShowcaseCard } from "./craft-card";
  * Left-aligned, because the band above is centred and a page of nine centred
  * mastheads is precisely the failure mode of the site being borrowed from.
  *
- * Rows arrive as a prop — `getCrafts({ featured: true, limit: 8 })` is the
- * lead's call in `page.tsx` — so the band is a pure server component with no
- * data dependency of its own, and it never assumes a row exists.
+ * Rows arrive as a prop — `page.tsx` calls `getCrafts({ featured: true,
+ * limit: 8 })` — so the band is a pure server component with no data
+ * dependency of its own, and it never assumes a row exists.
  */
 export function CraftsBand({ crafts }: { crafts: Craft[] }) {
   return (
@@ -82,7 +82,7 @@ export function CraftsBand({ crafts }: { crafts: Craft[] }) {
         <BandEmpty
           tone="dark"
           title="The maker directory is still being strung"
-          body="Weavers, potters and bamboo workers are listed one at a time, each with their own contact details. Manipur Tourism takes no commission on any of it — the money and the relationship stay with the artisan."
+          body="Weavers, potters and bamboo workers are listed one at a time, each with their own contact details. Discover Manipur takes no commission on any of it — the money and the relationship stay with the artisan."
           href="/store"
           cta="See what is listed so far"
         />

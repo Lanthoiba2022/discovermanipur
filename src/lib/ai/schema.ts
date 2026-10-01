@@ -1,5 +1,5 @@
 /**
- * Shared contracts for the Manipur Tourism AI concierge.
+ * Shared contracts for the Discover Manipur AI concierge.
  *
  * This module deliberately imports **nothing** from the data layer or from any
  * server-only package, so that client components can import its types (and the
@@ -53,7 +53,7 @@ export const itineraryStopSchema = z.object({
   slug: z
     .string()
     .optional()
-    .describe("Catalogue slug, only when this stop came from a Manipur Tourism listing."),
+    .describe("Catalogue slug, only when this stop came from a Discover Manipur listing."),
   href: z
     .string()
     .optional()
@@ -158,16 +158,27 @@ export type BudgetLevel = (typeof budgetLevels)[number];
 export type Pace = (typeof paces)[number];
 export type GroupType = (typeof groupTypes)[number];
 
-export const itineraryRequestSchema = z.object({
+/**
+ * The public `/api/itinerary` body. Every free-text field is capped because it
+ * is pasted into a paid model prompt: the caps bound the cost of one request
+ * and the room a caller has for prompt injection.
+ */
+export const itineraryRequestSchema = z.strictObject({
   days: z.number().int().min(1).max(21).default(4),
   budget: z.enum(budgetLevels).default("comfortable"),
-  interests: z.array(z.string()).default([]),
-  travelMonth: z.string().optional(),
+  interests: z.array(z.string().trim().max(40)).max(12).default([]),
+  travelMonth: z.string().trim().max(20).optional(),
   pace: z.enum(paces).default("balanced"),
   groupType: z.enum(groupTypes).default("couple"),
-  accessibilityNeeds: z.string().optional(),
-  totalBudgetInr: z.number().int().positive().optional().describe("Total per-person budget in rupees."),
-  notes: z.string().optional(),
+  accessibilityNeeds: z.string().trim().max(300).optional(),
+  totalBudgetInr: z
+    .number()
+    .int()
+    .positive()
+    .max(10_000_000)
+    .optional()
+    .describe("Total per-person budget in rupees."),
+  notes: z.string().trim().max(1000).optional(),
 });
 
 export type ItineraryRequest = z.infer<typeof itineraryRequestSchema>;

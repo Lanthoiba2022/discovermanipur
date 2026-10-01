@@ -11,8 +11,9 @@ import { useAuth } from "@/lib/auth";
 
 /**
  * Client-side route protection. The Neon Auth session cookie is refreshed (and
- * `/account` guarded server-side) in `src/proxy.ts`; this guard keeps unauthenticated visitors out of the
- * account shell and works identically on the local demo session.
+ * `/account` guarded server-side) in `src/proxy.ts`; this guard keeps signed-out
+ * visitors out of the account shell, and is the only guard on the
+ * local-development session, which the server cannot see.
  */
 export function AuthGuard({ children }: { children: ReactNode }) {
   const { isLoading, isAuthenticated } = useAuth();

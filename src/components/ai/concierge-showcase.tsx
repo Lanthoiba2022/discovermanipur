@@ -71,7 +71,7 @@ function Outputs({ outputs }: { outputs: ConciergeToolOutput[] }) {
  *
  * It is a *transcript builder*, not a video: the visitor picks the next
  * question from the chips and it plays out — tool chips, then the answer typing
- * in, then the real catalogue cards. That keeps the demo honest about what the
+ * in, then the real catalogue cards. That keeps the sample honest about what the
  * concierge does (it looks things up, then talks) while staying entirely
  * client-side, with no key and no request.
  *
@@ -188,7 +188,7 @@ export function ConciergeShowcase({
           Sample conversation
         </span>
         <p className="text-xs text-muted-foreground">
-          The live concierge is switched off for this demo — this is a recorded exchange, built from the real catalogue.
+          The live concierge is switched off for now — this is a recorded exchange, built from the real catalogue.
         </p>
       </div>
 
@@ -201,7 +201,7 @@ export function ConciergeShowcase({
         data-lenis-prevent
         role="log"
         aria-live="polite"
-        aria-label="Sample conversation with the Manipur Tourism concierge"
+        aria-label="Sample conversation with the Discover Manipur concierge"
         tabIndex={0}
         className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring md:p-5"
       >

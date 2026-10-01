@@ -9,16 +9,18 @@ import { StatusBars } from "@/components/admin/status-bars";
 import { Button } from "@/components/ui/button";
 import { getExperiences, getHomestays } from "@/lib/data";
 import { adminBookings, applicationsByMonth, bookingsByMonth, hostApplications } from "@/lib/host/mock-data";
+import { requireAdmin } from "@/lib/host/role";
 import { HOST_TYPE_LABEL } from "@/lib/host/types";
 import { formatINR } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Admin overview",
   description:
-    "Manipur Tourism operations overview: listings, pending host applications, bookings and travellers across Manipur.",
+    "Discover Manipur operations overview: listings, pending host applications, bookings and travellers across Manipur.",
 };
 
 export default async function AdminOverviewPage() {
+  await requireAdmin("/admin");
   const [homestays, experiences] = await Promise.all([getHomestays(), getExperiences()]);
 
   const listingCount = homestays.length + experiences.length;

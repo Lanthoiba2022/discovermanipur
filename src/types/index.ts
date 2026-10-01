@@ -1,9 +1,9 @@
 /**
- * Manipur Tourism domain types.
+ * Discover Manipur domain types.
  *
  * These are the contract between the data layer (src/lib/data/*) and every
- * feature route. Phase 0 backs the data layer with typed seed modules; Phase 7
- * swapped the function bodies to database queries without changing these shapes.
+ * feature route. The data layer reads them from the database, and falls back to
+ * the seed modules in src/lib/data/seed, which use the same shapes.
  */
 
 export type District =
@@ -117,7 +117,7 @@ export interface Hotspot {
   };
   tags: string[];
   featured: boolean;
-  /** Optional 360°/3D asset used by the Phase 8 AR/VR tour. */
+  /** Optional 360°/3D asset for an AR/VR view. Not rendered anywhere yet. */
   panoramaUrl?: string;
   /** Externally-hosted photos resolved at request time. See PhotoRef. */
   photoRefs?: PhotoRef[];
@@ -379,7 +379,7 @@ export type CraftCategory =
   | "instrument";
 
 /**
- * A craft listed by a Manipuri maker. Manipur Tourism does not process payments — a
+ * A craft listed by a Manipuri maker. Discover Manipur does not process payments — a
  * listing carries the artisan's own contact details and an enquiry goes
  * straight to them, so the money and the relationship stay local.
  */

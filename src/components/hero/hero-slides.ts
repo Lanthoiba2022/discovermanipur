@@ -14,10 +14,9 @@
  * card it already is) and `senapati-green-hills.webp` (a greyer duplicate of
  * the ridgeline below).
  *
- * `caption` carries only what is actually known about the frame. The previous
- * single-frame caption paired a place with coordinates; that is not repeated
- * here, because coordinates for the other four are not recorded anywhere in
- * this repo and inventing them would be worse than omitting them.
+ * `caption` carries only what is actually known about the frame. There are no
+ * coordinates, because they are not recorded for every frame in this repo and
+ * inventing them would be worse than omitting them.
  */
 export interface HeroSlide {
   src: string;
