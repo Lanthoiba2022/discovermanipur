@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Loader2 } from "lucide-react";
+import { useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import {
@@ -30,8 +31,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { HOST_TYPE_LABEL, type HostApplicationRecord } from "@/lib/host/types";
-import type { ApplicationStatus } from "@/types";
+import {
+  approveHostApplication,
+  rejectHostApplication,
+  type DecisionResult,
+} from "@/lib/host/application-actions";
+import { ADMIN_NOTE_MAX, REJECT_NOTE_MIN } from "@/lib/host/application-schema";
+import type { ApplicationQueueRow } from "@/lib/host/applications";
+import { HOST_TYPE_LABEL } from "@/lib/host/types";
 
 type SortKey = "applicantName" | "hostType" | "district" | "createdAt" | "status";
 
@@ -45,18 +52,28 @@ function formatDate(iso: string) {
   });
 }
 
-export function ApplicationsTable({ initial }: { initial: HostApplicationRecord[] }) {
-  const [rows, setRows] = useState(initial);
+const DECISION_FAILED: DecisionResult = {
+  ok: false,
+  message: "That decision could not be saved. Try again in a moment.",
+};
+
+/**
+ * The review queue. `rows` come from the server; a decision is saved by a
+ * Server Action that revalidates this page, so the table re-renders with the
+ * stored status rather than an optimistic copy.
+ */
+export function ApplicationsTable({ rows }: { rows: ApplicationQueueRow[] }) {
   const [status, setStatus] = useState<string>(ALL);
   const [hostType, setHostType] = useState<string>(ALL);
   const [district, setDistrict] = useState<string>(ALL);
   const [sort, setSort] = useState<SortState<SortKey>>({ key: "createdAt", direction: "desc" });
   const [openId, setOpenId] = useState<string | null>(null);
   const [notes, setNotes] = useState("");
+  const [deciding, startDeciding] = useTransition();
 
   const districts = useMemo(
-    () => [...new Set(initial.map((r) => r.district))].sort(),
-    [initial],
+    () => [...new Set(rows.map((r) => r.district))].sort(),
+    [rows],
   );
 
   const filtered = useMemo(() => {
@@ -84,27 +101,38 @@ export function ApplicationsTable({ initial }: { initial: HostApplicationRecord[
     setOpenId(id);
   }
 
-  function decide(id: string, next: ApplicationStatus) {
+  function decide(id: string, next: "approved" | "rejected") {
     const trimmed = notes.trim();
-    if (next === "rejected" && trimmed.length < 10) {
+    if (next === "rejected" && trimmed.length < REJECT_NOTE_MIN) {
       toast.error("Add a reason before rejecting", {
         description: "Applicants see this note, so it needs at least a line of explanation.",
       });
       return;
     }
-    // Local state only: decisions are not persisted anywhere yet.
-    setRows((prev) =>
-      prev.map((r) =>
-        r.id === id ? { ...r, status: next, adminNotes: trimmed || undefined } : r,
-      ),
-    );
-    setOpenId(null);
     const row = rows.find((r) => r.id === id);
-    toast.success(`${row?.propertyName ?? "Application"} ${next}`, {
-      description:
-        next === "approved"
-          ? "The host can now publish their listing."
-          : "The applicant has been sent your note.",
+    startDeciding(async () => {
+      let result: DecisionResult;
+      try {
+        result =
+          next === "approved"
+            ? await approveHostApplication({ id, note: trimmed || undefined })
+            : await rejectHostApplication({ id, note: trimmed });
+      } catch {
+        result = DECISION_FAILED;
+      }
+      if (!result.ok) {
+        toast.error(result.message);
+        return;
+      }
+      setOpenId(null);
+      toast.success(`${row?.propertyName ?? "Application"} ${next}`, {
+        description:
+          next === "rejected"
+            ? "The applicant sees your note on their application page."
+            : result.roleGranted
+              ? "Their account now has the host role."
+              : "Their account already had host access, so its role was not changed.",
+      });
     });
   }
 
@@ -271,7 +299,9 @@ export function ApplicationsTable({ initial }: { initial: HostApplicationRecord[
                     <a className="hover:underline" href={`mailto:${open.email}`}>
                       {open.email}
                     </a>
-                    <span className="block text-muted-foreground">{open.phone}</span>
+                    {open.phone && (
+                      <span className="block text-muted-foreground">{open.phone}</span>
+                    )}
                   </dd>
                 </div>
                 <div>
@@ -279,7 +309,7 @@ export function ApplicationsTable({ initial }: { initial: HostApplicationRecord[
                     Capacity · photos
                   </dt>
                   <dd className="mt-1 text-sm text-foreground">
-                    {open.capacity} guests · {open.photoCount} photos
+                    {open.capacity ? `${open.capacity} guests` : "Not given"} · photos not uploaded
                   </dd>
                 </div>
                 <div className="sm:col-span-2">
@@ -290,7 +320,7 @@ export function ApplicationsTable({ initial }: { initial: HostApplicationRecord[
                   <dt className="text-xs uppercase tracking-wider text-muted-foreground">
                     What they offer
                   </dt>
-                  <dd className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                  <dd className="mt-1 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
                     {open.description}
                   </dd>
                 </div>
@@ -304,25 +334,57 @@ export function ApplicationsTable({ initial }: { initial: HostApplicationRecord[
                 </div>
               </dl>
 
-              <div className="mt-5">
-                <Label htmlFor="admin-notes">Admin notes</Label>
-                <Textarea
-                  id="admin-notes"
-                  className="mt-1.5"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="What did you verify? A rejection needs a reason the applicant can act on."
-                />
-              </div>
+              {open.status === "pending" ? (
+                <div className="mt-5">
+                  <Label htmlFor="admin-notes">Admin notes</Label>
+                  <Textarea
+                    id="admin-notes"
+                    className="mt-1.5"
+                    value={notes}
+                    maxLength={ADMIN_NOTE_MAX}
+                    onChange={(e) => setNotes(e.target.value)}
+                    aria-describedby="admin-notes-help"
+                    placeholder="What did you verify? A rejection needs a reason the applicant can act on."
+                  />
+                  <p id="admin-notes-help" className="mt-1.5 text-xs text-muted-foreground">
+                    Optional on approval, where it stays internal. Required on rejection, and shown
+                    to the applicant.
+                  </p>
+                </div>
+              ) : (
+                <div className="mt-5">
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                    Admin notes
+                  </p>
+                  <p className="mt-1 whitespace-pre-line text-sm text-foreground">
+                    {open.adminNotes || "None"}
+                  </p>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Decided on {formatDate(open.updatedAt)}. A decided application cannot be
+                    changed here.
+                  </p>
+                </div>
+              )}
 
               <DialogFooter>
                 <Button variant="ghost" onClick={() => setOpenId(null)}>
                   Close
                 </Button>
-                <Button variant="destructive" onClick={() => decide(open.id, "rejected")}>
-                  Reject
-                </Button>
-                <Button onClick={() => decide(open.id, "approved")}>Approve</Button>
+                {open.status === "pending" && (
+                  <>
+                    <Button
+                      variant="destructive"
+                      disabled={deciding}
+                      onClick={() => decide(open.id, "rejected")}
+                    >
+                      Reject
+                    </Button>
+                    <Button disabled={deciding} onClick={() => decide(open.id, "approved")}>
+                      {deciding && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+                      Approve
+                    </Button>
+                  </>
+                )}
               </DialogFooter>
             </>
           )}

@@ -27,8 +27,12 @@ export const applicationSchema = z.object({
     .int("Use a whole number.")
     .min(1, "You need room for at least one guest.")
     .max(200, "For more than 200 guests, talk to us directly."),
-  applicantName: z.string().trim().min(2, "Please enter your full name."),
-  email: z.email("Enter an email address we can reach you on."),
+  applicantName: z
+    .string()
+    .trim()
+    .min(2, "Please enter your full name.")
+    .max(80, "Keep your name under 80 characters."),
+  email: z.email("Enter an email address we can reach you on.").max(254),
   phone: z
     .string()
     .trim()
@@ -70,7 +74,21 @@ export const emptyApplication: ApplicationValues = {
   agree: false,
 };
 
-/** A short, human-quotable reference the applicant can keep. */
+/** A rejection note is shown to the applicant, so it has to say something. */
+export const REJECT_NOTE_MIN = 10;
+export const ADMIN_NOTE_MAX = 1000;
+
+/**
+ * The reference for a stored application, derived from its id so it never
+ * needs a column of its own and the review queue shows the same string the
+ * applicant was given.
+ */
+export function referenceFor(id: string, createdAt: string) {
+  const year = new Date(createdAt).getFullYear();
+  return `YEN-HST-${Number.isFinite(year) ? year : "0000"}-${id.slice(0, 8).toUpperCase()}`;
+}
+
+/** A local-only reference, for a site with no database to keep the application. */
 export function makeReference(date = new Date()) {
   const serial = Math.floor(1000 + Math.random() * 9000);
   return `YEN-HST-${date.getFullYear()}-${serial}`;
