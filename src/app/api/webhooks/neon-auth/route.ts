@@ -81,6 +81,8 @@ const PURPOSE: Record<string, { subject: string; lead: string }> = {
   },
 };
 
+const DISCORD_URL = "https://discord.gg/hgGfm6UpU";
+
 function otpEmail(code: string, otpType: string, expiresAt?: string) {
   const { subject, lead } = Object.hasOwn(PURPOSE, otpType)
     ? PURPOSE[otpType]
@@ -90,15 +92,17 @@ function otpEmail(code: string, otpType: string, expiresAt?: string) {
     : null;
   const expiry = minutes ? `It expires in ${minutes} minute${minutes === 1 ? "" : "s"}.` : "";
   const ignore = "If you didn't ask for this, you can ignore this email.";
+  const automated = "Please don't reply — this email is sent automatically. For help, ask on our community Discord:";
   return {
     subject,
-    text: `${lead}\n\n${code}\n\n${expiry}\n${ignore}`.trim(),
+    text: `${lead}\n\n${code}\n\n${expiry}\n${ignore}\n\n${automated} ${DISCORD_URL}`.trim(),
     html: `<!doctype html><html><body style="margin:0;padding:24px;background:#f6f4ef;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1f1d1a">
   <div style="max-width:440px;margin:0 auto;background:#ffffff;border-radius:12px;padding:32px">
     <p style="margin:0 0 8px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#7a7369">Discover Manipur</p>
     <p style="margin:0 0 24px;font-size:16px;line-height:1.5">${lead}</p>
     <p style="margin:0 0 24px;font-size:34px;font-weight:700;letter-spacing:.3em;font-family:ui-monospace,SFMono-Regular,Menlo,monospace">${code}</p>
     <p style="margin:0;font-size:14px;line-height:1.5;color:#7a7369">${expiry} ${ignore}</p>
+    <p style="margin:24px 0 0;padding-top:16px;border-top:1px solid #ece8e1;font-size:12px;line-height:1.5;color:#7a7369">${automated} <a href="${DISCORD_URL}" style="color:#7a7369">${DISCORD_URL.replace("https://", "")}</a></p>
   </div>
 </body></html>`,
   };
