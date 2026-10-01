@@ -16,6 +16,16 @@ updates:
         update-types:
           - minor
           - patch
+    # Major versions of the toolchain are upgraded by hand: they change the
+    # compiler and lint rules for the whole codebase, and @types/node should
+    # follow the Node version CI and production run, not the newest release.
+    ignore:
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
+      - dependency-name: eslint
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /
