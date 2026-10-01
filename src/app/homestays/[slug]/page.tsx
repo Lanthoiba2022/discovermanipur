@@ -11,7 +11,7 @@ import { HostCard } from "@/components/homestays/host-card";
 import { RatingSummary } from "@/components/homestays/rating-summary";
 import { SaveButton } from "@/components/homestays/save-button";
 import { Separator } from "@/components/ui/separator";
-import { getHomestayBySlug, getHomestays } from "@/lib/data";
+import { getAllHomestaySlugs, getHomestayBySlug } from "@/lib/data";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -24,8 +24,7 @@ type Params = { params: Promise<{ slug: string }> };
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  const rows = await getHomestays();
-  return rows.map((h) => ({ slug: h.slug }));
+  return (await getAllHomestaySlugs()).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {

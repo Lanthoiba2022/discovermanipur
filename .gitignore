@@ -18,6 +18,8 @@ node_modules/
 *.tsbuildinfo
 # MapLibre worker, copied from node_modules by `predev` / `prebuild`
 /public/maplibre/
+# Claude Code agent worktrees
+/.claude/worktrees/
 
 # Tests and browser automation
 /coverage/
