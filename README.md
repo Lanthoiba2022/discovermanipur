@@ -3,11 +3,14 @@
 [![CI](https://github.com/Lanthoiba2022/discovermanipur/actions/workflows/ci.yml/badge.svg)](https://github.com/Lanthoiba2022/discovermanipur/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Hacktoberfest](https://img.shields.io/badge/Hacktoberfest-2026-orange.svg)](CONTRIBUTING.md#hacktoberfest)
+[![Good first issues](https://img.shields.io/github/issues/Lanthoiba2022/discovermanipur/good%20first%20issue?label=good%20first%20issues)](https://github.com/Lanthoiba2022/discovermanipur/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 [![Discord](https://img.shields.io/badge/chat-Discord-5865F2.svg)](https://discord.gg/hgGfm6UpU)
 
 An open-source, community-built guide to Manipur, *the land of jewels*. It brings the
 state's places, homestays, eateries, experiences, tours, transport, festivals and craft
 makers into one catalogue that anyone can browse, correct and add to.
+
+**Live site:** <https://discovermanipur.vercel.app>
 
 It is for two kinds of people:
 
@@ -60,18 +63,28 @@ use and has no paid tier.
 | `/admin/*` | Listings, bookings and host applications (admin role) |
 | `/faq`, `/about`, `/contact`, `/responsible-travel`, `/accessibility`, `/privacy`, `/terms` | Editorial and policy pages |
 
-What is still incomplete, and open for contributors, is listed in
-[docs/GOOD_FIRST_ISSUES.md](docs/GOOD_FIRST_ISSUES.md). In short: bookings, saved items,
-itineraries and host applications are stored in the browser only, and the admin and host
-dashboards show sample data.
+With a database and Neon Auth configured, as on the live site, bookings, saved places,
+saved trip plans and host applications are stored with the traveller's account, and the
+admin and host dashboards read real data. A fresh clone without those services keeps
+them in the browser instead.
+
+Some limits are worth knowing:
+
+- **Booking requests only.** There are no payments, and hosts cannot yet confirm or
+  decline a request in the app.
+- **No live concierge by default.** The AI concierge stays off until a site turns it on.
+
+Open work is listed in [docs/GOOD_FIRST_ISSUES.md](docs/GOOD_FIRST_ISSUES.md) and the
+[issue tracker](https://github.com/Lanthoiba2022/discovermanipur/issues).
 
 ## Tech stack
 
 - [Next.js 16](https://nextjs.org) (App Router, Server Components, Server Actions), React 19, TypeScript (strict)
 - Tailwind CSS v4, Radix UI primitives, Framer Motion, GSAP, Lenis
-- [Neon](https://neon.tech) Postgres with [Drizzle ORM](https://orm.drizzle.team), and Neon Auth for accounts
+- [Neon](https://neon.com) Postgres with [Drizzle ORM](https://orm.drizzle.team), and Neon Auth for accounts
 - Vercel AI SDK for the concierge (Google Gemini or Anthropic Claude)
-- Google Maps JavaScript API (3D) for the Kangla map; Three.js for the Kangla landmark models
+- Google Maps JavaScript API (3D) for the Kangla map. Three.js landmark studies are in the
+  tree but no route shows them right now ([#41](https://github.com/Lanthoiba2022/discovermanipur/issues/41))
 - Brevo for transactional email (sign-up verification codes)
 
 ## Quick start
@@ -159,14 +172,14 @@ src/lib/data/       The data layer: catalogue reads, seed fallback, photo credit
 src/lib/data/seed/  Bundled seed content, one file per vertical
 src/lib/db/         Drizzle schema, relations and the server-only database client
 src/lib/auth/       Neon Auth, the session data-access layer and the local fallback session
-src/lib/host/       Role checks (requireAdmin, requireHost) and dashboard sample data
-src/lib/booking/    Pricing, bookings and the saved list (browser storage for now)
+src/lib/host/       Role checks (requireAdmin, requireHost), host applications, dashboard queries
+src/lib/booking/    Server-side pricing, booking requests and the saved list
 src/lib/ai/         Concierge model config, prompt, tools, itinerary schema and fallbacks
 src/lib/immersive/  Kangla landmarks, bounds and narration
 src/types/          Shared TypeScript types
 drizzle/            Drizzle migrations (the live migration history)
 db/                 Database and auth setup guide; optional research-data SQL (db/research-seed/)
-scripts/            Seeding, roles, asset generation and browser checks
+scripts/            Seeding, roles, Kangla asset generation and build helpers
 docs/               Feature documentation and the contributor task list
 public/             Images, 3D models, audio and video
 ```
@@ -197,17 +210,40 @@ public/             Images, 3D models, audio and video
 
 ## Contributing and Hacktoberfest
 
-Contributions of all sizes are welcome: code, content corrections, new places, photos you
-own, translations and accessibility fixes.
+Discover Manipur takes part in [Hacktoberfest](https://hacktoberfest.com) throughout
+October. Contributions of all sizes are welcome: code, content corrections, new places,
+photos you own, translations and accessibility fixes.
 
-1. Read [CONTRIBUTING.md](CONTRIBUTING.md).
-2. Pick a task from [docs/GOOD_FIRST_ISSUES.md](docs/GOOD_FIRST_ISSUES.md) or the issue
-   tracker, and ask to be assigned.
-3. Fork, branch, and open a pull request against `main`.
+**How to take part**
 
-During Hacktoberfest, maintainers add the `hacktoberfest-accepted` label to pull requests
-that are merged or approved. Low-effort pull requests are labelled `spam` or `invalid`.
-The rules are in [CONTRIBUTING.md](CONTRIBUTING.md#hacktoberfest).
+1. Read [CONTRIBUTING.md](CONTRIBUTING.md), especially the
+   [Hacktoberfest rules](CONTRIBUTING.md#hacktoberfest).
+2. Pick an open issue and comment to ask to be assigned. Wait for a maintainer to confirm
+   before you start, so two people do not build the same thing.
+3. Fork the repository, create a branch, and open a pull request against `main` that
+   links the issue. One issue per pull request.
+4. Make sure `npm run lint`, `npm run typecheck` and `npm run build` pass. CI runs all
+   three on every pull request.
+
+**Where to start**
+
+| Looking for | Where |
+| --- | --- |
+| A small first task | Issues labelled [`good first issue`](https://github.com/Lanthoiba2022/discovermanipur/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) |
+| Something bigger | Issues labelled [`help wanted`](https://github.com/Lanthoiba2022/discovermanipur/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) |
+| Content work: places, facts, photos, alt text | Issues labelled [`content`](https://github.com/Lanthoiba2022/discovermanipur/issues?q=is%3Aissue+is%3Aopen+label%3Acontent) |
+| Translation into Meiteilon or Hindi | Issues labelled [`i18n`](https://github.com/Lanthoiba2022/discovermanipur/issues?q=is%3Aissue+is%3Aopen+label%3Ai18n) |
+| Accessibility | Issues labelled [`accessibility`](https://github.com/Lanthoiba2022/discovermanipur/issues?q=is%3Aissue+is%3Aopen+label%3Aaccessibility) |
+| Background on every task | [docs/GOOD_FIRST_ISSUES.md](docs/GOOD_FIRST_ISSUES.md) |
+
+You do not need to write code to contribute. A well-sourced pull request that adds or
+fixes a listing counts for Hacktoberfest like any other. Filing a *Content correction* or
+*Suggest a new place* issue helps too, although only pull requests count for
+Hacktoberfest.
+
+Pull requests that are merged or approved get the `hacktoberfest-accepted` label.
+Low-effort ones, such as whitespace changes, single-typo fixes or unchecked
+machine-generated code, are labelled `spam` or `invalid` and closed.
 
 Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md).
 
