@@ -18,8 +18,9 @@ node_modules/
 *.tsbuildinfo
 # MapLibre worker, copied from node_modules by `predev` / `prebuild`
 /public/maplibre/
-# Claude Code agent worktrees
-/.claude/worktrees/
+# AI agent tooling: local skills, worktrees and their lockfile
+/.claude/
+skills-lock.json
 
 # Tests and browser automation
 /coverage/
