@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { CircleAlert, Eye, EyeOff, Loader2, MailCheck } from "lucide-react";
@@ -17,6 +17,7 @@ import {
   resendVerificationCode,
   signInSchema,
   signInWithPassword,
+  signOut,
   signUpSchema,
   signUpWithPassword,
   useAuth,
@@ -83,6 +84,10 @@ interface PendingVerification {
   password: string;
   firstName?: string;
   lastName?: string;
+  /** The first code could not be sent; shown on the code step. */
+  sendError?: string;
+  /** An unverified session cookie exists and must be signed out on cancel. */
+  sessionCreated?: boolean;
 }
 
 const RESEND_COOLDOWN_S = 30;
@@ -96,7 +101,9 @@ function VerifyEmailStep({
   onVerified: () => void;
   onCancel: () => void;
 }) {
-  const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_S);
+  // A failed first send can be retried straight away.
+  const [cooldown, setCooldown] = useState(pending.sendError ? 0 : RESEND_COOLDOWN_S);
+  const [sendError, setSendError] = useState(pending.sendError ?? null);
   const [resending, setResending] = useState(false);
 
   useEffect(() => {
@@ -140,9 +147,11 @@ function VerifyEmailStep({
     const { error } = await resendVerificationCode(pending.email);
     setResending(false);
     if (error) {
+      setSendError(error);
       toast.error("Could not send a new code", { description: error });
       return;
     }
+    setSendError(null);
     form.reset({ otp: "" });
     setCooldown(RESEND_COOLDOWN_S);
     toast.success("New code sent", { description: `Check ${pending.email}` });
@@ -150,13 +159,26 @@ function VerifyEmailStep({
 
   return (
     <div className="mt-8">
-      <div className="flex items-start gap-3 rounded-[var(--radius)] border border-success/40 bg-success/10 p-4 text-sm">
-        <MailCheck className="mt-0.5 size-4 shrink-0 text-success" aria-hidden="true" />
-        <p>
-          We sent a 6-digit code to <span className="font-medium">{pending.email}</span>. It can
-          take a minute to arrive. Check Spam or Promotions too.
-        </p>
-      </div>
+      {sendError ? (
+        <div
+          role="alert"
+          className="flex items-start gap-3 rounded-[var(--radius)] border border-destructive/40 bg-destructive/10 p-4 text-sm"
+        >
+          <CircleAlert className="mt-0.5 size-4 shrink-0 text-destructive" aria-hidden="true" />
+          <p>
+            Your account for <span className="font-medium [overflow-wrap:anywhere]">{pending.email}</span> is
+            ready, but the code could not be sent: {sendError} Use Resend code below to try again.
+          </p>
+        </div>
+      ) : (
+        <div className="flex items-start gap-3 rounded-[var(--radius)] border border-success/40 bg-success/10 p-4 text-sm">
+          <MailCheck className="mt-0.5 size-4 shrink-0 text-success" aria-hidden="true" />
+          <p>
+            We sent a 6-digit code to <span className="font-medium [overflow-wrap:anywhere]">{pending.email}</span>.
+            It can take a minute to arrive. Check Spam or Promotions too.
+          </p>
+        </div>
+      )}
 
       <form onSubmit={onSubmit} noValidate className="mt-6 space-y-4">
         <div>
@@ -213,10 +235,13 @@ export function AuthForm({ next: requestedNext }: { next: string }) {
   const { isAuthenticated, isLoading } = useAuth();
   const [tab, setTab] = useState("signin");
   const [pending, setPending] = useState<PendingVerification | null>(null);
+  // While a submit runs or the code step shows, a signed-in store must not
+  // send the visitor away: they still have a code to enter.
+  const submitting = useRef(false);
 
   useEffect(() => {
-    if (!isLoading && isAuthenticated) router.replace(next);
-  }, [isLoading, isAuthenticated, next, router]);
+    if (!isLoading && isAuthenticated && !pending && !submitting.current) router.replace(next);
+  }, [isLoading, isAuthenticated, pending, next, router]);
 
   const signInForm = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
@@ -228,23 +253,41 @@ export function AuthForm({ next: requestedNext }: { next: string }) {
     defaultValues: { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" },
   });
 
-  const onSignIn = signInForm.handleSubmit(async (values) => {
-    const { error, needsVerification } = await signInWithPassword(values);
+  async function onSignIn(event: FormEvent<HTMLFormElement>) {
+    submitting.current = true;
+    try {
+      await signInForm.handleSubmit(signIn)(event);
+    } finally {
+      submitting.current = false;
+    }
+  }
+
+  async function signIn(values: SignInValues) {
+    const { error, needsVerification, sendError, sessionCreated } = await signInWithPassword(values);
     if (error) {
       toast.error("Could not sign you in", { description: error });
       signInForm.setError("password", { message: error });
       return;
     }
     if (needsVerification) {
-      setPending({ email: values.email.trim(), password: values.password });
+      setPending({ email: values.email.trim(), password: values.password, sendError, sessionCreated });
       return;
     }
     toast.success("Welcome back");
     router.replace(next);
-  });
+  }
 
-  const onSignUp = signUpForm.handleSubmit(async (values) => {
-    const { error, needsVerification } = await signUpWithPassword({
+  async function onSignUp(event: FormEvent<HTMLFormElement>) {
+    submitting.current = true;
+    try {
+      await signUpForm.handleSubmit(signUp)(event);
+    } finally {
+      submitting.current = false;
+    }
+  }
+
+  async function signUp(values: SignUpValues) {
+    const { error, needsVerification, sendError, sessionCreated } = await signUpWithPassword({
       email: values.email,
       password: values.password,
       firstName: values.firstName,
@@ -261,12 +304,14 @@ export function AuthForm({ next: requestedNext }: { next: string }) {
         password: values.password,
         firstName: values.firstName,
         lastName: values.lastName || undefined,
+        sendError,
+        sessionCreated,
       });
       return;
     }
     toast.success("Your Discover Manipur account is ready");
     router.replace(next);
-  });
+  }
 
   const busy = signInForm.formState.isSubmitting || signUpForm.formState.isSubmitting;
 
@@ -280,7 +325,9 @@ export function AuthForm({ next: requestedNext }: { next: string }) {
         <VerifyEmailStep
           pending={pending}
           onVerified={() => router.replace(next)}
-          onCancel={() => {
+          onCancel={async () => {
+            // A half-made session for the unverified address must not linger.
+            if (pending.sessionCreated) await signOut();
             signInForm.setValue("email", pending.email);
             setTab("signin");
             setPending(null);

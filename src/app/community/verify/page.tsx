@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { PageHero } from "@/components/content/page-hero";
 import { PlaceCard } from "@/components/community/place-card";
 import { VerificationRules } from "@/components/community/verification-rules";
+import { VerifyEmailPanel } from "@/components/community/verify-email-panel";
 import { VoteButton } from "@/components/community/vote-button";
 import { Button } from "@/components/ui/button";
 import { isAuthConfigured } from "@/lib/auth/env";
@@ -120,11 +121,15 @@ function Body({
         </p>
       </Callout>
     ) : (
-      <Callout icon={MailCheck} title="Verify your email address to vote">
+      <Callout
+        icon={MailCheck}
+        title="Verify your email address to vote"
+        action={<VerifyEmailPanel email={viewer.email} />}
+      >
         <p>
           You are signed in, but your email address is not verified yet. Only verified users can
-          see places waiting for votes and upvote them. Sign out, then sign in again with your
-          email and password, and we will email you a code to verify it.
+          see places waiting for votes and upvote them. We email you a 6-digit code and you enter it
+          here.
         </p>
       </Callout>
     );

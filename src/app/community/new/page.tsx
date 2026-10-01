@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { Ban, LogIn, MailCheck, MapPinned } from "lucide-react";
 
 import { PlaceForm } from "@/components/community/place-form";
+import { VerifyEmailPanel } from "@/components/community/verify-email-panel";
 import { Button } from "@/components/ui/button";
 import { isAuthConfigured } from "@/lib/auth/env";
 import { LIMITS, UPVOTES_REQUIRED, VOTING_WINDOW_HOURS } from "@/lib/community/rules";
@@ -153,16 +154,11 @@ async function Body() {
       <Notice
         icon={<MailCheck className="size-6" aria-hidden="true" />}
         title="Verify your email address first"
-        action={
-          <Button asChild variant="outline">
-            <Link href="/contact">Contact us</Link>
-          </Button>
-        }
+        action={<VerifyEmailPanel email={viewer.email} />}
       >
         <p>
           Only accounts with a verified email address can list or vote on places, which keeps it to one vote per
-          person. Sign out, then sign in again with your email address and password: the sign-in page asks for a
-          6-digit code we email to you. Once that is done, come back to this page.
+          person. It takes a minute: we email you a 6-digit code and you enter it here.
         </p>
       </Notice>
     );
