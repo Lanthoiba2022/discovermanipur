@@ -61,7 +61,7 @@ export default async function HostLandingPage() {
               </Button>
             </div>
             <p className="mt-5 text-sm text-muted-foreground">
-              Free to apply · no commission · applications are not reviewed yet
+              Free to apply · no commission · reviewed by our admins
             </p>
           </div>
 
@@ -181,8 +181,8 @@ export default async function HostLandingPage() {
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-primary-foreground/80">
               Start the application now, save it half-finished in this browser, and come back to
-              it. Applications are not sent for review yet, so nothing is published and nothing is
-              charged.
+              it. When you submit, our admins review it; nothing is published until it is approved,
+              and nothing is ever charged.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Button asChild size="lg" variant="accent">

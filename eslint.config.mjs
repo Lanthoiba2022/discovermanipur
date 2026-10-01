@@ -18,6 +18,7 @@ const eslintConfig = defineConfig([
     "_private/**",
     "reference/**",
     "assets/**",
+    ".claude/worktrees/**",
   ]),
 ]);
 

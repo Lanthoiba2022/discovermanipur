@@ -124,7 +124,7 @@ const SECTIONS: GuidelineSection[] = [
     rules: [
       "Honour every confirmed booking. Cancel only for a genuine emergency, illness or bereavement, or a safety situation — never because a longer or better-paying booking came along.",
       "If you must cancel, tell the guest the same day, refund anything they have paid you in full, and help them find somewhere else.",
-      "Repeated host cancellations cost you your featured placement, then your listing.",
+      "Repeated host cancellations can cost you your featured placement, then your listing.",
       "When a bandh, blockade or weather event makes travel unsafe, waive the guest's cancellation charge. A host is not penalised for cancelling in that situation either.",
       "Your own cancellation terms for guests must be stated on the listing and applied the same way to everyone.",
       "If something goes wrong during a stay, fix what you can, tell the guest what you cannot, and ask for help rather than arguing at the gate.",
@@ -155,9 +155,8 @@ export default function HostingGuidelinesPage() {
         </p>
         <h1 className="text-headline">What we ask of every Discover Manipur host</h1>
         <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-          These are the standards you agree to when you list. Listing is not open yet — host
-          applications are not reviewed — but the standards are published now so you know what to
-          expect. They are written plainly on purpose:
+          These are the standards you agree to when you list. Read them before you apply, so you
+          know what to expect. They are written plainly on purpose:
           a host should be able to read this once and know exactly what is expected — and a guest
           should be able to read it too.
         </p>
@@ -213,8 +212,8 @@ export default function HostingGuidelinesPage() {
         <h2 className="font-display text-2xl">Can you meet these?</h2>
         <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
           Most homes in Manipur already do. If one or two things are missing — a smoke alarm, a
-          handrail, a filter — apply anyway and say so. Applications are not reviewed yet, so there
-          is time to close those gaps before listing opens.
+          handrail, a filter — apply anyway and say so in your application, so our admins know
+          what you are working on.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Button asChild>

@@ -176,7 +176,7 @@ export const hostSteps: IconCard[] = [
   {
     icon: "ClipboardList",
     title: "Tell us what you have",
-    body: "Fifteen minutes, four short steps. A room, a kitchen table, a loom, a route you have walked since childhood — that is enough to start. For now the form is saved in this browser: applications are not sent or reviewed yet.",
+    body: "Fifteen minutes, four short steps. A room, a kitchen table, a loom, a route you have walked since childhood — that is enough to start. Sign in, fill it in, and our admins review it. Your draft is saved in this browser as you go.",
   },
   {
     icon: "Handshake",
@@ -211,7 +211,7 @@ export const hostFaqs: QaItem[] = [
   },
   {
     q: "What if a guest damages something?",
-    a: "Discover Manipur does not take bookings or payments, so it cannot hold a deposit or make a guest pay for repairs. Agree a deposit and house rules with your guest directly. If a guest behaves badly, report it on the community Discord.",
+    a: "Discover Manipur takes no payments, so it cannot hold a deposit or make a guest pay for repairs. Agree a deposit and house rules with your guest directly. If a guest behaves badly, report it on the community Discord.",
   },
   {
     q: "Can I block dates for family or festival days?",
@@ -219,7 +219,7 @@ export const hostFaqs: QaItem[] = [
   },
   {
     q: "How long does approval take?",
-    a: "Applications are not being reviewed yet. The form saves your details in this browser so you are ready; join the community Discord to hear when reviews begin and how they will work.",
+    a: "There is no fixed timeline: applications are reviewed by volunteer admins, and you can check yours on the application page at any time. If something is missing, the reviewer's note tells you what to fix before you apply again. Questions are welcome on the community Discord.",
   },
   {
     q: "Do I have to serve food?",
