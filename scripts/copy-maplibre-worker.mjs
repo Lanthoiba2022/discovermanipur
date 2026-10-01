@@ -10,7 +10,8 @@
  *
  * Copying the worker and its shared chunk into `public/` and pointing
  * `setWorkerUrl` at them fixes it without patching the bundler. Run from
- * `predev` and `prebuild` so the copies track the installed version.
+ * `predev` and `prebuild` so the copies track the installed version; the
+ * output is git-ignored for the same reason.
  */
 import { copyFile, mkdir, stat } from "node:fs/promises";
 import { dirname, join } from "node:path";
