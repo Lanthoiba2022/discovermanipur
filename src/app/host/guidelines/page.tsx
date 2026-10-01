@@ -27,8 +27,8 @@ const SECTIONS: GuidelineSection[] = [
     rules: [
       "You are 18 or older and can show one government photo ID.",
       "You own the place, or you have the written consent of whoever does.",
-      "Where a village authority, church committee, Meira Paibi or autonomous district council has a say over visitors in your area, you have spoken to them first. We will ask.",
-      "You hold whatever municipal, panchayat or tourism-department registration your district requires. If you are unsure, say so on your application and we will find out with you.",
+      "Where a village authority, church committee, Meira Paibi or autonomous district council has a say over visitors in your area, you have spoken to them first.",
+      "You hold whatever municipal, panchayat or tourism-department registration your district requires. If you are unsure, ask on the community Discord before you list.",
       "For Protected Area Permit zones, you understand that foreign guests must carry a valid permit and that you may be asked to record their details.",
     ],
   },
@@ -139,7 +139,7 @@ const SECTIONS: GuidelineSection[] = [
       "Never write, buy or ask for a fake review, and never offer a discount for a good one. Asking a happy guest to review you honestly is fine.",
       "Retaliating against an honest review (a threat, a call, a review of their conduct in return) ends the listing.",
       "Listings are removed for: false information, a safety failure, a discrimination complaint we can substantiate, charging money not stated on the listing, or a pattern of complaints left unfixed.",
-      "You will always be told why, in writing, and you can put it right and reapply.",
+      "You will always be told why, in writing, and you can put it right and list it again.",
     ],
     note: "Questions, a complaint about another host, or something you are unsure about: ask the maintainers on the community Discord, linked at the foot of every page.",
   },
@@ -155,8 +155,8 @@ export default function HostingGuidelinesPage() {
         </p>
         <h1 className="text-headline">What we ask of every Discover Manipur host</h1>
         <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-          These are the standards you agree to when you list. Read them before you apply, so you
-          know what to expect. They are written plainly on purpose:
+          These are the standards you agree to when you list. Read them before you add your place,
+          so you know what to expect. They are written plainly on purpose:
           a host should be able to read this once and know exactly what is expected, and a guest
           should be able to read it too.
         </p>
@@ -212,12 +212,12 @@ export default function HostingGuidelinesPage() {
         <h2 className="font-display text-2xl">Can you meet these?</h2>
         <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
           Most homes in Manipur already do. If one or two things are missing (a smoke alarm, a
-          handrail, a filter), apply anyway and say so in your application, so our admins know
-          what you are working on.
+          handrail, a filter), add your place anyway and say so in its practical details, so
+          voters and guests know what you are working on.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Button asChild>
-            <Link href="/host/apply">Start your application</Link>
+            <Link href="/community/new">Add your place</Link>
           </Button>
           <Button asChild variant="outline">
             <Link href="/host">Back to hosting</Link>

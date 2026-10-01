@@ -116,6 +116,14 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "128kb",
     },
   },
+  async redirects() {
+    return [
+      // There is one way to list a place now: the community form, where the
+      // lister says whether they own it. Old links to the host application
+      // land there instead of on a 404.
+      { source: "/host/apply", destination: "/community/new", permanent: true },
+    ];
+  },
   async headers() {
     const privateArea = [
       { key: "X-Robots-Tag", value: "noindex, nofollow" },

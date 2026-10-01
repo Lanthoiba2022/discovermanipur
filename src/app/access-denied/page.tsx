@@ -31,8 +31,8 @@ export default async function AccessDeniedPage({
         body: "This deployment has no sign-in server connected, so the host dashboard is closed. Everything else on the site works as normal.",
       }
     : {
-        title: "For approved hosts",
-        body: "The host dashboard opens once your host application is approved. Until then you can apply, or read the standards every listing is held to.",
+        title: "For hosts with linked listings",
+        body: "The host dashboard is for owners whose listings a Discover Manipur admin has linked to their account. Anyone signed in with a verified email can add their place for the community to verify. Every listing is held to the same hosting standards.",
       };
 
   return (
@@ -54,7 +54,7 @@ export default async function AccessDeniedPage({
           ) : (
             <>
               <Button asChild>
-                <Link href="/host/apply">Apply to host</Link>
+                <Link href="/community/new">Add your place</Link>
               </Button>
               <Button asChild variant="outline">
                 <Link href="/host/guidelines">Hosting standards</Link>

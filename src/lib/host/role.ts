@@ -6,9 +6,9 @@
  *
  * Roles live in `public.profiles.role` and are read on every request (see
  * `getSessionProfile` in `@/lib/auth/dal`). Nobody can grant themselves one:
- * `saveProfile` never writes `role`. An admin approving a host application
- * promotes a `user` to `host` (`src/lib/host/application-actions.ts`); any
- * other change goes through `npm run db:set-role -- <email> <role>`.
+ * `saveProfile` never writes `role`, and listing a place does not change it.
+ * The `host` role, like every other role change, is granted only with
+ * `npm run db:set-role -- <email> <role>`.
  *
  * Every admin page calls `requireAdmin` and the host dashboard calls
  * `requireHost`, each page, not just the layout, because a layout check does

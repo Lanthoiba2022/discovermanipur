@@ -1,23 +1,8 @@
 import type {
   Booking,
   District,
-  HostApplication,
   HostType,
 } from "@/types";
-
-/**
- * An application row as operations sees it: the domain `HostApplication`
- * contract plus the contact detail the review queue needs. The extra fields
- * live only here so `@/types` stays the shared contract.
- */
-export interface HostApplicationRecord extends HostApplication {
-  reference: string;
-  applicantName: string;
-  email: string;
-  phone: string;
-  capacity: number;
-  photoCount: number;
-}
 
 export type HostListingStatus = "live" | "paused" | "draft";
 
@@ -88,17 +73,6 @@ export interface HostDashboardBooking {
   status: Booking["status"];
 }
 
-/** The host's most recent application, read-only. */
-export interface HostDashboardApplication {
-  id: string;
-  hostType: HostType;
-  propertyName: string;
-  district: string;
-  status: HostApplication["status"];
-  adminNotes: string | null;
-  createdAt: string;
-}
-
 export interface HostDashboardStats {
   upcomingCount: number;
   guestsExpected: number;
@@ -122,7 +96,6 @@ export interface HostDashboardData {
   upcoming: HostDashboardBooking[];
   byMonth: MonthPoint[];
   stats: HostDashboardStats;
-  application: HostDashboardApplication | null;
 }
 
 export const HOST_TYPE_LABEL: Record<HostType, string> = {

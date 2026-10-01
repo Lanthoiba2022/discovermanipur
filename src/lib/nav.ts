@@ -156,9 +156,9 @@ export const navGroups: NavGroup[] = [
         icon: "Handshake",
       },
       {
-        label: "Start an application",
-        href: "/host/apply",
-        description: "Four steps, saved as you go",
+        label: "Add your place",
+        href: "/community/new",
+        description: "List it, and the community verifies it",
         icon: "ClipboardList",
       },
       {
@@ -251,7 +251,7 @@ export const footerNav = [
     label: "Host",
     items: [
       { label: "Become a host", href: "/host" },
-      { label: "Start an application", href: "/host/apply" },
+      { label: "Add your place", href: "/community/new" },
       { label: "Hosting standards", href: "/host/guidelines" },
       { label: "Host dashboard", href: "/host/dashboard" },
     ],
