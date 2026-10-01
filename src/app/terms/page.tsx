@@ -91,9 +91,10 @@ const sections: LegalSection[] = [
             page.
           </li>
           <li>
-            Any &ldquo;booking&rdquo; made here is a request saved in your own browser. It is not
-            sent to the property, creates no contract, reserves nothing, and obliges no one to host
-            you.
+            Any &ldquo;booking&rdquo; made here is a request. It is saved with your account (or in
+            your browser if you are signed out), but it is not sent to the property automatically,
+            takes no payment, creates no contract, reserves nothing, and obliges no one to host
+            you. Contact the host or business directly to confirm.
           </li>
         </ul>
       </>

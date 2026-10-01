@@ -262,7 +262,7 @@ export default async function AboutPage() {
                   We do not run properties, employ guides, take payments or hold commercial
                   partnerships with any of the businesses described on this site. It is open source
                   and run by volunteers, and it is not an official government service. A booking
-                  made here is a request saved in your browser, not a contract, and nothing on the
+                  made here is a request saved with your account, not a contract, and nothing on the
                   platform should be treated as a confirmed reservation.
                 </p>
                 <p>

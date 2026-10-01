@@ -34,8 +34,8 @@ const sections: LegalSection[] = [
             name, email address and the optional profile details you add.
           </li>
           <li>
-            Bookings, saved itineraries and saved places stay in your own browser. They are not
-            sent to our database.
+            If you are signed in, your booking requests, saved trip plans, saved places and host
+            application are stored with your account. Signed out, they stay in your own browser.
           </li>
           <li>
             We count page views with Vercel&apos;s cookieless analytics, and use Microsoft Clarity
@@ -102,14 +102,24 @@ const sections: LegalSection[] = [
             connected to it yet.
           </li>
           <li>
-            <strong>Bookings, itineraries and saved places:</strong> the dates, guest counts and
-            listings you choose are kept in your browser&apos;s local storage on your device. They
-            are not sent to our database, and a booking is a request on your own device, not a
-            reservation with a property.
+            <strong>Booking requests:</strong> when you are signed in, the listing, dates, number
+            of guests, price shown and any note you add are stored with your account. Our admins
+            can see them, and the host of that listing sees your first name, the dates and the
+            number of guests and the price on their dashboard. A booking is a request, not a reservation: no
+            payment is taken and the property is not notified automatically.
           </li>
           <li>
-            <strong>Host applications:</strong> the draft is saved in your browser as you go.
-            Submitting it does not currently send it anywhere.
+            <strong>Saved trip plans and saved places:</strong> when you are signed in, they are
+            stored with your account so they follow you across devices. When you are signed out,
+            they are kept in your browser&apos;s local storage instead. Places you saved while
+            signed out are moved into your account the next time you sign in.
+          </li>
+          <li>
+            <strong>Host applications:</strong> the draft is saved in your browser as you fill it
+            in. When you submit it (you must be signed in), the details you entered — including
+            your name, phone number, the place you would host and what you offer — are stored
+            with your account and reviewed by our admins. Photos you pick stay on your device and
+            are not uploaded.
           </li>
         </ul>
 
@@ -223,8 +233,8 @@ const sections: LegalSection[] = [
           <li>a session cookie that keeps you signed in, if you have an account;</li>
           <li>your light or dark theme preference;</li>
           <li>
-            your bookings, saved itineraries, saved places and any host application draft, kept in
-            your browser&apos;s local storage.
+            your host application draft, and — while you are signed out — any bookings, saved trip
+            plans and saved places, kept in your browser&apos;s local storage.
           </li>
         </ul>
         <p>
@@ -288,8 +298,11 @@ const sections: LegalSection[] = [
             remove an account that breaks the <Link href="/terms">terms of use</Link>.
           </li>
           <li>
-            <strong>Bookings, itineraries and saved places:</strong> on your device, until you
-            remove them or clear your browser storage. We never hold a copy.
+            <strong>Booking requests, saved trip plans, saved places and host applications held
+            with your account:</strong> until you remove them (you can delete saved plans and
+            places yourself, and cancel a booking request) or ask us to delete your account.
+            Anything kept only in your browser stays there until you remove it or clear your
+            browser storage.
           </li>
           <li>
             <strong>Contact messages:</strong> not kept at all while the form has no mail provider.
@@ -390,7 +403,8 @@ export default function PrivacyPage() {
       >
         <NoteBox title="Plain summary" className="my-0 max-w-[60ch]">
           <p>
-            An account only if you want one. Bookings stay in your browser. No advertising trackers.
+            An account only if you want one. What you save while signed in is kept with your
+            account; signed out, it stays in your browser. No advertising trackers.
             No sale of data. Ask us and we will delete what we hold.
           </p>
         </NoteBox>

@@ -77,7 +77,7 @@ export const faqGroups: FaqGroup[] = [
       },
       {
         q: "Can I book through Discover Manipur?",
-        a: "Not yet. You can browse listings, build an itinerary and go through the booking flow, but a booking is saved only in your own browser as a request: no payment is taken, nothing is sent to the property and no reservation is created. Nothing generated here is a contract. Treat it as planning, then contact a host directly to confirm.",
+        a: "You can send a booking request for a homestay or experience. Signed in, it is saved with your account, where our admins and the listing's host can see it. It is still only a request: no payment is taken, the property is not notified automatically and no reservation is created. Nothing generated here is a contract. Contact the host directly to confirm.",
       },
       {
         q: "Are listings verified?",
@@ -169,7 +169,7 @@ export const faqGroups: FaqGroup[] = [
     items: [
       {
         q: "Can I list my homestay or experience?",
-        a: "The host application form is live and you are welcome to fill it in, but applications are not sent to anyone or reviewed yet — the review process is still being built in the open. If you want to be listed, say hello on the community Discord in the meantime.",
+        a: "Yes. Sign in and fill in the host application. It is saved with your account and reviewed by our admins, and you can check its status on the application page. Once approved, your account can use the host dashboard. Listing is free and there is no commission. Photos are not uploaded yet, so keep yours ready; questions are welcome on the community Discord.",
       },
       {
         q: "What would you expect from a host?",

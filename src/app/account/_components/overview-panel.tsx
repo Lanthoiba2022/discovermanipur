@@ -104,7 +104,7 @@ export function OverviewPanel() {
           icon={Bookmark}
           value={String(saved.length)}
           label={saved.length === 1 ? "Saved place" : "Saved places"}
-          hint="Homestays and hotspots on your shortlist"
+          hint="Homestays on your shortlist"
         />
 
         <StatCard
