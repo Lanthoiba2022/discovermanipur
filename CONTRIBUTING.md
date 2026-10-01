@@ -240,8 +240,9 @@ count and keep reviews manageable:
   changes nobody checked, or copying another contributor's open pull request.
 - Content contributions count. A well-sourced new place, a verified correction or a
   licensed photo set is a real contribution.
-- Look for issues labelled `good first issue`, `help wanted` and `hacktoberfest`, or the
-  list in [docs/GOOD_FIRST_ISSUES.md](docs/GOOD_FIRST_ISSUES.md).
+- Look for issues labelled `good first issue` or `help wanted` (and `content`, `i18n` or
+  `accessibility` for those areas), or the list in
+  [docs/GOOD_FIRST_ISSUES.md](docs/GOOD_FIRST_ISSUES.md).
 
 ## Using AI assistants
 

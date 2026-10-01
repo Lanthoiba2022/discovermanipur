@@ -13,9 +13,13 @@ Before starting, find (or open) the matching GitHub issue and ask to be assigned
 page calls `requireAdmin` / `requireHost` itself, Server Actions are public endpoints, and
 the user always comes from the session, never from a client-supplied id.
 
+Moving bookings, saved places, saved plans, host applications and the admin and host
+dashboards to the database is done (issues #14 to #20). Their Server Actions, for
+example `src/lib/booking/actions.ts`, are the pattern to follow for new persisted
+features.
+
 ## Contents
 
-- [Persistence: move browser-only data to the database](#persistence-move-browser-only-data-to-the-database)
 - [Community-sourced listings](#community-sourced-listings)
 - [Content and photos](#content-and-photos)
 - [Accessibility](#accessibility)
@@ -25,68 +29,6 @@ the user always comes from the session, never from a client-supplied id.
 - [Kangla](#kangla)
 
 ---
-
-## Persistence: move browser-only data to the database
-
-Today several features store data in `localStorage`, so it is lost when a visitor changes
-browser, and admins and hosts cannot see it. The tables already exist in
-`src/lib/db/schema.ts`; the call sites are already `async`, so the change is mostly
-behind each module. Follow the pattern in `src/lib/auth/profile.ts`: a Server Action that
-resolves the user from the session and checks ownership. Keep the browser-only behaviour
-when `DATABASE_URL` or Neon Auth is not configured, so a fresh clone still works.
-
-### Save bookings to `public.bookings`
-- **Why:** bookings vanish with the browser, and no host or admin ever sees them.
-- **Where:** `src/lib/booking/bookings.ts` (browser storage), `src/lib/booking/schemas.ts`,
-  `src/components/experiences/booking-panel.tsx`, `src/app/account/bookings/`,
-  `bookings` in `src/lib/db/schema.ts`.
-- **Difficulty:** advanced. Prices must be recomputed on the server
-  (`src/lib/booking/pricing.ts`), never taken from the client.
-
-### Save the wishlist to `public.saved_items`
-- **Why:** saved places do not follow the user across devices.
-- **Where:** `src/lib/booking/wishlist.ts`, `src/app/account/saved/`, `saved_items` in the schema.
-- **Difficulty:** intermediate.
-
-### Save itineraries to `public.saved_itineraries`
-- **Why:** same as above, for trip plans from `/plan`.
-- **Where:** `src/lib/itineraries/store.ts`, `src/lib/itineraries/mapping.ts`,
-  `src/app/account/itineraries/`, `saved_itineraries` in the schema.
-- **Difficulty:** intermediate.
-
-### Submit host applications to `public.host_applications`
-- **Why:** the host application form shows a reference number but sends nothing
-  anywhere. Photos stay in memory and are discarded.
-- **Where:** `onSubmit` in `src/components/host/apply-wizard.tsx` (it sets
-  `userId: "pending-auth"`), `src/lib/host/application-schema.ts`, `host_applications` in
-  the schema.
-- **Difficulty:** intermediate (without photo upload); photo storage is a separate,
-  advanced task that needs a storage provider decision.
-
-### Wire the admin dashboard and application review to real data
-- **Why:** `/admin`, `/admin/bookings` and `/admin/applications` render sample data, and
-  approve/reject only changes local state.
-- **Where:** `src/lib/host/mock-data.ts` (its header explains the swap),
-  `src/app/admin/page.tsx`, `src/app/admin/bookings/page.tsx`,
-  `src/app/admin/applications/page.tsx`, `src/components/admin/applications-table.tsx`.
-- **Difficulty:** advanced. Approve/reject must be an admin-only Server Action that
-  re-checks the role inside the action. Decide with maintainers whether approval also
-  grants the `host` role (today only `npm run db:set-role` does that).
-- **Depends on:** the bookings and host applications tasks above.
-
-### Persist listing moderation
-- **Why:** on `/admin/listings` the feature and activate toggles show a toast but do not
-  save.
-- **Where:** `src/components/admin/listings-table.tsx`, `src/app/admin/listings/page.tsx`,
-  `featured` / `is_active` columns in the schema.
-- **Difficulty:** intermediate.
-
-### Wire the host dashboard to the host's own listings and bookings
-- **Why:** `/host/dashboard` shows the same sample data to every host.
-- **Where:** `src/app/host/dashboard/page.tsx`, `src/lib/host/mock-data.ts`,
-  `src/lib/host/types.ts`.
-- **Difficulty:** advanced. Listings need an owner column first (a schema change with
-  `npm run db:generate`).
 
 ## Community-sourced listings
 
