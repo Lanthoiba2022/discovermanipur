@@ -1,10 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, type UseFormRegisterReturn } from "react-hook-form";
-import { CircleAlert, Eye, EyeOff, Loader2, MailCheck } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { CircleAlert, Loader2, MailCheck } from "lucide-react";
 import { toast } from "sonner";
 
 import { DemoModeNotice } from "@/components/auth/demo-mode-notice";
@@ -29,54 +30,7 @@ import {
 } from "@/lib/auth";
 import { safeRedirectPath } from "@/lib/security/redirect";
 
-function FieldError({ message }: { message?: string }) {
-  if (!message) return null;
-  return (
-    <p role="alert" className="mt-2 flex items-center gap-1.5 text-sm text-destructive">
-      <CircleAlert className="size-3.5 shrink-0" aria-hidden="true" />
-      {message}
-    </p>
-  );
-}
-
-function PasswordInput({
-  id,
-  autoComplete,
-  invalid,
-  registration,
-}: {
-  id: string;
-  autoComplete: string;
-  invalid: boolean;
-  registration: UseFormRegisterReturn;
-}) {
-  const [visible, setVisible] = useState(false);
-  return (
-    <div className="relative">
-      <Input
-        id={id}
-        type={visible ? "text" : "password"}
-        autoComplete={autoComplete}
-        placeholder="••••••••"
-        aria-invalid={invalid}
-        className="pr-11"
-        {...registration}
-      />
-      <button
-        type="button"
-        onClick={() => setVisible((v) => !v)}
-        aria-label={visible ? "Hide password" : "Show password"}
-        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-muted"
-      >
-        {visible ? (
-          <EyeOff className="size-4" aria-hidden="true" />
-        ) : (
-          <Eye className="size-4" aria-hidden="true" />
-        )}
-      </button>
-    </div>
-  );
-}
+import { FieldError, PasswordInput } from "./fields";
 
 /** Who is mid-verification, and what we need to finish signing them in. */
 interface PendingVerification {
@@ -371,9 +325,15 @@ export function AuthForm({ next: requestedNext }: { next: string }) {
             </div>
 
             <div>
-              <Label htmlFor="signin-password" className="mb-2 block">
-                Password
-              </Label>
+              <div className="mb-2 flex items-baseline justify-between gap-3">
+                <Label htmlFor="signin-password">Password</Label>
+                <Link
+                  href={next === "/account" ? "/auth/reset" : `/auth/reset?next=${encodeURIComponent(next)}`}
+                  className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  Forgot your password?
+                </Link>
+              </div>
               <PasswordInput
                 id="signin-password"
                 autoComplete="current-password"

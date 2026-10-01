@@ -129,6 +129,7 @@ const nextConfig: NextConfig = {
       // who is not an admin.
       { source: "/host/dashboard/:path*", headers: privateArea },
       { source: "/auth", headers: privateArea },
+      { source: "/auth/:path*", headers: privateArea },
       { source: "/api/auth/:path*", headers: [{ key: "Cache-Control", value: "no-store" }] },
     ];
   },
