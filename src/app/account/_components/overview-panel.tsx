@@ -60,8 +60,12 @@ export function OverviewPanel() {
     let alive = true;
 
     const run = async () => {
-      const rows = await getBookings(userId);
-      if (alive) setUpcoming(partitionBookings(rows).upcoming.length);
+      try {
+        const rows = await getBookings(userId);
+        if (alive) setUpcoming(partitionBookings(rows).upcoming.length);
+      } catch {
+        // The bookings page shows the error; the count just stays a placeholder.
+      }
     };
 
     void run();

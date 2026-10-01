@@ -25,8 +25,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth";
 import {
+  BookingError,
   createBooking,
   quoteStay,
+  useBookingMode,
   stayBookingSchema,
   toISODate,
   type StayBookingValues,
@@ -38,9 +40,11 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
   const router = useRouter();
   const pathname = usePathname();
   const { user, isLoading, demo, isAuthenticated } = useAuth();
+  const mode = useBookingMode();
+  const host = homestay.hostName || "your host";
 
   const [review, setReview] = useState(false);
-  const [confirmed, setConfirmed] = useState<string | null>(null);
+  const [confirmed, setConfirmed] = useState<{ total: number; savedTo: string } | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const form = useForm<StayBookingValues>({
@@ -86,23 +90,33 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
     if (!user || !checkIn || !checkOut) return;
     setSubmitting(true);
     try {
-      const booking = await createBooking({
+      const { booking, savedTo } = await createBooking({
         kind: "homestay",
-        refId: homestay.slug,
+        slug: homestay.slug,
         refTitle: homestay.title,
         userId: user.id,
         startDate: toISODate(checkIn),
         endDate: toISODate(checkOut),
         guests,
+        note: form.getValues("note"),
         totalPrice: quote.total,
       });
       setReview(false);
-      setConfirmed(booking.id);
-      toast.success("Request saved in this browser", {
-        description: `${homestay.title} · ${format(checkIn, "d MMM")} – ${format(checkOut, "d MMM yyyy")}. It has not been sent to your host.`,
-      });
-    } catch {
-      toast.error("We could not save that request. Please try again.");
+      setConfirmed({ total: booking.totalPrice, savedTo });
+      toast.success(
+        savedTo === "account" ? "Request saved to your account" : "Request saved in this browser",
+        {
+          description: `${homestay.title} · ${format(checkIn, "d MMM")} – ${format(checkOut, "d MMM yyyy")}. It has not been sent to your host.`,
+        },
+      );
+    } catch (err) {
+      if (err instanceof BookingError && err.reason === "signed-out") {
+        router.push(`/auth?next=${encodeURIComponent(pathname)}`);
+        return;
+      }
+      toast.error(
+        err instanceof BookingError ? err.message : "We could not save that request. Please try again.",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -116,10 +130,22 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
         </span>
         <h2 className="font-display text-xl">Request saved</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Your request for {quote.nights} {quote.nights === 1 ? "night" : "nights"} for {guests}{" "}
-          {guests === 1 ? "guest" : "guests"} is saved in this browser. Online booking is not
-          connected yet, so {homestay.hostName || "your host"} has not been told — please contact
-          them directly to book. You have not been charged.
+          {confirmed.savedTo === "account" ? (
+            <>
+              Your request for {quote.nights} {quote.nights === 1 ? "night" : "nights"} for{" "}
+              {guests} {guests === 1 ? "guest" : "guests"} ({formatINR(confirmed.total)}) is saved
+              to your account as pending, where Discover Manipur&apos;s admins can see it. {host}{" "}
+              is not notified automatically yet — please contact them directly to book. You have
+              not been charged.
+            </>
+          ) : (
+            <>
+              Your request for {quote.nights} {quote.nights === 1 ? "night" : "nights"} for{" "}
+              {guests} {guests === 1 ? "guest" : "guests"} is saved in this browser. Online booking
+              is not connected on this site, so {host} has not been told — please contact them
+              directly to book. You have not been charged.
+            </>
+          )}
         </p>
         <div className="mt-6 flex flex-col gap-2">
           <Button asChild variant="primary" className="w-full">
@@ -191,24 +217,27 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
           onChange={(n) => form.setValue("guests", n, { shouldValidate: true })}
         />
 
-        <div>
-          <Label htmlFor="booking-note" className="mb-2 block">
-            Note for your host{" "}
-            <span className="font-normal text-muted-foreground">(optional)</span>
-          </Label>
-          <Textarea
-            id="booking-note"
-            rows={3}
-            placeholder="Arriving late from Imphal airport, travelling with a toddler…"
-            aria-invalid={Boolean(errors.note)}
-            {...form.register("note")}
-          />
-          {errors.note && (
-            <p role="alert" className="mt-2 text-sm text-destructive">
-              {errors.note.message}
-            </p>
-          )}
-        </div>
+        {/* Browser-only requests have nowhere to keep a note, so it is only offered with an account. */}
+        {mode === "account" && (
+          <div>
+            <Label htmlFor="booking-note" className="mb-2 block">
+              Note with your request{" "}
+              <span className="font-normal text-muted-foreground">(optional)</span>
+            </Label>
+            <Textarea
+              id="booking-note"
+              rows={3}
+              placeholder="Arriving late from Imphal airport, travelling with a toddler…"
+              aria-invalid={Boolean(errors.note)}
+              {...form.register("note")}
+            />
+            {errors.note && (
+              <p role="alert" className="mt-2 text-sm text-destructive">
+                {errors.note.message}
+              </p>
+            )}
+          </div>
+        )}
 
         <PriceBreakdown quote={quote} />
 
@@ -216,9 +245,9 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
           type="submit"
           size="lg"
           className="w-full"
-          disabled={Boolean(blockedReason) || isLoading}
+          disabled={Boolean(blockedReason) || isLoading || !mode}
         >
-          {isLoading ? (
+          {isLoading || !mode ? (
             <>
               <Loader2 className="size-4 animate-spin" aria-hidden="true" /> Checking your session…
             </>
@@ -237,8 +266,11 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
           <ShieldCheck className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
           <span>
             {demo && "Local development mode. "}
-            Requests are saved in this browser for now — online booking is not connected yet, so
-            your host is not notified.
+            {mode === "account"
+              ? "Requests are saved to your account, where Discover Manipur's admins can see them. Your host is not notified automatically yet, and no payment is taken."
+              : mode === "browser"
+                ? "Requests are saved in this browser only — online booking is not connected on this site, so your host is not notified."
+                : null}
           </span>
         </p>
       </form>
@@ -248,8 +280,9 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
           <DialogHeader>
             <DialogTitle>Check your request</DialogTitle>
             <DialogDescription>
-              One last look. This saves the request in this browser only — it is not sent to{" "}
-              {homestay.hostName || "your host"} yet.
+              {mode === "account"
+                ? `One last look. This saves the request to your account; it is not sent to ${host} automatically yet.`
+                : `One last look. This saves the request in this browser only — it is not sent to ${host}.`}
             </DialogDescription>
           </DialogHeader>
 

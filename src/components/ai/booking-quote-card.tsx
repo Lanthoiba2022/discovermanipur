@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   BedDouble,
@@ -19,7 +20,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
-import { createBooking } from "@/lib/booking";
+import { BookingError, createBooking, useBookingMode, type BookingMode } from "@/lib/booking";
 import { cn, formatINR } from "@/lib/utils";
 import type { BookingQuoteKind, BookingQuoteResult } from "@/lib/ai/schema";
 
@@ -41,19 +42,24 @@ const kindLabel: Record<BookingQuoteKind, string> = {
 
 export function BookingQuoteCard({ quote, className }: { quote: BookingQuoteResult; className?: string }) {
   const { isAuthenticated, user } = useAuth();
-  const [booked, setBooked] = useState(false);
+  const pathname = usePathname();
+  const mode = useBookingMode();
+  const [saved, setSaved] = useState<{ savedTo: BookingMode; total: number } | null>(null);
   const [busy, setBusy] = useState(false);
 
   const Icon = kindIcon[quote.quoteKind] ?? Compass;
+  // Per-kilometre transport has no total to request; the note says to ask the operator.
+  const priceOnRequest = quote.quoteKind === "transport" && quote.lineItems.length === 0;
+  const needsSignIn = mode === "account" && !isAuthenticated;
+  const signInHref = `/auth?next=${encodeURIComponent(pathname)}`;
 
   async function confirm() {
-    if (booked || busy) return;
+    if (saved || busy || !mode) return;
     setBusy(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 400));
-      await createBooking({
+      const { booking, savedTo } = await createBooking({
         kind: quote.quoteKind,
-        refId: quote.refId,
+        slug: quote.refId,
         refTitle: quote.refTitle,
         userId: user?.id ?? "demo-traveller",
         startDate: quote.startDate,
@@ -61,13 +67,16 @@ export function BookingQuoteCard({ quote, className }: { quote: BookingQuoteResu
         guests: quote.guests,
         totalPrice: quote.totalInr,
       });
-      setBooked(true);
-      toast.success("Booking request saved", {
-        description: `${quote.refTitle} · ${quote.guests} guest${quote.guests === 1 ? "" : "s"} from ${quote.startDate}.`,
-      });
-    } catch {
-      toast.error("Couldn't save that booking", {
-        description: "Try again in a moment.",
+      setSaved({ savedTo, total: booking.totalPrice });
+      toast.success(
+        savedTo === "account" ? "Request saved to your account" : "Request saved in this browser",
+        {
+          description: `${quote.refTitle} · ${quote.guests} guest${quote.guests === 1 ? "" : "s"} from ${quote.startDate}. It has not been sent to the provider.`,
+        },
+      );
+    } catch (err) {
+      toast.error("Couldn't save that request", {
+        description: err instanceof BookingError ? err.message : "Try again in a moment.",
       });
     } finally {
       setBusy(false);
@@ -78,20 +87,23 @@ export function BookingQuoteCard({ quote, className }: { quote: BookingQuoteResu
     .map((line) => `${line.label}: ${line.amountInr < 0 ? "−" : ""}₹${Math.abs(line.amountInr).toLocaleString("en-IN")}`)
     .join("\n");
 
-  /** Downloads a plain-text booking confirmation the traveller can keep. */
+  /** Downloads a plain-text copy of the saved request the traveller can keep. */
   function downloadConfirmation() {
-    const filename = `booking-${quote.refId}-${quote.startDate}.txt`;
+    if (!saved) return;
+    const filename = `booking-request-${quote.refId}-${quote.startDate}.txt`;
     const text = [
-      "Discover Manipur — booking confirmation",
-      "--------------------------------------",
+      "Discover Manipur — booking request",
+      "----------------------------------",
       `Item: ${quote.refTitle}`,
       `Type: ${kindLabel[quote.quoteKind]}`,
       `Check-in / date: ${quote.startDate}`,
       quote.endDate ? `Check-out: ${quote.endDate}` : "",
       `Guests: ${quote.guests}`,
       lineItemsText ? `\n${lineItemsText}` : "",
-      `\nTotal: ₹${quote.totalInr.toLocaleString("en-IN")}`,
-      "Status: request saved — no payment taken online.",
+      `\nTotal: ₹${saved.total.toLocaleString("en-IN")}`,
+      saved.savedTo === "account"
+        ? "Status: request saved to your Discover Manipur account (pending). The provider is not notified automatically; contact them to book. No payment is taken online."
+        : "Status: request saved in this browser only. It has not been sent to the provider; contact them to book. No payment is taken online.",
       "Verify permits, prices and conditions with official sources before you travel.",
     ]
       .filter(Boolean)
@@ -184,21 +196,27 @@ export function BookingQuoteCard({ quote, className }: { quote: BookingQuoteResu
           </div>
         </dl>
       ) : (
-        <p className="mt-4 border-t border-border pt-3 text-sm font-medium text-foreground">Free to book</p>
+        <p className="mt-4 border-t border-border pt-3 text-sm font-medium text-foreground">
+          {priceOnRequest ? "Price on request" : "Free to book"}
+        </p>
       )}
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        {booked ? (
+        {saved ? (
           <span className="flex items-center gap-2 rounded-full bg-success/10 px-3 py-1.5 text-sm font-medium text-success">
             <Check aria-hidden className="size-4" />
-            Request saved
+            {saved.savedTo === "account" ? "Saved to your account" : "Saved in this browser"}
           </span>
+        ) : priceOnRequest ? null : needsSignIn ? (
+          <Button asChild>
+            <Link href={signInHref}>Sign in to request</Link>
+          </Button>
         ) : (
-          <Button type="button" onClick={confirm} disabled={busy}>
-            {busy ? "Saving…" : "Confirm booking"}
+          <Button type="button" onClick={confirm} disabled={busy || !mode}>
+            {busy ? "Saving…" : "Save request"}
           </Button>
         )}
-        {booked && (
+        {saved && (
           <>
             <Button type="button" variant="outline" size="sm" onClick={downloadConfirmation}>
               <Download aria-hidden className="size-4" />
@@ -211,9 +229,13 @@ export function BookingQuoteCard({ quote, className }: { quote: BookingQuoteResu
         )}
       </div>
 
-      {!isAuthenticated && !booked && (
+      {!saved && !priceOnRequest && mode && (
         <p className="mt-3 text-[11px] text-muted-foreground">
-          You are signed out, so this request will be saved in this browser only. Sign in to keep bookings with your account.
+          {mode === "account"
+            ? needsSignIn
+              ? "Sign in to save this request to your account. No payment is taken."
+              : "Saving puts this request on your account, where Discover Manipur's admins can see it. The provider is not notified automatically yet, and no payment is taken."
+            : "Requests are saved in this browser only on this site and are not sent to the provider. No payment is taken."}
         </p>
       )}
 

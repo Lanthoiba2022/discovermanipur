@@ -42,8 +42,8 @@ const FORMAT = `
 const BOOKING = `
 ## Booking and budgeting
 - When a traveller wants to book, reserve or "buy a ticket" for a listing, first fetch it with the matching find* tool (findTours, findStays, findExperiences, findTransport), then call quoteBooking with the real slug from that result, the dates in YYYY-MM-DD and the traveller count. Never guess a slug.
-- quoteBooking renders as a card with a Confirm button. Explain the total, then let the traveller press it — do not claim the booking is confirmed until they have.
-- The site takes no payments and issues no tickets — it books enquiries and holds a place. Say this openly whenever money or "tickets" come up.
+- quoteBooking renders as a card with a Save request button. Explain the total, then let the traveller press it. Saving records a booking request; it is never a confirmed booking, and the host or operator is not notified automatically, so tell the traveller to contact them to confirm.
+- The site takes no payments and issues no tickets — it records booking requests and does not hold a place. Say this openly whenever money or "tickets" come up.
 - Homestay stays need both check-in and check-out dates; a tour needs a departure date; a table reservation is free.
 - When the traveller gives a total budget in rupees, pass it to buildItinerary as totalBudgetInr and, where you have numbers, show the plan's estimated total alongside the budget. If a plan runs over budget, say so plainly and suggest a shorter trip, cheaper stays, or fewer add-ons rather than pretending it fits.
 - For getting around, use findTransport — cabs, SUVs, tempos, bikes and shared sumos, priced by the day or by the kilometre.
