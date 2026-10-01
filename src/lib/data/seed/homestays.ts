@@ -1,7 +1,7 @@
 import type { Homestay } from "@/types";
 
 /**
- * Discover Manipur homestay seed data — 20 family-run stays across the valley and hills.
+ * Discover Manipur homestay seed data: 20 family-run stays across the valley and hills.
  * Prices are per night in INR for the base room, inclusive of taxes.
  */
 export const homestays: Homestay[] = [
@@ -10,7 +10,7 @@ export const homestays: Homestay[] = [
     slug: "loktak-lake-view-homestay",
     title: "Loktak Lake View Homestay",
     description:
-      "A traditional Meitei house on the Thanga side of Loktak, with a verandah that looks straight out over the phumdi rings. Mornings start with mist on the water and the sound of paddles; the family will take you out in their own canoe before breakfast. Meals are cooked on a wood hearth — kangshoi, ngari-based eromba and lake fish caught that morning.",
+      "A traditional Meitei house on the Thanga side of Loktak, with a verandah that looks straight out over the phumdi rings. Mornings start with mist on the water and the sound of paddles; the family will take you out in their own canoe before breakfast. Meals are cooked on a wood hearth: kangshoi, ngari-based eromba and lake fish caught that morning.",
     hostName: "Rajkumar Tomba Singh",
     hostStory:
       "Tomba fished Loktak for twenty years before the family opened two rooms to guests in 2019. He knows every channel through the phumdis and is the reason most visitors here actually understand what they are looking at.",
@@ -32,7 +32,7 @@ export const homestays: Homestay[] = [
     reviewCount: 68,
     houseRules: [
       "No smoking indoors; the verandah is fine",
-      "Quiet after 10:00 PM — the family rises at 4:30 AM for the lake",
+      "Quiet after 10:00 PM (the family rises at 4:30 AM for the lake)",
       "Remove footwear before entering the main house",
       "Tell the hosts by 6:00 PM if you want dinner",
     ],
@@ -115,7 +115,7 @@ export const homestays: Homestay[] = [
     slug: "mountain-retreat-ukhrul",
     title: "Mountain Retreat Ukhrul",
     description:
-      "A Tangkhul family home on a ridge above Ukhrul town, with a wood stove in the living room and windows that open onto layered hills. The base most trekkers use for Shirui and Khayang — packed breakfasts, guide contacts and honest advice about whether the weather will hold. Nights in December drop close to freezing; the blankets are thick.",
+      "A Tangkhul family home on a ridge above Ukhrul town, with a wood stove in the living room and windows that open onto layered hills. The base most trekkers use for Shirui and Khayang: packed breakfasts, guide contacts and honest advice about whether the weather will hold. Nights in December drop close to freezing; the blankets are thick.",
     hostName: "Somi Shimray",
     hostStory:
       "Somi's family has farmed these slopes for generations. She guides on the Shirui trail in lily season and cooks the smoked-pork-and-bamboo-shoot dishes that Tangkhul kitchens are known for.",
@@ -239,7 +239,7 @@ export const homestays: Homestay[] = [
     houseRules: [
       "Well-behaved dogs welcome with prior notice",
       "No parties or events",
-      "Please keep the gate shut — there is a resident cat",
+      "Please keep the gate shut: there is a resident cat",
       "Quiet hours from 10:30 PM",
     ],
     cancellationPolicy: "Free cancellation up to 48 hours before check-in.",
@@ -251,7 +251,7 @@ export const homestays: Homestay[] = [
     slug: "tranquil-meadows-inn-tamei",
     title: "Tranquil Meadows Inn, Tamei",
     description:
-      "A simple inn in Tamei, deep in Tamenglong district, surrounded by orange orchards and forest. The base for Barak Waterfall, Zeilad and Buning Meadow — and the only place for many kilometres where you can get a hot meal and a hot bucket of water at the end of a long day on the hill roads.",
+      "A simple inn in Tamei, deep in Tamenglong district, surrounded by orange orchards and forest. The base for Barak Waterfall, Zeilad and Buning Meadow, and the only place for many kilometres where you can get a hot meal and a hot bucket of water at the end of a long day on the hill roads.",
     hostName: "Gyaneshori Kamei",
     hostStory:
       "Gyaneshori grows Tamenglong oranges, which carry a GI tag, and sends guests home with a bag of them in December and January.",
@@ -274,7 +274,7 @@ export const homestays: Homestay[] = [
     houseRules: [
       "Electricity is intermittent; bring a power bank",
       "Hot water is by bucket, on request",
-      "No mobile signal for some carriers — inform family before arriving",
+      "No mobile signal for some carriers: inform family before arriving",
       "Cash only",
     ],
     cancellationPolicy: "Free cancellation up to 7 days before check-in; 50% refund thereafter.",
@@ -305,7 +305,7 @@ export const homestays: Homestay[] = [
     rating: 4.6,
     reviewCount: 29,
     houseRules: [
-      "Arrive before dark — the highway approach is unlit",
+      "Arrive before dark: the highway approach is unlit",
       "Firewood is charged separately at ₹200 per evening",
       "No smoking in the bedrooms",
       "Breakfast is served 7:00–9:00 AM",
@@ -319,7 +319,7 @@ export const homestays: Homestay[] = [
     slug: "serenity-hilltop-retreat",
     title: "Serenity Hilltop Retreat",
     description:
-      "A modern three-room guesthouse on rising ground at Wangkhei with a rooftop that catches the sunset over the whole Imphal valley. Air-conditioned rooms, reliable wifi and backup power — the most comfortable option on this list for travellers working remotely.",
+      "A modern three-room guesthouse on rising ground at Wangkhei with a rooftop that catches the sunset over the whole Imphal valley. Air-conditioned rooms, reliable wifi and backup power: the most comfortable option on this list for travellers working remotely.",
     hostName: "Binodini Devi",
     location: "Wangkhei, Imphal East",
     district: "Imphal East",
@@ -371,7 +371,7 @@ export const homestays: Homestay[] = [
     rating: 4.5,
     reviewCount: 26,
     houseRules: [
-      "Farm work starts at 5:00 AM — expect noise",
+      "Farm work starts at 5:00 AM. Expect noise",
       "Shared bathroom with the family",
       "No footwear in the sleeping rooms",
       "Cash preferred; UPI accepted",
@@ -473,7 +473,7 @@ export const homestays: Homestay[] = [
     reviewCount: 35,
     houseRules: [
       "No single-use plastic on the property",
-      "Compost toilets in the garden block — ask for a demonstration",
+      "Compost toilets in the garden block: ask for a demonstration",
       "Dogs welcome; there are resident hens",
       "Solar hot water depends on the weather",
     ],
@@ -585,7 +585,7 @@ export const homestays: Homestay[] = [
     slug: "serendipity-homestay-noney",
     title: "Serendipity Homestay, Noney",
     description:
-      "A Rongmei family home in Noney on the western highway, with a balcony over the Ijai valley and a clear view toward the tallest railway piers in the world. Rongmei cooking — smoked meats, wild greens, sticky rice — and a host who will put you on the road to Tamenglong the next morning.",
+      "A Rongmei family home in Noney on the western highway, with a balcony over the Ijai valley and a clear view toward the tallest railway piers in the world. Rongmei cooking (smoked meats, wild greens, sticky rice) and a host who will put you on the road to Tamenglong the next morning.",
     hostName: "Gaikhangam Rongmei",
     location: "Noney town, NH-37",
     district: "Noney",
@@ -637,7 +637,7 @@ export const homestays: Homestay[] = [
     rating: 4.3,
     reviewCount: 21,
     houseRules: [
-      "Carry photo ID — checkposts on NH-102 will ask for it",
+      "Carry photo ID: checkposts on NH-102 will ask for it",
       "Return to the guesthouse before dark",
       "No smoking in the rooms",
       "Confirm current border regulations before planning a crossing",

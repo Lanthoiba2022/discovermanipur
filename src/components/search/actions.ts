@@ -12,7 +12,7 @@ const MAX_TERM = 100;
 const RATE = { limit: 120, windowMs: 60_000 };
 
 /**
- * Typeahead suggestions for the search input. Deliberately small — the full
+ * Typeahead suggestions for the search input. Deliberately small: the full
  * result set lives at /search.
  *
  * A Server Action is a public endpoint, so `term` is whatever the caller sent:

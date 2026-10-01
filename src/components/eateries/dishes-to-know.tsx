@@ -16,7 +16,7 @@ const DISHES: Dish[] = [
     name: "Eromba",
     meitei: "ꯏꯔꯣꯝꯕ",
     blurb:
-      "Boiled vegetables — potato, beans, seasonal greens — mashed together with ngari and roasted chillies, then finished with maroi napakpi (Chinese chives) or coriander.",
+      "Boiled vegetables (potato, beans, seasonal greens) mashed together with ngari and roasted chillies, then finished with maroi napakpi (Chinese chives) or coriander.",
     note: "The everyday centre of a Meitei meal. Heat varies wildly; ask before you commit.",
   },
   {
@@ -24,7 +24,7 @@ const DISHES: Dish[] = [
     meitei: "ꯁꯤꯡꯖꯨ",
     blurb:
       "A raw salad tossed to order: shredded cabbage, banana flower, lotus stem or raw papaya bound with roasted perilla or sesame powder, gram flour, chilli and usually ngari.",
-    note: "Sold from roadside singju stalls through the afternoon — Manipur's great street snack.",
+    note: "Sold from roadside singju stalls through the afternoon. Manipur's great street snack.",
   },
   {
     name: "Chak-hao kheer",
@@ -37,7 +37,7 @@ const DISHES: Dish[] = [
     name: "Ngari",
     meitei: "ꯉꯥꯔꯤ",
     blurb:
-      "Small sun-dried fish packed into earthen pots and fermented for months. It is a seasoning, not a side — the base note under eromba, singju and morok metpa.",
+      "Small sun-dried fish packed into earthen pots and fermented for months. It is a seasoning, not a side: the base note under eromba, singju and morok metpa.",
     note: "Pungent by design. If you avoid fish, say so clearly; ngari hides in most dishes.",
   },
   {
@@ -45,7 +45,7 @@ const DISHES: Dish[] = [
     meitei: "ꯃꯣꯔꯣꯛ ꯃꯦꯠꯄ",
     blurb:
       "Green chillies roasted or steamed, then pounded with ngari, a little oil and salt into a coarse, fiery chutney.",
-    note: "Taken in small dabs with rice. Genuinely hot — the local u-morok chilli is no joke.",
+    note: "Taken in small dabs with rice. Genuinely hot: the local u-morok chilli is no joke.",
   },
   {
     name: "Kangshoi",

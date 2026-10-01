@@ -15,8 +15,8 @@ const INTERVAL_MS = 3400;
  * `sr-only` paragraph instead.
  *
  * Reduced motion stops the rotation entirely rather than merely speeding it
- * up — an element that changes on its own is the thing the preference is
- * about — and the first subject stays put. As in the hero, `initial`/`animate`
+ * up (an element that changes on its own is the thing the preference is
+ * about), and the first subject stays put. As in the hero, `initial`/`animate`
  * are constant and only the timing collapses, so nothing about what is
  * rendered depends on a value the server cannot know.
  */

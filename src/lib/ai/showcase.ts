@@ -4,7 +4,7 @@
  *
  * This is a *showcase*, not a mock. Every card, price, link and itinerary stop
  * below is assembled from the same catalogue the live tools read, by the same
- * `execute` functions — so nothing here can drift from the real site, and every
+ * `execute` functions, so nothing here can drift from the real site, and every
  * link a visitor clicks lands on a real page. Only the assistant's prose is
  * written by hand, because that is the one part an LLM would otherwise produce.
  *
@@ -75,10 +75,10 @@ export async function buildShowcase(): Promise<ShowcaseTurn[]> {
     itinerary && {
       id: "itinerary",
       chip: "Build me a plan",
-      question: "We've got 4 days in December, ₹40,000 for two. Lake, heritage, food — not too rushed.",
+      question: "We've got 4 days in December, ₹40,000 for two. Lake, heritage, food. Not too rushed.",
       tools: ["searchPlaces", "findStays", "buildItinerary"],
       answer: [
-        "Four days is a good fit for the valley plus one hill day — enough to see Loktak properly without living in the car.",
+        "Four days is a good fit for the valley plus one hill day, enough to see Loktak properly without living in the car.",
         "",
         "Here's how I'd shape it. Roads are slower than the map suggests, so I've kept each day to one anchor and left the afternoons loose.",
       ].join("\n"),
@@ -91,7 +91,7 @@ export async function buildShowcase(): Promise<ShowcaseTurn[]> {
       question: "Where can I stay on Loktak Lake?",
       tools: ["findStays"],
       answer: [
-        "Loktak stays are mostly family homestays rather than hotels — you're booking a room in someone's house, and that is the point.",
+        "Loktak stays are mostly family homestays rather than hotels: you're booking a room in someone's house, and that is the point.",
         "",
         "These are the ones listed with us. Prices are per night; message the host before you book if you want a lake-facing room, since not every room has one.",
       ].join("\n"),
@@ -104,7 +104,7 @@ export async function buildShowcase(): Promise<ShowcaseTurn[]> {
       question: "What should I eat in Imphal, and where?",
       tools: ["findEateries"],
       answer: [
-        "Eat **eromba** at least once — mashed vegetables with roasted chilli and *ngari*, the fermented fish that carries most of Meitei cooking. Then **singju**, a raw salad that is hotter than it looks, and **chak-hao kheer**, the black rice pudding.",
+        "Eat **eromba** at least once: mashed vegetables with roasted chilli and *ngari*, the fermented fish that carries most of Meitei cooking. Then **singju**, a raw salad that is hotter than it looks, and **chak-hao kheer**, the black rice pudding.",
         "",
         "Where to find it:",
       ].join("\n"),
@@ -117,7 +117,7 @@ export async function buildShowcase(): Promise<ShowcaseTurn[]> {
       question: "I want to meet a weaver, not just buy a shawl. Is that possible?",
       tools: ["findExperiences"],
       answer: [
-        "Yes — and it's the better version of the same afternoon. Manipuri handloom is largely woven at home on loin looms, so these sessions happen in a working room with the weaver who made what you're looking at.",
+        "Yes, and it's the better version of the same afternoon. Manipuri handloom is largely woven at home on loin looms, so these sessions happen in a working room with the weaver who made what you're looking at.",
         "",
         "Bring cash; most weavers don't take cards.",
       ].join("\n"),
@@ -130,7 +130,7 @@ export async function buildShowcase(): Promise<ShowcaseTurn[]> {
       question: "Anything worth timing a trip around?",
       tools: ["getFestivalCalendar"],
       answer: [
-        "A few things, and they genuinely change what the trip feels like — book stays early for any of these, because the valley fills up.",
+        "A few things, and they genuinely change what the trip feels like. Book stays early for any of these, because the valley fills up.",
         "",
         "Dates shift with the lunar calendar, so treat these as the window rather than the day and confirm before you book flights.",
       ].join("\n"),

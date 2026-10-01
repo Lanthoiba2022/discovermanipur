@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
  * as an `<img>`. The supplied file is a single flat crimson shape on alpha, and
  * that crimson is close to invisible against the dark film the header floats
  * over on the landing page. Masking lets the one file take the brand crimson on
- * the ivory header, ivory over the film and ivory again in the footer — no
+ * the ivory header, ivory over the film and ivory again in the footer, with no
  * second asset, no `filter: invert()`, and it stays in step with the
  * `--hdr-*` custom properties the header already flips on first paint.
  */
@@ -23,7 +23,7 @@ export function Logo({
   tone = "auto",
 }: {
   className?: string;
-  /** Force the ivory treatment — used on the dark footer. */
+  /** Force the ivory treatment, used on the dark footer. */
   inverted?: boolean;
   /** `inherit` takes its colour from the parent, so the header can drive it. */
   tone?: "auto" | "inherit";
@@ -48,7 +48,7 @@ export function Logo({
   return (
     <Link
       href="/"
-      aria-label="Discover Manipur — The Land of Jewels, home"
+      aria-label="Discover Manipur: The Land of Jewels, home"
       className={cn(
         "group inline-flex items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring",
         className,

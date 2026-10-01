@@ -247,7 +247,7 @@ export function BookingsPanel() {
             <DialogTitle>Cancel this booking?</DialogTitle>
             <DialogDescription>
               {target ? `${target.refTitle} will be marked as cancelled. ` : ""}This cannot be
-              undone, and the host is not notified automatically — let them know if you had been in
+              undone, and the host is not notified automatically, so let them know if you had been in
               touch.
             </DialogDescription>
           </DialogHeader>

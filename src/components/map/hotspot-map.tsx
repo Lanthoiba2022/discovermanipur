@@ -44,7 +44,7 @@ export interface HotspotMapProps {
 function markerElement(label: string): HTMLButtonElement {
   const el = document.createElement("button");
   el.type = "button";
-  el.setAttribute("aria-label", `${label} — open details`);
+  el.setAttribute("aria-label", `${label}: open details`);
   el.style.cssText = [
     "width:26px",
     "height:34px",
@@ -94,7 +94,7 @@ export default function HotspotMap({
     /**
      * The popup photo is 220px wide. `withPhotos` mints Places URLs at the
      * 1200px default, so without this every popup pulls a 1200px image to show
-     * it at a fifth of that — wasted bytes on a hover interaction.
+     * it at a fifth of that: wasted bytes on a hover interaction.
      */
     const narrow = (src: string) =>
       src.startsWith("/api/place-photo") ? src.replace(/([?&])w=\d+/, "$1w=440") : src;

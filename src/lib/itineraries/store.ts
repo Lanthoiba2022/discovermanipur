@@ -116,7 +116,7 @@ function knownUserIds(): string[] {
       ids.add(key.slice(KEY_PREFIX.length, key.length - KEY_SUFFIX.length));
     }
   } catch {
-    // Storage blocked — fall back to whatever this session already cached.
+    // Storage blocked: fall back to whatever this session already cached.
   }
   return [...ids];
 }

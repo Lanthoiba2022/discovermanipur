@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { SITE_HOST } from "@/lib/site";
 
 export const alt =
-  "Discover Manipur — floating islands, cloud-caught hills and a thousand-year weave";
+  "Discover Manipur: floating islands, cloud-caught hills and a thousand-year weave";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

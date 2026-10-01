@@ -24,7 +24,7 @@ export function DemoModeNotice({ className }: { className?: string }) {
         <p className="text-foreground">
           <span className="font-medium">Local development mode.</span> No authentication server
           is configured, so accounts, bookings and saved lists live in this browser only. Use any
-          email and an 8-character password — nothing is sent anywhere.
+          email and an 8-character password. Nothing is sent anywhere.
         </p>
       ) : (
         <p className="text-foreground">

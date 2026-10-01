@@ -3,7 +3,7 @@
 /**
  * Auth operations. Every function is async and returns `{ error: string|null }`
  * so the call sites are the same on Neon Auth and on the local-development
- * session — only the bodies below branch.
+ * session. Only the bodies below branch.
  */
 
 import type { Profile } from "@/types";
@@ -58,7 +58,7 @@ interface ClientError {
  * Run a Neon Auth client call and always get `{ data, error }` back.
  *
  * Plain Better Auth returns failures as `{ error }`, but Neon's wrapper
- * (`@neondatabase/auth`) THROWS an `AuthApiError` for any non-2xx response —
+ * (`@neondatabase/auth`) THROWS an `AuthApiError` for any non-2xx response:
  * a wrong password, a taken email, a bad code, a signup the webhook refused.
  * Without this, those throw past the form and the user sees nothing. The
  * thrown error carries `message`, `status` and `code`, same as `{ error }`.
@@ -85,7 +85,7 @@ async function attempt<T>(
 const isUnverified = (e: ClientError | null) =>
   e?.code === "email_not_confirmed" || e?.code === "EMAIL_NOT_VERIFIED";
 
-/** Better Auth errors carry `message`, but not always — fall back to status. */
+/** Better Auth errors carry `message`, but not always. Fall back to status. */
 function messageOf(error: { message?: string; statusText?: string } | null | undefined) {
   if (!error) return null;
   return error.message || error.statusText || "Something went wrong. Try again.";
@@ -177,7 +177,7 @@ export async function signUpWithPassword(input: {
     }
 
     // Verification off: sign-up left a live session. Record the name exactly
-    // as typed — splitting `name` back apart would guess wrong for multi-word
+    // as typed. Splitting `name` back apart would guess wrong for multi-word
     // first names.
     await saveProfile({ firstName, lastName, phone: "", avatarUrl: "" });
     await refreshSession();
@@ -220,7 +220,7 @@ export interface VerifyResult extends AuthResult {
 /**
  * Check the 6-digit code. On success Neon Auth marks the email verified and,
  * with auto sign-in on, sets the session cookie. `firstName`/`lastName` are
- * saved to the profile once that session exists — at sign-up time there was
+ * saved to the profile once that session exists. At sign-up time there was
  * no session to save them with.
  */
 export async function verifyEmailCode(input: {

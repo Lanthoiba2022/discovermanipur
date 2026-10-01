@@ -45,12 +45,12 @@ export interface MediaImage {
  * their bytes must not be cached, which is why they are kept apart from
  * `MediaImage` (files we host ourselves in `public/file-uploads`).
  *
- * `attribution` is a condition of the Maps Platform terms — render it wherever
+ * `attribution` is a condition of the Maps Platform terms. Render it wherever
  * the photo appears.
  */
 export interface PhotoRef {
   provider: "google-places";
-  /** `places/<place_id>/photos/<photo_id>` — pass to /api/place-photo?ref= */
+  /** `places/<place_id>/photos/<photo_id>`: pass to /api/place-photo?ref= */
   ref: string;
   width?: number;
   height?: number;
@@ -59,7 +59,7 @@ export interface PhotoRef {
 
 /**
  * How well attested a catalogue row is. `phone-verified` may only be set by a
- * human who actually rang the business — never by an importer.
+ * human who actually rang the business, never by an importer.
  */
 export type SourceVerification =
   | "official"
@@ -121,7 +121,7 @@ export interface Hotspot {
   panoramaUrl?: string;
   /** Externally-hosted photos resolved at request time. See PhotoRef. */
   photoRefs?: PhotoRef[];
-  /** Display cohort — higher sorts first. */
+  /** Display cohort: higher sorts first. */
   sortWeight?: SortWeight;
   verification?: SourceVerification;
   sources?: string[];
@@ -379,7 +379,7 @@ export type CraftCategory =
   | "instrument";
 
 /**
- * A craft listed by a Manipuri maker. Discover Manipur does not process payments — a
+ * A craft listed by a Manipuri maker. Discover Manipur does not process payments. A
  * listing carries the artisan's own contact details and an enquiry goes
  * straight to them, so the money and the relationship stay local.
  */

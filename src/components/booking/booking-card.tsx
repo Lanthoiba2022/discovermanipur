@@ -135,14 +135,14 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
               Your request for {quote.nights} {quote.nights === 1 ? "night" : "nights"} for{" "}
               {guests} {guests === 1 ? "guest" : "guests"} ({formatINR(confirmed.total)}) is saved
               to your account as pending, where Discover Manipur&apos;s admins can see it. {host}{" "}
-              is not notified automatically yet — please contact them directly to book. You have
+              is not notified automatically yet. Please contact them directly to book. You have
               not been charged.
             </>
           ) : (
             <>
               Your request for {quote.nights} {quote.nights === 1 ? "night" : "nights"} for{" "}
               {guests} {guests === 1 ? "guest" : "guests"} is saved in this browser. Online booking
-              is not connected on this site, so {host} has not been told — please contact them
+              is not connected on this site, so {host} has not been told. Please contact them
               directly to book. You have not been charged.
             </>
           )}
@@ -269,7 +269,7 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
             {mode === "account"
               ? "Requests are saved to your account, where Discover Manipur's admins can see them. Your host is not notified automatically yet, and no payment is taken."
               : mode === "browser"
-                ? "Requests are saved in this browser only — online booking is not connected on this site, so your host is not notified."
+                ? "Requests are saved in this browser only. Online booking is not connected on this site, so your host is not notified."
                 : null}
           </span>
         </p>
@@ -282,7 +282,7 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
             <DialogDescription>
               {mode === "account"
                 ? `One last look. This saves the request to your account; it is not sent to ${host} automatically yet.`
-                : `One last look. This saves the request in this browser only — it is not sent to ${host}.`}
+                : `One last look. This saves the request in this browser only. It is not sent to ${host}.`}
             </DialogDescription>
           </DialogHeader>
 

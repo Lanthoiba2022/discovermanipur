@@ -16,7 +16,7 @@ type Params = { slug: string };
  * The catalogue is finite and fully enumerated by generateStaticParams, so a
  * slug outside that set does not exist. Without this, Next streams the page
  * (every detail route has a loading.tsx), flushing a 200 before notFound()
- * throws — a soft 404 that would let crawlers index any garbage URL.
+ * throws: a soft 404 that would let crawlers index any garbage URL.
  */
 export const dynamicParams = false;
 

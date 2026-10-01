@@ -40,7 +40,7 @@ function Header({ live }: { live: boolean }) {
       ) : (
         <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
           About fifteen minutes. Nothing is published and nothing is charged. This copy of the site
-          has no database or sign-in connected, so applications are not sent to anyone — if you
+          has no database or sign-in connected, so applications are not sent to anyone. If you
           want to be listed, say hello on the {DISCORD} as well.
         </p>
       )}

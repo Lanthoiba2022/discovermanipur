@@ -37,7 +37,7 @@ export const revealVariants: Variants = {
  * Fade-and-rise on scroll into view.
  *
  * `useReducedMotion()` returns null during SSR and true on a reduced-motion
- * client. So it must never decide *what gets rendered* — not the tag, not the
+ * client. So it must never decide *what gets rendered*: not the tag, not the
  * DOM structure, and not the inline style framer writes. Branching
  * `variants`/`initial` on it makes the server emit `opacity: 0` while a
  * reduced-motion client's first render emits no opacity at all: React reports
@@ -45,7 +45,7 @@ export const revealVariants: Variants = {
  * reduced-motion reader looking at permanently invisible content.
  *
  * Instead `variants`, `initial` and `whileInView` are constant, and only the
- * transition *timing* collapses — so the markup is identical either
+ * transition *timing* collapses, so the markup is identical either
  * way and a reduced-motion reader simply lands on the finished state in one
  * frame. `custom` carries the flag into the variant, where it is safe: variants
  * resolve after hydration.

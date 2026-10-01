@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 export const metadata: Metadata = {
   title: "Responsible travel in Manipur",
   description:
-    "Loktak's phumdis, the sangai of Keibul Lamjao, village etiquette, buying handloom directly from weavers, waste on trek routes, photography consent and fair pay — plus a visitor pledge.",
+    "Loktak's phumdis, the sangai of Keibul Lamjao, village etiquette, buying handloom directly from weavers, waste on trek routes, photography consent and fair pay, plus a visitor pledge.",
   openGraph: {
     title: "Responsible travel in Manipur",
     description:
@@ -58,7 +58,7 @@ export default async function ResponsibleTravelPage() {
       <Section className="bg-surface-sunken">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <Reveal className="lg:col-span-5">
-            <p className="eyebrow text-muted-foreground">01 — The lake</p>
+            <p className="eyebrow text-muted-foreground">01 · The lake</p>
             <h2 className="mt-4 font-display text-3xl leading-tight md:text-[2.6rem]">
               Loktak is a living system, not a viewpoint.
             </h2>
@@ -76,7 +76,7 @@ export default async function ResponsibleTravelPage() {
           <Reveal delayIndex={1} className="lg:col-span-7">
             <Prose>
               <p>
-                The rings you see from the air are <strong>phumdis</strong> — floating mats of
+                The rings you see from the air are <strong>phumdis</strong>: floating mats of
                 vegetation, soil and decomposing organic matter that drift across the surface and
                 root into the lakebed when the water drops. They are the reason Loktak looks the way
                 it does, and they are not scenery. They are habitat, they are grazing, and for
@@ -84,7 +84,7 @@ export default async function ResponsibleTravelPage() {
                 was built.
               </p>
               <p>
-                Loktak is a Ramsar site — a wetland of international importance — and it has spent
+                Loktak is a Ramsar site (a wetland of international importance), and it has spent
                 much of the last three decades on the Montreux Record, the register kept for Ramsar
                 sites where the ecological character has changed or is likely to change. That
                 listing is the formal way of saying what fishing communities have said for years:
@@ -134,7 +134,7 @@ export default async function ResponsibleTravelPage() {
       <Section>
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <Reveal className="lg:col-span-7">
-            <p className="eyebrow text-muted-foreground">02 — The deer</p>
+            <p className="eyebrow text-muted-foreground">02 · The deer</p>
             <h2 className="mt-4 font-display text-3xl leading-tight md:text-[2.6rem]">
               The sangai lives in one place on earth.
             </h2>
@@ -143,7 +143,7 @@ export default async function ResponsibleTravelPage() {
                 The sangai is the Manipur brow-antlered deer, and it is endemic: the wild population
                 exists in Keibul Lamjao, on the southern reach of Loktak, and nowhere else in the
                 world. The park is usually described as the only floating national park there is,
-                because the deer live and feed on the phumdis themselves — walking on a surface that
+                because the deer live and feed on the phumdis themselves, walking on a surface that
                 gives underfoot, which is where the animal&apos;s local reputation for a delicate,
                 dancing gait comes from.
               </p>
@@ -192,7 +192,7 @@ export default async function ResponsibleTravelPage() {
                 The Shirui lily grows on the upper slopes of Shirui Kashong in Ukhrul and, like the
                 sangai, is effectively found nowhere else. It flowers for a short window around the
                 start of the monsoon, which is exactly when the hill is busiest. Stay on the path,
-                do not pick anything, and do not walk into the grassland for a closer frame — the
+                do not pick anything, and do not walk into the grassland for a closer frame. The
                 plant is already threatened by habitat change and trampling.
               </p>
             </NoteBox>
@@ -203,7 +203,7 @@ export default async function ResponsibleTravelPage() {
       {/* -------------------------------- Villages --------------------------- */}
       <Section className="bg-surface-sunken">
         <Reveal>
-          <p className="eyebrow text-muted-foreground">03 — People</p>
+          <p className="eyebrow text-muted-foreground">03 · People</p>
           <h2 className="mt-4 max-w-[20ch] font-display text-3xl leading-tight md:text-[2.6rem]">
             A village is not an exhibit.
           </h2>
@@ -214,7 +214,7 @@ export default async function ResponsibleTravelPage() {
             <Prose>
               <h3>Arriving well</h3>
               <p>
-                Manipur is home to many communities — Meitei, Naga, Kuki-Zo, Pangal and others —
+                Manipur is home to many communities (Meitei, Naga, Kuki-Zo, Pangal and others),
                 with distinct languages, faiths, histories and customs, and a recent past that
                 includes real conflict and displacement. Travel here with the assumption that you do
                 not know the local context, because you almost certainly do not.
@@ -238,7 +238,7 @@ export default async function ResponsibleTravelPage() {
                   want to tell you.
                 </li>
                 <li>
-                  Learn a few words. <em>Khurumjari</em> — a Meiteilon greeting — goes further than
+                  Learn a few words. <em>Khurumjari</em>, a Meiteilon greeting, goes further than
                   you would think.
                 </li>
               </ul>
@@ -257,7 +257,7 @@ export default async function ResponsibleTravelPage() {
                 Rituals, funerals and religious performances are frequently off limits to cameras
                 even when a crowd is present. If there is no one to ask, the answer is no. And if
                 you intend to publish or sell an image of an identifiable person, say so at the time
-                you ask — not afterwards.
+                you ask, not afterwards.
               </p>
 
               <h3>Paying properly</h3>
@@ -268,7 +268,7 @@ export default async function ResponsibleTravelPage() {
                 transfer from the person with the least margin to the person with the most.
               </p>
               <p>
-                Prefer arrangements where the money reaches the household directly — a homestay
+                Prefer arrangements where the money reaches the household directly: a homestay
                 over a chain hotel, a village-run guide over an out-of-state agency, a meal cooked
                 at your stay over a franchise.
               </p>
@@ -292,7 +292,7 @@ export default async function ResponsibleTravelPage() {
             </div>
           </Reveal>
           <Reveal delayIndex={1} className="lg:col-span-7">
-            <p className="eyebrow text-muted-foreground">04 — The weave</p>
+            <p className="eyebrow text-muted-foreground">04 · The weave</p>
             <h2 className="mt-4 font-display text-3xl leading-tight md:text-[2.6rem]">
               Buy the cloth from the person who wove it.
             </h2>
@@ -313,7 +313,7 @@ export default async function ResponsibleTravelPage() {
                 </li>
                 <li>
                   Ask what the motif means and who wove it. Some designs belong to particular
-                  communities and are not decorative patterns to be worn casually — a seller will
+                  communities and are not decorative patterns to be worn casually; a seller will
                   usually tell you if you ask.
                 </li>
                 <li>
@@ -334,7 +334,7 @@ export default async function ResponsibleTravelPage() {
       <Section className="bg-surface-sunken">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <Reveal className="lg:col-span-7">
-            <p className="eyebrow text-muted-foreground">05 — Plastic and trails</p>
+            <p className="eyebrow text-muted-foreground">05 · Plastic and trails</p>
             <h2 className="mt-4 font-display text-3xl leading-tight md:text-[2.6rem]">
               Whatever you carry up, carry down.
             </h2>
@@ -359,7 +359,7 @@ export default async function ResponsibleTravelPage() {
                 </li>
                 <li>
                   No open fires outside designated spots, and no washing with soap or detergent in a
-                  stream — it is someone&apos;s drinking water downhill.
+                  stream. It is someone&apos;s drinking water downhill.
                 </li>
                 <li>
                   If there is a village waste rule, follow it. If there is a local clean-up, join
@@ -389,7 +389,7 @@ export default async function ResponsibleTravelPage() {
       {/* -------------------------------- Advisory --------------------------- */}
       <Section>
         <Reveal className="max-w-[72ch]">
-          <p className="eyebrow text-muted-foreground">06 — Before you book anything</p>
+          <p className="eyebrow text-muted-foreground">06 · Before you book anything</p>
           <h2 className="mt-4 font-display text-3xl leading-tight md:text-[2.6rem]">
             Check the current rules yourself.
           </h2>
@@ -417,8 +417,8 @@ export default async function ResponsibleTravelPage() {
                 notifications.
               </li>
               <li>
-                Check your own government&apos;s travel advisory, and — if you are not an Indian
-                citizen — the Ministry of Home Affairs rules that apply to your nationality.
+                Check your own government&apos;s travel advisory, and (if you are not an Indian
+                citizen) the Ministry of Home Affairs rules that apply to your nationality.
               </li>
               <li>
                 Ask your host or guide about local conditions in the week before you travel. They

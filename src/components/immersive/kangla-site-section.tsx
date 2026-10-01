@@ -70,7 +70,7 @@ export function KanglaSiteSection({
         </div>
         <p className="self-end text-base leading-relaxed text-ivory-50/70">
           Seven hundred and fifty metres across, thirteen hundred long, ringed by a moat with the
-          Imphal river on its eastern side. Every pin below sits on a real mapped coordinate —
+          Imphal river on its eastern side. Every pin below sits on a real mapped coordinate;
           the ones marked <span className="font-mono text-brass-400">3D</span> open a detailed
           reconstruction you can walk around.
         </p>

@@ -4,7 +4,7 @@
  * MapLibre GL v6 ships its worker as a separate ESM chunk and resolves it at
  * runtime from `import.meta.url` + "maplibre-gl-worker.mjs". Once the library
  * is bundled, that URL points at the emitted chunk directory, where the worker
- * file does not exist — so `new Worker(...)` fails, the worker dies, and the
+ * file does not exist, so `new Worker(...)` fails, the worker dies, and the
  * map still renders raster tiles (decoded on the main thread) while every
  * GeoJSON source silently stays empty, with no error raised.
  *
@@ -33,7 +33,7 @@ for (const file of FILES) {
     await stat(src);
   } catch {
     console.error(
-      `[maplibre] ${file} not found in maplibre-gl/dist — the dist layout has changed.\n` +
+      `[maplibre] ${file} not found in maplibre-gl/dist. The dist layout has changed.\n` +
         `           Check whether setWorkerUrl is still needed before shipping.`,
     );
     process.exit(1);

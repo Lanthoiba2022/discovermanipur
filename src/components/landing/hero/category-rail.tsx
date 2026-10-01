@@ -7,7 +7,7 @@ import { HERO_CATEGORIES } from "./hero-links";
  *
  * A plain scroll container rather than a slider: native touch and trackpad
  * scrolling, keyboard focus scrolls a link into view on its own, and it works
- * with no JavaScript at all — which matters for the one row on the page whose
+ * with no JavaScript at all, which matters for the one row on the page whose
  * whole job is to get a first-time visitor to a section.
  *
  * `overflow-x-auto` clips its own row, so the eight entries never widen the

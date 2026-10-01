@@ -11,7 +11,7 @@ import { Reveal } from "@/components/motion/reveal";
  * one repeated stripe:
  *
  * 1. The MEASURE LADDER. Each band picks a column width, and the page steps
- *    DOWN through them as it descends — 88rem at the featured places, 44rem at
+ *    DOWN through them as it descends: 88rem at the featured places, 44rem at
  *    the closing call to action. The reader is funnelled rather than walled.
  * 2. The TWO-PART OPENER. A flanked eyebrow, then a large calm display line,
  *    then an italic line that finishes the sentence. It is the rhythm marker a

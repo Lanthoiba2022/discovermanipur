@@ -4,12 +4,12 @@
  * Profile reads and writes for the signed-in traveller.
  *
  * Neon Auth owns identity (`neon_auth.user`: id, email, name, image). The app's
- * own fields — first/last name, phone, role — live in `public.profiles`, keyed
+ * own fields (first/last name, phone, role) live in `public.profiles`, keyed
  * by the same id. `neon_auth` is managed by Neon and takes no triggers from
  * us, so the row is created on first read (`ensureProfile` in `./dal`).
  *
  * These are Server Actions, i.e. public POST endpoints. Each one resolves the
- * user from the session cookie and touches only that user's row — never an id
+ * user from the session cookie and touches only that user's row, never an id
  * supplied by the caller. There is no row-level security behind the query, so
  * that check is the only thing keeping one traveller out of another's row.
  */

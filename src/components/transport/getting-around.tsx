@@ -12,7 +12,7 @@ const PANELS: Panel[] = [
     title: "Flying in",
     body: [
       "Imphal's Bir Tikendrajit International Airport (Tulihal), about 8 km from the city centre, is the only airport in Manipur with scheduled passenger flights.",
-      "Direct services usually connect Imphal with Delhi, Kolkata and Guwahati, with onward hops to Silchar, Dimapur and Aizawl. Routes and frequencies change every season — check the airlines directly before you plan around one.",
+      "Direct services usually connect Imphal with Delhi, Kolkata and Guwahati, with onward hops to Silchar, Dimapur and Aizawl. Routes and frequencies change every season, so check the airlines directly before you plan around one.",
       "Prepaid and app cabs run from the terminal into Imphal; agree a fare before you get in if you are taking a private taxi.",
     ],
   },
@@ -20,9 +20,9 @@ const PANELS: Panel[] = [
     icon: Bus,
     title: "Coming by road",
     body: [
-      "NH-2 links Imphal with Dimapur in Nagaland — roughly 215 km, usually 7 to 9 hours depending on landslides, convoys and roadworks.",
+      "NH-2 links Imphal with Dimapur in Nagaland: roughly 215 km, usually 7 to 9 hours depending on landslides, convoys and roadworks.",
       "NH-37 runs west through Noney and Jiribam towards Silchar in Assam, about 220 km; Guwahati is a longer haul again, typically an overnight run via Silchar or Dimapur.",
-      "Overnight sleeper buses and shared vehicles work both corridors. Hill roads are slow in the monsoon (June to September) — build a buffer day into any tight itinerary.",
+      "Overnight sleeper buses and shared vehicles work both corridors. Hill roads are slow in the monsoon (June to September), so build a buffer day into any tight itinerary.",
     ],
   },
   {
@@ -31,25 +31,25 @@ const PANELS: Panel[] = [
     body: [
       "The nearest working railheads are Dimapur in Nagaland and Jiribam on Manipur's western edge; the Jiribam–Imphal line is still under construction, so confirm its status rather than assuming a through train.",
       "Shared Tata Sumos and Boleros are how most of Manipur actually moves: fixed stands, per-seat fares, and departures early in the morning once the vehicle fills.",
-      "Book a seat the evening before for popular routes such as Imphal–Ukhrul, Imphal–Churachandpur or Imphal–Senapati, and expect a squeeze — the back row is the one to avoid.",
+      "Book a seat the evening before for popular routes such as Imphal–Ukhrul, Imphal–Churachandpur or Imphal–Senapati, and expect a squeeze; the back row is the one to avoid.",
     ],
   },
   {
     icon: FileText,
-    title: "Inner Line Permit — Indian visitors",
+    title: "Inner Line Permit: Indian visitors",
     body: [
       "Manipur was brought under the Inner Line Permit system with effect from 1 January 2020. Indian citizens who are not domiciled in Manipur need an ILP to enter the state.",
-      "Permits are issued online through the Manipur government's ILP portal and at counters at Imphal airport and the main entry points. Categories (temporary, regular, special, labour), validity and fees differ — a short tourist permit is typically valid for a limited number of days and can usually be extended.",
+      "Permits are issued online through the Manipur government's ILP portal and at counters at Imphal airport and the main entry points. Categories (temporary, regular, special, labour), validity and fees differ. A short tourist permit is typically valid for a limited number of days and can usually be extended.",
       "Carry a printed copy plus the ID you applied with; permits are checked on arrival and at some district boundaries.",
     ],
   },
   {
     icon: Globe2,
-    title: "Foreign nationals — a separate rule",
+    title: "Foreign nationals: a separate rule",
     body: [
       "The ILP does not apply to foreign passport holders. Manipur instead falls under the Protected Area regime, which the Ministry of Home Affairs reinstated for Manipur, Mizoram and Nagaland in December 2024, so a Protected Area Permit is generally required.",
       "Nationals of Afghanistan, China and Pakistan, and people of those origins, need prior clearance from the Ministry of Home Affairs.",
-      "Foreign visitors are also required to register with the Foreigners Regional Registration Office (FRRO) in Imphal shortly after arrival — within 24 hours under the current rules.",
+      "Foreign visitors are also required to register with the Foreigners Regional Registration Office (FRRO) in Imphal shortly after arrival, within 24 hours under the current rules.",
     ],
   },
 ];

@@ -1,7 +1,7 @@
 /**
  * The concierge's toolbelt.
  *
- * Every tool is backed by `@/lib/data` — the concierge can only ever recommend
+ * Every tool is backed by `@/lib/data`: the concierge can only ever recommend
  * things that actually exist in the Discover Manipur catalogue. Results are deliberately
  * compact (title, slug, href, one-line summary, price) rather than whole
  * records: it keeps the context small and gives the UI a clean card shape.
@@ -87,7 +87,7 @@ function inr(value: number): string {
  *
  * Catalogue rows legitimately have blank `bestTimeToVisit` / `entryFee` /
  * `hostName` fields. Interpolating those straight into a template produced
- * strings like "A Zeme village. . Entry: ." — so each piece is checked before
+ * strings like "A Zeme village. . Entry: .", so each piece is checked before
  * it earns its full stop.
  */
 function sentences(...parts: (string | undefined | null)[]): string {
@@ -101,7 +101,7 @@ function sentences(...parts: (string | undefined | null)[]): string {
 /**
  * Seed rows carry literal placeholders where a field was never researched
  * (see `data/research/scripts/build_seed_sql.py`). Printing one back at a
- * traveller — "Hosted by Host details to be confirmed" — is worse than saying
+ * traveller ("Hosted by Host details to be confirmed") is worse than saying
  * nothing, so they are treated as absent.
  */
 const PLACEHOLDERS = new Set(["host details to be confirmed", "tbc", "to be confirmed", "n/a", "unknown"]);
@@ -375,12 +375,12 @@ export async function assembleItinerary(input: AssembleInput): Promise<Itinerary
     if (allEateries.length > 0) {
       const lunch = allEateries[eateryCursor % allEateries.length];
       eateryCursor += 1;
-      meals.push({ slot: "lunch", suggestion: `${lunch.name} — ${lunch.location}`, href: `/eateries/${lunch.slug}` });
+      meals.push({ slot: "lunch", suggestion: `${lunch.name}, ${lunch.location}`, href: `/eateries/${lunch.slug}` });
       const dinner = allEateries[eateryCursor % allEateries.length];
       eateryCursor += 1;
       meals.push({
         slot: "dinner",
-        suggestion: `${dinner.name} — ${dinner.signatureDishes[0]?.name ?? dinner.cuisines[0] ?? "local plates"}`,
+        suggestion: `${dinner.name} (${dinner.signatureDishes[0]?.name ?? dinner.cuisines[0] ?? "local plates"})`,
         href: `/eateries/${dinner.slug}`,
       });
     }
@@ -392,7 +392,7 @@ export async function assembleItinerary(input: AssembleInput): Promise<Itinerary
       title: stops[0] ? `${stops[0].title} and around` : `Day ${day} in Manipur`,
       summary: stops.length
         ? `A ${input.pace} day built around ${stops.map((s) => s.title).join(", ")}.`
-        : "An open day — we will fill this in once the catalogue has listings for your dates.",
+        : "An open day. We will fill this in once the catalogue has listings for your dates.",
       stops,
       meals,
       stay: stay
@@ -406,7 +406,7 @@ export async function assembleItinerary(input: AssembleInput): Promise<Itinerary
           }
         : undefined,
       travelNotes: stops.length
-        ? `Distances are short but roads are slow — budget roughly ${stops.length * 45} minutes of driving across the day.`
+        ? `Distances are short but roads are slow. Budget roughly ${stops.length * 45} minutes of driving across the day.`
         : undefined,
       estimatedCostInr: stay ? stay.pricePerNight + perDaySpend[input.budget] : undefined,
     });
@@ -429,12 +429,12 @@ export async function assembleItinerary(input: AssembleInput): Promise<Itinerary
     days: plannedDays,
     totalEstimatedCostInr: total > 0 ? total : undefined,
     packingNotes: [
-      "Layers — Imphal valley is mild, the hills get genuinely cold after dark.",
+      "Layers: Imphal valley is mild, the hills get genuinely cold after dark.",
       "Cash: ATMs thin out fast outside Imphal.",
       "A power bank; supply can be patchy in village homestays.",
     ],
     permitsAndSafety: [
-      "Indian nationals do not need an Inner Line Permit for Manipur, but some border and hill areas have local restrictions — check with your host before you go.",
+      "Indian nationals do not need an Inner Line Permit for Manipur, but some border and hill areas have local restrictions. Check with your host before you go.",
       "Foreign nationals must register with the FRRO; rules change, so confirm with the Manipur Tourism department or your embassy.",
       "Road conditions and access to hill districts change with the season and with local advisories. Verify current conditions with official sources before you travel.",
     ],
@@ -448,7 +448,7 @@ export async function assembleItinerary(input: AssembleInput): Promise<Itinerary
   }
   if (overBudget) {
     notes.push(
-      `Rough estimate ${inr(total)} per person — above the ${inr(input.totalBudgetInr ?? 0)} budget you gave for ${days} days. Say so plainly and suggest trimming the trip length or dropping to a cheaper stay tier.`,
+      `Rough estimate ${inr(total)} per person, above the ${inr(input.totalBudgetInr ?? 0)} budget you gave for ${days} days. Say so plainly and suggest trimming the trip length or dropping to a cheaper stay tier.`,
     );
   }
 
@@ -475,7 +475,7 @@ function miss(
     guests,
     lineItems: [],
     totalInr: 0,
-    note: `I couldn't find that ${what} in the catalogue (slug “${slug}”). Don't invent it — run the matching find* tool again and use the slug it returns.`,
+    note: `I couldn't find that ${what} in the catalogue (slug “${slug}”). Don't invent it. Run the matching find* tool again and use the slug it returns.`,
   };
 }
 
@@ -515,7 +515,7 @@ async function quoteBooking(input: {
         : tour.departureDates.length > 0
           ? `That date isn't a scheduled departure (scheduled: ${tour.departureDates.slice(0, 3).join(", ")}). Check availability with the organiser.`
           : "Check the date with the organiser.",
-      "No payment online — saving records a request; the organiser is not notified automatically yet, so contact them to confirm your place.",
+      "No payment online. Saving records a request; the organiser is not notified automatically yet, so contact them to confirm your place.",
     ].join(" ");
     return {
       kind: "booking-quote",
@@ -545,7 +545,7 @@ async function quoteBooking(input: {
     if (nights <= 0) {
       return {
         ...miss(kind, slug, startDate, guests, "homestay"),
-        note: "Your check-out date is before check-in — give me dates the other way round and I'll re-quote.",
+        note: "Your check-out date is before check-in. Give me dates the other way round and I'll re-quote.",
       };
     }
     const { subtotal, serviceFee: fee, total } = quoteStay({
@@ -571,7 +571,7 @@ async function quoteBooking(input: {
         { label: "Service fee (8%)", amountInr: fee },
       ],
       totalInr: total,
-      note: "No payment online — saving records a request; the host is not notified automatically yet, so contact them to confirm the stay. Check the cancellation policy on the listing.",
+      note: "No payment online. Saving records a request; the host is not notified automatically yet, so contact them to confirm the stay. Check the cancellation policy on the listing.",
     };
   }
 
@@ -601,7 +601,7 @@ async function quoteBooking(input: {
         { label: "Experience fee (5%)", amountInr: fee },
       ],
       totalInr: total,
-      note: "No payment online — saving records a request; the host is not notified automatically yet, so contact them to confirm the date.",
+      note: "No payment online. Saving records a request; the host is not notified automatically yet, so contact them to confirm the date.",
     };
   }
 
@@ -627,8 +627,8 @@ async function quoteBooking(input: {
         lineItems: [{ label: `${days} day${days === 1 ? "" : "s"} × ${formatINR(transport.pricePerDay)}`, amountInr: total }],
         totalInr: total,
         note: endDate
-          ? "No payment online — saving records a request on your bookings page; the operator is not notified automatically yet, so contact them to confirm."
-          : "You didn't give a return date, so I priced a single day — tell me your dates and I'll re-quote.",
+          ? "No payment online. Saving records a request on your bookings page; the operator is not notified automatically yet, so contact them to confirm."
+          : "You didn't give a return date, so I priced a single day. Tell me your dates and I'll re-quote.",
       };
     }
     return {
@@ -643,7 +643,7 @@ async function quoteBooking(input: {
       guests,
       lineItems: [],
       totalInr: 0,
-      note: `This option is priced per kilometre, so I can't total it without your route — get in touch with ${transport.operator} to lock in a rate.`,
+      note: `This option is priced per kilometre, so I can't total it without your route. Get in touch with ${transport.operator} to lock in a rate.`,
     };
   }
 
@@ -661,8 +661,8 @@ async function quoteBooking(input: {
     lineItems: [],
     totalInr: 0,
     note: eatery.acceptsReservations
-      ? "Free to request — saving records the request; the eatery is not notified automatically, so call ahead to hold the table."
-      : "This place doesn't take reservations formally — saving only records your plan, so call ahead or walk in.",
+      ? "Free to request. Saving records the request; the eatery is not notified automatically, so call ahead to hold the table."
+      : "This place doesn't take reservations formally. Saving only records your plan, so call ahead or walk in.",
   };
 }
 
@@ -671,7 +671,7 @@ async function quoteBooking(input: {
 export const conciergeTools = {
   searchPlaces: tool({
     description:
-      "Search Discover Manipur's catalogue of places to visit in Manipur — lakes, hills, heritage sites, markets, waterfalls, wildlife. Use this before recommending any place.",
+      "Search Discover Manipur's catalogue of places to visit in Manipur: lakes, hills, heritage sites, markets, waterfalls, wildlife. Use this before recommending any place.",
     inputSchema: z.object({
       query: z.string().optional().describe("Free text, e.g. 'floating lake', 'war memorial', 'sunrise viewpoint'."),
       district: districtEnum.optional(),
@@ -734,7 +734,7 @@ export const conciergeTools = {
 
   findExperiences: tool({
     description:
-      "Find bookable experiences — weaving, cooking, festivals, treks, wellness, wildlife. Use whenever someone asks what to *do*.",
+      "Find bookable experiences: weaving, cooking, festivals, treks, wellness, wildlife. Use whenever someone asks what to *do*.",
     inputSchema: z.object({
       query: z.string().optional(),
       category: z
@@ -769,7 +769,7 @@ export const conciergeTools = {
   }),
 
   findEateries: tool({
-    description: "Find places to eat — Manipuri, Naga, Kuki, cafés, street food. Use for any food question.",
+    description: "Find places to eat: Manipuri, Naga, Kuki, cafés, street food. Use for any food question.",
     inputSchema: z.object({
       query: z.string().optional().describe("Dish or vibe, e.g. 'eromba', 'chak-hao', 'vegan café'."),
       cuisine: z
@@ -835,7 +835,7 @@ export const conciergeTools = {
 
   buildItinerary: tool({
     description:
-      "Assemble a grounded day-by-day itinerary from real Discover Manipur listings. Call this once you know roughly how many days, the budget and the interests. The result renders as a timeline in the chat — introduce it in a sentence or two rather than repeating it.",
+      "Assemble a grounded day-by-day itinerary from real Discover Manipur listings. Call this once you know roughly how many days, the budget and the interests. The result renders as a timeline in the chat. Introduce it in a sentence or two rather than repeating it.",
     inputSchema: z.object({
       days: z.number().int().min(1).max(14).default(4),
       budget: z.enum(budgetLevels).default("comfortable"),
@@ -856,7 +856,7 @@ export const conciergeTools = {
 
   findTransport: tool({
     description:
-      "Find transport options in Manipur — cabs, SUVs, tempos, bikes and shared sumos by the day or per kilometre. Use for any question about getting around.",
+      "Find transport options in Manipur: cabs, SUVs, tempos, bikes and shared sumos by the day or per kilometre. Use for any question about getting around.",
     inputSchema: z.object({
       query: z.string().optional().describe("Route or vibe, e.g. 'Imphal to Moirang', 'airport pickup'."),
       mode: z.enum(["cab", "suv", "tempo", "bike", "shared-sumo", "bus"]).optional(),
@@ -875,7 +875,7 @@ export const conciergeTools = {
 
   quoteBooking: tool({
     description:
-      "Quote and book a listing the traveller has already picked — a tour departure, a homestay stay, an experience, transport by the day, or a free table reservation. Call findTours/findStays/findExperiences/findTransport first so you have the real slug, then call this with the confirmed dates and guests. The result renders as a card with a booking button; introduce it and let the traveller confirm.",
+      "Quote and book a listing the traveller has already picked: a tour departure, a homestay stay, an experience, transport by the day, or a free table reservation. Call findTours/findStays/findExperiences/findTransport first so you have the real slug, then call this with the confirmed dates and guests. The result renders as a card with a booking button; introduce it and let the traveller confirm.",
     inputSchema: z.object({
       kind: z
         .enum(["tour", "homestay", "experience", "transport", "table"])
@@ -889,7 +889,7 @@ export const conciergeTools = {
         .string()
         .regex(/^\d{4}-\d{2}-\d{2}$/)
         .optional()
-        .describe("Check-out date as YYYY-MM-DD — required for homestays."),
+        .describe("Check-out date as YYYY-MM-DD (required for homestays)."),
       guests: z.number().int().min(1).max(20).default(2),
     }),
     execute: async (input) => quoteBooking(input),

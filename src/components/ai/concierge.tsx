@@ -28,7 +28,7 @@ export interface ConciergeProps {
   greeting?: string;
   suggestions?: string[];
   className?: string;
-  /** Rendered above the composer — used by the widget for its header row. */
+  /** Rendered above the composer, used by the widget for its header row. */
   footerNote?: string;
 }
 
@@ -40,7 +40,7 @@ export const DEFAULT_SUGGESTIONS = [
 ];
 
 const DEFAULT_GREETING = [
-  "Khurumjari — welcome. I'm Discover Manipur's concierge.",
+  "Khurumjari, welcome. I'm Discover Manipur's concierge.",
   "",
   "Tell me how long you have, roughly when you're coming and what you're drawn to, and I'll build you a plan out of real places on this site. Ask me anything about Manipur along the way.",
 ].join("\n");
@@ -195,7 +195,7 @@ export function Concierge({
     send(seed.text);
   }, [seed, send]);
 
-  // Keep the newest turn in view — but only while the reader is already at the
+  // Keep the newest turn in view, but only while the reader is already at the
   // bottom, so scrolling back through a long itinerary isn't yanked forward
   // again on the next streamed token.
   const pinnedToBottom = useRef(true);

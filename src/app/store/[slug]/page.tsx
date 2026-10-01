@@ -20,7 +20,7 @@ type Params = { slug: string };
 /**
  * The catalogue is finite and fully enumerated below, so anything outside it
  * genuinely does not exist. Without this, the streamed response (there is a
- * loading.tsx) would flush a 200 before notFound() throws — a soft 404.
+ * loading.tsx) would flush a 200 before notFound() throws: a soft 404.
  */
 export const dynamicParams = false;
 
@@ -38,7 +38,7 @@ export async function generateMetadata({
   const craft = await getCraftBySlug(slug);
   if (!craft) return { title: "Craft not found" };
 
-  const description = `${craft.description.slice(0, 140)} Made by ${craft.maker} in ${craft.location}. Enquire with the maker directly — Discover Manipur takes no commission.`;
+  const description = `${craft.description.slice(0, 140)} Made by ${craft.maker} in ${craft.location}. Enquire with the maker directly. Discover Manipur takes no commission.`;
 
   return {
     title: `${craft.name} by ${craft.maker}`,

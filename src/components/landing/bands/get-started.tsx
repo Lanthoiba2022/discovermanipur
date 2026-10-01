@@ -18,19 +18,19 @@ export interface BandStat {
 }
 
 /**
- * GET STARTED — the conversion close.
+ * GET STARTED: the conversion close.
  *
  * The national board ends on an "Inspired?" kicker, a single instruction and a
  * strip of counters, and the shape is worth keeping: after eight bands of
  * looking, the page should ask for exactly one thing. So there is one primary
- * button — the concierge at `/plan` — and the alternative is demoted to a text
+ * button (the concierge at `/plan`), and the alternative is demoted to a text
  * link rather than a second button, because two equal buttons is the page
  * failing to have an opinion.
  *
  * Crimson ground, centred: the page opened on photography and closes on the
  * brand colour, and the figures are set in brass on it at ~8:1.
  *
- * `stats` may be empty — the figures strip simply does not render, and the
+ * `stats` may be empty: the figures strip simply does not render, and the
  * band is still a complete call to action. Nothing here reads `stats[0]`.
  */
 export function GetStartedBand({ stats }: { stats: BandStat[] }) {
@@ -48,7 +48,7 @@ export function GetStartedBand({ stats }: { stats: BandStat[] }) {
             aria-hidden
             className="pointer-events-none absolute inset-x-0 bottom-0 h-72 bg-[radial-gradient(60%_100%_at_50%_100%,var(--ningthou-700)_0%,transparent_70%)] opacity-70"
           />
-          {/* Top edge only — the site footer opens with its own `weave-band`,
+          {/* Top edge only: the site footer opens with its own `weave-band`,
               and stacking one here would print the motif twice in 200px. */}
           <div aria-hidden className="weave-band absolute inset-x-0 top-0 opacity-70" />
         </>
@@ -85,7 +85,7 @@ export function GetStartedBand({ stats }: { stats: BandStat[] }) {
               className="border-b border-brass-300/20 py-8 lg:border-b-0 lg:border-r lg:pr-10 lg:last:border-r-0"
             >
               {/* The figure is the visible heading of each cell, so the term
-                  is the label and the definition carries both — otherwise a
+                  is the label and the definition carries both; otherwise a
                   screen reader hears a bare number with no unit. */}
               <dt className="sr-only">{stat.label}</dt>
               <dd>

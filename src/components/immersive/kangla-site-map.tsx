@@ -23,8 +23,8 @@ import "maplibre-gl/dist/maplibre-gl.css";
 /**
  * The site level of the Kangla experience: the real fort, from the air, in 3D.
  *
- * Satellite imagery carries the ground truth — the moats, the citadel and the
- * tree cover are all legible in it — and the OpenStreetMap footprints are
+ * Satellite imagery carries the ground truth (the moats, the citadel and the
+ * tree cover are all legible in it), and the OpenStreetMap footprints are
  * extruded on top so the buildings have height when the camera is pitched.
  * Heights are a flat 8 m because OSM carries no `height` tag for any building
  * inside Kangla; they are there to read as massing, not as measured storeys.
@@ -67,7 +67,7 @@ function pinElement(place: KanglaPlace, onSelect: (id: string) => void): HTMLBut
   const el = document.createElement("button");
   el.type = "button";
   el.dataset.placeId = place.id;
-  el.setAttribute("aria-label", `${place.name} — show details`);
+  el.setAttribute("aria-label", `${place.name}: show details`);
   el.style.cssText = [
     "display:grid",
     "place-items:center",
@@ -180,7 +180,7 @@ export default function KanglaSiteMap({
     instance.on("load", () => {
       instance.addSource("kangla", { type: "geojson", data: KANGLA_SITE_GEOJSON });
 
-      // Moats first — they sit under everything and give the island its shape.
+      // Moats first: they sit under everything and give the island its shape.
       instance.addLayer({
         id: "kangla-moat",
         type: "fill",

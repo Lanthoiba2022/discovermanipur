@@ -1,5 +1,5 @@
 /**
- * POST /api/itinerary — a structured, day-by-day plan.
+ * POST /api/itinerary: a structured, day-by-day plan.
  *
  * Returns `{ configured, plan, note? }`. While the concierge is not live (see
  * `isConciergeLive`) it still returns a real plan, assembled deterministically
@@ -90,7 +90,7 @@ export async function POST(req: Request) {
         input.accessibilityNeeds ? `Accessibility needs: ${input.accessibilityNeeds}` : "Accessibility needs: none stated",
         input.notes ? `Extra notes: ${input.notes}` : "",
         "",
-        "## Discover Manipur catalogue — the only listings you may use",
+        "## Discover Manipur catalogue: the only listings you may use",
         digest,
       ]
         .filter(Boolean)

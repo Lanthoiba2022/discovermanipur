@@ -2,7 +2,7 @@
  * The category rail under the fold.
  *
  * The national board runs a row of pipe-separated word links directly beneath
- * its film — the single densest piece of wayfinding on the page, because it
+ * its film: the single densest piece of wayfinding on the page, because it
  * lets a first-time visitor pick a subject before they have read a word of
  * copy. Ours keeps that shape and points it at real routes rather than at
  * marketing labels: every entry below resolves to a page that already exists.

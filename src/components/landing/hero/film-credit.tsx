@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
  * `lucide-react` v1 dropped its brand icons, so there is no `Instagram` export
  * to import. Drawn here in the same stroke idiom as the rest of the icon set
  * (24-box, 2px stroke, round caps) so it sits with them rather than against
- * them. Decorative — the link around it carries the accessible name.
+ * them. Decorative: the link around it carries the accessible name.
  */
 function InstagramGlyph({ className }: { className?: string }) {
   return (
@@ -34,8 +34,8 @@ function InstagramGlyph({ className }: { className?: string }) {
  * this names the person whose footage the whole fold is built on.
  *
  * It is rendered inside the search row rather than floated over the film at a
- * fixed percentage. A percentage drifts — it lands beside the lede on a short
- * viewport and under the rail on a tall one — whereas sitting in the search
+ * fixed percentage. A percentage drifts (it lands beside the lede on a short
+ * viewport and under the rail on a tall one), whereas sitting in the search
  * row keeps it on the search field's own baseline at every height.
  */
 export function FilmCredit({ handle, className }: { handle: string; className?: string }) {
@@ -56,7 +56,7 @@ export function FilmCredit({ handle, className }: { handle: string; className?: 
     >
       <InstagramGlyph className="size-4 shrink-0" />
       <span>{handle}</span>
-      <span className="sr-only">— film credit, opens Instagram in a new tab</span>
+      <span className="sr-only">, film credit, opens Instagram in a new tab</span>
     </a>
   );
 }

@@ -14,8 +14,8 @@ import { auth } from "@/lib/auth/server";
  * dashboard still call `requireRole` (`@/lib/auth/dal`), which is the actual
  * gate and the only place the role is checked.
  *
- * `AuthGuard` still guards `/account` on the client — that is what the
- * local-development session relies on — so this is the server-side half, not
+ * `AuthGuard` still guards `/account` on the client (that is what the
+ * local-development session relies on), so this is the server-side half, not
  * a replacement.
  */
 export async function proxy(request: NextRequest) {

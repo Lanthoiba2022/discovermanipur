@@ -68,9 +68,9 @@ export function TourBookingForm({ tour }: { tour: Tour }) {
   }
 
   async function onSubmit(values: TourBookingValues) {
-    // No backend yet — nothing is sent or stored, and the toast says so.
+    // No backend yet: nothing is sent or stored, and the toast says so.
     await new Promise((resolve) => setTimeout(resolve, 500));
-    toast.success("Thanks — one more step", {
+    toast.success("Thanks, one more step", {
       description: `Online enquiries aren't connected yet, so this wasn't sent. To book ${tour.title} for ${values.travellers} traveller${
         values.travellers === 1 ? "" : "s"
       } departing ${formatDeparture(values.departure)}, please contact the tour operator directly.`,
@@ -254,7 +254,7 @@ export function TourBookingForm({ tour }: { tour: Tour }) {
         {isSubmitting ? "One moment…" : "Request a place"}
       </Button>
       <p className="text-center text-xs text-muted-foreground">
-        No payment is taken. Online enquiries are not connected yet, so no place is held — please
+        No payment is taken. Online enquiries are not connected yet, so no place is held. Please
         contact the tour operator directly to book.
       </p>
     </form>

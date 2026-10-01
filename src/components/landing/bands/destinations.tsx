@@ -46,7 +46,7 @@ import {
  */
 
 /**
- * Category is shown as an icon AND its word. Colour never carries it alone —
+ * Category is shown as an icon AND its word. Colour never carries it alone;
  * these chips are one neutral ground throughout, on purpose.
  */
 const CATEGORY: Record<HotspotCategory, { label: string; icon: LucideIcon }> = {
@@ -64,7 +64,7 @@ const CATEGORY: Record<HotspotCategory, { label: string; icon: LucideIcon }> = {
   park: { label: "Park", icon: TreePine },
 };
 
-/** Hours read as human text — 2.5 is "2 hr 30 min", not "2.5 hours". */
+/** Hours read as human text: 2.5 is "2 hr 30 min", not "2.5 hours". */
 function readableHours(hours: number) {
   const whole = Math.floor(hours);
   const minutes = Math.round((hours - whole) * 60);
@@ -135,7 +135,7 @@ export function DestinationsBand({ hotspots }: { hotspots: Hotspot[] }) {
       align="left"
       eyebrow="Sixteen districts"
       word="Destinations"
-      tail="for every kind of traveller — lake, ridge, fort and forest."
+      tail="for every kind of traveller: lake, ridge, fort and forest."
       action={
         <BandPill href="/hotspots" tone="dark">
           All destinations
@@ -144,7 +144,7 @@ export function DestinationsBand({ hotspots }: { hotspots: Hotspot[] }) {
       backdrop={
         <div aria-hidden className="absolute inset-0 -z-10">
           {/* Verified: a terraced valley in the Manipur hills at dusk
-              (Huishu, Ukhrul — CC BY-SA 4.0, credited in photo-credits.ts).
+              (Huishu, Ukhrul; CC BY-SA 4.0, credited in photo-credits.ts).
               Not preloaded: the hero owns the LCP. */}
           <Image
             src="/file-uploads/terraced-valley-dusk.webp"

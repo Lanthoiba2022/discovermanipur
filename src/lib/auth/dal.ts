@@ -1,5 +1,5 @@
 /**
- * Data access layer for the session — the one place server code asks "who is
+ * Data access layer for the session: the one place server code asks "who is
  * this, and what may they do?".
  *
  * Not a `"use server"` module on purpose: every export of one becomes a public
@@ -78,7 +78,7 @@ export async function ensureProfile(user: SessionUser): Promise<Profile> {
   const db = getDb();
   if (!db) return fromSession(user);
 
-  // The common case — the row exists — costs one read and no write.
+  // The common case (the row exists) costs one read and no write.
   const existing = await findProfile(db, user.id);
   if (existing) return fromRow(existing);
 
@@ -119,7 +119,7 @@ export const getSessionProfile = cache(async (): Promise<Profile | null> => {
   }
 });
 
-/** Which protected area a denial came from — picks the copy on `/access-denied`. */
+/** Which protected area a denial came from (picks the copy on `/access-denied`). */
 export type ProtectedArea = "admin" | "host";
 
 /**
@@ -134,8 +134,8 @@ export async function requireRole(
   { area, path }: { area: ProtectedArea; path: string },
 ): Promise<Profile> {
   // Without Neon Auth the server cannot see the browser-only development session.
-  // Sending the visitor to /auth would bounce straight back here — the form
-  // sees a local user and follows `next` — so explain instead.
+  // Sending the visitor to /auth would bounce straight back here (the form
+  // sees a local user and follows `next`), so explain instead.
   if (!isAuthConfigured) redirect(`/access-denied?area=${area}&reason=unavailable`);
 
   const profile = await getSessionProfile();

@@ -3,7 +3,7 @@
  *
  * None of this is real: the people, properties, bookings and figures are made
  * up, and nothing here is read from or written to the database. It is kept
- * separate from `@/lib/data` (the public catalogue) and models the back-office —
+ * separate from `@/lib/data` (the public catalogue) and models the back-office:
  * applications in review, a host's own listings, and the booking ledger. To wire
  * these pages up, replace the arrays with database queries that return the same
  * shapes.
@@ -246,7 +246,7 @@ export const hostApplications: HostApplicationRecord[] = [
 export const hostListings: HostListingRecord[] = [
   {
     id: "lst-01",
-    title: "Leikai Yumjao — courtyard room",
+    title: "Leikai Yumjao: courtyard room",
     kind: "homestay",
     district: "Imphal West",
     location: "Thangmeiband, Imphal",
@@ -260,7 +260,7 @@ export const hostListings: HostListingRecord[] = [
   },
   {
     id: "lst-02",
-    title: "Leikai Yumjao — mangol loft",
+    title: "Leikai Yumjao: mangol loft",
     kind: "homestay",
     district: "Imphal West",
     location: "Thangmeiband, Imphal",
@@ -308,7 +308,7 @@ export const hostBookings: HostBookingRecord[] = [
     id: "bkg-h-01",
     kind: "homestay",
     refId: "lst-01",
-    refTitle: "Leikai Yumjao — courtyard room",
+    refTitle: "Leikai Yumjao: courtyard room",
     userId: "usr-3301",
     startDate: "2026-09-24",
     endDate: "2026-09-27",
@@ -339,7 +339,7 @@ export const hostBookings: HostBookingRecord[] = [
     id: "bkg-h-03",
     kind: "homestay",
     refId: "lst-02",
-    refTitle: "Leikai Yumjao — mangol loft",
+    refTitle: "Leikai Yumjao: mangol loft",
     userId: "usr-3303",
     startDate: "2026-10-02",
     endDate: "2026-10-05",
@@ -355,7 +355,7 @@ export const hostBookings: HostBookingRecord[] = [
     id: "bkg-h-04",
     kind: "homestay",
     refId: "lst-01",
-    refTitle: "Leikai Yumjao — courtyard room",
+    refTitle: "Leikai Yumjao: courtyard room",
     userId: "usr-3304",
     startDate: "2026-10-09",
     endDate: "2026-10-12",
@@ -376,7 +376,7 @@ export const adminBookings: HostBookingRecord[] = [
     id: "bkg-a-05",
     kind: "tour",
     refId: "tour-loktak-3d",
-    refTitle: "Loktak and the valley — 3 days",
+    refTitle: "Loktak and the valley: 3 days",
     userId: "usr-3310",
     startDate: "2026-10-14",
     endDate: "2026-10-17",
@@ -407,7 +407,7 @@ export const adminBookings: HostBookingRecord[] = [
     id: "bkg-a-07",
     kind: "transport",
     refId: "trn-sumo-ukhrul",
-    refTitle: "Shared sumo — Imphal to Ukhrul",
+    refTitle: "Shared sumo: Imphal to Ukhrul",
     userId: "usr-3312",
     startDate: "2026-09-29",
     guests: 2,
@@ -468,7 +468,7 @@ export const adminBookings: HostBookingRecord[] = [
     id: "bkg-a-11",
     kind: "tour",
     refId: "tour-hills-5d",
-    refTitle: "Hill districts loop — 5 days",
+    refTitle: "Hill districts loop: 5 days",
     userId: "usr-3316",
     startDate: "2026-12-02",
     endDate: "2026-12-07",

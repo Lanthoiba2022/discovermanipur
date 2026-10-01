@@ -1,5 +1,5 @@
 """
-Generate the Kangla narration with Microsoft Edge neural voices — free, and
+Generate the Kangla narration with Microsoft Edge neural voices: free, and
 with no API key.
 
 This is what currently ships for English. The original English and Hindi came

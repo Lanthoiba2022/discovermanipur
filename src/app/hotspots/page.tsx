@@ -20,7 +20,7 @@ import type { Hotspot, Season } from "@/types";
 export const metadata: Metadata = {
   title: "Places to visit in Manipur",
   description:
-    "Every lake, hill, fort, cave and market worth the drive — filter Manipur's destinations by category, district, season and step-free access, then browse them as cards or on a map.",
+    "Every lake, hill, fort, cave and market worth the drive. Filter Manipur's destinations by category, district, season and step-free access, then browse them as cards or on a map.",
   openGraph: {
     title: "Places to visit in Manipur · Discover Manipur",
     description:
@@ -85,7 +85,7 @@ export default async function HotspotsPage({
         lede={
           <p>
             {all.length > 0 ? `${all.length} places` : "A growing map"} across Manipur&rsquo;s
-            sixteen districts, filtered the way you actually travel — by season, by district, and
+            sixteen districts, filtered the way you actually travel: by season, by district, and
             by whether you can get a wheelchair to the water.
           </p>
         }

@@ -1,7 +1,7 @@
 import type { Experience } from "@/types";
 
 /**
- * Discover Manipur experience seed data — 18 host-led activities.
+ * Discover Manipur experience seed data: 18 host-led activities.
  * Prices are per person in INR and assume a minimum of two participants.
  */
 export const experiences: Experience[] = [
@@ -26,7 +26,7 @@ export const experiences: Experience[] = [
       "Black tea and kabok (puffed rice snack)",
     ],
     images: [
-      { src: "/file-uploads/manipuri-food-leaf.webp", alt: "Meitei food served on a banana leaf — fried cakes and dried fish — at the end of a home cooking class" },
+      { src: "/file-uploads/manipuri-food-leaf.webp", alt: "Meitei food served on a banana leaf (fried cakes and dried fish) at the end of a home cooking class" },
       { src: "/file-uploads/food4.jpg", alt: "Pounding chillies and ngari for eromba in a traditional mortar" },
       { src: "/file-uploads/foodcarou.jpg", alt: "Singju salad being tossed with perilla seed and banana flower" },
     ],
@@ -68,7 +68,7 @@ export const experiences: Experience[] = [
     slug: "manipuri-classical-dance-workshop",
     title: "Manipuri Classical Dance: A Beginner's Workshop",
     description:
-      "Manipuri is one of India's eight classical dance forms and the gentlest of them — no stamping, no sharp angles, everything carried in a continuous curve. In this workshop a trained dancer teaches the basic chali movements, the hand gestures of the Raas Leela, and the body line that makes the style recognisable. You will also try on the potloi, the stiff cylindrical skirt worn in Raas.",
+      "Manipuri is one of India's eight classical dance forms and the gentlest of them: no stamping, no sharp angles, everything carried in a continuous curve. In this workshop a trained dancer teaches the basic chali movements, the hand gestures of the Raas Leela, and the body line that makes the style recognisable. You will also try on the potloi, the stiff cylindrical skirt worn in Raas.",
     category: "music",
     host: "Radha Devi, Jawaharlal Nehru Manipur Dance Academy alumna",
     location: "Uripok, Imphal West",
@@ -97,7 +97,7 @@ export const experiences: Experience[] = [
     slug: "handloom-weaving-with-a-moirang-phee-weaver",
     title: "At the Loom: Weaving Moirang Phee",
     description:
-      "Sit at a loin loom beside a weaver who has made Moirang Phee for three decades and learn how the distinctive temple-spire border is counted and thrown. You will warp a small piece, weave a band of your own and take it home. Along the way you will learn to tell a machine-made phanek from a handwoven one — useful before you shop at Ima Keithel.",
+      "Sit at a loin loom beside a weaver who has made Moirang Phee for three decades and learn how the distinctive temple-spire border is counted and thrown. You will warp a small piece, weave a band of your own and take it home. Along the way you will learn to tell a machine-made phanek from a handwoven one, useful before you shop at Ima Keithel.",
     category: "textile",
     host: "Moirangthem Bina",
     location: "Singjamei, Imphal West",
@@ -126,7 +126,7 @@ export const experiences: Experience[] = [
     slug: "andro-black-pottery-workshop",
     title: "Andro Black Pottery: Building Without a Wheel",
     description:
-      "Andro's potters build entirely by hand — no wheel, no mould — coiling the local black clay and beating it into shape with a wooden paddle and a stone anvil. In this half-day workshop you will prepare clay, build a small pot, and watch a batch go into an open pit fire. Your piece is fired and can be collected or posted on.",
+      "Andro's potters build entirely by hand (no wheel, no mould), coiling the local black clay and beating it into shape with a wooden paddle and a stone anvil. In this half-day workshop you will prepare clay, build a small pot, and watch a batch go into an open pit fire. Your piece is fired and can be collected or posted on.",
     category: "craft",
     host: "Nongthombam Prem",
     location: "Andro village",
@@ -242,7 +242,7 @@ export const experiences: Experience[] = [
     slug: "bamboo-and-cane-craft-workshop",
     title: "Bamboo and Cane Craft with a Tangkhul Maker",
     description:
-      "Manipur's hill households make almost everything from bamboo and cane — baskets, fish traps, rain hats, storage bins. In this workshop you split and shave your own strips and weave a small carrying basket under the eye of a maker who has been doing it since childhood. Slow, absorbing work and a genuinely useful object at the end.",
+      "Manipur's hill households make almost everything from bamboo and cane: baskets, fish traps, rain hats, storage bins. In this workshop you split and shave your own strips and weave a small carrying basket under the eye of a maker who has been doing it since childhood. Slow, absorbing work and a genuinely useful object at the end.",
     category: "craft",
     host: "A. S. Ngalung",
     location: "Ukhrul town",
@@ -271,7 +271,7 @@ export const experiences: Experience[] = [
     slug: "sagol-kangjei-polo-experience",
     title: "Sagol Kangjei: Meet the Manipuri Pony",
     description:
-      "Polo began here, and the Manipuri pony that carries it is now an endangered breed with fewer than a thousand animals left. At a working stable near the Imphal polo ground you will meet the ponies, learn the seven-a-side rules of Sagol Kangjei, handle the cane-headed stick, and — if you can ride — take a few turns at walking pace on the turf.",
+      "Polo began here, and the Manipuri pony that carries it is now an endangered breed with fewer than a thousand animals left. At a working stable near the Imphal polo ground you will meet the ponies, learn the seven-a-side rules of Sagol Kangjei, handle the cane-headed stick, and, if you can ride, take a few turns at walking pace on the turf.",
     category: "adventure",
     host: "Manipur Horse Riding and Polo Association coaches",
     location: "Mapal Kangjeibung, Imphal West",
@@ -329,7 +329,7 @@ export const experiences: Experience[] = [
     slug: "lai-haraoba-evening",
     title: "An Evening at Lai Haraoba",
     description:
-      "Lai Haraoba, the 'pleasing of the gods', is the oldest surviving ritual performance in Manipur — maibi priestesses dancing the creation of the world, night after night, in village courtyards through spring and early summer. Attend with a guide who can explain the sequence, the hand gestures and the thougal jagoi that closes the evening. Held only in season.",
+      "Lai Haraoba, the 'pleasing of the gods', is the oldest surviving ritual performance in Manipur: maibi priestesses dancing the creation of the world, night after night, in village courtyards through spring and early summer. Attend with a guide who can explain the sequence, the hand gestures and the thougal jagoi that closes the evening. Held only in season.",
     category: "festival",
     host: "Discover Manipur cultural desk with local Lai Haraoba committees",
     location: "Rotating village venues around Imphal East and Bishnupur",
@@ -358,7 +358,7 @@ export const experiences: Experience[] = [
     slug: "pung-cholom-drum-session",
     title: "Pung Cholom: The Drum Dance, Explained",
     description:
-      "Pung cholom is the drum dance that opens every Manipuri classical performance — the player dances while drumming, leaping and spinning without losing a beat. In this session a pung master demonstrates the form, teaches the basic strokes and rhythms on a practice drum, and explains how the pung's two heads are tuned with rice paste.",
+      "Pung cholom is the drum dance that opens every Manipuri classical performance: the player dances while drumming, leaping and spinning without losing a beat. In this session a pung master demonstrates the form, teaches the basic strokes and rhythms on a practice drum, and explains how the pung's two heads are tuned with rice paste.",
     category: "music",
     host: "Guru Khumanthem Bihari",
     location: "Uripok, Imphal West",
@@ -387,7 +387,7 @@ export const experiences: Experience[] = [
     slug: "thang-ta-martial-arts-introduction",
     title: "Thang-Ta: An Introduction to Manipuri Martial Arts",
     description:
-      "Thang-ta — literally sword and spear — is Manipur's indigenous martial art, taught as three layers: the ritual, the performance and the combat. This two-hour introduction covers footwork, the basic sword forms and the breathing that underpins them, with a demonstration of the full sequence by senior practitioners at the end.",
+      "Thang-ta (literally sword and spear) is Manipur's indigenous martial art, taught as three layers: the ritual, the performance and the combat. This two-hour introduction covers footwork, the basic sword forms and the breathing that underpins them, with a demonstration of the full sequence by senior practitioners at the end.",
     category: "wellness",
     host: "Huyen Lallong akhada, Imphal",
     location: "Khuman Lampak, Imphal West",

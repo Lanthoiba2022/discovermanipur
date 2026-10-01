@@ -1,7 +1,7 @@
 import { pgSchema, text, uuid } from "drizzle-orm/pg-core";
 
 /**
- * Neon Auth's user table — declared here only so `profiles.id` can reference
+ * Neon Auth's user table, declared here only so `profiles.id` can reference
  * it and so queries can join to it. NEON OWNS THIS TABLE: never migrate it.
  *
  * It lives in its own module on purpose. Drizzle Kit manages only the tables

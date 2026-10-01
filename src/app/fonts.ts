@@ -8,7 +8,7 @@ import localFont from "next/font/local";
  * build and dev compile, and about 1 response in 60 comes back with
  * extensionless `fonts.gstatic.com/l/font?kit=…&skey=…` URLs. Both Turbopack
  * ("next/font/google queries have exactly one entry") and webpack fail on
- * those — a random hard build failure that a rebuild "fixes". Open upstream:
+ * those, a random hard build failure that a rebuild "fixes". Open upstream:
  * https://github.com/vercel/next.js/issues/99114. Local files never touch the
  * network, so the build is hermetic.
  *
@@ -46,7 +46,7 @@ const figtreeExt = localFont({
 });
 
 // Display voice. Newsreader is a low-contrast oldstyle drawn for long-form
-// reading — warm where a didone is sharp. Its `opsz` axis is the point: the
+// reading, warm where a didone is sharp. Its `opsz` axis is the point: the
 // same family opens up at hero scale and tightens at pull-quote scale, so
 // headings stay calm instead of brittle. The `opsz` files carry opsz + wght
 // 200–800, upright + italic.
@@ -68,8 +68,8 @@ const newsreaderExt = localFont({
   adjustFontFallback: false,
 });
 
-// Mono is reserved for genuinely machine-ish text — booking references,
-// coordinates, application ids — never for decorative labels.
+// Mono is reserved for genuinely machine-ish text (booking references,
+// coordinates, application ids), never for decorative labels.
 // Latin only, 400 + 500.
 export const mono = localFont({
   variable: "--font-mono",
@@ -84,7 +84,7 @@ export const mono = localFont({
 });
 
 // The hero cycles the state's name through the three scripts it is actually
-// written in, so Devanagari needs a real face — without one मणिपुर falls back
+// written in, so Devanagari needs a real face. Without one मणिपुर falls back
 // to a system font and sits visibly apart from the other two. A serif, to
 // answer Newsreader rather than fight it.
 export const devanagari = localFont({
@@ -100,7 +100,7 @@ export const devanagari = localFont({
   adjustFontFallback: false,
 });
 
-// Meetei Mayek — the state's own script, variable weight (covers 400 + 600).
+// Meetei Mayek: the state's own script, variable weight (covers 400 + 600).
 export const mayek = localFont({
   variable: "--font-mayek",
   src: [

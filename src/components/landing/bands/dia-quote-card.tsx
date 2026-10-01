@@ -36,7 +36,7 @@ function Stars({ rating }: { rating: number }) {
  * One traveller's diary entry.
  *
  * A testimonial carries no slug and no link target, so this card is
- * deliberately not a link and not a `group` — nothing here is clickable, and
+ * deliberately not a link and not a `group`: nothing here is clickable, and
  * pretending otherwise would be a hover affordance that goes nowhere. The
  * quote is the only clamped text on the card: the name, the origin and the
  * trip all wrap.

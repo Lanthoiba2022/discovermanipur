@@ -33,8 +33,8 @@ export function nightsBetween(from: Date | string, to: Date | string) {
  * The Meitei name to show alongside an English title, or `undefined` when
  * there is nothing to add.
  *
- * Several records carry a `meiteiName` identical to `name` — "Kwak Tanba",
- * "Lai Haraoba", "Eromba" are the same word in both — and rendering both
+ * Several records carry a `meiteiName` identical to `name` ("Kwak Tanba",
+ * "Lai Haraoba", "Eromba" are the same word in both), and rendering both
  * printed the title twice. Compare case- and space-insensitively so a stray
  * capital does not slip a duplicate through.
  */

@@ -3,7 +3,7 @@
  * `BREVO_API_KEY`, which must never reach the browser.
  *
  * Brevo only sends from a sender (or domain) verified in the Brevo dashboard,
- * so `BREVO_SENDER_EMAIL` must be one of those — a Gmail sender, for example,
+ * so `BREVO_SENDER_EMAIL` must be one of those. A Gmail sender, for example,
  * is refused or lands in spam. https://developers.brevo.com/reference/sendtransacemail
  */
 

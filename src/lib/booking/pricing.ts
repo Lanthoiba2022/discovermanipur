@@ -82,7 +82,7 @@ export function quoteTransportByDay(input: {
   return { days, total: days * input.pricePerDay };
 }
 
-/** `YYYY-MM-DD` in local time — the shape the bookings table stores. */
+/** `YYYY-MM-DD` in local time, the shape the bookings table stores. */
 export function toISODate(date: Date): string {
   const y = date.getFullYear();
   const m = `${date.getMonth() + 1}`.padStart(2, "0");

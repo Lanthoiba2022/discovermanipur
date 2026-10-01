@@ -12,7 +12,7 @@ export interface UseNarration {
   language: NarrationLanguage;
   /** Switching language always silences whatever is currently talking. */
   setLanguage: (code: NarrationLanguage) => void;
-  /** The chosen language's descriptor — `lang` tag and font class. */
+  /** The chosen language's descriptor: `lang` tag and font class. */
   active: (typeof narrationLanguages)[number];
   /** The narration text in the chosen language, when there is one. */
   text: string | undefined;
@@ -30,7 +30,7 @@ export interface UseNarration {
  *
  * The fallback is English-only on purpose. `speechSynthesis` ships no Meiteilon
  * voice in any browser, and a Hindi voice is a coin flip depending on the
- * platform's installed voices — so rather than mispronounce a heritage site in
+ * platform's installed voices, so rather than mispronounce a heritage site in
  * someone's own language, a missing track simply offers nothing to press.
  */
 export function useNarration(tracks: NarrationSet | undefined, fallbackText?: string): UseNarration {

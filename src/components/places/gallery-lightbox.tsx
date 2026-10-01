@@ -84,7 +84,7 @@ export function GalleryLightbox({
               <span className="sr-only">Enlarge photo {index + 1} of {count}</span>
               {image.credit && (
                 /* Credit shows on the grid too, not only once the lightbox is
-                   open — the photo is already on screen here. */
+                   open; the photo is already on screen here. */
                 <span className="pointer-events-none absolute bottom-1 right-1.5 text-[9px] leading-none text-white/70 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
                   {image.credit}
                 </span>
@@ -97,7 +97,7 @@ export function GalleryLightbox({
       <Dialog open={isOpen} onOpenChange={(next) => !next && setOpenIndex(null)}>
         <DialogContent className="max-w-4xl border-0 bg-transparent p-0 shadow-none">
           <DialogTitle className="sr-only">
-            {title} — photo {(openIndex ?? 0) + 1} of {count}
+            {title}, photo {(openIndex ?? 0) + 1} of {count}
           </DialogTitle>
           <DialogDescription className="sr-only">
             Use the left and right arrow keys to move between photos, Escape to close.

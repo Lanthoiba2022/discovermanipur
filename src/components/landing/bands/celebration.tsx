@@ -19,7 +19,7 @@ import {
  *
  * Three light-to-mid grounds have run in a row by this point, so this band
  * takes the phanek crimson full-bleed: the word goes ivory, the tail goes
- * brass, and the cards drop their boxes entirely — photograph, then copy
+ * brass, and the cards drop their boxes entirely: photograph, then copy
  * straight onto the crimson. It is the loudest band on the page and the last
  * one before the page hands over to the planning sections.
  */
@@ -38,7 +38,7 @@ function FestivalCard({ festival }: { festival: Festival }) {
           fallbackAlt={`Crowds and colour during the festival at ${festival.location}`}
         >
           {/* The copy sits below the photograph here, so the media takes only a
-              short top gradient — enough to seat the month badge, and nothing
+              short top gradient, enough to seat the month badge, and nothing
               that flattens the festival colour underneath it. */}
           <div
             aria-hidden
@@ -54,7 +54,7 @@ function FestivalCard({ festival }: { festival: Festival }) {
         </CardMedia>
 
         <div className="flex flex-1 flex-col pt-5">
-          {/* Festival names wrap — several run to four words and a clipped one
+          {/* Festival names wrap: several run to four words and a clipped one
               is simply the wrong festival. */}
           <h3 className="font-display text-[1.55rem] leading-[1.15] text-ivory-50">
             {festival.name}

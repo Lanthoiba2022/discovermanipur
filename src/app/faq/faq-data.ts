@@ -1,6 +1,6 @@
 export interface FaqItem {
   q: string;
-  /** Plain text — also used for the FAQPage JSON-LD, so keep it prose. */
+  /** Plain text, also used for the FAQPage JSON-LD, so keep it prose. */
   a: string;
 }
 
@@ -35,11 +35,11 @@ export const faqGroups: FaqGroup[] = [
       },
       {
         q: "How far ahead should I plan?",
-        a: "Two to four weeks is comfortable for most trips. Plan further ahead if you want to be there for a major festival, if you are travelling in the Sangai Festival period in late November, or if you need a specific homestay — small family-run stays have very few rooms and fill early.",
+        a: "Two to four weeks is comfortable for most trips. Plan further ahead if you want to be there for a major festival, if you are travelling in the Sangai Festival period in late November, or if you need a specific homestay: small family-run stays have very few rooms and fill early.",
       },
       {
         q: "What should I pack?",
-        a: "Layers, because the valley and the hills are not the same climate; a rain shell from roughly May to September; proper shoes if you intend to walk anywhere; a refillable bottle and a filter; a dry bag for your own rubbish; and modest clothing for temples, churches and village visits. A power bank is sensible — supply can be patchy outside Imphal.",
+        a: "Layers, because the valley and the hills are not the same climate; a rain shell from roughly May to September; proper shoes if you intend to walk anywhere; a refillable bottle and a filter; a dry bag for your own rubbish; and modest clothing for temples, churches and village visits. A power bank is sensible, as supply can be patchy outside Imphal.",
       },
     ],
   },
@@ -85,7 +85,7 @@ export const faqGroups: FaqGroup[] = [
       },
       {
         q: "What house rules should I expect?",
-        a: "Shoes off indoors in most homes, a quiet hour at night, and asking before you bring guests, alcohol or a drone onto the property. Some districts and some households are dry. Ask about meal times when you arrive — a family cooking for you is planning around your answer.",
+        a: "Shoes off indoors in most homes, a quiet hour at night, and asking before you bring guests, alcohol or a drone onto the property. Some districts and some households are dry. Ask about meal times when you arrive; a family cooking for you is planning around your answer.",
       },
       {
         q: "Should I bring cash?",
@@ -100,7 +100,7 @@ export const faqGroups: FaqGroup[] = [
     items: [
       {
         q: "What should I eat first?",
-        a: "Eromba — boiled vegetables mashed with chilli and fermented fish — and singju, a sharp salad of shredded vegetables with roasted chickpea flour and chilli. Chak-hao, the local black rice, appears as a dessert kheer and as a deep purple plain rice. Add a chamthong vegetable stew and you have a fair introduction to a Manipuri thali.",
+        a: "Eromba (boiled vegetables mashed with chilli and fermented fish) and singju, a sharp salad of shredded vegetables with roasted chickpea flour and chilli. Chak-hao, the local black rice, appears as a dessert kheer and as a deep purple plain rice. Add a chamthong vegetable stew and you have a fair introduction to a Manipuri thali.",
       },
       {
         q: "Is the food very spicy?",
@@ -108,7 +108,7 @@ export const faqGroups: FaqGroup[] = [
       },
       {
         q: "Can I eat well as a vegetarian or vegan?",
-        a: "Vegetarian food is easy to find, but be aware that many apparently vegetable dishes are seasoned with ngari or dried fish. Ask specifically. Vegans should flag it in advance — a homestay given notice will cook around it happily, whereas a restaurant mid-service may not.",
+        a: "Vegetarian food is easy to find, but be aware that many apparently vegetable dishes are seasoned with ngari or dried fish. Ask specifically. Vegans should flag it in advance: a homestay given notice will cook around it happily, whereas a restaurant mid-service may not.",
       },
       {
         q: "Where do locals actually eat?",
@@ -127,7 +127,7 @@ export const faqGroups: FaqGroup[] = [
       },
       {
         q: "What is the Sangai Festival?",
-        a: "The state's flagship tourism festival, usually held over about ten days in late November, named after Manipur's endemic brow-antlered deer. It gathers crafts, handloom, indigenous sport, food and performance from across the districts in one place. Book accommodation well ahead if you are coming for it — the city is full.",
+        a: "The state's flagship tourism festival, usually held over about ten days in late November, named after Manipur's endemic brow-antlered deer. It gathers crafts, handloom, indigenous sport, food and performance from across the districts in one place. Book accommodation well ahead if you are coming for it, as the city is full.",
       },
       {
         q: "Which other festivals are worth planning around?",
@@ -135,7 +135,7 @@ export const faqGroups: FaqGroup[] = [
       },
       {
         q: "Can visitors attend religious festivals?",
-        a: "Often yes, and hospitality is generous — but attendance is not the same as access. Some rituals are closed, photography is frequently restricted even in a crowd, and dress expectations are real. Go with a local host who can tell you where to stand, and follow their lead on cameras.",
+        a: "Often yes, and hospitality is generous, but attendance is not the same as access. Some rituals are closed, photography is frequently restricted even in a crowd, and dress expectations are real. Go with a local host who can tell you where to stand, and follow their lead on cameras.",
       },
     ],
   },

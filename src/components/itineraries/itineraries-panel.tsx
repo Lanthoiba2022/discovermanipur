@@ -43,7 +43,7 @@ export function ItinerariesPanel() {
           </span>
           <h3 className="font-display text-xl">No plans saved yet</h3>
           <p className="mt-2 max-w-sm text-muted-foreground">
-            Tell the concierge how long you have and what you love, then hit “Save this plan” — it
+            Tell the concierge how long you have and what you love, then hit “Save this plan”. It
             will be waiting here.
           </p>
           <Button asChild className="mt-6">

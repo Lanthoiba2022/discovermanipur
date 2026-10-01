@@ -21,7 +21,7 @@ export interface RateLimitRule {
 export interface RateLimitResult {
   ok: boolean;
   remaining: number;
-  /** Seconds until the window resets — the `Retry-After` value. */
+  /** Seconds until the window resets (the `Retry-After` value). */
   retryAfter: number;
 }
 

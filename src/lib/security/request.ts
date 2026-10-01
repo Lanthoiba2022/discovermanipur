@@ -4,7 +4,7 @@
  */
 
 /**
- * The client's IP, for rate-limit keys only — never for authorisation.
+ * The client's IP, for rate-limit keys only, never for authorisation.
  *
  * On Vercel, `x-real-ip` and `x-forwarded-for` are set by the platform from
  * the TCP connection and a client cannot spoof them. Self-hosted, they are
@@ -48,7 +48,7 @@ export function isSameOrigin(request: Request): boolean {
 /**
  * Read a request body as text, refusing anything over `maxBytes`. Returns
  * `null` when the body is too large, so the caller can answer 413 without
- * having buffered all of it — the declared length is checked first and the
+ * having buffered all of it: the declared length is checked first and the
  * stream is cut off as soon as it passes the cap.
  */
 export async function readBodyText(request: Request, maxBytes: number): Promise<string | null> {

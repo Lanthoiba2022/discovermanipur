@@ -16,7 +16,7 @@ export function HomestayEmptyState({ filtered }: { filtered: boolean }) {
       </h2>
       <p className="mt-3 max-w-md text-muted-foreground">
         {filtered
-          ? "Try widening the price range, dropping a district, or asking for fewer amenities — Manipur's best hosts are often one filter away."
+          ? "Try widening the price range, dropping a district, or asking for fewer amenities. Manipur's best hosts are often one filter away."
           : "We are welcoming host families across the valley and the hills right now. In the meantime, start with the places you want to wake up next to."}
       </p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">

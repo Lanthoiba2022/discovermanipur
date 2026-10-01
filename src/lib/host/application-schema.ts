@@ -14,13 +14,13 @@ export const applicationSchema = z.object({
   propertyAddress: z
     .string()
     .trim()
-    .min(10, "A full address helps our district team find you — leikai, landmark and town.")
+    .min(10, "A full address helps our district team find you: leikai, landmark and town.")
     .max(200, "Keep the address under 200 characters."),
   district: z.enum(DISTRICTS),
   description: z
     .string()
     .trim()
-    .min(60, "Tell guests a little more — at least 60 characters.")
+    .min(60, "Tell guests a little more: at least 60 characters.")
     .max(1200, "Keep it under 1,200 characters."),
   capacity: z
     .number()

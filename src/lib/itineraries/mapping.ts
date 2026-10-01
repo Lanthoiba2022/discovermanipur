@@ -2,8 +2,8 @@
  * Translation between the concierge's generated plan (`ItineraryPlan`) and the
  * stored row (`SavedItinerary`, the domain contract in `src/types`).
  *
- * `SavedItinerary` is the narrower shape, so the extras the model produces —
- * the overview, packing list and permit reminders — are folded into `notes`
+ * `SavedItinerary` is the narrower shape, so the extras the model produces
+ * (the overview, packing list and permit reminders) are folded into `notes`
  * under stable headings and read back out again. Both directions are pure.
  */
 
@@ -52,7 +52,7 @@ function toStop(stop: ItineraryPlan["days"][number]["stops"][number]): SavedItin
     title: stop.title,
     slug: stop.slug,
     href: stop.href,
-    note: stop.timeOfDay ? `${stop.timeOfDay} — ${stop.note}` : stop.note,
+    note: stop.timeOfDay ? `${stop.timeOfDay}: ${stop.note}` : stop.note,
   };
 }
 
@@ -67,7 +67,7 @@ function toDay(day: ItineraryPlan["days"][number]): SavedItineraryDay {
     summary,
     stops: day.stops.map(toStop),
     meals: day.meals.map((meal) => `${meal.slot}: ${meal.suggestion}`),
-    stay: day.stay ? [day.stay.title, day.stay.note].filter(Boolean).join(" — ") : undefined,
+    stay: day.stay ? [day.stay.title, day.stay.note].filter(Boolean).join(": ") : undefined,
   };
 }
 

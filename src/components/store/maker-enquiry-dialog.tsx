@@ -15,7 +15,7 @@ import {
 import type { Craft } from "@/types";
 
 /**
- * Discover Manipur takes no payment and no commission, so this is not a checkout — it
+ * Discover Manipur takes no payment and no commission, so this is not a checkout. It
  * hands the visitor the maker's own contact details and gets out of the way.
  */
 export function MakerEnquiryDialog({ craft }: { craft: Craft }) {
@@ -51,7 +51,7 @@ export function MakerEnquiryDialog({ craft }: { craft: Craft }) {
         <DialogHeader>
           <DialogTitle>Contact {craft.maker}</DialogTitle>
           <DialogDescription id="enquiry-description">
-            Your enquiry goes straight to the artisan — not to Discover Manipur. We take no payment and no
+            Your enquiry goes straight to the artisan, not to Discover Manipur. We take no payment and no
             commission, so you agree the price, the making and the delivery with them directly.
           </DialogDescription>
         </DialogHeader>

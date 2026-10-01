@@ -1,7 +1,7 @@
 import type { Festival } from "@/types";
 
 /**
- * Discover Manipur festival seed data — 12 festivals across Manipur's communities.
+ * Discover Manipur festival seed data: 12 festivals across Manipur's communities.
  * Many follow lunar or agricultural calendars, so dates shift year to year.
  */
 export const festivals: Festival[] = [
@@ -30,7 +30,7 @@ export const festivals: Festival[] = [
     name: "Yaoshang",
     meiteiName: "Yaoshang",
     description:
-      "Manipur's five-day spring festival, beginning on the full moon of Lamta (February–March) with the burning of a thatched hut called the yaoshang mei thaba. Children go from house to house collecting nakatheng, colours are thrown as at Holi, and — the part that makes Yaoshang distinctive — every locality holds thabal chongba, a moonlight circle dance where young people hold hands and move in a ring to a live band until well past midnight.",
+      "Manipur's five-day spring festival, beginning on the full moon of Lamta (February–March) with the burning of a thatched hut called the yaoshang mei thaba. Children go from house to house collecting nakatheng, colours are thrown as at Holi, and (the part that makes Yaoshang distinctive) every locality holds thabal chongba, a moonlight circle dance where young people hold hands and move in a ring to a live band until well past midnight.",
     month: "March",
     typicalDates: "Five days from the Lamta full moon, late February to mid-March",
     location: "Statewide, with thabal chongba in every Meitei locality",
@@ -50,7 +50,7 @@ export const festivals: Festival[] = [
     name: "Lai Haraoba",
     meiteiName: "Lai Haraoba",
     description:
-      "The oldest surviving ritual performance in Manipur — literally the 'pleasing of the gods'. Over several nights in a village courtyard, maibi priestesses dance the entire Meitei creation story, from the making of the world through the building of a house and the weaving of cloth, accompanied by the pena fiddle. Different localities hold it at different times through spring and early summer; Moirang's is the most elaborate.",
+      "The oldest surviving ritual performance in Manipur, literally the 'pleasing of the gods'. Over several nights in a village courtyard, maibi priestesses dance the entire Meitei creation story, from the making of the world through the building of a house and the weaving of cloth, accompanied by the pena fiddle. Different localities hold it at different times through spring and early summer; Moirang's is the most elaborate.",
     month: "April",
     typicalDates: "April to June, dates set separately by each locality",
     location: "Village courtyards across the valley; Moirang, Andro and Kanglatongbi are notable",
@@ -90,7 +90,7 @@ export const festivals: Festival[] = [
     name: "Sajibu Cheiraoba",
     meiteiName: "Sajibu Nongma Panba Cheiraoba",
     description:
-      "The Meitei new year, falling on the first lunar day of Sajibu in March or April. Houses are cleaned from top to bottom, a full meal is cooked and offered to the household deity, and in the afternoon families climb the nearest hill — Cheiraoba Ching Kaba — in the belief that rising higher lifts your fortunes for the year. Nongmaijing, Kaina and Langol fill with families all afternoon.",
+      "The Meitei new year, falling on the first lunar day of Sajibu in March or April. Houses are cleaned from top to bottom, a full meal is cooked and offered to the household deity, and in the afternoon families climb the nearest hill (Cheiraoba Ching Kaba) in the belief that rising higher lifts your fortunes for the year. Nongmaijing, Kaina and Langol fill with families all afternoon.",
     month: "April",
     typicalDates: "First lunar day of Sajibu, late March to mid-April",
     location: "Statewide; hill climbs at Nongmaijing, Langol, Kaina and Cheiraoching",
@@ -98,7 +98,7 @@ export const festivals: Festival[] = [
     significance:
       "The Meitei new year, marking the agricultural year's start and combining household ritual with a collective hill climb.",
     images: [
-      { src: "/file-uploads/marjing.png", alt: "Sunrise over the Imphal valley from a hilltop — Cheiraoba afternoon is spent climbing one" },
+      { src: "/file-uploads/marjing.png", alt: "Sunrise over the Imphal valley from a hilltop. Cheiraoba afternoon is spent climbing one" },
       { src: "/file-uploads/manipuri-curry-bowl.webp", alt: "A bowl of Manipuri curry from the new year meal cooked for Sajibu Cheiraoba" },
       { src: "/file-uploads/203.jpg", alt: "Valley view from a hill climbed at Cheiraoba" },
     ],
@@ -167,7 +167,7 @@ export const festivals: Festival[] = [
     name: "Kwak Tanba",
     meiteiName: "Kwak Tanba",
     description:
-      "Held on the tenth day of Durga Puja at Kangla, Kwak Tanba is the old royal ritual of 'chasing the crow' — a ceremonial procession in which a crow is released and its flight read as an omen for the coming year. The rite is performed in full traditional court dress and is one of the few surviving public royal ceremonies in Manipur.",
+      "Held on the tenth day of Durga Puja at Kangla, Kwak Tanba is the old royal ritual of 'chasing the crow': a ceremonial procession in which a crow is released and its flight read as an omen for the coming year. The rite is performed in full traditional court dress and is one of the few surviving public royal ceremonies in Manipur.",
     month: "October",
     typicalDates: "Vijayadashami, the tenth day of Durga Puja, in October",
     location: "Kangla Fort, Imphal",
@@ -196,7 +196,7 @@ export const festivals: Festival[] = [
     images: [
       { src: "/file-uploads/manipuri-raas-group.webp", alt: "Raas Leela dancers in the embroidered potloi and conical veil" },
       { src: "/file-uploads/12.jpg", alt: "Shree Govindajee Temple, principal venue for Ras Leela" },
-      { src: "/file-uploads/phanek.jpeg", alt: "Folded lengths of Manipuri phanek cloth in magenta, lime, orange and purple, each edged with a woven temple-point border — the cloth tradition behind Manipuri dance costume" },
+      { src: "/file-uploads/phanek.jpeg", alt: "Folded lengths of Manipuri phanek cloth in magenta, lime, orange and purple, each edged with a woven temple-point border, the cloth tradition behind Manipuri dance costume" },
     ],
     featured: false,
   },
@@ -208,7 +208,7 @@ export const festivals: Festival[] = [
       "The seed-sowing festival of the Naga tribes of Manipur, celebrated on 14–15 February and rotated between district headquarters each year. It marks the start of the agricultural season with the ceremonial sowing of the first seed, and brings together the state's Naga communities for dance, folk song and feasting in full traditional dress.",
     month: "February",
     typicalDates: "14–15 February each year",
-    location: "Rotating host district — Ukhrul, Senapati, Tamenglong, Chandel or Kamjong",
+    location: "Rotating host district: Ukhrul, Senapati, Tamenglong, Chandel or Kamjong",
     district: "Ukhrul",
     significance:
       "The common seed-sowing festival of Manipur's Naga tribes and their principal shared cultural occasion.",

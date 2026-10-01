@@ -48,8 +48,8 @@ type BookingValues = {
 
 function savedCopy(savedTo: BookingMode, host: string) {
   return savedTo === "account"
-    ? `It is saved to your account as pending, where Discover Manipur's admins can see it. ${host} is not notified automatically yet — please contact them directly to book. You have not been charged.`
-    : `It is saved in this browser only. Online booking is not connected on this site, so ${host} has not been told — please contact them directly to book. You have not been charged.`;
+    ? `It is saved to your account as pending, where Discover Manipur's admins can see it. ${host} is not notified automatically yet. Please contact them directly to book. You have not been charged.`
+    : `It is saved in this browser only. Online booking is not connected on this site, so ${host} has not been told. Please contact them directly to book. You have not been charged.`;
 }
 
 export function ExperienceBookingPanel({ experience }: { experience: Experience }) {
@@ -231,7 +231,7 @@ export function ExperienceBookingPanel({ experience }: { experience: Experience 
         {mode === "account"
           ? "You will not be charged. Requests are saved to your account, where Discover Manipur's admins can see them; the host is not notified automatically yet, so please also contact them directly."
           : mode === "browser"
-            ? "You will not be charged. Requests are saved in this browser only — online booking is not connected on this site, so please contact the host directly to book."
+            ? "You will not be charged. Requests are saved in this browser only. Online booking is not connected on this site, so please contact the host directly to book."
             : "You will not be charged."}
       </p>
     </form>

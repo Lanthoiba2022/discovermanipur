@@ -1,7 +1,7 @@
 /**
  * Reads for the admin pages. Server-only: it imports the database client.
  *
- * Unlike the public catalogue loaders, nothing here falls back to seed data —
+ * Unlike the public catalogue loaders, nothing here falls back to seed data:
  * an operations view showing invented rows is worse than one saying it has
  * none. Each function returns `null` when there is no database or the query
  * fails, and the page shows that state.

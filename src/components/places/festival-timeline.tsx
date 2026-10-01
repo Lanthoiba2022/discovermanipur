@@ -29,7 +29,7 @@ export function bucketByMonth(festivals: Festival[]): MonthBucket[] {
   return buckets;
 }
 
-/** Sticky month rail — jump straight to the month you are travelling in. */
+/** Sticky month rail: jump straight to the month you are travelling in. */
 export function MonthRail({
   buckets,
   currentMonth,
@@ -78,7 +78,7 @@ export function MonthRail({
   );
 }
 
-/** The Jan→Dec timeline itself — every month is present, even the quiet ones. */
+/** The Jan→Dec timeline itself: every month is present, even the quiet ones. */
 export function FestivalTimeline({
   buckets,
   currentMonth,
@@ -113,7 +113,7 @@ export function FestivalTimeline({
 
           {bucket.festivals.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              A quiet month — good weather, fewer crowds.
+              A quiet month: good weather, fewer crowds.
             </p>
           ) : (
             <ul className="grid grid-cols-1 gap-4 xl:grid-cols-2">

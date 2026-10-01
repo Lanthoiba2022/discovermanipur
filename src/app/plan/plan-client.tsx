@@ -10,7 +10,7 @@ import { TripForm } from "@/components/ai/trip-form";
 
 /** What the concierge does, for the aside while the live chat is paused. */
 const CAPABILITIES = [
-  { icon: MapPin, label: "Finds real places", note: "Lakes, hills, heritage — never invented." },
+  { icon: MapPin, label: "Finds real places", note: "Lakes, hills, heritage. Never invented." },
   { icon: BedDouble, label: "Matches homestays", note: "By district, price and how many of you there are." },
   { icon: UtensilsCrossed, label: "Points at kitchens", note: "Dishes first, then where to actually eat them." },
   { icon: CalendarHeart, label: "Builds the days", note: "A costed, day-by-day plan you can open and book from." },
@@ -22,7 +22,7 @@ export function PlanClient({
   showcase,
 }: {
   aiConfigured: boolean;
-  /** False when the concierge is switched off — `/plan` then shows the sample. */
+  /** False when the concierge is switched off; `/plan` then shows the sample. */
   live: boolean;
   showcase: ShowcaseTurnView[];
 }) {
@@ -35,7 +35,7 @@ export function PlanClient({
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-10">
-      {/* Guided brief, or — while paused — what the concierge is for */}
+      {/* Guided brief, or (while paused) what the concierge is for */}
       <aside className="lg:sticky lg:top-28 lg:self-start">
         <div className="rounded-[var(--radius-lg)] border border-border bg-surface p-5 shadow-[var(--shadow-sm)] md:p-6">
           {showSample ? (
@@ -49,7 +49,7 @@ export function PlanClient({
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 The live concierge is switched off on this site for now. The conversation beside this is a sample with
-                hand-written replies — every card in it was built from Discover Manipur&apos;s own catalogue, and every link works.
+                hand-written replies. Every card in it was built from Discover Manipur&apos;s own catalogue, and every link works.
               </p>
 
               <div className="my-5 h-px bg-border" />
@@ -74,7 +74,7 @@ export function PlanClient({
               <div className="my-5 h-px bg-border" />
 
               <p className="text-xs leading-relaxed text-muted-foreground">
-                Browsing works normally in the meantime —{" "}
+                Browsing works normally in the meantime:{" "}
                 <Link href="/hotspots" className="underline underline-offset-4 hover:text-foreground">
                   places
                 </Link>
@@ -95,7 +95,7 @@ export function PlanClient({
                 Start with the shape of it
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                A few answers and the concierge opens the conversation for you. You can change your mind at any point —
+                A few answers and the concierge opens the conversation for you. You can change your mind at any point;
                 just say so in the chat.
               </p>
 

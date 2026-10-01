@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 /**
  * The map-collection teaser.
  *
- * A conversion moment, so it carries exactly one call to action — the whole
+ * A conversion moment, so it carries exactly one call to action: the whole
  * card is the link, and the "Open the 3D map" line inside it is a styled span,
  * not a second, competing target.
  *
@@ -35,7 +35,7 @@ export function KanglaTeaser({ compact = false }: { compact?: boolean }) {
             <div className="mask-arch relative size-full min-h-52 overflow-hidden">
               <Image
                 src="/file-uploads/kangla-kanglasha.webp"
-                alt="The white kanglasha — dragon-lion guardians — standing on the brick forecourt inside Kangla Fort, Imphal."
+                alt="The white kanglasha (dragon-lion guardians) standing on the brick forecourt inside Kangla Fort, Imphal."
                 fill
                 sizes="(max-width: 768px) 92vw, 34rem"
                 className="media-recede object-cover transition-transform duration-[600ms] ease-[var(--ease-flat)] group-hover:scale-[1.04] group-focus-visible:scale-[1.04]"

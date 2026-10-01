@@ -13,7 +13,7 @@ import { ContactForm } from "./contact-form";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Questions about a trip, about hosting, about an accessibility problem or about a correction to the site — the quickest way to reach the volunteers who run Discover Manipur.",
+    "Questions about a trip, about hosting, about an accessibility problem or about a correction to the site: the quickest way to reach the volunteers who run Discover Manipur.",
   openGraph: {
     title: "Contact Discover Manipur",
     description: "Ask about a trip, about hosting, or tell us what we got wrong.",
@@ -54,7 +54,7 @@ export default async function ContactPage() {
             <NoteBox title="What happens to your message">
               <p>
                 The contact form has no mail provider connected yet. It checks your details on the
-                server, but nothing is sent to an inbox and nothing is stored — we would rather tell
+                server, but nothing is sent to an inbox and nothing is stored. We would rather tell
                 you that than show a confirmation that is not true. Until it is connected, ask on the{" "}
                 <a href="https://discord.gg/hgGfm6UpU" rel="noreferrer noopener" target="_blank">
                   community Discord
@@ -124,8 +124,8 @@ export default async function ContactPage() {
                 </dl>
                 <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
                   There are no office hours: the people who run the site are volunteers, so replies
-                  come when someone is free. Local festival days — Yaoshang, Cheiraoba, Ningol
-                  Chakkouba — usually mean a slower reply.
+                  come when someone is free. Local festival days (Yaoshang, Cheiraoba, Ningol
+                  Chakkouba) usually mean a slower reply.
                 </p>
               </div>
             </Reveal>
@@ -140,8 +140,8 @@ export default async function ContactPage() {
                   <li>
                     <Link href="/faq" className="text-primary underline underline-offset-4">
                       FAQ
-                    </Link>{" "}
-                    — permits, transport, food, festivals, accessibility.
+                    </Link>
+                    : permits, transport, food, festivals, accessibility.
                   </li>
                   <li>
                     <Link
@@ -149,8 +149,8 @@ export default async function ContactPage() {
                       className="text-primary underline underline-offset-4"
                     >
                       Responsible travel
-                    </Link>{" "}
-                    — what to do and not do here.
+                    </Link>
+                    : what to do and not do here.
                   </li>
                   <li>
                     <Link
@@ -158,14 +158,14 @@ export default async function ContactPage() {
                       className="text-primary underline underline-offset-4"
                     >
                       Accessibility statement
-                    </Link>{" "}
-                    — and how to report a barrier.
+                    </Link>
+                    , and how to report a barrier.
                   </li>
                   <li>
                     <Link href="/host" className="text-primary underline underline-offset-4">
                       Become a host
-                    </Link>{" "}
-                    — if you run a stay, a kitchen or a vehicle.
+                    </Link>
+                    , if you run a stay, a kitchen or a vehicle.
                   </li>
                 </ul>
               </div>

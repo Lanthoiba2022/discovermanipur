@@ -54,7 +54,7 @@ function columnPath(x: number, y: number, w: number, h: number, r = 4) {
 
 export interface ColumnChartProps {
   data: MonthPoint[];
-  /** Plain-language description of what is plotted — used for the chart's a11y label. */
+  /** Plain-language description of what is plotted, used for the chart's a11y label. */
   caption: string;
   /** Column header for the value column in the table view. */
   valueLabel: string;
@@ -66,7 +66,7 @@ export interface ColumnChartProps {
 }
 
 /**
- * Single-series column chart drawn as inline SVG — no charting dependency.
+ * Single-series column chart drawn as inline SVG (no charting dependency).
  * One series, so no legend: the caption names what is plotted. The peak is
  * directly labelled, every column has a hover/focus tooltip, and the full
  * numbers are always available in the table view beneath.

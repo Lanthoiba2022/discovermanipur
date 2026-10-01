@@ -11,15 +11,15 @@ import type { MediaImage } from "@/types";
 /**
  * The shared card grammar.
  *
- * Every listing card on the site — places, festivals, experiences, eateries,
- * homestays, tours, transport, crafts — is assembled from these parts, so the
+ * Every listing card on the site (places, festivals, experiences, eateries,
+ * homestays, tours, transport, crafts) is assembled from these parts, so the
  * eight of them read as one family instead of eight house styles:
  *
  *   shell        surface card, 12px inset, 4px lift on hover, one focus ring
  *   media        arch-masked photo (the Manipuri gateway profile), 4:3,
  *                receding saturation that comes back on hover
  *   eyebrow      tone-coloured category line: ICON + WORDS, never colour alone
- *   title        display face, always wraps — never clamped
+ *   title        display face, always wraps, never clamped
  *   line         place / host / operator, wraps
  *   description  the only clamped text; the card links to the full page
  *   meta         two-to-three domain facts, icon + value, wraps
@@ -35,7 +35,7 @@ import type { MediaImage } from "@/types";
 /**
  * Category coding. Each tone is a text-safe value on the ivory ground with a
  * lighter step swapped in under `.dark` (the project toggles theme by class).
- * The -500 earth steps are 3.10:1 — they are only ever used for icon fills and
+ * The -500 earth steps are 3.10:1. They are only ever used for icon fills and
  * rules here, never for the small copy.
  */
 export type CardTone = "pine" | "terracotta" | "crimson" | "brass" | "stone";
@@ -68,7 +68,7 @@ export function CardShell({
         "transition-[transform,box-shadow,border-color] duration-[260ms] ease-[var(--ease-flat)]",
         "hover:-translate-y-1 hover:border-border-strong hover:shadow-[var(--shadow-md)]",
         // One ring for the whole card, drawn when the card's single link is
-        // focused by keyboard — the anchor itself only covers its own text.
+        // focused by keyboard. The anchor itself only covers its own text.
         "has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-[var(--ring)]",
         "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
         TONE_CLASS[tone],
@@ -123,9 +123,9 @@ export function CardMedia({
   sizes: string;
   preload?: boolean;
   ratio?: string;
-  /** Distinction chip — bottom-left, over the square shoulder of the arch. */
+  /** Distinction chip: bottom-left, over the square shoulder of the arch. */
   status?: ReactNode;
-  /** Interactive control (never inside the card's anchor) — bottom-right. */
+  /** Interactive control (never inside the card's anchor): bottom-right. */
   action?: ReactNode;
   /** Keep the chip band even when empty. Off for small leading thumbnails. */
   reserveChip?: boolean;
@@ -146,7 +146,7 @@ export function CardMedia({
         fill
         /* Google Places photos resolve through `/api/place-photo`, which answers
            with a 307 to a short-lived signed Google URL rather than proxying the
-           bytes — the Places terms allow caching the reference, not the image.
+           bytes: the Places terms allow caching the reference, not the image.
            Next's optimizer will not follow that hop: it returns 400 and the
            card renders an empty frame. Sending these straight to the browser
            lets it follow the redirect itself. Our own files still go through the
@@ -166,7 +166,7 @@ export function CardMedia({
       {image?.credit && (
         /* Google Places photos may be displayed only with the photographer's
            credit shown. Small, bottom-right, above the scrim so it stays legible
-           on any photo — but out of the way of the chip band on the left. */
+           on any photo, but out of the way of the chip band on the left. */
         <span
           className="pointer-events-none absolute bottom-1.5 right-2 z-10 max-w-[70%] truncate
                      text-[10px] leading-none text-white/70 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
@@ -202,7 +202,7 @@ export function CardBody({ children, className }: { children: ReactNode; classNa
   );
 }
 
-/** Category line. Always an icon plus words — category is never colour alone. */
+/** Category line. Always an icon plus words. Category is never colour alone. */
 export function CardEyebrow({
   icon: Icon,
   children,
@@ -226,8 +226,8 @@ export function CardEyebrow({
 }
 
 /**
- * The card's one link. The name wraps — it is never truncated to equalise
- * card heights — and the anchor's overlay spans the whole shell.
+ * The card's one link. The name wraps (it is never truncated to equalise
+ * card heights), and the anchor's overlay spans the whole shell.
  */
 export function CardTitle({
   href,
@@ -284,7 +284,7 @@ export function CardLine({
   );
 }
 
-/** The only clamped text on a card — the detail page carries the full copy. */
+/** The only clamped text on a card. The detail page carries the full copy. */
 export function CardDescription({ children }: { children: ReactNode }) {
   return <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">{children}</p>;
 }
@@ -309,7 +309,7 @@ export function CardFact({
   children,
 }: {
   icon: LucideIcon;
-  /** Screen-reader name for the value — the icon alone never carries it. */
+  /** Screen-reader name for the value. The icon alone never carries it. */
   label: string;
   children: ReactNode;
 }) {
@@ -340,7 +340,7 @@ export function CardFoot({ children, className }: { children: ReactNode; classNa
 
 /**
  * The commitment: a price, an entry fee, a set of dates. Set in the display
- * face — these are read as money, not as machine output, so never mono.
+ * face: these are read as money, not as machine output, so never mono.
  */
 export function CardPrice({
   value,

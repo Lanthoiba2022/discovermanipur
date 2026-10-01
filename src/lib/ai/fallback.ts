@@ -9,13 +9,13 @@ import { assembleItinerary } from "./tools";
 import type { ItineraryResult } from "./schema";
 
 export const NOT_CONFIGURED_MESSAGE = [
-  "I'm not switched on yet — the live concierge is off on this site, so I can't think for myself right now.",
+  "I'm not switched on yet. The live concierge is off on this site, so I can't think for myself right now.",
   "",
   "Everything else works, though. You can browse [places](/hotspots), [homestays](/homestays), [experiences](/experiences), [places to eat](/eateries) and [tours](/tours) directly, and here is a sample itinerary built from the real Discover Manipur catalogue so you can see what I'd normally put together for you.",
 ].join("\n");
 
 export const NOT_CONFIGURED_SHORT =
-  "I'm not switched on yet — the live concierge is off on this site. Browse [places](/hotspots), [homestays](/homestays) and [tours](/tours) in the meantime.";
+  "I'm not switched on yet. The live concierge is off on this site. Browse [places](/hotspots), [homestays](/homestays) and [tours](/tours) in the meantime.";
 
 /** A grounded sample plan, or `null` when the catalogue is still empty. */
 export async function sampleItinerary(days = 3): Promise<ItineraryResult | null> {

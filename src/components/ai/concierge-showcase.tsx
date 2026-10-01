@@ -70,7 +70,7 @@ function Outputs({ outputs }: { outputs: ConciergeToolOutput[] }) {
  * The sample conversation that stands in for the live concierge.
  *
  * It is a *transcript builder*, not a video: the visitor picks the next
- * question from the chips and it plays out — tool chips, then the answer typing
+ * question from the chips and it plays out: tool chips, then the answer typing
  * in, then the real catalogue cards. That keeps the sample honest about what the
  * concierge does (it looks things up, then talks) while staying entirely
  * client-side, with no key and no request.
@@ -111,7 +111,7 @@ export function ConciergeShowcase({
 
     if (phase === "tools") {
       // Reduced motion skips the pause rather than removing the step, so the
-      // "it looked things up first" beat still reads — just instantly.
+      // "it looked things up first" beat still reads, just instantly.
       const timer = window.setTimeout(() => setPhase("typing"), reducedMotion ? 0 : TOOL_MS);
       return () => window.clearTimeout(timer);
     }
@@ -188,7 +188,7 @@ export function ConciergeShowcase({
           Sample conversation
         </span>
         <p className="text-xs text-muted-foreground">
-          The live concierge is switched off for now — this is a recorded exchange, built from the real catalogue.
+          The live concierge is switched off for now. This is a recorded exchange, built from the real catalogue.
         </p>
       </div>
 
@@ -240,7 +240,7 @@ export function ConciergeShowcase({
         </ul>
       </div>
 
-      {/* Remaining questions — the visitor drives the conversation forward. */}
+      {/* Remaining questions: the visitor drives the conversation forward. */}
       <div className="shrink-0 border-t border-border px-4 py-3 md:px-5">
         {remaining.length > 0 ? (
           <>
@@ -271,7 +271,7 @@ export function ConciergeShowcase({
         ) : (
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs text-muted-foreground">
-              That&apos;s the sample. Everything it linked to is a real page on this site — go and open one.
+              That&apos;s the sample. Everything it linked to is a real page on this site. Go and open one.
             </p>
             <Button type="button" variant="ghost" size="sm" onClick={restart} className="h-8 px-2.5 text-xs">
               <RotateCcw aria-hidden className="size-3.5" />

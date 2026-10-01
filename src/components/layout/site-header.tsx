@@ -152,7 +152,7 @@ function MegaPanel({
 /**
  * The site chrome.
  *
- * The mega menu exists to surface the whole site at once — the 3D explorer,
+ * The mega menu exists to surface the whole site at once: the 3D explorer,
  * the host funnel, search and sign-in all need an entry point here. Each panel
  * is a real disclosure rather than a `:hover`/`:focus-within` dropdown, so it
  * opens from a keyboard and behaves predictably on touch: click, Enter/Space,
@@ -376,7 +376,7 @@ export function SiteHeader() {
       </Dialog>
 
       {/* ---------- Mobile drawer ----------
-          Every group, every item — the drawer is the full site map, because
+          Every group, every item: the drawer is the full site map, because
           on a phone it is the only navigation there is. */}
       <AnimatePresence>
         {menuOpen && (

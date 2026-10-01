@@ -27,7 +27,7 @@ import { formatINR } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Getting around Manipur",
   description:
-    "Cabs, SUVs, tempos, bikes, shared sumos and buses across Manipur — plus a practical guide to Imphal airport, the Dimapur and Silchar road routes, and Inner Line Permit rules.",
+    "Cabs, SUVs, tempos, bikes, shared sumos and buses across Manipur, plus a practical guide to Imphal airport, the Dimapur and Silchar road routes, and Inner Line Permit rules.",
 };
 
 export default async function TransportPage({
@@ -106,7 +106,7 @@ export default async function TransportPage({
             description={
               all.length === 0
                 ? "We are checking licences, insurance and driver references before listing vehicles. The guide above still applies."
-                : "Try another mode — shared sumos cover routes that private cabs will not take on."
+                : "Try another mode. Shared sumos cover routes that private cabs will not take on."
             }
             action={
               <Button asChild variant="outline">

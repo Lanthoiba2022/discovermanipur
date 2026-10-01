@@ -3,13 +3,15 @@
  *
  *   npm run db:set-role -- <email> <user|host|admin>
  *
- * The only way to change `profiles.role`: the app never writes it, so nobody
- * can promote themselves. Takes effect on the person's next request — the role
+ * Nobody can promote themselves: the app writes `profiles.role` only when an
+ * admin approves a host application (user to host, never higher). Every other
+ * change, such as making an admin, goes through this script. It takes effect
+ * on the person's next request. The role
  * is read from this table every time, not carried in their session cookie.
  *
  * The profile row is created the first time someone signs in, so they need to
  * have signed in once before this can find them. Connects as the database
- * owner — an operator script, never imported by the app.
+ * owner (an operator script, never imported by the app).
  */
 
 import pg from "pg";

@@ -1,7 +1,7 @@
 import type { Eatery } from "@/types";
 
 /**
- * Discover Manipur eatery seed data — 16 places to eat, from lake shacks to fine dining.
+ * Discover Manipur eatery seed data: 16 places to eat, from lake shacks to fine dining.
  * priceRange: 1 = under ₹300 a head, 2 = ₹300–800, 3 = ₹800+.
  */
 export const eateries: Eatery[] = [
@@ -53,7 +53,7 @@ export const eateries: Eatery[] = [
       {
         name: "Chilli paste",
         meiteiName: "Morok Metpa",
-        description: "Pounded green chilli with ngari and a little oil — served in a small bowl, eaten sparingly.",
+        description: "Pounded green chilli with ngari and a little oil, served in a small bowl, eaten sparingly.",
         price: 60,
         isVegetarian: false,
         isSignature: false,
@@ -164,7 +164,7 @@ export const eateries: Eatery[] = [
     slug: "royal-kangla-kitchen",
     name: "Royal Kangla Kitchen",
     description:
-      "Imphal's attempt at fine dining on Meitei foundations — the old ceremonial dishes of the Manipuri court, plated carefully and served in a restored house near Kangla. The ceremonial platter is the thing to order: eleven small dishes arranged in the order in which they would have been eaten at a palace feast.",
+      "Imphal's attempt at fine dining on Meitei foundations: the old ceremonial dishes of the Manipuri court, plated carefully and served in a restored house near Kangla. The ceremonial platter is the thing to order: eleven small dishes arranged in the order in which they would have been eaten at a palace feast.",
     cuisines: ["manipuri", "north-indian"],
     location: "Kangla Road, Imphal East",
     district: "Imphal East",
@@ -213,7 +213,7 @@ export const eateries: Eatery[] = [
     slug: "bamboo-hut-garden-cafe",
     name: "Bamboo Hut Garden Cafe",
     description:
-      "A bamboo-framed cafe in a garden above Ukhrul town, serving Tangkhul home cooking alongside good coffee — smoked pork with axone, wild herb soups, sticky rice steamed in leaf, and cakes baked with local honey. Warm, slow and the best place in the hills to sit out a rainy afternoon.",
+      "A bamboo-framed cafe in a garden above Ukhrul town, serving Tangkhul home cooking alongside good coffee: smoked pork with axone, wild herb soups, sticky rice steamed in leaf, and cakes baked with local honey. Warm, slow and the best place in the hills to sit out a rainy afternoon.",
     cuisines: ["naga", "cafe"],
     location: "Ukhrul town, Ukhrul district",
     district: "Ukhrul",
@@ -231,7 +231,7 @@ export const eateries: Eatery[] = [
     signatureDishes: [
       {
         name: "Smoked pork with axone",
-        description: "Hill-smoked pork slow-cooked with fermented soybean and dried chilli — the Tangkhul staple.",
+        description: "Hill-smoked pork slow-cooked with fermented soybean and dried chilli, the Tangkhul staple.",
         price: 320,
         isVegetarian: false,
         isSignature: true,
@@ -316,7 +316,7 @@ export const eateries: Eatery[] = [
     timings: "10:30 AM – 9:00 PM daily",
     phone: "+91 98561 44770",
     images: [
-      { src: "/file-uploads/manipuri-food-leaf.webp", alt: "A Manipuri meal served on a banana leaf — fried cakes and dried fish" },
+      { src: "/file-uploads/manipuri-food-leaf.webp", alt: "A Manipuri meal served on a banana leaf: fried cakes and dried fish" },
       { src: "/file-uploads/herkit.jpg", alt: "A full Meitei spread served on leaf plates at an Imphal restaurant" },
       { src: "/file-uploads/food4.jpg", alt: "Home-style Manipuri dishes on a steel tray" },
     ],
@@ -347,7 +347,7 @@ export const eateries: Eatery[] = [
     slug: "classic-grande-restaurant",
     name: "Classic Grande Rooftop",
     description:
-      "The rooftop restaurant of one of Imphal's larger hotels, with the widest menu in the city — Manipuri, North Indian, Chinese and a serviceable continental section — and the best evening view over the valley. The place to bring a group with mixed tastes, and reliably open when everything else has closed.",
+      "The rooftop restaurant of one of Imphal's larger hotels, with the widest menu in the city (Manipuri, North Indian, Chinese and a serviceable continental section) and the best evening view over the valley. The place to bring a group with mixed tastes, and reliably open when everything else has closed.",
     cuisines: ["manipuri", "north-indian", "chinese"],
     location: "North AOC, Imphal West",
     district: "Imphal West",
@@ -412,7 +412,7 @@ export const eateries: Eatery[] = [
       {
         name: "Black tea with kabok",
         meiteiName: "Cha amasung Kabok",
-        description: "Sweet black tea with puffed rice and jaggery — the standard Manipuri morning snack.",
+        description: "Sweet black tea with puffed rice and jaggery, the standard Manipuri morning snack.",
         price: 50,
         isVegetarian: true,
         isSignature: false,
@@ -465,7 +465,7 @@ export const eateries: Eatery[] = [
     slug: "hill-town-cafe-churachandpur",
     name: "Hill Town Cafe",
     description:
-      "Churachandpur's best coffee, in a bright room off the main bazar, with Kuki-Zo home cooking at lunch — sa-um fermented pork fat with greens, boiled chicken with herbs, and sticky rice. Popular with students, which means the wifi works and the place stays open late.",
+      "Churachandpur's best coffee, in a bright room off the main bazar, with Kuki-Zo home cooking at lunch: sa-um fermented pork fat with greens, boiled chicken with herbs, and sticky rice. Popular with students, which means the wifi works and the place stays open late.",
     cuisines: ["kuki", "cafe"],
     location: "Tuibuong, Churachandpur",
     district: "Churachandpur",
@@ -483,7 +483,7 @@ export const eateries: Eatery[] = [
     signatureDishes: [
       {
         name: "Sa-um with mustard greens",
-        description: "Fermented pork fat cooked down with mustard leaf — the defining Kuki-Zo dish.",
+        description: "Fermented pork fat cooked down with mustard leaf, the defining Kuki-Zo dish.",
         price: 220,
         isVegetarian: false,
         isSignature: true,
@@ -631,7 +631,7 @@ export const eateries: Eatery[] = [
     priceRange: 1,
     timings: "6:00 AM – 8:00 PM daily",
     images: [
-      { src: "/file-uploads/manipuri-food-leaf.webp", alt: "A plate of Manipuri food served on a banana leaf — fried cakes and dried fish" },
+      { src: "/file-uploads/manipuri-food-leaf.webp", alt: "A plate of Manipuri food served on a banana leaf: fried cakes and dried fish" },
       { src: "/file-uploads/senapati-green-hills.webp", alt: "NH-2 hill country near Senapati town" },
       { src: "/file-uploads/g142.avif", alt: "Simple dining room at a highway stop in Senapati" },
     ],

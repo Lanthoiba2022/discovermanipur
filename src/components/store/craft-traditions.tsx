@@ -15,7 +15,7 @@ const TRADITIONS: Tradition[] = [
   {
     name: "Handloom",
     meitei: "ꯐꯤ",
-    body: "Cloth in Manipur is counted thread by thread on a loin loom, usually on a verandah, usually by a woman who learned it from her mother. The Moirang Phee border — a stepped temple spire — is carried in the head, not on a pattern card.",
+    body: "Cloth in Manipur is counted thread by thread on a loin loom, usually on a verandah, usually by a woman who learned it from her mother. The Moirang Phee border, a stepped temple spire, is carried in the head, not on a pattern card.",
     href: "/experiences/handloom-weaving-with-a-moirang-phee-weaver",
     cta: "Sit at the loom yourself",
   },
@@ -27,7 +27,7 @@ const TRADITIONS: Tradition[] = [
   },
   {
     name: "Bamboo and cane",
-    body: "Split, shaved, soaked and woven while damp so the weave tightens as it dries — the same grammar makes a fish trap, a grain store and the conical basket carried up a hill path.",
+    body: "Split, shaved, soaked and woven while damp so the weave tightens as it dries. The same grammar makes a fish trap, a grain store and the conical basket carried up a hill path.",
     href: "/experiences/bamboo-and-cane-craft-workshop",
     cta: "Weave with cane",
   },
@@ -40,7 +40,7 @@ const TRADITIONS: Tradition[] = [
 ];
 
 /**
- * The traditions behind the catalogue — and the route from owning the object
+ * The traditions behind the catalogue, and the route from owning the object
  * to making one.
  */
 export function CraftTraditions() {

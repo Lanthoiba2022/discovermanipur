@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 /**
  * The empty state every showcase band falls back to.
  *
- * All four getters can legitimately return `[]` — an unconfigured database, a filter that matches nothing (the "quieter places" band filters
+ * All four getters can legitimately return `[]`: an unconfigured database, a filter that matches nothing (the "quieter places" band filters
  * featured spots out, so it empties first), a content table still being
  * seeded. A band that indexes `rows[0]` in that state takes the whole landing
  * page down, so every band renders this instead and the page still reads as a

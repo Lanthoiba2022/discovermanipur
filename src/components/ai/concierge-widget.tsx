@@ -64,7 +64,7 @@ function PausedPanel({ onNavigate }: { onNavigate: () => void }) {
       </Link>
 
       <p className="text-xs leading-relaxed text-muted-foreground">
-        Everything else is live — browse{" "}
+        Everything else is live: browse{" "}
         <Link href="/hotspots" onClick={onNavigate} className="underline underline-offset-4 hover:text-foreground">
           places
         </Link>{" "}
@@ -81,7 +81,7 @@ function PausedPanel({ onNavigate }: { onNavigate: () => void }) {
 /**
  * The floating concierge.
  *
- * A shell, not a second chatbot — the panel renders the very same
+ * A shell, not a second chatbot: the panel renders the very same
  * `<Concierge />` that `/plan` does. Mount it once in the root layout and the
  * whole site gets the concierge.
  *
@@ -94,10 +94,10 @@ function PausedPanel({ onNavigate }: { onNavigate: () => void }) {
  * 2. **It is draggable.** The header is a drag handle, so the panel can be
  *    moved off whatever it happens to be covering. The position is held in
  *    this component, and because the widget lives in the root layout it is
- *    never unmounted by a client navigation — drag it once and it stays put as
+ *    never unmounted by a client navigation. Drag it once and it stays put as
  *    you move around the site.
  * 3. **It tells the truth when it is off.** With `live={false}` the panel does
- *    not render a chat at all — an input box that accepts a question and then
+ *    not render a chat at all: an input box that accepts a question and then
  *    apologises is worse than one that was never offered. It says the concierge
  *    is paused and points at the sample conversation on `/plan`.
  * 4. **One close control, not two.** The panel carries its own close button,
@@ -108,14 +108,14 @@ export function ConciergeWidget({
   live = true,
 }: {
   className?: string;
-  /** False while the concierge is switched off — the panel says so instead of
+  /** False while the concierge is switched off. The panel says so instead of
    *  opening a chat that cannot answer. */
   live?: boolean;
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<Point | null>(null);
-  /** Icon-only launcher. Session-scoped on purpose — persisting it would mean
+  /** Icon-only launcher. Session-scoped on purpose: persisting it would mean
    *  reading storage after hydration and flashing the label away on every load. */
   const [collapsed, setCollapsed] = useState(false);
   const panelId = useId();
@@ -304,7 +304,7 @@ export function ConciergeWidget({
             <Concierge
               variant="panel"
               suggestions={WIDGET_SUGGESTIONS}
-              greeting="Khurumjari. Ask me anything about Manipur — or tell me how many days you have and I'll sketch a plan."
+              greeting="Khurumjari. Ask me anything about Manipur, or tell me how many days you have and I'll sketch a plan."
               footerNote="Grounded in Discover Manipur's own listings."
               className="min-h-0 flex-1 rounded-none border-0"
             />
@@ -334,7 +334,7 @@ export function ConciergeWidget({
               collapsed ? "pl-1.5 pr-0" : "pl-1.5 pr-4",
             )}
           >
-            {/* One toggle, always at the pill's leading edge — only the glyph
+            {/* One toggle, always at the pill's leading edge. Only the glyph
                 changes. Keeping the control in a single place means it never
                 jumps sides as the pill grows and shrinks, and the arrow always
                 points the way the label is about to travel. */}

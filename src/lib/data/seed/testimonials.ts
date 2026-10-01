@@ -1,6 +1,6 @@
 import type { Testimonial } from "@/types";
 
-/** Discover Manipur testimonial seed data — 10 guest quotes. */
+/** Discover Manipur testimonial seed data: 10 guest quotes. */
 export const testimonials: Testimonial[] = [
   {
     id: "ts-priya-sharma",
@@ -34,7 +34,7 @@ export const testimonials: Testimonial[] = [
     name: "Anjali Roy",
     origin: "Kolkata",
     quote:
-      "I came for the food and it exceeded everything. Pounding my own eromba in Bina's kitchen, then eating it off a leaf with chak-hao kheer afterwards — I have made it twice at home since, though the ngari is impossible to source.",
+      "I came for the food and it exceeded everything. Pounding my own eromba in Bina's kitchen, then eating it off a leaf with chak-hao kheer afterwards. I have made it twice at home since, though the ngari is impossible to source.",
     rating: 5,
     tripType: "Manipuri Culinary Tour",
   },
@@ -79,7 +79,7 @@ export const testimonials: Testimonial[] = [
     name: "Emily Chen",
     origin: "Singapore",
     quote:
-      "We saw the sangai from the Toya tower at about twenty past six, three of them out on the open phumdi. Our guide had told us it was not guaranteed, which made it better when it happened. Take binoculars — you will need them.",
+      "We saw the sangai from the Toya tower at about twenty past six, three of them out on the open phumdi. Our guide had told us it was not guaranteed, which made it better when it happened. Take binoculars. You will need them.",
     rating: 5,
     tripType: "Keibul Lamjao sangai safari",
   },

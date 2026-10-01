@@ -39,7 +39,7 @@ export default function GlobalError({
           <p className="eyebrow text-muted-foreground">Something went wrong</p>
           <h1 className="mt-5 text-headline">The road is blocked, not closed.</h1>
           <p className="mx-auto mt-6 max-w-[52ch] text-lg leading-relaxed text-muted-foreground">
-            This part of the site failed to load. It is usually temporary — try again, and if it
+            This part of the site failed to load. It is usually temporary. Try again, and if it
             keeps happening, tell us what you were doing and we will fix it.
           </p>
 
@@ -62,7 +62,7 @@ export default function GlobalError({
               <code className="rounded-[var(--radius-sm)] bg-muted px-2 py-1 font-mono text-xs">
                 {error.digest}
               </code>
-              <span className="block mt-2">Quote this if you get in touch — it helps us find it.</span>
+              <span className="block mt-2">Quote this if you get in touch; it helps us find it.</span>
             </p>
           )}
         </div>

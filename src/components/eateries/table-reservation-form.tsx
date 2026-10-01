@@ -48,9 +48,9 @@ export function TableReservationForm({ eatery }: { eatery: Eatery }) {
   });
 
   async function onSubmit(values: ReservationValues) {
-    // No backend yet — nothing is sent or stored, and the toast says so.
+    // No backend yet: nothing is sent or stored, and the toast says so.
     await new Promise((resolve) => setTimeout(resolve, 500));
-    toast.success("Thanks — one more step", {
+    toast.success("Thanks, one more step", {
       description: `Online requests aren't connected yet, so this wasn't sent. To book ${values.partySize} guest${
         values.partySize === 1 ? "" : "s"
       } on ${values.date} at ${values.time}, please contact ${eatery.name} directly${
@@ -65,7 +65,7 @@ export function TableReservationForm({ eatery }: { eatery: Eatery }) {
       <div className="rounded-[var(--radius-lg)] border border-border bg-surface-sunken p-6">
         <h2 className="font-display text-2xl">Walk in</h2>
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          {eatery.name} does not take table reservations. Arrive early for lunch — the good dishes
+          {eatery.name} does not take table reservations. Arrive early for lunch: the good dishes
           run out first.
         </p>
         {eatery.phone && (
@@ -187,7 +187,7 @@ export function TableReservationForm({ eatery }: { eatery: Eatery }) {
         {isSubmitting ? "One moment…" : "Request table"}
       </Button>
       <p className="text-center text-xs text-muted-foreground">
-        Online requests are not connected yet — please contact the restaurant directly to book
+        Online requests are not connected yet. Please contact the restaurant directly to book
         {eatery.phone ? (
           <>
             {" "}on{" "}

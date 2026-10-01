@@ -1,5 +1,5 @@
 /**
- * Discover Manipur data layer — the single boundary between content and UI.
+ * Discover Manipur data layer: the single boundary between content and UI.
  *
  * Every route imports from here and never from `./seed/*` directly.
  *
@@ -58,7 +58,7 @@ function paginate<T>(rows: T[], q?: ListQuery) {
  * while the original 2025 seed still appears, appended after them. New rows are
  * seeded at 100; everything already in the table sits at the column default of
  * 0. Rows loaded from the bundled seed modules have no weight at all, which
- * `?? 0` puts in the same cohort as the old database rows — so the fallback
+ * `?? 0` puts in the same cohort as the old database rows, so the fallback
  * path orders identically to the database path.
  *
  * An explicit user sort (price, rating) overrides the cohort entirely: someone

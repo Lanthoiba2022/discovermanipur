@@ -6,7 +6,7 @@ import { isAuthConfigured } from "./env";
  * Neon Auth (Managed Better Auth) for Server Components, Route Handlers,
  * Server Actions and `proxy.ts`.
  *
- * `null` when Neon Auth is not configured, so importing this never throws —
+ * `null` when Neon Auth is not configured, so importing this never throws:
  * `createNeonAuth` itself throws on a cookie secret under 32 characters, and
  * `next.config.ts` only sets the flag when the secret is long enough.
  */

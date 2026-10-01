@@ -49,7 +49,7 @@ export function HeroStage({
         }}
       >
         {frames.map((slide, i) => {
-          // The clone repeats slide 0's file, so it must not repeat its alt —
+          // The clone repeats slide 0's file, so it must not repeat its alt:
           // that would announce the same photograph twice.
           const isClone = i === HERO_SLIDES.length;
           const isLcp = i === 0;

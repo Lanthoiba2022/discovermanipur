@@ -15,21 +15,21 @@ function inr(value: number): string {
   return `₹${Math.round(value).toLocaleString("en-IN")}`;
 }
 
-/** A plain-text rendering of the plan — what lands on the clipboard. */
+/** A plain-text rendering of the plan: what lands on the clipboard. */
 export function itineraryToText(plan: ItineraryPlan): string {
   const out: string[] = [plan.title, "", plan.overview, ""];
 
   for (const day of plan.days) {
-    out.push(`Day ${day.day} — ${day.title}`);
+    out.push(`Day ${day.day}: ${day.title}`);
     out.push(day.summary);
     for (const stop of day.stops) {
       const when = stop.timeOfDay ? `${stop.timeOfDay}: ` : "";
-      out.push(`  • ${when}${stop.title}${stop.href ? ` (${SITE_HOST}${stop.href})` : ""} — ${stop.note}`);
+      out.push(`  • ${when}${stop.title}${stop.href ? ` (${SITE_HOST}${stop.href})` : ""}. ${stop.note}`);
     }
     for (const meal of day.meals) {
       out.push(`  • ${meal.slot}: ${meal.suggestion}${meal.href ? ` (${SITE_HOST}${meal.href})` : ""}`);
     }
-    if (day.stay) out.push(`  • stay: ${day.stay.title}${day.stay.note ? ` — ${day.stay.note}` : ""}`);
+    if (day.stay) out.push(`  • stay: ${day.stay.title}${day.stay.note ? `. ${day.stay.note}` : ""}`);
     if (day.travelNotes) out.push(`  • getting around: ${day.travelNotes}`);
     if (day.estimatedCostInr) out.push(`  • approx ${inr(day.estimatedCostInr)} per person`);
     out.push("");
@@ -207,7 +207,7 @@ export function ItineraryTimeline({
                   ) : (
                     <span className="font-medium text-foreground">{day.stay.title}</span>
                   )}
-                  {day.stay.note ? ` — ${day.stay.note}` : null}
+                  {day.stay.note ? `: ${day.stay.note}` : null}
                 </span>
               </p>
             )}
@@ -245,7 +245,7 @@ export function ItineraryTimeline({
             <div className="rounded-[var(--radius)] bg-surface-sunken p-3">
               <p className="eyebrow mb-2 flex items-center gap-2 text-[10px] text-muted-foreground">
                 <Info aria-hidden className="size-3.5" />
-                Permits &amp; safety — verify before you go
+                Permits &amp; safety: verify before you go
               </p>
               <ul className="list-disc space-y-1 pl-5 text-xs leading-relaxed text-muted-foreground marker:text-warning">
                 {plan.permitsAndSafety.map((note, i) => (

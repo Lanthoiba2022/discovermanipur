@@ -18,8 +18,8 @@ import type { Festival } from "@/types";
 /**
  * The one horizontal card in the family: festivals are read down a twelve-month
  * calendar, where a full-width photo card would push the year off the screen.
- * Everything else — arch-masked media, tone-coded eyebrow with an icon, display
- * title that wraps, clamped description, icon meta — is the shared grammar.
+ * Everything else (arch-masked media, tone-coded eyebrow with an icon, display
+ * title that wraps, clamped description, icon meta) is the shared grammar.
  */
 export function FestivalCard({
   festival,

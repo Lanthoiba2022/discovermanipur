@@ -16,7 +16,7 @@ const WIDTHS: Record<SectionWidth, string> = {
 /**
  * The standard section masthead.
  *
- * Title left, standfirst right, action on the baseline, closed by a rule —
+ * Title left, standfirst right, action on the baseline, closed by a rule:
  * the same grammar as the page opener in `PageHero`, one step down the type
  * ramp, so the rhythm holds from the hero through to the last band.
  */
@@ -47,7 +47,7 @@ export function Section({
   headingId?: string;
   /** Anchor id. Carries a scroll margin so the fixed header never covers it. */
   id?: string;
-  /** Chapter mood — drives ground, type and rule colours. */
+  /** Chapter mood: drives ground, type and rule colours. */
   tone?: "light" | "sand" | "dark" | "crimson";
   /** Which rung of the measure ladder this band sits on. */
   width?: SectionWidth;

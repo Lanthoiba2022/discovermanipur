@@ -12,7 +12,7 @@ import * as schema from "./schema";
  * imported into a client component.
  *
  * Nothing in here throws at import time. The whole app must build and run with
- * no database configured — callers get `null` from `getDb()` and fall back to
+ * no database configured: callers get `null` from `getDb()` and fall back to
  * the bundled seed data.
  *
  * There is no Row Level Security in front of these queries: the app connects

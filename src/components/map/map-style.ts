@@ -5,7 +5,7 @@ export type MapStyle = Exclude<NonNullable<MapOptions["style"]>, string>;
 
 /**
  * A key-free raster basemap built straight from the OpenStreetMap standard
- * tile layer. No token, no vendor account — it just renders.
+ * tile layer. No token, no vendor account; it just renders.
  */
 export const OSM_RASTER_STYLE: MapStyle = {
   version: 8,
@@ -28,5 +28,5 @@ export const OSM_RASTER_STYLE: MapStyle = {
   ],
 };
 
-/** Manipur's approximate centre — the fallback view when nothing is plotted. */
+/** Manipur's approximate centre, the fallback view when nothing is plotted. */
 export const MANIPUR_CENTER: [number, number] = [93.9368, 24.817];

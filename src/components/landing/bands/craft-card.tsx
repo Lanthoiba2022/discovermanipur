@@ -10,7 +10,7 @@ import { RAIL_ITEM, RAIL_SIZES } from "@/components/landing/bands/showcase-card"
 import { cn, formatINR, meiteiAlias } from "@/lib/utils";
 
 /**
- * Category is carried by an icon AND a word, never by the chip colour alone —
+ * Category is carried by an icon AND a word, never by the chip colour alone;
  * every chip on the crafts rail is the same brass, so a reader who cannot
  * separate the hues loses nothing.
  */
@@ -29,8 +29,8 @@ const CATEGORY: Record<CraftCategory, { label: string; Icon: LucideIcon }> = {
  *
  * Deliberately a *panelled* card rather than the copy-over-photograph card the
  * destinations and festivals rails use. A craft listing has four facts that
- * have to be read rather than glanced at — the object, the maker, where they
- * work and what it costs — and none of them survives being set over a
+ * have to be read rather than glanced at (the object, the maker, where they
+ * work and what it costs), and none of them survives being set over a
  * photograph. The photograph gets its own plate; the facts get a crimson panel
  * under it.
  *
@@ -117,13 +117,13 @@ export function CraftShowcaseCard({ craft }: { craft: Craft }) {
 
           <p className="mt-auto pt-2 text-sm text-lily-300">
             Made by <span className="font-medium text-ivory-50">{craft.maker}</span>
-            {/* Several rows name the town and the district identically —
-                "Imphal East, Imphal East" — so the pair is collapsed. */}
+            {/* Several rows name the town and the district identically
+                ("Imphal East, Imphal East"), so the pair is collapsed. */}
             <span className="block">{place}</span>
           </p>
 
           {/* Prices are money, not machine-issued text, so they stay in the
-              body sans — `tabular-nums` only, no mono. */}
+              body sans: `tabular-nums` only, no mono. */}
           <p className="border-t border-brass-300/25 pt-3.5 text-base text-ivory-50">
             <span className="font-medium tabular-nums">{formatINR(craft.price)}</span>
             {craft.priceNote && (

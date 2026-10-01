@@ -42,7 +42,7 @@ const DWELL_MS = 3600;
  * 3. **It does not decide what renders.** `matchMedia` is read in an effect,
  *    after hydration; the first render is always index 0 on both server and
  *    client. Under reduced motion the cycle simply never starts, which leaves
- *    the Latin spelling on screen — the one a non-Manipuri reader can read.
+ *    the Latin spelling on screen, the one a non-Manipuri reader can read.
  */
 export function RotatingWordmark({ className }: { className?: string }) {
   const [index, setIndex] = useState(0);
@@ -83,7 +83,7 @@ export function RotatingWordmark({ className }: { className?: string }) {
           /* A HANDOVER, not a cross-dissolve.
              Fading both scripts at once puts two different alphabets on the
              same spot at half opacity each, which reads as a smudge rather
-             than a change — and adding a blur makes it worse. So the
+             than a change, and adding a blur makes it worse. So the
              outgoing word leaves on its own (340ms), and only then does the
              incoming one begin (620ms, starting at 340ms). They never share
              the screen, the movement is pure opacity, and the eye reads one

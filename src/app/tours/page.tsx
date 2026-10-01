@@ -27,7 +27,7 @@ import { formatINR } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Curated tours of Manipur",
   description:
-    "Multi-day routes across Manipur — Loktak and the valley, the Ukhrul hills, Sangai season, weaving villages and the war trail — with day-by-day itineraries and fixed departures.",
+    "Multi-day routes across Manipur (Loktak and the valley, the Ukhrul hills, Sangai season, weaving villages and the war trail), with day-by-day itineraries and fixed departures.",
 };
 
 export default async function ToursPage({
@@ -110,7 +110,7 @@ export default async function ToursPage({
             description={
               all.length === 0
                 ? "Our guides are finalising departure dates for the coming season. In the meantime, single-day experiences are already bookable."
-                : "Try a different trip length, or widen the price range — the longer hill routes cost more but cover far more ground."
+                : "Try a different trip length, or widen the price range. The longer hill routes cost more but cover far more ground."
             }
             action={
               <Button asChild variant="outline">

@@ -15,7 +15,7 @@ const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffec
  *    on reduced motion, and a reader whose observer never fires because the
  *    band is already on screen all see `5,000+`, never a permanent `0`.
  *  - `useReducedMotion()` returns `null` during SSR and `true` on a
- *    reduced-motion client, so it must never decide what is *rendered* — only
+ *    reduced-motion client, so it must never decide what is *rendered*, only
  *    the timing. It is read in effects here, after hydration has matched, and
  *    the markup is byte-identical either way.
  *  - The zeroing happens in a layout effect: after hydration, before paint, so
@@ -23,7 +23,7 @@ const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffec
  *  - `tabular-nums` so the label underneath does not shuffle while the digits
  *    run.
  *
- * This is the smallest possible interactive leaf — the band around it stays a
+ * This is the smallest possible interactive leaf; the band around it stays a
  * server component.
  */
 export function GsFigure({ value, suffix = "" }: { value: number; suffix?: string }) {
@@ -34,7 +34,7 @@ export function GsFigure({ value, suffix = "" }: { value: number; suffix?: strin
 
   useIsomorphicLayoutEffect(() => {
     // Everything that could stop the count from ever running is checked HERE,
-    // before the figure is zeroed — so the failure mode is "the number does
+    // before the figure is zeroed, so the failure mode is "the number does
     // not animate", never "the number is stuck at 0".
     if (reduce || typeof IntersectionObserver === "undefined") return;
     setShown(0);
@@ -62,9 +62,9 @@ export function GsFigure({ value, suffix = "" }: { value: number; suffix?: strin
       frame = requestAnimationFrame(tick);
     };
 
-    // NO `rootMargin`. The obvious `{ rootMargin: "-60px" }` — the inset this
+    // NO `rootMargin`. The obvious `{ rootMargin: "-60px" }` (the inset this
     // codebase uses elsewhere to delay a reveal until an element is properly
-    // on screen — was measured doing the opposite here: inside this band's
+    // on screen) was measured doing the opposite here: inside this band's
     // `overflow: hidden` section, Chrome reported `isIntersecting: false` and
     // a zero intersection rect for every cell but the first, even with the
     // element sitting 371px down an 812px viewport. The counters stayed at

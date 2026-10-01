@@ -113,8 +113,8 @@ export interface HostDashboardStats {
 
 /**
  * Everything the dashboard renders. `state` says whether the numbers are real:
- * `no-database` on a deployment without one, `error` when the read failed —
- * both render an honest notice instead of figures.
+ * `no-database` on a deployment without one, `error` when the read failed.
+ * Both render an honest notice instead of figures.
  */
 export interface HostDashboardData {
   state: "ok" | "no-database" | "error";

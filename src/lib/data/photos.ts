@@ -6,14 +6,14 @@
  *   `images`     files we host in /public/file-uploads. Ours to resize, cache and
  *                serve. Credits, where needed, live in `photo-credits.ts`.
  *
- *   `photoRefs`  Google Places photos. Licensed for display only — the bytes must
+ *   `photoRefs`  Google Places photos. Licensed for display only: the bytes must
  *                not be stored, so they resolve through /api/place-photo on every
  *                request, and the photographer's attribution must be rendered
  *                wherever the photo is. See data/research/PHOTOS.md.
  *
  * Prefer our own files: no per-render API cost, no attribution overlay, and we
  * control the crop. Fall back to a Places ref, which is what most of the 2026
- * research rows have — CC libraries do not photograph cafés.
+ * research rows have. CC libraries do not photograph cafés.
  */
 
 import type { MediaImage, PhotoRef } from "@/types";
@@ -35,7 +35,7 @@ export interface ResolvedPhoto {
  *
  * Callers use it to set `unoptimized` on `next/image`. `/api/place-photo`
  * answers with a 307 to a short-lived signed Google URL rather than proxying
- * the bytes — the Places terms allow caching the reference, not the image —
+ * the bytes (the Places terms allow caching the reference, not the image)
  * and Next's optimizer will not follow that hop, so it returns 400 and the
  * frame renders empty. Sending these straight to the browser lets it follow
  * the redirect itself. Our own files keep going through the optimizer.
@@ -64,7 +64,7 @@ function fromRef(ref: PhotoRef, alt: string, width: number): ResolvedPhoto {
  * Every photo for a listing, ours first.
  *
  * `alt` falls back to the listing name. Places photos carry no description, so
- * a generic "<name>, Manipur" is the honest ceiling — do not invent detail about
+ * a generic "<name>, Manipur" is the honest ceiling. Do not invent detail about
  * what a photo shows when nobody has looked at it.
  */
 export function resolvePhotos(
@@ -120,7 +120,7 @@ export function creditLine(photo: ResolvedPhoto | PhotoRef): string | null {
  *
  * `/api/place-photo` answers with a 307 to a signed googleusercontent URL that
  * expires. A scraper follows it once, caches the result, and the card image is
- * dead soon after — worse than no image, because the stale record sticks around
+ * dead soon after, worse than no image, because the stale record sticks around
  * in Slack/X/Facebook caches.
  *
  * Self-hosted files are stable, so only those belong in `openGraph.images`.

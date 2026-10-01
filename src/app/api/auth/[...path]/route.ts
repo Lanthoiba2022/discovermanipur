@@ -10,11 +10,11 @@ import { clientIp, jsonError, readBodyText } from "@/lib/security/request";
  * Rate-limited here, per client IP, because the proxy does not forward the
  * visitor's IP upstream: to Neon Auth every request looks like it comes from
  * this server, so its own per-IP limits cannot tell one attacker from all
- * users. The tight bucket covers what costs money or guesses secrets —
+ * users. The tight bucket covers what costs money or guesses secrets:
  * password attempts, sign-ups and anything that emails a code.
  *
- * Without Neon Auth configured there is nothing to proxy to — the local
- * development session lives in the browser — so every method answers 404.
+ * Without Neon Auth configured there is nothing to proxy to (the local
+ * development session lives in the browser), so every method answers 404.
  */
 
 type Context = { params: Promise<{ path: string[] }> };

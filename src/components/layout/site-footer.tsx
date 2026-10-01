@@ -6,7 +6,7 @@ import { footerNav } from "@/lib/nav";
 /**
  * No top margin on the footer: the weave band is the divider, and a margin
  * here showed as a strip of page background wherever the last section is a
- * dark or crimson band — which the landing page ends on.
+ * dark or crimson band, which the landing page ends on.
  */
 export function SiteFooter() {
   return (
@@ -18,7 +18,7 @@ export function SiteFooter() {
           <div>
             <Logo inverted />
             <p className="mt-6 max-w-sm text-lg leading-relaxed text-ivory-50/75">
-              <span className="font-mayek">ꯃꯅꯤꯄꯨꯔ</span> — the land of jewels. A traveller&rsquo;s
+              <span className="font-mayek">ꯃꯅꯤꯄꯨꯔ</span>, the land of jewels. A traveller&rsquo;s
               way into Manipur, built with the people who live it.
             </p>
             <a

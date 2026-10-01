@@ -8,7 +8,7 @@ import { EmptyNote } from "./empty-note";
 import { PlacesRail } from "./places-rail";
 
 /**
- * The widest rung of the measure ladder (88rem) — the page opens out here and
+ * The widest rung of the measure ladder (88rem): the page opens out here and
  * narrows from this point down to the closing call to action.
  */
 export function FeaturedPlaces({ hotspots }: { hotspots: Hotspot[] }) {
@@ -19,7 +19,7 @@ export function FeaturedPlaces({ hotspots }: { hotspots: Hotspot[] }) {
         eyebrow="Featured places"
         word="Sixty places."
         completion="And the sixteen districts they hide in."
-        standfirst="Start with the ones people cross the country for — a lake with a walking floor, a fort with a dragon, a hill that flowers for three weeks a year."
+        standfirst="Start with the ones people cross the country for: a lake with a walking floor, a fort with a dragon, a hill that flowers for three weeks a year."
         action={
           <Button
             asChild

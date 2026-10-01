@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
  *
  * The national tourism board's home page runs one rhythm nine times: a giant
  * uppercase word, a line completing the sentence, a rail of cards, and a
- * single pill. It is repetitive by design — that is what makes a state
- * tourism page feel official rather than scrappy — but it is also why theirs
+ * single pill. It is repetitive by design (that is what makes a state
+ * tourism page feel official rather than scrappy), but it is also why theirs
  * reads as eight identical stripes over 9,600px.
  *
  * So the structure is the same and the variation is ours: `tone` alternates
@@ -119,7 +119,7 @@ export function ShowcaseBand({
 
           <Heading className={cn("display-word", WORD[tone])}>{word}</Heading>
 
-          {/* The tail is flanked by two short rules — the editorial tick that
+          {/* The tail is flanked by two short rules, the editorial tick that
               says a new chapter starts here without adding a type size. */}
           <p
             className={cn(

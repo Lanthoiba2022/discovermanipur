@@ -35,7 +35,7 @@ interface Photo {
 const HOST_TYPE_BLURB: Record<ApplicationValues["hostType"], string> = {
   homestay: "A room, a floor or a whole house that guests can sleep in.",
   eatery: "A kitchen, canteen or stall where guests eat what your family eats.",
-  guide: "You take people out — a fort, a ridge, a market, a lake at dawn.",
+  guide: "You take people out: a fort, a ridge, a market, a lake at dawn.",
   experience: "You teach or show something: a loom, a kiln, a pony, a recipe.",
 };
 
@@ -146,7 +146,7 @@ export function ApplyWizard({ mode, account }: ApplyWizardProps) {
       try {
         window.localStorage.setItem(DRAFT_KEY, JSON.stringify({ values, step }));
       } catch {
-        // Storage full or blocked — the form still works, it just will not persist.
+        // Storage full or blocked: the form still works, it just will not persist.
       }
     });
     return () => subscription.unsubscribe();
@@ -283,7 +283,7 @@ export function ApplyWizard({ mode, account }: ApplyWizardProps) {
         <h2 className="font-display text-3xl">Thank you for applying</h2>
         <p className="mt-4 text-muted-foreground">
           {live
-            ? "Your application has been sent to the Discover Manipur team, who will approve or reject it. You can check its status on this page. Your photos were not sent with it — photo upload is not built yet."
+            ? "Your application has been sent to the Discover Manipur team, who will approve or reject it. You can check its status on this page. Your photos were not sent with it. Photo upload is not built yet."
             : "This copy of the site has no database or sign-in connected, so this application was not sent to anyone and nobody will call or visit about it."}{" "}
           Questions? Ask on the{" "}
           <a
@@ -374,7 +374,7 @@ export function ApplyWizard({ mode, account }: ApplyWizardProps) {
         })}
       </ol>
 
-      {/* Step 1 — host type */}
+      {/* Step 1: host type */}
       {step === 0 && (
         <fieldset className="space-y-4">
           <legend className="font-display text-2xl">What kind of host are you?</legend>
@@ -416,7 +416,7 @@ export function ApplyWizard({ mode, account }: ApplyWizardProps) {
         </fieldset>
       )}
 
-      {/* Step 2 — details */}
+      {/* Step 2: details */}
       {step === 1 && (
         <fieldset className="space-y-6">
           <legend className="font-display text-2xl">Tell us about the place</legend>
@@ -515,7 +515,7 @@ export function ApplyWizard({ mode, account }: ApplyWizardProps) {
         </fieldset>
       )}
 
-      {/* Step 3 — contact + photos */}
+      {/* Step 3: contact + photos */}
       {step === 2 && (
         <fieldset className="space-y-6">
           <legend className="font-display text-2xl">Your contact details</legend>
@@ -625,7 +625,7 @@ export function ApplyWizard({ mode, account }: ApplyWizardProps) {
         </fieldset>
       )}
 
-      {/* Step 4 — review */}
+      {/* Step 4: review */}
       {step === 3 && (
         <fieldset className="space-y-6">
           <legend className="font-display text-2xl">Check it over</legend>

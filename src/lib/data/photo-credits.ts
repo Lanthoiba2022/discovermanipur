@@ -3,7 +3,7 @@
  *
  * Every entry here is used under a licence that permits reuse, and every one
  * carries its photographer and licence so the credit can be rendered on the
- * site — CC BY and CC BY-SA both require attribution. Each file was resized
+ * site. CC BY and CC BY-SA both require attribution. Each file was resized
  * for the web and converted to WebP; nothing else about the image is changed.
  *
  * The rest of the photography in `public/file-uploads/` is the project's own.
@@ -113,7 +113,7 @@ export const PHOTO_CREDITS: PhotoCredit[] = [
   },
   {
     file: "manipuri-food-leaf.webp",
-    alt: "Manipuri food served on a banana leaf — fried cakes and dried fish.",
+    alt: "Manipuri food served on a banana leaf: fried cakes and dried fish.",
     subject: "Manipuri cuisine",
     author: "Vsigamany",
     licence: "CC BY-SA 4.0",
@@ -137,7 +137,7 @@ export const PHOTO_CREDITS: PhotoCredit[] = [
   },
   {
     file: "kangla-kanglasha.webp",
-    alt: "The white kanglasha — dragon-lion guardians — flanking the approach inside Kangla Fort, Imphal.",
+    alt: "The white kanglasha (dragon-lion guardians) flanking the approach inside Kangla Fort, Imphal.",
     subject: "Kangla Fort, Imphal",
     author: "Haoreima",
     licence: "CC BY-SA 4.0",

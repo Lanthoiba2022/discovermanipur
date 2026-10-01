@@ -21,7 +21,7 @@ interface Way {
 }
 
 /**
- * Photography note — every file below was opened and checked before it was
+ * Photography note: every file below was opened and checked before it was
  * used. The inherited photo library contains mis-filed stock (`uhk.jpg` is a
  * European chalet, `imafoo.jpg` is a 399x265 snapshot far too small for this
  * band), so open any replacement before using it. Credited Wikimedia files are
@@ -34,7 +34,7 @@ const WAYS: Way[] = [
     label: "Places",
     mayek: "ꯃꯐꯝ",
     title: "Lakes, forts and a hill of lilies",
-    blurb: "Sixty-odd places across sixteen districts — from Loktak's phumdis to Shirui Kashong.",
+    blurb: "Sixty-odd places across sixteen districts, from Loktak's phumdis to Shirui Kashong.",
     image: "/file-uploads/Hills.jpg",
     alt: "Grass-covered hills rolling into a valley floor of low white mist at first light.",
     className: "md:col-span-3 md:row-span-2 min-h-[22rem] md:min-h-[34rem]",
@@ -72,11 +72,11 @@ const WAYS: Way[] = [
     label: "Eat",
     mayek: "ꯆꯥꯛ",
     title: "Eromba, singju, chak-hao",
-    blurb: "Fermented, smoked, wrapped in leaf — the valley's kitchen, mapped.",
+    blurb: "Fermented, smoked, wrapped in leaf: the valley's kitchen, mapped.",
     // A landscape frame on purpose: this tile is a ~5.5:1 letterbox, and a
     // portrait photo crops down to a thin band of out-of-focus background.
     image: "/file-uploads/manipuri-food-leaf.webp",
-    alt: "Manipuri food laid out on a banana leaf — fried cakes, dried fish and a mound of rice.",
+    alt: "Manipuri food laid out on a banana leaf: fried cakes, dried fish and a mound of rice.",
     className: "md:col-span-5 min-h-[16rem] md:min-h-[15rem]",
     sizes: "(max-width: 768px) 100vw, 92vw",
   },
@@ -85,8 +85,8 @@ const WAYS: Way[] = [
 /**
  * Tile entrance, as CSS rather than as a motion library.
  *
- * This band is otherwise a pure Server Component — four links and four
- * images — and it stays one: shipping a client bundle to stagger a fade
+ * This band is otherwise a pure Server Component (four links and four
+ * images), and it stays one: shipping a client bundle to stagger a fade
  * would be the whole cost of the section for none of its value.
  *
  * `--ease-spring` overshoots and settles, which is exactly what an entrance
@@ -164,8 +164,8 @@ export function FourWays() {
                 href={way.href}
                 className={cn(
                   "relative block size-full overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring",
-                  // The Manipuri gateway profile — domed head, square
-                  // shoulders — on the stacked pair in the right column, so
+                  // The Manipuri gateway profile (domed head, square
+                  // shoulders) on the stacked pair in the right column, so
                   // the band reads as two doorways beside one open view
                   // rather than four identical cards. It is deliberately kept
                   // off the tall tile, where the same percentage radii sweep
@@ -174,7 +174,7 @@ export function FourWays() {
                 )}
               >
                 {/* `.media-recede` holds the photograph back at rest and lets
-                    it bloom to full colour on hover or keyboard focus — the
+                    it bloom to full colour on hover or keyboard focus: the
                     depth payoff, for no JavaScript at all. It lives on the
                     wrapper so its `filter` transition and the image's own
                     `transform` transition do not overwrite one another. */}

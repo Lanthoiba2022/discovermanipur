@@ -12,7 +12,7 @@ import { planToSavedInput, saveItinerary, useItineraryStorage } from "@/lib/itin
 import type { ItineraryPlan } from "@/lib/ai/schema";
 
 /**
- * "Save this plan" — writes the generated itinerary to the traveller's account
+ * "Save this plan": writes the generated itinerary to the traveller's account
  * (or to this browser, on a deployment without a database). Visitors who are
  * not signed in are sent to `/auth` with `?next=` pointing back at the page
  * they were planning on.

@@ -18,11 +18,11 @@ export const revalidate = 86400;
 export const metadata: Metadata = {
   title: "Festivals of Manipur, month by month",
   description:
-    "Sangai, Yaoshang, Lai Haraoba, Kut, Ningol Chakouba — Manipur's festival calendar laid out January to December so you can time your trip to the drums.",
+    "Sangai, Yaoshang, Lai Haraoba, Kut, Ningol Chakouba: Manipur's festival calendar laid out January to December so you can time your trip to the drums.",
   openGraph: {
     title: "Festivals of Manipur, month by month · Discover Manipur",
     description:
-      "Manipur's festival calendar from January to December — plan your trip around the drums.",
+      "Manipur's festival calendar from January to December. Plan your trip around the drums.",
     images: [
       { url: PLACEHOLDER_IMAGE, width: 1200, height: 630, alt: "A Manipuri festival in full colour" },
     ],
@@ -55,7 +55,7 @@ export default async function FestivalsPage() {
         completion="Manipur measures the year in drums, boat races and bonfires."
         lede={
           <p>
-            The whole calendar, January to December, so you can land in the middle of one — the
+            The whole calendar, January to December, so you can land in the middle of one: the
             lily on Shirui, the Sangai in Keibul Lamjao, Yaoshang colour across the valley.
           </p>
         }
@@ -87,12 +87,12 @@ export default async function FestivalsPage() {
             <Reveal>
               <p className="eyebrow rule-flank rule-flank-start mb-4 text-brass-700 [.dark_&]:text-brass-300">
                 <CalendarHeart className="size-4" aria-hidden />
-                {onNow.length > 0 ? `On now — ${spotlightMonth}` : `Next up — ${spotlightMonth}`}
+                {onNow.length > 0 ? `On now: ${spotlightMonth}` : `Next up: ${spotlightMonth}`}
               </p>
               <h2 id="festivals-spotlight" className="text-headline">
                 {onNow.length > 0
                   ? "Happening while you plan"
-                  : "Nothing this month — here is what comes next"}
+                  : "Nothing this month. Here is what comes next"}
               </h2>
             </Reveal>
             <ul className="mt-9 grid grid-cols-1 gap-4 lg:grid-cols-2">

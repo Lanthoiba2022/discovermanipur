@@ -26,6 +26,6 @@ try {
   await rm(target, { recursive: true, force: true });
   console.log("[clear-data-cache] dropped .next/cache/fetch-cache");
 } catch (err) {
-  // Never fail a build over this — a missing cache is the desired state anyway.
+  // Never fail a build over this: a missing cache is the desired state anyway.
   console.warn("[clear-data-cache] skipped:", err.message);
 }

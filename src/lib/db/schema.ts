@@ -10,12 +10,12 @@ import { neonAuthUser } from "./neon-auth"
  * Generated from the live database with `drizzle-kit pull` (casing preserved,
  * so keys are the snake_case column names the row mappers in src/lib/data
  * already read) and then hand-tended. Drizzle cannot express what lives
- * outside tables — the `touch_updated_at` trigger function, its per-table
+ * outside tables: the `touch_updated_at` trigger function, its per-table
  * triggers and the `pg_trgm` extension. Those are in the baseline migration
  * `drizzle/0000_baseline.sql`; add new ones with `drizzle-kit generate --custom`.
  *
  * `numeric` columns use number mode (JS numbers both ways). Most `timestamptz`
- * columns use `mode: 'string'` — raw Postgres text, which nothing reads —
+ * columns use `mode: 'string'` (raw Postgres text, which nothing reads)
  * except `profiles`, which uses `Date` because its `created_at` is shown.
  */
 

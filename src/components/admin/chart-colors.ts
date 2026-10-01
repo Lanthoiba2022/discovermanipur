@@ -7,7 +7,7 @@
  * CVD-separation and normal-vision checks against the chart surface.
  *
  * They resolve through CSS custom properties defined in `globals.css`, which
- * carries a SECOND set of steps for the dark surface — the light series fails
+ * carries a SECOND set of steps for the dark surface: the light series fails
  * the lightness band against the dark background, and the theme toggle in the
  * site header means dark mode is reachable by any visitor. Reading them as
  * variables is what lets a single series index stay correct in both themes.
@@ -24,7 +24,7 @@ export const CHART_SERIES = [
   "var(--chart-4)",
 ] as const;
 
-/** Reserved status colours — never reused as a categorical series. */
+/** Reserved status colours, never reused as a categorical series. */
 export const CHART_STATUS = {
   good: "var(--chart-good)",
   warning: "var(--chart-warning)",

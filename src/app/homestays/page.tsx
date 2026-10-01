@@ -16,12 +16,12 @@ import { formatINR } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Homestays in Manipur",
   description:
-    "Stay with Manipuri host families — lakeside huts on Loktak, weaver's houses in Imphal and cloud-level lodges in Ukhrul. Filter by district, price, guests and amenities.",
+    "Stay with Manipuri host families: lakeside huts on Loktak, weaver's houses in Imphal and cloud-level lodges in Ukhrul. Filter by district, price, guests and amenities.",
   alternates: { canonical: "/homestays" },
   openGraph: {
     title: "Homestays in Manipur · Discover Manipur",
     description:
-      "Lakeside huts, weavers' houses and hill lodges — book a stay with a Manipuri family.",
+      "Lakeside huts, weavers' houses and hill lodges. Book a stay with a Manipuri family.",
     url: "/homestays",
   },
 };
@@ -61,7 +61,7 @@ export default async function HomestaysPage({
         }}
         lede={
           <p>
-            Every homestay here is a family home first — and every booking keeps the money from
+            Every homestay here is a family home first, and every booking keeps the money from
             tourism inside the village that hosts you.
           </p>
         }

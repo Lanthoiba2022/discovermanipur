@@ -121,7 +121,7 @@ export function HomestayGallery({ images, title }: { images: MediaImage[]; title
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-5xl bg-surface p-4 sm:p-6">
-          <DialogTitle className="sr-only">{title} — photo gallery</DialogTitle>
+          <DialogTitle className="sr-only">{title}: photo gallery</DialogTitle>
           <DialogDescription className="sr-only">
             Use the left and right arrow keys to move between photographs.
           </DialogDescription>

@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Search",
   description:
-    "Search everything on Discover Manipur at once — places, homestays, experiences, eateries and multi-day tours across Manipur.",
+    "Search everything on Discover Manipur at once: places, homestays, experiences, eateries and multi-day tours across Manipur.",
   robots: { index: false, follow: true },
 };
 
@@ -122,19 +122,19 @@ export default async function SearchPage({
         {!term ? (
           <EmptyState
             title="What are you looking for?"
-            body="Start typing above — suggestions appear as you go. Or pick one of these to see what the catalogue holds."
+            body="Start typing above; suggestions appear as you go. Or pick one of these to see what the catalogue holds."
           />
         ) : all.length === 0 ? (
           <EmptyState
             icon
             title={`Nothing matched “${term}”.`}
-            body="The catalogue may still be filling, or the spelling may differ from ours — many Manipuri place names have several romanisations. Try a shorter word, or start from one of these."
+            body="The catalogue may still be filling, or the spelling may differ from ours, as many Manipuri place names have several romanisations. Try a shorter word, or start from one of these."
           />
         ) : filtered.length === 0 ? (
           <EmptyState
             icon
             title={`No ${activeType ? kindPlural(activeType).toLowerCase() : "results"} for “${term}”.`}
-            body="There are results in other categories, though — clear the filter to see them."
+            body="There are results in other categories, though. Clear the filter to see them."
           >
             <Button asChild variant="outline" className="mt-6">
               <Link href={typeHref()}>Show all {all.length} results</Link>

@@ -47,7 +47,7 @@ export function loadGoogleMaps(apiKey: string): Promise<void> {
       pending = undefined;
       reject(new Error("The Google Maps script could not be downloaded."));
     };
-    // Google calls this when the key is rejected — wrong key, API not enabled,
+    // Google calls this when the key is rejected: wrong key, API not enabled,
     // or a referrer the key does not allow. It arrives after onload, so the
     // map component also listens for it; here it just poisons future loads.
     window.gm_authFailure = () => {
