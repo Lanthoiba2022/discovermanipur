@@ -9,7 +9,7 @@
  *   `photoRefs`  Google Places photos. Licensed for display only: the bytes must
  *                not be stored, so they resolve through /api/place-photo on every
  *                request, and the photographer's attribution must be rendered
- *                wherever the photo is. See data/research/PHOTOS.md.
+ *                wherever the photo is.
  *
  * Prefer our own files: no per-render API cost, no attribution overlay, and we
  * control the crop. Fall back to a Places ref, which is what most of the 2026

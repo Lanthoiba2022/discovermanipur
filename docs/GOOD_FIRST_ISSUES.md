@@ -125,14 +125,12 @@ Content work counts as much as code. See the photo rules in
 [CONTRIBUTING.md](../CONTRIBUTING.md#photos-and-attribution).
 
 ### Replace illustrative seed listings with researched ones
-- **Why:** without a database the app shows the bundled seed. Per
-  [data/research/README.md](../data/research/README.md), the homestay, eatery and
+- **Why:** without a database the app shows the bundled seed. The homestay, eatery and
   transport seed files still contain illustrative businesses and hosts that do not
-  exist, while real, sourced records sit in `data/research/*.json`. A fresh clone should
-  show real places.
+  exist, while real, sourced records sit in
+  `db/research-seed/0008_seed_2026_research.sql`. A fresh clone should show real places.
 - **Where:** `src/lib/data/seed/homestays.ts`, `eateries.ts`, `transport.ts`;
-  `data/research/stays.json`, `eateries.json`, `transport-and-operators.json`,
-  `google-maps-findings.json`.
+  `db/research-seed/0008_seed_2026_research.sql`.
 - **Difficulty:** good first issue per vertical (pick a district at a time), intermediate
   if you script the conversion.
 
@@ -141,8 +139,7 @@ Content work counts as much as code. See the photo rules in
   look soft on modern screens; some listings have one photo or none. A few older
   homestay images are generic stock that does not show Manipur.
 - **Where:** `images` in `src/lib/data/seed/*.ts`, `public/file-uploads/`,
-  `src/lib/data/photo-credits.ts`; coverage numbers in
-  [data/research/PHOTOS.md](../data/research/PHOTOS.md) and `data/research/photos-index.json`.
+  `src/lib/data/photo-credits.ts`.
 - **Difficulty:** good first issue. Only your own photos or openly licensed ones, each
   credited, and open every image to check it shows the right place.
 
