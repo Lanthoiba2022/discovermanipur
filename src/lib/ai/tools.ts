@@ -100,7 +100,7 @@ function sentences(...parts: (string | undefined | null)[]): string {
 
 /**
  * Seed rows carry literal placeholders where a field was never researched
- * (see `data/research/scripts/build_seed_sql.py`). Printing one back at a
+ * (see `db/research-seed/0008_seed_2026_research.sql`). Printing one back at a
  * traveller ("Hosted by Host details to be confirmed") is worse than saying
  * nothing, so they are treated as absent.
  */

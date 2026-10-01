@@ -167,7 +167,6 @@ src/types/          Shared TypeScript types
 drizzle/            Drizzle migrations (the live migration history)
 db/                 Database and auth setup guide; optional research-data SQL (db/research-seed/)
 scripts/            Seeding, roles, asset generation and browser checks
-data/research/      The 2026 research pass: sourced listings and photo indexes
 docs/               Feature documentation and the contributor task list
 public/             Images, 3D models, audio and video
 ```
@@ -177,8 +176,8 @@ public/             Images, 3D models, audio and video
 - **Seed files vs the database.** `src/lib/data/seed/*.ts` is the bundled catalogue. When
   `DATABASE_URL` is set, the app reads the Neon database instead, and falls back to the
   seed files if a query fails. A database can also load the verified 2026 research
-  listings from `data/research/` (about 240 hotspots, homestays and eateries) with the SQL
-  in `db/research-seed/`; those are not in the seed files yet, so a zero-config local run
+  listings (about 240 hotspots, homestays and eateries) with the SQL in
+  `db/research-seed/`; those are not in the seed files yet, so a zero-config local run
   shows a smaller catalogue than the live site.
 - **Editing content.** Change the seed file and open a pull request. Merging it does not
   change the live site by itself: the live site reads its database, and a maintainer
@@ -191,7 +190,7 @@ public/             Images, 3D models, audio and video
   photos are credited in `src/lib/data/photo-credits.ts` and shown on `/terms`. Google
   Places photos are display-only: they are fetched per request through
   `/api/place-photo`, never stored, and shown with their attribution. See
-  [data/research/PHOTOS.md](data/research/PHOTOS.md).
+  [CONTRIBUTING.md](CONTRIBUTING.md#photos-and-attribution).
 - **Map data.** Map imagery is attributed to its providers on the map itself. The Kangla
   3D models are approximate, photo-referenced reconstructions, not surveys; see
   [docs/kangla-immersive.md](docs/kangla-immersive.md).

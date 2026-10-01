@@ -75,5 +75,8 @@ Thumbs.db
 # scripts, and the large 3D source and reference photo sets.
 # See _private/README.md.
 /_private/
+# The research pass behind db/research-seed/: raw scrapes and third-party
+# contact details. db/research-seed/*.sql is the published form of it.
+/data/research/
 /reference/
 /assets/
