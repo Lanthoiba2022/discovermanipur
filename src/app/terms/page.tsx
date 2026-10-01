@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 const LAST_UPDATED = "1 October 2026";
 
-const GITHUB_URL = "https://github.com/Lanthoiba2022/Manipur-Tourism-2026";
+const GITHUB_URL = "https://github.com/Lanthoiba2022/discovermanipur";
 const DISCORD_URL = "https://discord.gg/hgGfm6UpU";
 
 /**

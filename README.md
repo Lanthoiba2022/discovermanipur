@@ -1,6 +1,6 @@
 # Discover Manipur
 
-[![CI](https://github.com/Lanthoiba2022/Manipur-Tourism-2026/actions/workflows/ci.yml/badge.svg)](https://github.com/Lanthoiba2022/Manipur-Tourism-2026/actions/workflows/ci.yml)
+[![CI](https://github.com/Lanthoiba2022/discovermanipur/actions/workflows/ci.yml/badge.svg)](https://github.com/Lanthoiba2022/discovermanipur/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Hacktoberfest](https://img.shields.io/badge/Hacktoberfest-2026-orange.svg)](CONTRIBUTING.md#hacktoberfest)
 [![Discord](https://img.shields.io/badge/chat-Discord-5865F2.svg)](https://discord.gg/hgGfm6UpU)
@@ -80,8 +80,8 @@ You need **Node.js 20.9 or newer** (Next.js 16's minimum) and npm. No accounts, 
 database are required.
 
 ```bash
-git clone https://github.com/Lanthoiba2022/Manipur-Tourism-2026.git
-cd Manipur-Tourism-2026
+git clone https://github.com/Lanthoiba2022/discovermanipur.git
+cd discovermanipur
 npm ci
 npm run dev
 ```
@@ -148,7 +148,7 @@ things on, is in [db/README.md](db/README.md).
 | `npm run photos:ttl` | Probe how long Google Places photo URLs stay valid |
 | `npm run audio:kangla` | Regenerate the Kangla narration audio |
 
-The `db:*`, `photos:ttl` and `audio:kangla:openai` scripts read `.env.local`.
+The `db:*` and `photos:ttl` scripts read `.env.local`.
 
 ## Project structure
 

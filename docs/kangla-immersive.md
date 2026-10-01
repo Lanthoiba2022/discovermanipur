@@ -51,11 +51,11 @@ From the project root:
 
 ```sh
 npm run lint
-npx next typegen && npm run typecheck
+npm run typecheck
 npm run build
 ```
 
-`scripts/check-kangla.mjs` now tests the Google 3D map, not these scenes (see [kangla-map-explorer.md](./kangla-map-explorer.md#checks)). When the studies are wired back to a route, they need their own browser checks covering lazy loading, landmark switching, controls, reference photos, 375px overflow, the no-WebGL fallback and AR/VR permission denial. **Physical headset rendering and phone surface placement require on-device testing; browser tests do not establish hardware compatibility.**
+These scenes have no automated browser checks. When the studies are wired back to a route, they need browser checks covering lazy loading, landmark switching, controls, reference photos, 375px overflow, the no-WebGL fallback and AR/VR permission denial. **Physical headset rendering and phone surface placement require on-device testing; browser tests do not establish hardware compatibility.**
 
 ## September 22 site viewer update
 

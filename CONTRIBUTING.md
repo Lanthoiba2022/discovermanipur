@@ -39,9 +39,9 @@ Requirements: Node.js 20.9 or newer, npm, and Git.
 
 ```bash
 # 1. Fork the repository on GitHub, then:
-git clone https://github.com/<your-username>/Manipur-Tourism-2026.git
-cd Manipur-Tourism-2026
-git remote add upstream https://github.com/Lanthoiba2022/Manipur-Tourism-2026.git
+git clone https://github.com/<your-username>/discovermanipur.git
+cd discovermanipur
+git remote add upstream https://github.com/Lanthoiba2022/discovermanipur.git
 
 # 2. Install exactly what the lockfile says
 npm ci

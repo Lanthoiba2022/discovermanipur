@@ -68,34 +68,24 @@ Notes:
 - Without a key the page still renders the landmark list, descriptions and narration, and
   the map area explains that a key is needed.
 
-## Checks
+## Manual checks
 
-`scripts/check-kangla.mjs` drives a real browser against a running app and asserts:
+With `npm run dev` running and a working `GOOGLE_API_KEY`, check that:
 
 - the map loads with the Google 3D provider and no error alert, in `SATELLITE` mode, with
   all eight landmark pins;
 - the camera fence matches the bounds above, the camera stays inside it and cannot climb
   too high;
 - the 2D/3D and Labels toggles, pinch and wheel zoom (without scrolling the page), and
-  landmark selection;
+  landmark selection all work;
 - the landmark panel can be folded and the folded tab names the selected landmark;
-- no horizontal overflow at mobile width;
+- there is no horizontal overflow at mobile width;
 - the Maps JavaScript API is requested, MapTiler is not, and no 3D model assets (`.glb`,
   `.hdr`) are downloaded;
-- no page errors, and a working **Retry map** button when the map cannot load.
+- there are no page errors, and **Retry map** works when the map cannot load.
 
-Run it with the dev server on port 3000 and Playwright available:
-
-```sh
-# Terminal 1
-npm run dev
-# Terminal 2
-node scripts/check-kangla.mjs
-```
-
-It accepts `PLAYWRIGHT_MODULE` (path to an installed Playwright entry, default
-`playwright`), `BROWSER_EXECUTABLE` (a Chromium binary) and `TEST_BASE_URL` (default
-`http://localhost:3000`). It needs a working `GOOGLE_API_KEY`, so it does not run in CI.
+An automated version of these checks is a good first issue (see
+[GOOD_FIRST_ISSUES.md](./GOOD_FIRST_ISSUES.md)); it cannot run in CI without a Maps key.
 
 ## History and related code
 

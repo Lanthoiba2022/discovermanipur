@@ -1,4 +1,4 @@
-# Offline alternative to `generate-kangla-audio.mjs`, using ai4bharat/indic-parler-tts.
+# Offline generator for the Kangla narration, using ai4bharat/indic-parler-tts.
 #
 # NOTE: this writes 16-bit PCM .wav, while the site ships .mp3 (a full set of
 # WAVs is ~9 MB against ~2 MB of MP3, on a page that already loads a 3D scene).

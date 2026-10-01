@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 const LAST_UPDATED = "1 October 2026";
 
-const GITHUB_ISSUES_URL = "https://github.com/Lanthoiba2022/Manipur-Tourism-2026/issues";
+const GITHUB_ISSUES_URL = "https://github.com/Lanthoiba2022/discovermanipur/issues";
 const DISCORD_URL = "https://discord.gg/hgGfm6UpU";
 
 const sections: LegalSection[] = [
