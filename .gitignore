@@ -52,6 +52,9 @@ pnpm-debug.log*
 # Deployment
 .vercel/
 
+# Local stand-in for photo storage in development (src/lib/community/storage.ts)
+/.data/
+
 # Python (scripts/*.py and data/research/scripts/*.py)
 __pycache__/
 *.py[cod]

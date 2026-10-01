@@ -149,9 +149,10 @@ export function CardMedia({
            bytes: the Places terms allow caching the reference, not the image.
            Next's optimizer will not follow that hop: it returns 400 and the
            card renders an empty frame. Sending these straight to the browser
-           lets it follow the redirect itself. Our own files still go through the
-           optimizer. */
-        unoptimized={(image?.src ?? "").startsWith("/api/place-photo")}
+           lets it follow the redirect itself. Community photos are already
+           resized WebP behind an access-checked route the optimizer cannot
+           authenticate to. Our own files still go through the optimizer. */
+        unoptimized={/^\/api\/(place-photo|community\/photos\/)/.test(image?.src ?? "")}
         preload={preload}
         sizes={sizes}
         placeholder={image?.blurDataURL ? "blur" : "empty"}

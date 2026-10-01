@@ -1,4 +1,4 @@
-import { pgSchema, text, uuid } from "drizzle-orm/pg-core";
+import { boolean, pgSchema, text, uuid } from "drizzle-orm/pg-core";
 
 /**
  * Neon Auth's user table, declared here only so `profiles.id` can reference
@@ -16,4 +16,8 @@ export const neonAuthUser = neonAuth.table("user", {
   email: text().notNull(),
   name: text().notNull(),
   image: text(),
+  // Better Auth's own camelCase column names. Read-only here: the community
+  // verification rules count only votes from verified, unbanned accounts.
+  emailVerified: boolean("emailVerified").notNull(),
+  banned: boolean("banned"),
 });

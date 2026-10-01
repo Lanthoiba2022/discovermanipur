@@ -36,22 +36,25 @@ The project's direction is a guide that the public keeps up to date: anyone can 
 new place (an attraction, cafe, homestay, craft maker or traditional wear shop), and the
 community verifies it.
 
-### Place submissions with community verification
-- **Why:** this is how the catalogue grows beyond what maintainers can research.
-- **Proposed rules (to refine on the issue):**
-  - A signed-in user submits a place with category, district, location, description,
-    public sources and photos with their licence (the same fields as the
-    *Suggest a new place* issue form, `.github/ISSUE_TEMPLATE/new_place.yml`).
-  - The submission is visible to verified users, who can upvote it.
-  - If it reaches a minimum number of upvotes from distinct verified users (for example
-    10) within 48 hours, it is published.
-  - Otherwise it is hidden from public view and held for manual review by an admin.
-  - Owners can submit their own business but must say so.
-- **Where:** new tables in `src/lib/db/schema.ts`, Server Actions for submit and vote,
-  a review queue under `src/app/admin/`, and the data layer in `src/lib/data/`.
-- **Difficulty:** advanced. Split it into smaller issues: schema and submission form;
-  voting with one vote per user; the 48-hour rule as a scheduled job; the admin queue;
-  abuse controls (rate limits, duplicate detection).
+Place submissions with community verification (#21) are built: listing, photo uploads,
+voting and the admin review queue. The rules are in `src/lib/community/rules.ts`. These
+follow-ups are open:
+
+### Community places in search and on the map
+- **Why:** published community places have their own pages at `/community`, but the
+  site search and the catalogue map do not include them yet.
+- **Where:** `globalSearch` in `src/lib/data/index.ts`, `listPublishedPlaces` in
+  `src/lib/community/queries.ts`, `src/components/map/`.
+- **Difficulty:** intermediate. Only `published` places may appear; never call the
+  pending or held queries from public code.
+
+### Email the person who listed a place when it is decided
+- **Why:** someone who lists a place has to check `/account/places` to learn whether it
+  was published, held or rejected.
+- **Where:** `toggleVote` in `src/lib/community/mutations.ts` (published by votes),
+  `src/lib/community/admin-actions.ts` (admin decisions), `src/lib/email/brevo.ts`.
+- **Difficulty:** intermediate. Send after the transaction commits, never inside it, and
+  keep the copy plain (no em dashes).
 
 ### Genuine reviews from verified visitors
 - **Why:** `review_count` and ratings exist on listings, and `testimonials` holds curated

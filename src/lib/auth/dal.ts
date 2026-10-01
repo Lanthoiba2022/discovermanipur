@@ -13,7 +13,7 @@
  */
 
 import { eq } from "drizzle-orm";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 
 import type { Profile, UserRole } from "@/types";
@@ -124,15 +124,26 @@ export type ProtectedArea = "admin" | "host";
 
 /**
  * The signed-in profile, if its role is in `roles`; otherwise this never
- * returns. Signed out → `/auth?next=<path>`. Signed in with the wrong role, or
- * no sign-in server on this deployment → `/access-denied`.
+ * returns.
  *
- * `path` is the page's own URL, so sign-in can bring the visitor back to it.
+ * The admin area is hidden: anyone who is not an admin (signed out included)
+ * gets the ordinary 404 page, so its existence is not revealed.
+ *
+ * The host area explains itself instead: signed out → `/auth?next=<path>`;
+ * signed in with the wrong role, or no sign-in server on this deployment →
+ * `/access-denied`. `path` is the page's own URL, so sign-in can bring the
+ * visitor back to it.
  */
 export async function requireRole(
   roles: readonly UserRole[],
   { area, path }: { area: ProtectedArea; path: string },
 ): Promise<Profile> {
+  if (area === "admin") {
+    const profile = isAuthConfigured ? await getSessionProfile() : null;
+    if (!profile || !roles.includes(profile.role)) notFound();
+    return profile;
+  }
+
   // Without Neon Auth the server cannot see the browser-only development session.
   // Sending the visitor to /auth would bounce straight back here (the form
   // sees a local user and follows `next`), so explain instead.

@@ -214,6 +214,14 @@ const sections: LegalSection[] = [
           people who appear in a photograph. We may remove content that breaches these terms or that
           a rights-holder asks us to take down.
         </p>
+        <p>
+          When you list a community place, the details must be accurate to the best of your
+          knowledge, and you must say if you own the place or are connected to it. Photos must be
+          your own or carry an open licence, which you name with its source. A new place is
+          published only if the community verifies it, under rules that are the same for everyone
+          and described on the <Link href="/community">community places</Link> page. An admin may
+          hold, reject or unpublish a place, or remove a photo, when it breaks these terms.
+        </p>
       </>
     ),
   },

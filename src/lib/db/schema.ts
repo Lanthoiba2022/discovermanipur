@@ -1,4 +1,4 @@
-import { pgTable, foreignKey, uuid, text, timestamp, index, unique, doublePrecision, jsonb, numeric, boolean, integer, check, date, smallint, primaryKey, pgEnum } from "drizzle-orm/pg-core"
+import { pgTable, foreignKey, uuid, text, timestamp, index, unique, uniqueIndex, doublePrecision, jsonb, numeric, boolean, integer, check, date, smallint, primaryKey, pgEnum } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 import { neonAuthUser } from "./neon-auth"
@@ -26,6 +26,10 @@ export const faq_audience = pgEnum("faq_audience", ['traveller', 'host'])
 export const host_type = pgEnum("host_type", ['homestay', 'eatery', 'guide', 'experience'])
 export const source_verification = pgEnum("source_verification", ['official', 'corroborated', 'single-source', 'phone-verified', 'unverified'])
 export const user_role = pgEnum("user_role", ['user', 'host', 'admin'])
+export const community_place_category = pgEnum("community_place_category", ['attraction', 'eatery', 'stay', 'craft'])
+export const community_place_status = pgEnum("community_place_status", ['pending', 'published', 'held', 'rejected'])
+export const submitter_relationship = pgEnum("submitter_relationship", ['none', 'owner', 'connected'])
+export const photo_licence = pgEnum("photo_licence", ['own-work', 'cc-by-4.0', 'cc-by-sa-4.0', 'cc0'])
 
 
 export const profiles = pgTable("profiles", {
@@ -490,4 +494,128 @@ export const saved_items = pgTable("saved_items", {
 			name: "saved_items_user_id_fkey"
 		}).onDelete("cascade"),
 	primaryKey({ columns: [table.user_id, table.kind, table.slug], name: "saved_items_pkey"}),
+]);
+
+/*
+ * Community places: listings any signed-in, email-verified user can submit.
+ * The verification rules (how many upvotes, how long the window is) live in
+ * `src/lib/community/rules.ts`; these tables only record what happened.
+ *
+ * Lifecycle (`status`):
+ *   pending    inside its voting window; seen only by signed-in verified users
+ *   published  reached the upvote threshold in time, or an admin approved it
+ *   held       the window closed without enough upvotes; hidden, awaiting review
+ *   rejected   an admin turned it down; hidden. Rows are never deleted.
+ *
+ * `voting_ends_at` is stored rather than derived, so a later change to the
+ * window never moves the deadline of a place already in flight.
+ */
+export const community_places = pgTable("community_places", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	slug: text().notNull(),
+	submitted_by: uuid(),
+	name: text().notNull(),
+	category: community_place_category().notNull(),
+	district: text().notNull(),
+	location: text().notNull(),
+	lat: doublePrecision(),
+	lng: doublePrecision(),
+	description: text().notNull(),
+	practical_details: text(),
+	sources: text().array().default(sql`'{}'::text[]`).notNull(),
+	relationship: submitter_relationship().notNull(),
+	status: community_place_status().default('pending').notNull(),
+	upvote_count: integer().default(0).notNull(),
+	voting_ends_at: timestamp({ withTimezone: true, mode: 'date' }).notNull(),
+	published_at: timestamp({ withTimezone: true, mode: 'date' }),
+	decided_by: uuid(),
+	decided_at: timestamp({ withTimezone: true, mode: 'date' }),
+	admin_note: text(),
+	created_at: timestamp({ withTimezone: true, mode: 'date' }).defaultNow().notNull(),
+	updated_at: timestamp({ withTimezone: true, mode: 'date' }).defaultNow().notNull(),
+}, (table) => [
+	unique("community_places_slug_key").on(table.slug),
+	// One live listing per name per district. Rejected places do not count, so a
+	// place turned down can be listed again properly.
+	uniqueIndex("community_places_name_district_key").on(sql`lower(${table.name})`, table.district).where(sql`status <> 'rejected'`),
+	index("community_places_status_idx").using("btree", table.status, table.voting_ends_at),
+	index("community_places_published_idx").using("btree", table.published_at.desc().nullsLast()).where(sql`status = 'published'`),
+	index("community_places_submitter_idx").using("btree", table.submitted_by, table.created_at.desc().nullsFirst()),
+	index("community_places_name_trgm_idx").using("gin", table.name.op("gin_trgm_ops")),
+	foreignKey({
+			columns: [table.submitted_by],
+			foreignColumns: [profiles.id],
+			name: "community_places_submitted_by_fkey"
+		}).onDelete("set null"),
+	foreignKey({
+			columns: [table.decided_by],
+			foreignColumns: [profiles.id],
+			name: "community_places_decided_by_fkey"
+		}).onDelete("set null"),
+	check("community_places_upvote_count_check", sql`upvote_count >= 0`),
+	check("community_places_coordinates_paired", sql`(lat IS NULL) = (lng IS NULL)`),
+	check("community_places_published_at_set", sql`(status <> 'published') OR (published_at IS NOT NULL)`),
+]);
+
+/** One row per (place, voter): the primary key is what makes it one vote per user. */
+export const community_place_votes = pgTable("community_place_votes", {
+	place_id: uuid().notNull(),
+	user_id: uuid().notNull(),
+	created_at: timestamp({ withTimezone: true, mode: 'date' }).defaultNow().notNull(),
+}, (table) => [
+	primaryKey({ columns: [table.place_id, table.user_id], name: "community_place_votes_pkey"}),
+	index("community_place_votes_user_idx").using("btree", table.user_id),
+	foreignKey({
+			columns: [table.place_id],
+			foreignColumns: [community_places.id],
+			name: "community_place_votes_place_id_fkey"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.user_id],
+			foreignColumns: [profiles.id],
+			name: "community_place_votes_user_id_fkey"
+		}).onDelete("cascade"),
+]);
+
+/*
+ * Uploaded photos. A photo is uploaded first (`place_id` null) and attached
+ * when its place is submitted. The image bytes live in object storage under
+ * `storage_key` / `thumb_key` (see `src/lib/community/storage.ts`), never in
+ * Postgres. `removed_at` marks a photo an admin took down; its bytes are
+ * deleted, the row stays as the record. `discarded_at` marks an upload its
+ * owner threw away before submitting; the row is kept for a day so the daily
+ * upload quota still counts it, then purged.
+ */
+export const community_place_photos = pgTable("community_place_photos", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	place_id: uuid(),
+	uploaded_by: uuid(),
+	storage_key: text().notNull(),
+	thumb_key: text().notNull(),
+	width: integer().notNull(),
+	height: integer().notNull(),
+	bytes: integer().notNull(),
+	alt: text(),
+	licence: photo_licence().notNull(),
+	author: text().notNull(),
+	source_url: text(),
+	sort_order: smallint().default(0).notNull(),
+	removed_at: timestamp({ withTimezone: true, mode: 'date' }),
+	discarded_at: timestamp({ withTimezone: true, mode: 'date' }),
+	created_at: timestamp({ withTimezone: true, mode: 'date' }).defaultNow().notNull(),
+}, (table) => [
+	unique("community_place_photos_storage_key_key").on(table.storage_key),
+	index("community_place_photos_place_idx").using("btree", table.place_id, table.sort_order),
+	index("community_place_photos_uploader_idx").using("btree", table.uploaded_by, table.created_at.desc().nullsFirst()),
+	foreignKey({
+			columns: [table.place_id],
+			foreignColumns: [community_places.id],
+			name: "community_place_photos_place_id_fkey"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.uploaded_by],
+			foreignColumns: [profiles.id],
+			name: "community_place_photos_uploaded_by_fkey"
+		}).onDelete("set null"),
+	check("community_place_photos_dimensions_check", sql`(width > 0) AND (height > 0) AND (bytes > 0)`),
 ]);

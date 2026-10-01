@@ -11,13 +11,14 @@ export default function robots(): MetadataRoute.Robots {
         // Search result pages, sign-in and the signed-in areas are not useful
         // in an index, and the API routes are not pages at all. This only
         // asks politely: the private areas are protected by their own checks.
+        // `/admin` is not listed on purpose: naming it here would advertise it.
+        // It answers 404 to non-admins and sends `X-Robots-Tag: noindex`.
         disallow: [
           "/api/",
           "/search",
           "/auth",
           "/access-denied",
           "/account",
-          "/admin",
           "/host/dashboard",
         ],
       },

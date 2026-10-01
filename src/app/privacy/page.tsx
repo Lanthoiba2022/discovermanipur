@@ -121,6 +121,24 @@ const sections: LegalSection[] = [
             the place you would host and what you offer. Photos you pick stay on your device and
             are not uploaded.
           </li>
+          <li>
+            <strong>Places you list:</strong> when you add a place, its details, any links and
+            coordinates you give, how you are connected to it, and the photos you upload with
+            their credit are stored with your account. While it is collecting votes it is visible
+            to signed-in users with a verified email address; once published it is public, shown
+            with your first name. Our admins see your name and email address next to it.
+          </li>
+          <li>
+            <strong>Photos you upload:</strong> each photo is resized and re-encoded on our server
+            before it is stored, which removes its location data and all other embedded metadata.
+            Photos of a place that is not published are only shown to the people allowed to see
+            that place.
+          </li>
+          <li>
+            <strong>Votes:</strong> which community places you upvoted is stored with your
+            account, so each account votes once. Only the number of votes is shown, never who
+            cast them.
+          </li>
         </ul>
 
         <h3>Information collected automatically</h3>
@@ -257,8 +275,9 @@ const sections: LegalSection[] = [
         <p>We share personal data only with the service providers that make the site run:</p>
         <ul>
           <li>
-            <strong>Vercel</strong>, which hosts the site, keeps server logs and provides the
-            Web Analytics and Speed Insights described above;
+            <strong>Vercel</strong>, which hosts the site, keeps server logs, stores the photos
+            you upload (Vercel Blob) and provides the Web Analytics and Speed Insights described
+            above;
           </li>
           <li>
             <strong>Microsoft</strong>, which provides Clarity, the heatmap and session-recording
@@ -303,6 +322,12 @@ const sections: LegalSection[] = [
             places yourself, and cancel a booking request) or ask us to delete your account.
             Anything kept only in your browser stays there until you remove it or clear your
             browser storage.
+          </li>
+          <li>
+            <strong>Places you list and their photos:</strong> kept as the record of the listing,
+            whether or not it is published, until you ask us to delete them. An admin may remove a
+            photo that breaks the terms; its image is then deleted. If you delete your account,
+            places you listed stay on the site without your name, and your votes are removed.
           </li>
           <li>
             <strong>Contact messages:</strong> not kept at all while the form has no mail provider.

@@ -73,6 +73,38 @@ export async function readBodyText(request: Request, maxBytes: number): Promise<
   return text + decoder.decode();
 }
 
+/**
+ * Read a request body as bytes, refusing anything over `maxBytes`, on the same
+ * terms as `readBodyText`. For uploads, where the body is not text.
+ */
+export async function readBodyBytes(request: Request, maxBytes: number): Promise<Uint8Array | null> {
+  const declared = Number(request.headers.get("content-length"));
+  if (Number.isFinite(declared) && declared > maxBytes) return null;
+  if (!request.body) return new Uint8Array();
+
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > maxBytes) {
+      await reader.cancel().catch(() => undefined);
+      return null;
+    }
+    chunks.push(value);
+  }
+
+  const bytes = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return bytes;
+}
+
 /** A JSON error a client can show, with no detail about why it failed inside. */
 export function jsonError(status: number, error: string, headers?: Record<string, string>): Response {
   return Response.json(

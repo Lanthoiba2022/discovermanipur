@@ -124,7 +124,9 @@ const nextConfig: NextConfig = {
     return [
       { source: "/:path*", headers: securityHeaders },
       { source: "/account/:path*", headers: privateArea },
-      { source: "/admin/:path*", headers: privateArea },
+      // Not `/admin`: a header there would tell its 404 apart from any other
+      // path's. Its pages are dynamic (never cached) and answer 404 to anyone
+      // who is not an admin.
       { source: "/host/dashboard/:path*", headers: privateArea },
       { source: "/auth", headers: privateArea },
       { source: "/api/auth/:path*", headers: [{ key: "Cache-Control", value: "no-store" }] },
@@ -151,6 +153,10 @@ const nextConfig: NextConfig = {
       { pathname: "/file-uploads/**", search: "" },
       { pathname: "/videos/**", search: "" },
       { pathname: "/api/place-photo" },
+      // Community photos (`/api/community/photos/...`) are deliberately NOT
+      // listed: they are already resized WebP and always render `unoptimized`
+      // (which skips this check). Listing them would let `/_next/image` keep
+      // its own cached copy of a photo after an admin takes it down.
     ],
   },
 };

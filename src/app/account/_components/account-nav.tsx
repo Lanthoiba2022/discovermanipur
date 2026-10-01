@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bookmark, CalendarDays, LayoutDashboard, Map, User } from "lucide-react";
+import { Bookmark, CalendarDays, LayoutDashboard, Map, MapPinned, User } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -11,6 +11,7 @@ const TABS = [
   { href: "/account/profile", label: "Profile", icon: User },
   { href: "/account/bookings", label: "Bookings", icon: CalendarDays },
   { href: "/account/itineraries", label: "Itineraries", icon: Map },
+  { href: "/account/places", label: "My places", icon: MapPinned },
   { href: "/account/saved", label: "Saved", icon: Bookmark },
 ];
 

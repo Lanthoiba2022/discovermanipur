@@ -72,6 +72,12 @@ export const navGroups: NavGroup[] = [
         icon: "Handshake",
       },
       {
+        label: "Community places",
+        href: "/community",
+        description: "Listed and upvoted by the community",
+        icon: "Users",
+      },
+      {
         label: "Kangla Fort in 3D",
         href: "/explore/kangla",
         description: "Fly the fort from above",
@@ -213,6 +219,7 @@ export const accountNav: NavItem[] = [
   { label: "My trips", href: "/account/bookings", description: "Upcoming and past bookings" },
   { label: "Saved", href: "/account/saved", description: "Your wishlist" },
   { label: "Saved itineraries", href: "/account/itineraries", description: "Plans from the concierge" },
+  { label: "My places", href: "/account/places", description: "Places you have listed" },
   { label: "Profile", href: "/account/profile", description: "Your details" },
 ];
 
@@ -225,6 +232,7 @@ export const footerNav = [
       { label: "Eateries", href: "/eateries" },
       { label: "Festivals", href: "/festivals" },
       { label: "Crafts", href: "/store" },
+      { label: "Community places", href: "/community" },
       { label: "Kangla in 3D", href: "/explore/kangla" },
     ],
   },
