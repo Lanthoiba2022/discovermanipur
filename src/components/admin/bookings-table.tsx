@@ -19,14 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { HostBookingRecord } from "@/lib/host/types";
+import type { AdminBookingRow } from "@/lib/admin/types";
 import { formatINR } from "@/lib/utils";
 
-type SortKey = "guestName" | "refTitle" | "kind" | "startDate" | "totalPrice" | "status";
+type SortKey = "guestName" | "title" | "kind" | "startDate" | "totalPrice" | "status";
 
 const ALL = "all";
 
-const KIND_LABEL: Record<HostBookingRecord["kind"], string> = {
+const KIND_LABEL: Record<AdminBookingRow["kind"], string> = {
   homestay: "Homestay",
   experience: "Experience",
   tour: "Tour",
@@ -34,18 +34,24 @@ const KIND_LABEL: Record<HostBookingRecord["kind"], string> = {
   table: "Table",
 };
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-IN", {
+/**
+ * `start_date` is a calendar date. Parsed as UTC midnight and formatted in
+ * UTC, it reads the same on the server and in every browser time zone.
+ */
+function formatDate(day: string) {
+  return new Date(`${day}T00:00:00Z`).toLocaleDateString("en-IN", {
     day: "numeric",
     month: "short",
     year: "numeric",
+    timeZone: "UTC",
   });
 }
 
-export function BookingsTable({ initial }: { initial: HostBookingRecord[] }) {
+/** Read-only: no booking status can be changed from here. */
+export function BookingsTable({ initial }: { initial: AdminBookingRow[] }) {
   const [status, setStatus] = useState<string>(ALL);
   const [kind, setKind] = useState<string>(ALL);
-  const [sort, setSort] = useState<SortState<SortKey>>({ key: "startDate", direction: "asc" });
+  const [sort, setSort] = useState<SortState<SortKey>>({ key: "startDate", direction: "desc" });
 
   const filtered = useMemo(() => {
     const out = initial.filter(
@@ -117,7 +123,7 @@ export function BookingsTable({ initial }: { initial: HostBookingRecord[] }) {
               <SortableHeader columnKey="guestName" sort={sort} onSort={toggleSort}>
                 Guest
               </SortableHeader>
-              <SortableHeader columnKey="refTitle" sort={sort} onSort={toggleSort}>
+              <SortableHeader columnKey="title" sort={sort} onSort={toggleSort}>
                 Booking
               </SortableHeader>
               <SortableHeader columnKey="kind" sort={sort} onSort={toggleSort}>
@@ -137,21 +143,36 @@ export function BookingsTable({ initial }: { initial: HostBookingRecord[] }) {
           </thead>
           <tbody>
             {filtered.length === 0 ? (
-              <EmptyRow
-                colSpan={7}
-                title="No bookings match these filters"
-                body="Try another status or booking type — the ledger holds every booking made through Discover Manipur."
-              />
+              initial.length === 0 ? (
+                <EmptyRow
+                  colSpan={7}
+                  title="No bookings yet"
+                  body="Bookings made through Discover Manipur will be listed here as they come in."
+                />
+              ) : (
+                <EmptyRow
+                  colSpan={7}
+                  title="No bookings match these filters"
+                  body="Try another status or booking type."
+                />
+              )
             ) : (
               filtered.map((b) => (
                 <tr key={b.id} className="border-b border-border/70 last:border-0 hover:bg-muted/50">
                   <th scope="row" className="px-4 py-3 text-left font-medium text-foreground">
                     {b.guestName}
-                    <span className="block text-xs font-normal text-muted-foreground">
-                      {b.guestOrigin}
-                    </span>
+                    {b.guestEmail && (
+                      <span className="block text-xs font-normal text-muted-foreground">
+                        {b.guestEmail}
+                      </span>
+                    )}
                   </th>
-                  <td className="px-4 py-3 text-muted-foreground">{b.refTitle}</td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    {b.title}
+                    {b.listingMissing && (
+                      <span className="block text-xs">Listing no longer in the catalogue</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-muted-foreground">{KIND_LABEL[b.kind]}</td>
                   <td className="px-4 py-3 tabular-nums text-muted-foreground">
                     {formatDate(b.startDate)}

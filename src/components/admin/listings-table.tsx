@@ -1,7 +1,7 @@
 "use client";
 
 import { Star, StarOff } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useOptimistic, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import {
@@ -22,26 +22,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { setHomestayActive, setListingFeatured } from "@/lib/admin/listing-actions";
+import type { ModerationKind, ModerationResult, ModerationRow } from "@/lib/admin/types";
 import { formatINR } from "@/lib/utils";
-
-export interface ModerationRow {
-  id: string;
-  title: string;
-  kind: "Homestay" | "Experience";
-  district: string;
-  location: string;
-  price: number;
-  rating: number;
-  featured: boolean;
-  isActive: boolean;
-}
 
 type SortKey = "title" | "kind" | "district" | "price" | "rating";
 
+type Change = { id: string; kind: ModerationKind; patch: Partial<Pick<ModerationRow, "featured" | "isActive">> };
+
 const ALL = "all";
 
+const KIND_LABEL: Record<ModerationKind, string> = {
+  homestay: "Homestay",
+  experience: "Experience",
+};
+
+const rowKey = (r: { kind: ModerationKind; id: string }) => `${r.kind}:${r.id}`;
+
+/**
+ * `initial` is the server's view. A toggle shows its new value at once
+ * through `useOptimistic`; the action's response re-renders the page with the
+ * saved rows, and on failure the optimistic value simply lapses, which is the
+ * rollback.
+ */
 export function ListingsTable({ initial }: { initial: ModerationRow[] }) {
-  const [rows, setRows] = useState(initial);
+  const [rows, applyChange] = useOptimistic(initial, (current: ModerationRow[], change: Change) =>
+    current.map((r) => (rowKey(r) === rowKey(change) ? { ...r, ...change.patch } : r)),
+  );
+  const [, startTransition] = useTransition();
   const [kind, setKind] = useState<string>(ALL);
   const [sort, setSort] = useState<SortState<SortKey>>({ key: "title", direction: "asc" });
 
@@ -56,27 +64,41 @@ export function ListingsTable({ initial }: { initial: ModerationRow[] }) {
     );
   }
 
-  function toggleFeatured(id: string) {
-    setRows((prev) =>
-      prev.map((r) => {
-        if (r.id !== id) return r;
-        toast.success(r.featured ? `${r.title} unfeatured` : `${r.title} featured`);
-        return { ...r, featured: !r.featured };
-      }),
+  function save(change: Change, run: () => Promise<ModerationResult>, onSaved: () => void) {
+    startTransition(async () => {
+      applyChange(change);
+      let result: ModerationResult;
+      try {
+        result = await run();
+      } catch {
+        result = { ok: false, error: "That change could not be saved. Check your connection and try again." };
+      }
+      if (result.ok) onSaved();
+      else toast.error(result.error);
+    });
+  }
+
+  function toggleFeatured(row: ModerationRow) {
+    const featured = !row.featured;
+    save(
+      { id: row.id, kind: row.kind, patch: { featured } },
+      () => setListingFeatured({ kind: row.kind, id: row.id, featured }),
+      () => toast.success(featured ? `${row.title} featured` : `${row.title} unfeatured`),
     );
   }
 
-  function toggleActive(id: string) {
-    setRows((prev) =>
-      prev.map((r) => {
-        if (r.id !== id) return r;
-        toast.success(r.isActive ? `${r.title} deactivated` : `${r.title} back online`, {
-          description: r.isActive
-            ? "It is hidden from search and no longer bookable."
-            : "Travellers can find and book it again.",
-        });
-        return { ...r, isActive: !r.isActive };
-      }),
+  function toggleActive(row: ModerationRow) {
+    if (!row.canToggleActive) return;
+    const isActive = !row.isActive;
+    save(
+      { id: row.id, kind: row.kind, patch: { isActive } },
+      () => setHomestayActive({ id: row.id, isActive }),
+      () =>
+        toast.success(isActive ? `${row.title} back online` : `${row.title} deactivated`, {
+          description: isActive
+            ? "Travellers can find and book it again."
+            : "It is hidden from the site and no longer bookable.",
+        }),
     );
   }
 
@@ -93,8 +115,8 @@ export function ListingsTable({ initial }: { initial: ModerationRow[] }) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={ALL}>All listings</SelectItem>
-              <SelectItem value="Homestay">Homestays</SelectItem>
-              <SelectItem value="Experience">Experiences</SelectItem>
+              <SelectItem value="homestay">Homestays</SelectItem>
+              <SelectItem value="experience">Experiences</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -107,7 +129,7 @@ export function ListingsTable({ initial }: { initial: ModerationRow[] }) {
       <TableScroller label="Listing moderation">
         <table className="w-full min-w-[56rem] border-collapse text-sm">
           <caption className="sr-only">
-            Published homestays and experiences with their feature and visibility state
+            Homestays and experiences with their feature and visibility state
           </caption>
           <thead className="border-b border-border bg-surface-sunken text-left">
             <tr>
@@ -134,10 +156,10 @@ export function ListingsTable({ initial }: { initial: ModerationRow[] }) {
             {filtered.length === 0 ? (
               <EmptyRow
                 colSpan={7}
-                title={rows.length === 0 ? "No listings published yet" : "Nothing matches this filter"}
+                title={rows.length === 0 ? "No listings in the database" : "Nothing matches this filter"}
                 body={
                   rows.length === 0
-                    ? "Approved hosts publish homestays and experiences here; the catalogue is empty for now."
+                    ? "The homestays and experiences tables are empty, so there is nothing to moderate yet."
                     : "Switch the listing type filter back to all listings."
                 }
               />
@@ -150,7 +172,7 @@ export function ListingsTable({ initial }: { initial: ModerationRow[] }) {
                       {row.location}
                     </span>
                   </th>
-                  <td className="px-4 py-3 text-muted-foreground">{row.kind}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{KIND_LABEL[row.kind]}</td>
                   <td className="px-4 py-3 text-muted-foreground">{row.district}</td>
                   <td className="px-4 py-3 text-right tabular-nums text-muted-foreground">
                     {formatINR(row.price)}
@@ -167,7 +189,7 @@ export function ListingsTable({ initial }: { initial: ModerationRow[] }) {
                         variant={row.featured ? "accent" : "outline"}
                         size="sm"
                         aria-pressed={row.featured}
-                        onClick={() => toggleFeatured(row.id)}
+                        onClick={() => toggleFeatured(row)}
                         aria-label={
                           row.featured ? `Unfeature ${row.title}` : `Feature ${row.title}`
                         }
@@ -179,17 +201,22 @@ export function ListingsTable({ initial }: { initial: ModerationRow[] }) {
                         )}
                         {row.featured ? "Featured" : "Feature"}
                       </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        aria-pressed={!row.isActive}
-                        onClick={() => toggleActive(row.id)}
-                        aria-label={
-                          row.isActive ? `Deactivate ${row.title}` : `Activate ${row.title}`
-                        }
-                      >
-                        {row.isActive ? "Deactivate" : "Activate"}
-                      </Button>
+                      {row.canToggleActive ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => toggleActive(row)}
+                          aria-label={
+                            row.isActive ? `Deactivate ${row.title}` : `Activate ${row.title}`
+                          }
+                        >
+                          {row.isActive ? "Deactivate" : "Activate"}
+                        </Button>
+                      ) : (
+                        <span className="self-center px-2 text-xs text-muted-foreground">
+                          Always live
+                        </span>
+                      )}
                     </div>
                   </td>
                 </tr>

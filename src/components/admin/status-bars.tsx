@@ -15,19 +15,22 @@ export interface StatusBarRow {
 export function StatusBars({
   rows,
   caption,
+  emptyMessage = "Nothing to break down yet.",
   className,
 }: {
   rows: StatusBarRow[];
   caption: string;
+  /** Shown instead of the bars when every row is zero. */
+  emptyMessage?: string;
   className?: string;
 }) {
   const top = Math.max(1, ...rows.map((r) => r.value));
 
   return (
     <figure className={cn("m-0", className)}>
-      {rows.length === 0 ? (
+      {rows.every((r) => r.value === 0) ? (
         <p className="rounded-[var(--radius)] border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-          Nothing to break down yet.
+          {emptyMessage}
         </p>
       ) : (
         <ul className="space-y-4">
