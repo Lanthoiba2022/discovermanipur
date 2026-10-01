@@ -28,7 +28,7 @@ import {
   getTransportOptions,
 } from "@/lib/data";
 import { formatINR, nightsBetween } from "@/lib/utils";
-import { SERVICE_FEE_RATE } from "@/lib/booking/pricing";
+import { quoteExperience, quoteStay, quoteTour, quoteTransportByDay } from "@/lib/booking/pricing";
 import type {
   District,
   Eatery,
@@ -480,11 +480,10 @@ function miss(
 }
 
 /**
- * Price a booking server-side. Every figure is computed from the real listing,
- * mirroring the per-page booking forms (8% homestay service fee, 5% group
- * discount from four on tours, 5% experience fee). The site books enquiries,
- * not paid tickets, so no money moves here — the traveller confirms on the
- * client and the request lands in the same store as the listing forms.
+ * Price a booking server-side with the same helpers as the listing forms
+ * (`@/lib/booking/pricing`). This is only a quote: no money moves, and when the
+ * traveller saves the request from the card, `requestBooking` looks the
+ * listing up and prices it again before storing it.
  */
 async function quoteBooking(input: {
   kind: "tour" | "homestay" | "experience" | "transport" | "table";
@@ -500,8 +499,8 @@ async function quoteBooking(input: {
     const tour = await getTourBySlug(slug);
     if (!tour) return miss(kind, slug, startDate, guests, "tour");
     const travellers = Math.min(tour.groupSizeMax, guests);
-    const subtotal = tour.pricePerPerson * travellers;
-    const discount = travellers >= 4 ? Math.round(subtotal * 0.05) : 0;
+    const { subtotal, adjustment, total } = quoteTour({ pricePerPerson: tour.pricePerPerson, guests: travellers });
+    const discount = -adjustment;
     const lineItems: BookingQuoteLine[] = [
       {
         label: `${formatINR(tour.pricePerPerson)} × ${travellers} traveller${travellers === 1 ? "" : "s"}`,
@@ -514,9 +513,9 @@ async function quoteBooking(input: {
       scheduled
         ? "This is a scheduled departure."
         : tour.departureDates.length > 0
-          ? `That date isn't a scheduled departure (scheduled: ${tour.departureDates.slice(0, 3).join(", ")}). We'll confirm availability with the trip planner.`
-          : "We'll confirm the date with the trip planner.",
-      "No payment online — confirming reserves your place and the trip planner follows up by email.",
+          ? `That date isn't a scheduled departure (scheduled: ${tour.departureDates.slice(0, 3).join(", ")}). Check availability with the organiser.`
+          : "Check the date with the organiser.",
+      "No payment online — saving records a request; the organiser is not notified automatically yet, so contact them to confirm your place.",
     ].join(" ");
     return {
       kind: "booking-quote",
@@ -528,7 +527,7 @@ async function quoteBooking(input: {
       startDate,
       guests: travellers,
       lineItems,
-      totalInr: subtotal - discount,
+      totalInr: total,
       note,
     };
   }
@@ -549,8 +548,11 @@ async function quoteBooking(input: {
         note: "Your check-out date is before check-in — give me dates the other way round and I'll re-quote.",
       };
     }
-    const subtotal = nights * stay.pricePerNight;
-    const fee = Math.round(subtotal * SERVICE_FEE_RATE);
+    const { subtotal, serviceFee: fee, total } = quoteStay({
+      pricePerNight: stay.pricePerNight,
+      from: startDate,
+      to: endDate,
+    });
     return {
       kind: "booking-quote",
       ok: true,
@@ -568,8 +570,8 @@ async function quoteBooking(input: {
         },
         { label: "Service fee (8%)", amountInr: fee },
       ],
-      totalInr: subtotal + fee,
-      note: "No payment online — this books an enquiry and your host confirms the stay. Check the cancellation policy on the listing.",
+      totalInr: total,
+      note: "No payment online — saving records a request; the host is not notified automatically yet, so contact them to confirm the stay. Check the cancellation policy on the listing.",
     };
   }
 
@@ -577,8 +579,11 @@ async function quoteBooking(input: {
     const experience = await getExperienceBySlug(slug);
     if (!experience) return miss(kind, slug, startDate, guests, "experience");
     const people = Math.min(experience.groupSizeMax, guests);
-    const subtotal = experience.pricePerPerson * people;
-    const fee = Math.round(subtotal * 0.05);
+    const {
+      subtotal,
+      adjustment: fee,
+      total,
+    } = quoteExperience({ pricePerPerson: experience.pricePerPerson, guests: people });
     return {
       kind: "booking-quote",
       ok: true,
@@ -595,8 +600,8 @@ async function quoteBooking(input: {
         },
         { label: "Experience fee (5%)", amountInr: fee },
       ],
-      totalInr: subtotal + fee,
-      note: "No payment online — this sends a request to the experience host, who confirms the date.",
+      totalInr: total,
+      note: "No payment online — saving records a request; the host is not notified automatically yet, so contact them to confirm the date.",
     };
   }
 
@@ -604,8 +609,11 @@ async function quoteBooking(input: {
     const transport = await getTransportBySlug(slug);
     if (!transport) return miss(kind, slug, startDate, guests, "transport option");
     if (transport.pricePerDay) {
-      const days = endDate ? Math.max(1, nightsBetween(startDate, endDate) + 1) : 1;
-      const total = days * transport.pricePerDay;
+      const { days, total } = quoteTransportByDay({
+        pricePerDay: transport.pricePerDay,
+        startDate,
+        endDate,
+      });
       return {
         kind: "booking-quote",
         ok: true,
@@ -619,7 +627,7 @@ async function quoteBooking(input: {
         lineItems: [{ label: `${days} day${days === 1 ? "" : "s"} × ${formatINR(transport.pricePerDay)}`, amountInr: total }],
         totalInr: total,
         note: endDate
-          ? "No payment online — the operator confirms availability and your booking appears on the account page."
+          ? "No payment online — saving records a request on your bookings page; the operator is not notified automatically yet, so contact them to confirm."
           : "You didn't give a return date, so I priced a single day — tell me your dates and I'll re-quote.",
       };
     }
@@ -653,8 +661,8 @@ async function quoteBooking(input: {
     lineItems: [],
     totalInr: 0,
     note: eatery.acceptsReservations
-      ? "Free to reserve — confirming books your table and the eatery gets an enquiry."
-      : "This place doesn't take reservations formally, so we'll pass your request to them and they'll come back to you.",
+      ? "Free to request — saving records the request; the eatery is not notified automatically, so call ahead to hold the table."
+      : "This place doesn't take reservations formally — saving only records your plan, so call ahead or walk in.",
   };
 }
 

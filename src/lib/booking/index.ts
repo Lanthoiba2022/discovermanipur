@@ -1,14 +1,35 @@
-export { quoteStay, toISODate, startOfToday, SERVICE_FEE_RATE, type StayQuote } from "./pricing";
-export { stayBookingSchema, type StayBookingValues } from "./schemas";
+export {
+  quoteStay,
+  quoteExperience,
+  quoteTour,
+  quoteTransportByDay,
+  toISODate,
+  startOfToday,
+  SERVICE_FEE_RATE,
+  EXPERIENCE_FEE_RATE,
+  type StayQuote,
+  type PerPersonQuote,
+} from "./pricing";
+export {
+  stayBookingSchema,
+  bookingRequestSchema,
+  type StayBookingValues,
+  type BookingRequest,
+} from "./schemas";
 export {
   getBookings,
   createBooking,
   cancelBooking,
-  updateBookingStatus,
   partitionBookings,
   subscribeToBookings,
+  resolveBookingMode,
+  useBookingMode,
+  BookingError,
+  type BookingMode,
   type CreateBookingInput,
+  type CreatedBooking,
 } from "./bookings";
+export { bookingHref, type BookingView } from "./links";
 export {
   useSavedItems,
   useIsSaved,

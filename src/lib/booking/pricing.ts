@@ -28,6 +28,60 @@ export function quoteStay(input: {
   };
 }
 
+/** Experiences carry a smaller fee than stays. */
+export const EXPERIENCE_FEE_RATE = 0.05;
+
+/** Tours are discounted for groups of this size or more. */
+export const TOUR_GROUP_MIN = 4;
+export const TOUR_GROUP_DISCOUNT_RATE = 0.05;
+
+export interface PerPersonQuote {
+  people: number;
+  rate: number;
+  subtotal: number;
+  /** Positive for a fee, negative for a discount. */
+  adjustment: number;
+  total: number;
+}
+
+export function quoteExperience(input: { pricePerPerson: number; guests: number }): PerPersonQuote {
+  const subtotal = input.pricePerPerson * input.guests;
+  const fee = Math.round(subtotal * EXPERIENCE_FEE_RATE);
+  return {
+    people: input.guests,
+    rate: input.pricePerPerson,
+    subtotal,
+    adjustment: fee,
+    total: subtotal + fee,
+  };
+}
+
+export function quoteTour(input: { pricePerPerson: number; guests: number }): PerPersonQuote {
+  const subtotal = input.pricePerPerson * input.guests;
+  const discount = input.guests >= TOUR_GROUP_MIN ? Math.round(subtotal * TOUR_GROUP_DISCOUNT_RATE) : 0;
+  return {
+    people: input.guests,
+    rate: input.pricePerPerson,
+    subtotal,
+    adjustment: -discount,
+    total: subtotal - discount,
+  };
+}
+
+/** Day hire counts both ends: 3 → 5 October is three days. No return date is one day. */
+export function transportDays(startDate: string, endDate?: string | null): number {
+  return endDate ? Math.max(1, nightsBetween(startDate, endDate) + 1) : 1;
+}
+
+export function quoteTransportByDay(input: {
+  pricePerDay: number;
+  startDate: string;
+  endDate?: string | null;
+}): { days: number; total: number } {
+  const days = transportDays(input.startDate, input.endDate);
+  return { days, total: days * input.pricePerDay };
+}
+
 /** `YYYY-MM-DD` in local time — the shape the bookings table stores. */
 export function toISODate(date: Date): string {
   const y = date.getFullYear();

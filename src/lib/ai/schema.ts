@@ -125,7 +125,7 @@ export interface BookingQuoteLine {
 
 /**
  * What the `quoteBooking` tool returns. The client renders this as a card with
- * a "Confirm booking" button that writes the request through the usual booking
+ * a "Save request" button that writes the request through the usual booking
  * store (no payment is taken online — the site books enquiries, not tickets).
  */
 export interface BookingQuoteResult {
