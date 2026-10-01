@@ -9,8 +9,7 @@ import {
   getHotspots,
   getTours,
 } from "@/lib/data";
-
-export const SITE_URL = "https://discovermanipur.example";
+import { SITE_URL } from "@/lib/site";
 
 type Entry = MetadataRoute.Sitemap[number];
 

@@ -2,6 +2,8 @@ import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
+import { SITE_HOST } from "@/lib/site";
+
 export const alt =
   "Discover Manipur — floating islands, cloud-caught hills and a thousand-year weave";
 export const size = { width: 1200, height: 630 };
@@ -130,7 +132,7 @@ export default async function OpengraphImage() {
                 fontSize: 22,
               }}
             >
-              discovermanipur.example
+              {SITE_HOST}
             </div>
             <div style={{ display: "flex", fontSize: 22, color: CREAM_200 }}>
               The Land of Jewels

@@ -9,11 +9,12 @@ import { isConciergeLive } from "@/lib/ai";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { Providers } from "@/components/providers";
+import { SITE_URL } from "@/lib/site";
 import { fontVariableClasses, fontVariables } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://discovermanipur.example"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Discover Manipur — The Land of Jewels",
     template: "%s · Discover Manipur",
