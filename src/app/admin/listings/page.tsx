@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
-import { ListingsTable, type ModerationRow } from "@/components/admin/listings-table";
-import { getExperiences, getHomestays } from "@/lib/data";
+import { ListingsTable } from "@/components/admin/listings-table";
+import { AdminUnavailable } from "@/components/admin/unavailable";
+import { getModerationRows } from "@/lib/admin/queries";
 import { requireAdmin } from "@/lib/host/role";
 
 export const metadata: Metadata = {
@@ -12,32 +13,7 @@ export const metadata: Metadata = {
 
 export default async function AdminListingsPage() {
   await requireAdmin("/admin/listings");
-  const [homestays, experiences] = await Promise.all([getHomestays(), getExperiences()]);
-
-  const rows: ModerationRow[] = [
-    ...homestays.map((h) => ({
-      id: h.id,
-      title: h.title,
-      kind: "Homestay" as const,
-      district: h.district,
-      location: h.location,
-      price: h.pricePerNight,
-      rating: h.rating,
-      featured: h.featured,
-      isActive: h.isActive,
-    })),
-    ...experiences.map((e) => ({
-      id: e.id,
-      title: e.title,
-      kind: "Experience" as const,
-      district: e.district,
-      location: e.location,
-      price: e.pricePerPerson,
-      rating: e.rating,
-      featured: e.featured,
-      isActive: true,
-    })),
-  ];
+  const rows = await getModerationRows();
 
   return (
     <section aria-labelledby="listings-heading">
@@ -45,10 +21,12 @@ export default async function AdminListingsPage() {
         Listings
       </h2>
       <p className="mb-6 mt-2 max-w-2xl text-sm text-muted-foreground">
-        Featuring puts a listing on the home page and at the top of search. Deactivating hides it
-        from travellers without deleting anything the host has written.
+        Featuring a listing moves it up the default &ldquo;Featured first&rdquo; order on its
+        listings page; a featured experience also appears on the home page with an Editor&rsquo;s
+        pick badge. Deactivating a homestay hides it from the site without deleting anything the
+        host has written. Experiences have no visibility switch.
       </p>
-      <ListingsTable initial={rows} />
+      {rows ? <ListingsTable initial={rows} /> : <AdminUnavailable what="Listings" />}
     </section>
   );
 }

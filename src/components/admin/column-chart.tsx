@@ -60,6 +60,8 @@ export interface ColumnChartProps {
   valueLabel: string;
   format?: ValueFormat;
   color?: string;
+  /** Shown instead of the chart when there is nothing to plot, including all-zero data. */
+  emptyMessage?: string;
   className?: string;
 }
 
@@ -75,16 +77,17 @@ export function ColumnChart({
   valueLabel,
   format = "number",
   color = CHART_SERIES[0],
+  emptyMessage = "No figures for this period yet.",
   className,
 }: ColumnChartProps) {
   const formatValue = FORMATTERS[format];
   const [active, setActive] = useState<number | null>(null);
   const tableId = useId();
 
-  if (data.length === 0) {
+  if (data.every((d) => d.value === 0)) {
     return (
       <div className={cn("rounded-[var(--radius)] border border-dashed border-border p-8 text-center", className)}>
-        <p className="text-sm text-muted-foreground">No figures for this period yet.</p>
+        <p className="text-sm text-muted-foreground">{emptyMessage}</p>
       </div>
     );
   }
