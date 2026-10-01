@@ -12,7 +12,6 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "audio:kangla": "python3 scripts/generate-kangla-audio-edge.py",
-    "audio:kangla:openai": "node scripts/generate-kangla-audio.mjs",
     "audio:kangla:indic": "python scripts/generate-kangla-audio-indic-parler.py",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",

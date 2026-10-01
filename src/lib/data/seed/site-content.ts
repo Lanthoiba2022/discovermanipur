@@ -242,7 +242,7 @@ export const contactChannels: Channel[] = [
   {
     icon: "ClipboardList",
     label: "Corrections and bugs",
-    value: "https://github.com/Lanthoiba2022/Manipur-Tourism-2026/issues",
+    value: "https://github.com/Lanthoiba2022/discovermanipur/issues",
     detail: "A wrong fact, a broken page or an idea. Issues are public, so leave out phone numbers and other personal details.",
   },
   {

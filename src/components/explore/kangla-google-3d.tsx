@@ -259,7 +259,7 @@ export default function KanglaGoogle3D({ apiKey, tilted, labels, selectedId, ove
           if (alive && !steady) fail("The 3D map is taking too long to load. Check your connection and that this browser supports WebGL, then retry.");
         }, READY_TIMEOUT_MS);
 
-        // Probe hooks for scripts/check-kangla.mjs — no UI reads these.
+        // Probe hooks for automated browser checks — no UI reads these.
         (window as unknown as { kanglaMap?: Map3D }).kanglaMap = instance;
         const report = () => {
           if (!instance) return;

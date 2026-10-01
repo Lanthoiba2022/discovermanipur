@@ -219,6 +219,14 @@ The site targets WCAG 2.1 AA; `src/app/accessibility/page.tsx` lists the known g
 - **Difficulty:** good first issue once a runner is agreed (propose one on the issue, for
   example Vitest), then add `npm test` to CI.
 
+### Browser checks for the Kangla 3D map
+- **Why:** the map has many interactions (camera fence, toggles, zoom, landmark panel)
+  that are easy to break, and there is no automated test for them.
+- **Where:** `/explore/kangla`, `src/components/explore/kangla-google-3d.tsx` (it already
+  exposes probe hooks for tests). The behaviours to cover are listed under "Manual checks"
+  in `docs/kangla-map-explorer.md`.
+- **Difficulty:** intermediate. Needs a Google Maps key, so it runs locally, not in CI.
+
 ### Smoke-test every route in CI
 - **Why:** catch pages that crash with an empty environment.
 - **Where:** a script that starts `npm run start` after the build and requests each route

@@ -61,7 +61,7 @@ export default async function ContactPage() {
                 </a>{" "}
                 or open an issue on{" "}
                 <a
-                  href="https://github.com/Lanthoiba2022/Manipur-Tourism-2026/issues"
+                  href="https://github.com/Lanthoiba2022/discovermanipur/issues"
                   rel="noreferrer noopener"
                   target="_blank"
                 >
