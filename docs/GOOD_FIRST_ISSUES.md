@@ -88,14 +88,6 @@ when `DATABASE_URL` or Neon Auth is not configured, so a fresh clone still works
 - **Difficulty:** advanced. Listings need an owner column first (a schema change with
   `npm run db:generate`).
 
-### Make the contact form deliver messages
-- **Why:** `/contact` validates and accepts a message, then drops it (see the
-  `TODO(send)` comment).
-- **Where:** `src/app/contact/actions.ts`; reuse the Brevo client in
-  `src/lib/email/brevo.ts`, or store messages in a new table.
-- **Difficulty:** intermediate. Add basic spam protection (a honeypot field or rate
-  limit) and update the success message, which currently says nothing is sent.
-
 ## Community-sourced listings
 
 The project's direction is a guide that the public keeps up to date: anyone can suggest a
@@ -234,27 +226,23 @@ The site targets WCAG 2.1 AA; `src/app/accessibility/page.tsx` lists the known g
 - **Difficulty:** intermediate.
 
 ### Pin the Node.js version
-- **Why:** CI and contributors should use the same Node version.
-- **Where:** add an `engines` field to `package.json` and an `.nvmrc`, then point
-  `.github/workflows/ci.yml` at it with `node-version-file`.
+- **Why:** CI and contributors should use the same Node version. `package.json` already
+  has `"engines": { "node": ">=20.9.0" }`, but there is no `.nvmrc` and CI hard-codes
+  Node 24.
+- **Where:** add an `.nvmrc`, then point `.github/workflows/ci.yml` at it with
+  `node-version-file`.
 - **Difficulty:** good first issue.
 
 ## Platform and hardening
 
-### Read the site URL from configuration
-- **Why:** the canonical origin is hard-coded as a placeholder, so metadata, the sitemap,
-  robots.txt and shared itineraries point at the wrong domain.
-- **Where:** `metadataBase` in `src/app/layout.tsx`, `SITE_URL` in `src/app/sitemap.ts`
-  (also used by `src/app/robots.ts`), `src/app/opengraph-image.tsx`,
-  `src/components/ai/itinerary-timeline.tsx`.
-- **Difficulty:** good first issue. Add a single helper and document the variable in
-  `.env.example`.
-
-### Rate limiting for the AI concierge
-- **Why:** the concierge is switched off in production while costs are uncertain. It
-  needs per-visitor limits and request size caps before it can come back.
-- **Where:** `src/app/api/chat/route.ts`, `src/app/api/itinerary/route.ts`,
-  `src/lib/ai/config.ts`.
+### Shared rate-limit store
+- **Why:** the per-IP limits on the AI concierge, sign-in, the photo proxy and the
+  contact form are kept in memory, so each server instance counts separately. A shared
+  store makes them hold across instances, which the concierge needs before it is
+  switched back on in production.
+- **Where:** `src/lib/security/rate-limit.ts` (swap the in-memory map for a shared store
+  such as Upstash Redis or Vercel KV, keeping the same interface); callers are in
+  `src/app/api/*` and `src/app/contact/actions.ts`.
 - **Difficulty:** intermediate.
 
 ### Database full-text search

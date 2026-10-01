@@ -7,6 +7,7 @@ import { BedDouble, Check, Copy, Download, Info, MapPin, Printer, Route, Utensil
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SaveItineraryButton } from "@/components/itineraries/save-itinerary-button";
+import { SITE_HOST } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import type { ItineraryPlan } from "@/lib/ai/schema";
 
@@ -23,10 +24,10 @@ export function itineraryToText(plan: ItineraryPlan): string {
     out.push(day.summary);
     for (const stop of day.stops) {
       const when = stop.timeOfDay ? `${stop.timeOfDay}: ` : "";
-      out.push(`  • ${when}${stop.title}${stop.href ? ` (discovermanipur.example${stop.href})` : ""} — ${stop.note}`);
+      out.push(`  • ${when}${stop.title}${stop.href ? ` (${SITE_HOST}${stop.href})` : ""} — ${stop.note}`);
     }
     for (const meal of day.meals) {
-      out.push(`  • ${meal.slot}: ${meal.suggestion}${meal.href ? ` (discovermanipur.example${meal.href})` : ""}`);
+      out.push(`  • ${meal.slot}: ${meal.suggestion}${meal.href ? ` (${SITE_HOST}${meal.href})` : ""}`);
     }
     if (day.stay) out.push(`  • stay: ${day.stay.title}${day.stay.note ? ` — ${day.stay.note}` : ""}`);
     if (day.travelNotes) out.push(`  • getting around: ${day.travelNotes}`);
