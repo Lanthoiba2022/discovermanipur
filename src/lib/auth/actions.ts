@@ -114,6 +114,19 @@ function signedInUnverified(data: unknown): boolean {
   return user?.emailVerified === false;
 }
 
+/**
+ * A failed 6-digit code, in words a person can act on. OTP failures are not in
+ * Neon's code map (they arrive as a generic `validation_failed`), so the
+ * message is the only reliable signal.
+ */
+function otpErrorMessage(error: ClientError): string {
+  const text = `${error.code ?? ""} ${error.message ?? ""}`;
+  if (/expired/i.test(text)) return "That code has expired. Send a new one.";
+  if (/too many/i.test(text)) return "Too many tries with that code. Send a new one.";
+  if (/invalid.?otp|invalid code/i.test(text)) return "That code isn't right. Check the email and try again.";
+  return messageOf(error) ?? "That code could not be checked. Try again.";
+}
+
 /** Ask Neon Auth to email a fresh verification code. */
 async function requestVerificationCode(email: string): Promise<string | null> {
   const client = getAuthClient();
@@ -270,17 +283,7 @@ export async function verifyEmailCode(input: {
   const { error } = await attempt(() =>
     client.emailOtp.verifyEmail({ email: input.email.trim(), otp: input.otp.trim() }),
   );
-  if (error) {
-    // OTP failures are not in Neon's code map (they arrive as a generic
-    // `validation_failed`), so the message is the only reliable signal.
-    const text = `${error.code ?? ""} ${error.message ?? ""}`;
-    if (/expired/i.test(text)) return { error: "That code has expired. Send a new one." };
-    if (/too many/i.test(text)) return { error: "Too many tries with that code. Send a new one." };
-    if (/invalid.?otp|invalid code/i.test(text)) {
-      return { error: "That code isn't right. Check the email and try again." };
-    }
-    return { error: messageOf(error) };
-  }
+  if (error) return { error: otpErrorMessage(error) };
 
   await refreshSession();
   const signedIn = Boolean(getSnapshot().user);
@@ -301,6 +304,52 @@ export async function resendVerificationCode(email: string): Promise<AuthResult>
   if (!getAuthClient()) return isDemoAuth ? { error: null } : UNAVAILABLE;
   const error = await requestVerificationCode(email.trim());
   return { error };
+}
+
+/* ----------------------------- password reset ------------------------------ */
+
+/** Local development accounts have no inbox to send a code to. */
+const NO_RESET_LOCALLY: AuthResult = {
+  error: "Local development accounts cannot reset a password. Create a new local account instead.",
+};
+
+/**
+ * Email a 6-digit password-reset code (through the Neon Auth `send.otp`
+ * webhook and Brevo). Neon Auth answers the same way whether or not an
+ * account exists, so this never reveals which addresses are registered.
+ */
+export async function requestPasswordReset(email: string): Promise<AuthResult> {
+  const client = getAuthClient();
+  if (!client) return isDemoAuth ? NO_RESET_LOCALLY : UNAVAILABLE;
+  const { error } = await attempt(() => client.emailOtp.requestPasswordReset({ email: email.trim() }));
+  return { error: messageOf(error) };
+}
+
+/**
+ * Set a new password with the emailed code, then sign in with it. The sign-in
+ * goes through `signInWithPassword`, so an address that is still unverified
+ * gets its verification code there, exactly as at a normal sign-in.
+ */
+export interface ResetResult extends AuthResult {
+  /** The new password is set. Anything else in the result is about signing in afterwards. */
+  passwordChanged: boolean;
+}
+
+export async function resetPasswordWithCode(input: {
+  email: string;
+  otp: string;
+  password: string;
+}): Promise<ResetResult> {
+  const client = getAuthClient();
+  if (!client) return { ...(isDemoAuth ? NO_RESET_LOCALLY : UNAVAILABLE), passwordChanged: false };
+
+  const email = input.email.trim();
+  const { error } = await attempt(() =>
+    client.emailOtp.resetPassword({ email, otp: input.otp.trim(), password: input.password }),
+  );
+  if (error) return { error: otpErrorMessage(error), passwordChanged: false };
+
+  return { ...(await signInWithPassword({ email, password: input.password })), passwordChanged: true };
 }
 
 /* -------------------------------- sign out --------------------------------- */
