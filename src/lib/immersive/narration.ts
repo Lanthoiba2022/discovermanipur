@@ -7,7 +7,7 @@
  * source text below is the same text those scripts read.
  *
  * Why this lives in its own module: two different surfaces show the same three
- * landmarks under two different sets of ids — the Google 3D explorer
+ * landmarks under two different sets of ids: the Google 3D explorer
  * (`kanglaPlaces`) and the reconstruction experience (`kanglaStops`). Keeping
  * the tracks here, with an alias table, means the audio is written once and
  * neither surface owns it.
@@ -16,7 +16,7 @@
 export type NarrationLanguage = "en" | "hi" | "mni";
 
 export interface NarrationTrack {
-  /** The narration, in that language — also shown on screen. */
+  /** The narration, in that language, also shown on screen. */
   text: string;
   /** Path under `public/`. */
   audio: string;
@@ -40,7 +40,7 @@ export const narrationLanguages: {
   { code: "mni", label: "ꯃꯩꯇꯩꯂꯣꯟ", lang: "mni-Mtei", className: "font-mayek" },
 ];
 
-/** Keyed by narration id — the reconstruction's stop ids. */
+/** Keyed by narration id: the reconstruction's stop ids. */
 export const kanglaNarration: Record<string, NarrationSet> = {
   guardians: {
     en: {

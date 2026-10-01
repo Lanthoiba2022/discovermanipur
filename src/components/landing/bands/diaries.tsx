@@ -7,14 +7,14 @@ import { BandEmpty } from "./gs-empty";
 import { DiaryQuoteCard } from "./dia-quote-card";
 
 /**
- * TRAVEL DIARIES — the quotes band.
+ * TRAVEL DIARIES: the quotes band.
  *
  * A static grid, on purpose. The obvious move here is an auto-rotating quote
  * carousel, and the obvious move is wrong: a timer that moves text a reader is
  * part-way through is a catalogued accessibility failure, and doing it
  * *properly* means a pause button, pause on hover, pause on `focusin`, pause
- * off-screen, pause on tab-hide and an opt-out under `prefers-reduced-motion`
- * — a lot of machinery whose best outcome is that nothing moves. Six quotes
+ * off-screen, pause on tab-hide and an opt-out under `prefers-reduced-motion`:
+ * a lot of machinery whose best outcome is that nothing moves. Six quotes
  * shown at once say more than one quote shown six times, so there is no timer
  * here and no `"use client"` in this subtree at all.
  *
@@ -46,7 +46,7 @@ export function DiariesBand({
       {shown.length === 0 ? (
         <BandEmpty
           title="The first diaries are still on the road"
-          body="Accounts appear here as travellers come back down from the hills and tell us how it went — unedited, hosts named, nothing bought."
+          body="Accounts appear here as travellers come back down from the hills and tell us how it went: unedited, hosts named, nothing bought."
           href="/about"
           cta="How Discover Manipur works"
         />

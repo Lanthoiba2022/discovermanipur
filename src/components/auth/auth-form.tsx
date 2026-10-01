@@ -131,7 +131,7 @@ function VerifyEmailStep({
         return;
       }
     }
-    toast.success("Email verified — welcome to Discover Manipur");
+    toast.success("Email verified. Welcome to Discover Manipur");
     onVerified();
   });
 
@@ -154,7 +154,7 @@ function VerifyEmailStep({
         <MailCheck className="mt-0.5 size-4 shrink-0 text-success" aria-hidden="true" />
         <p>
           We sent a 6-digit code to <span className="font-medium">{pending.email}</span>. It can
-          take a minute to arrive — check Spam or Promotions too.
+          take a minute to arrive. Check Spam or Promotions too.
         </p>
       </div>
 

@@ -11,7 +11,7 @@ import { EmptyNote } from "./empty-note";
 /**
  * The year, as a timeline you can travel by.
  *
- * Horizontal because a calendar genuinely is one axis — but it is an ordinary
+ * Horizontal because a calendar genuinely is one axis, but it is an ordinary
  * scroll container: native touch and trackpad scrolling, a visible scrollbar,
  * a real link per festival, and the full calendar one click away in the
  * masthead. Nothing here intercepts the page's vertical scroll.
@@ -24,7 +24,7 @@ export function FestivalStrip({ festivals }: { festivals: Festival[] }) {
         eyebrow="The year"
         word="A calendar."
         completion="That you can travel by."
-        standfirst="Manipur keeps time in festivals — spring colour, harvest feasts, a ten-day November that pulls the whole state into Imphal."
+        standfirst="Manipur keeps time in festivals: spring colour, harvest feasts, a ten-day November that pulls the whole state into Imphal."
         action={
           <Button
             asChild

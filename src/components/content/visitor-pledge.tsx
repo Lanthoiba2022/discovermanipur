@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 
 /**
- * A commitment checklist. Deliberately not persisted anywhere — the point is
+ * A commitment checklist. Deliberately not persisted anywhere: the point is
  * the reading, not the record.
  */
 export function VisitorPledge({ items }: { items: string[] }) {
@@ -82,7 +82,7 @@ export function VisitorPledge({ items }: { items: string[] }) {
         )}
       >
         {complete
-          ? "That is the whole pledge. Travel well — and tell the next visitor."
+          ? "That is the whole pledge. Travel well, and tell the next visitor."
           : "Take your time. The list is short on purpose."}
       </p>
     </div>

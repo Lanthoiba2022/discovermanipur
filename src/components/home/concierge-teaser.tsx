@@ -20,7 +20,7 @@ const PREVIEW = [
   },
   {
     from: "guide" as const,
-    text: "Yes — a half-day loin-loom session near Wangkhei fits on day 3, and I'll move the Andro pottery village to the morning so nothing clashes.",
+    text: "Yes, a half-day loin-loom session near Wangkhei fits on day 3, and I'll move the Andro pottery village to the morning so nothing clashes.",
   },
 ];
 
@@ -28,7 +28,7 @@ const PREVIEW = [
  * The concierge conversion moment.
  *
  * One call to action, and only one: the panel carries a single accent button
- * (ink-950 on brass-500 — 6.4:1, comfortably past the 4.5:1 bar for the label
+ * (ink-950 on brass-500, 6.4:1, comfortably past the 4.5:1 bar for the label
  * against its own fill). The transcript beside it is `aria-hidden` illustration,
  * not content, so a screen reader is not read four fake chat messages.
  */
@@ -58,7 +58,7 @@ export function ConciergeTeaser() {
             </h2>
 
             <p className="mt-6 max-w-md text-base leading-relaxed text-ivory-50/75">
-              Days, distances, seasons and opening hours — worked out against real
+              Days, distances, seasons and opening hours, worked out against real
               places, stays and experiences on Discover Manipur, not guesswork.
             </p>
 

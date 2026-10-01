@@ -5,8 +5,8 @@
  *
  * Signed in on a deployment with a database, the list lives in
  * `public.saved_items` behind the Server Actions in `@/app/account/saved/actions`
- * and follows the account to any device. Otherwise — signed out, no database,
- * or the local-development session — it stays in this browser's localStorage.
+ * and follows the account to any device. Otherwise (signed out, no database,
+ * or the local-development session) it stays in this browser's localStorage.
  * On the first load in account mode, anything saved in this browser is copied
  * into the account and the browser copy is cleared.
  *

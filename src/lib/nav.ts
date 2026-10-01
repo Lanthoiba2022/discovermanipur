@@ -1,7 +1,7 @@
 import type { IconName } from "@/lib/icons";
 
 /**
- * Site navigation — the single source of truth for the header, the mega
+ * Site navigation: the single source of truth for the header, the mega
  * menu, the mobile drawer and the footer.
  *
  * The rule this file exists to enforce: **if a route is a feature, it is
@@ -16,7 +16,7 @@ export interface NavItem {
   description?: string;
   /** Rendered in the mega menu. Resolved through `@/lib/icons`. */
   icon?: IconName;
-  /** Short flag — "New", "Beta", "3D". Kept to one word. */
+  /** Short flag: "New", "Beta", "3D". Kept to one word. */
   badge?: string;
 }
 
@@ -134,7 +134,7 @@ export const navGroups: NavGroup[] = [
       href: "/plan",
       eyebrow: "Concierge",
       title: "Tell it how long you have",
-      body: "Days, month, pace and budget in — a day-by-day Manipur itinerary out, with real stays and hosts attached.",
+      body: "Days, month, pace and budget in. A day-by-day Manipur itinerary out, with real stays and hosts attached.",
       image: "/file-uploads/loktak-phumdi-hut.webp",
       alt: "A stilted tin-roofed fishing hut on a floating phumdi island, with the ring-shaped phumdis of Loktak Lake stretching to the hills behind.",
     },

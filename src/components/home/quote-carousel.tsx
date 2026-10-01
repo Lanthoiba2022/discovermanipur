@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 const ROTATE_MS = 7000;
 
 /**
- * The traveller quotes, auto-rotating — with the full guard rig.
+ * The traveller quotes, auto-rotating, with the full guard rig.
  *
  * A carousel that advances on a bare `setInterval` is a catalogued
  * anti-pattern: it moves under the reader's eyes, it steals focus context, and
@@ -66,7 +66,7 @@ export function QuoteCarousel({ testimonials }: { testimonials: Testimonial[] })
     };
   }, [embla, onSelect]);
 
-  /* Guard 4 — off-screen carousels do not rotate. */
+  /* Guard 4: off-screen carousels do not rotate. */
   useEffect(() => {
     const el = rootRef.current;
     if (!el) return;
@@ -78,7 +78,7 @@ export function QuoteCarousel({ testimonials }: { testimonials: Testimonial[] })
     return () => io.disconnect();
   }, []);
 
-  /* Guard 5 — background tabs do not rotate. */
+  /* Guard 5: background tabs do not rotate. */
   useEffect(() => {
     const read = () => setDocVisible(document.visibilityState === "visible");
     read();

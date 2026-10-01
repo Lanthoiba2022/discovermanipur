@@ -95,7 +95,7 @@ export function parseHomestayFilters(params: RawParams): HomestayFilters {
   };
 }
 
-/** Filters `getHomestays` cannot express yet — applied after the data call. */
+/** Filters `getHomestays` cannot express yet, applied after the data call. */
 export function applyLocalFilters(rows: Homestay[], f: HomestayFilters): Homestay[] {
   return rows.filter((h) => {
     if (h.pricePerNight < f.min || h.pricePerNight > f.max) return false;

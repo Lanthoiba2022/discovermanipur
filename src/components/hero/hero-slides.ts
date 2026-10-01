@@ -3,14 +3,14 @@
  *
  * Five frames, chosen to move through the state rather than repeat one mood:
  * water, hills, a cultivated valley, a dance, a flower. Every file here was
- * opened and looked at before it was listed — the inherited photo library
+ * opened and looked at before it was listed. The inherited photo library
  * contains mis-filed stock (a Dutch road map, a European loom, Western resort
  * interiors), and generic or wrong imagery is the single most damaging thing a
  * destination site can put on its fold.
  *
  * Deliberately excluded after review: `manipuri-raas-group.webp` (a posed
  * group snapshot against a plastic tent backdrop), `kangla-kanglasha.webp`
- * (two thirds empty tarmac at full bleed — it works as the small nav feature
+ * (two thirds empty tarmac at full bleed; it works as the small nav feature
  * card it already is) and `senapati-green-hills.webp` (a greyer duplicate of
  * the ridgeline below).
  *

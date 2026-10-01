@@ -8,9 +8,9 @@
  *
  * Two providers are supported so the concierge runs whichever key is present:
  *
- * - Google Gemini (`GEMINI_API_KEY`, or `GOOGLE_GENERATIVE_AI_API_KEY`) —
+ * - Google Gemini (`GEMINI_API_KEY`, or `GOOGLE_GENERATIVE_AI_API_KEY`),
  *   preferred.
- * - Anthropic (`ANTHROPIC_API_KEY`) — used when no Gemini key is set.
+ * - Anthropic (`ANTHROPIC_API_KEY`), used when no Gemini key is set.
  */
 
 import { createAnthropic } from "@ai-sdk/anthropic";
@@ -44,8 +44,8 @@ function readGeminiKey(): string {
 /**
  * True when an LLM key is present in this (server) process.
  *
- * On the client this is always `false` — the key is never exposed to the
- * browser — so UI code should take the `configured` flag the server hands it
+ * On the client this is always `false` (the key is never exposed to the
+ * browser), so UI code should take the `configured` flag the server hands it
  * rather than reading this directly.
  */
 export const isAIConfigured: boolean = readGeminiKey().length > 0 || readAnthropicKey().length > 0;
@@ -72,7 +72,7 @@ export function conciergeModel(): LanguageModel {
  * half-configured key produced a chat that looked alive and then failed
  * mid-answer. With the flag off the UI says so plainly, `/plan` shows a
  * curated sample conversation built from the real catalogue instead, and the
- * `/api/chat` and `/api/itinerary` routes never call a model — so the switch
+ * `/api/chat` and `/api/itinerary` routes never call a model, so the switch
  * also caps spend, not just what the UI shows.
  *
  * Set `AI_CHAT_ENABLED=true` (alongside a working key) to switch it on.

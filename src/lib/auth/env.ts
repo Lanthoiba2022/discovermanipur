@@ -2,7 +2,7 @@
  * Auth environment resolution, safe on the server and in the browser.
  *
  * Nothing in here throws. The whole app must build and run with no Neon Auth
- * credentials present — when `isAuthConfigured` is false the auth layer falls
+ * credentials present. When `isAuthConfigured` is false the auth layer falls
  * back to a clearly-labelled local-development session (see `./session-store`)
  * in development, and to no sign-in at all in a production build.
  *

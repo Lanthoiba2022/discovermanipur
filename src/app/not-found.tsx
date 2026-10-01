@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 export const metadata: Metadata = {
   title: "Page not found",
   description:
-    "That page does not exist. Here is the way back into the catalogue — places, stays, experiences, food and tours across Manipur.",
+    "That page does not exist. Here is the way back into the catalogue: places, stays, experiences, food and tours across Manipur.",
   robots: { index: false, follow: false },
 };
 
@@ -25,7 +25,7 @@ const WAYS_BACK = [
 export default function NotFound() {
   return (
     <div className="relative overflow-hidden pt-28 md:pt-32">
-      {/* Soft background photograph — decorative only. */}
+      {/* Soft background photograph, decorative only. */}
       <div className="mist-top pointer-events-none absolute inset-x-0 top-0 h-[60vh] opacity-20" aria-hidden="true">
         <Image
           src="/file-uploads/Hills.jpg"

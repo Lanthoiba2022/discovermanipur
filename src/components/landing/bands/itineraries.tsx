@@ -16,13 +16,13 @@ import {
 } from "./showcase-card";
 
 /**
- * The itineraries band — the one that carries the arch.
+ * The itineraries band: the one that carries the arch.
  *
  * The national board masks its itinerary cards into an ogee, which is the
  * single most recognisable thing on their page. `.mask-arch` is our own version
  * of that move: a rounded dome over square shoulders, the profile of a Manipuri
  * gateway. Used here and nowhere else on the landing page, it reads as a row of
- * gateways standing on the ivory ground — so the copy under each one is centred
+ * gateways standing on the ivory ground, so the copy under each one is centred
  * and the rail is left-aligned against the two centred bands either side of it.
  */
 
@@ -57,7 +57,7 @@ function ItineraryCard({ tour }: { tour: Tour }) {
           </p>
         </CardMedia>
 
-        {/* The brass tick under the gateway — the same editorial device the
+        {/* The brass tick under the gateway: the same editorial device the
             band masthead uses, one size down. */}
         <span
           aria-hidden

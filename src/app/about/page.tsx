@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description:
     "Discover Manipur is an open-source, community-run travel platform for Manipur. Why Manipur, what we are building, and how the six focus areas shape it.",
   openGraph: {
-    title: "About Discover Manipur — an open-source platform for Manipur",
+    title: "About Discover Manipur: an open-source platform for Manipur",
     description:
       "Why Manipur, what the platform does, and how it puts local hosts and honest information first.",
   },
@@ -30,7 +30,7 @@ export default async function AboutPage() {
         eyebrow="About"
         title="A field guide to a place most people have only read about."
         meiteiTitle="ꯃꯅꯤꯄꯨꯔ"
-        lede="A travel platform for Manipur, built in the open — for looking closely rather than passing through. Sixteen districts, one valley ringed by hills, and the people who keep it."
+        lede="A travel platform for Manipur, built in the open, for looking closely rather than passing through. Sixteen districts, one valley ringed by hills, and the people who keep it."
         image={{
           src: "/file-uploads/loktakView.webp",
           alt: "A woman in a red phanek poles a wooden canoe past a thatched hut on a floating phumdi, through water lilies on Loktak Lake at dusk",
@@ -68,7 +68,7 @@ export default async function AboutPage() {
               </p>
               <p>
                 That gap is not a marketing problem. It is an information problem, and it costs
-                the people who live here the most — because the visitor who cannot plan a trip
+                the people who live here the most, because the visitor who cannot plan a trip
                 simply goes somewhere else, and the income goes with them.
               </p>
             </Prose>
@@ -125,14 +125,14 @@ export default async function AboutPage() {
               <p>
                 A homestay listing carries the host&apos;s own story. An experience carries the name
                 of the weaver, cook or guide leading it, the languages they speak, and the maximum
-                group size — because a workshop for six is a different thing from a workshop for
+                group size, because a workshop for six is a different thing from a workshop for
                 thirty.
               </p>
 
               <h3>An AI concierge that stays on the map</h3>
               <p>
                 Give it your dates, your pace and what you care about, and it drafts an itinerary
-                from the same catalogue the rest of the site uses — so it cannot recommend a
+                from the same catalogue the rest of the site uses, so it cannot recommend a
                 homestay that does not exist. It is paused on the live site for now, and the{" "}
                 <Link href="/plan">planner</Link> shows a sample conversation instead.
               </p>
@@ -157,7 +157,7 @@ export default async function AboutPage() {
               />
             </div>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              Ima Keithel in Imphal — a market run by women, and one of the places a visitor can
+              Ima Keithel in Imphal: a market run by women, and one of the places a visitor can
               contribute to the local economy most directly.
             </p>
           </Reveal>
@@ -269,7 +269,7 @@ export default async function AboutPage() {
                   Some stay, food, experience and transport listings are still sample entries rather
                   than real businesses, and prices and timings can be out of date. Before you travel,
                   check permit requirements, road conditions and
-                  current government travel advisories with official sources — we say this on every
+                  current government travel advisories with official sources. We say this on every
                   page where it matters, and we mean it.
                 </p>
               </div>

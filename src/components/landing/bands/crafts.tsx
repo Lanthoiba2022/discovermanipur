@@ -10,13 +10,13 @@ import { BandEmpty } from "./gs-empty";
 import { CraftShowcaseCard } from "./craft-card";
 
 /**
- * EXQUISITE CRAFTS — the pigment band.
+ * EXQUISITE CRAFTS: the pigment band.
  *
  * The national board runs its crafts stripe as one loud, saturated field with
  * the word knocked out in white, and the instinct is right: after four bands
  * the page needs a stripe that reads as *dye* rather than as landscape. Ours
  * gets there through a full-bleed photograph of stacked handloom graded almost
- * to the phanek crimson, rather than a flat fill — which keeps the stripe
+ * to the phanek crimson, rather than a flat fill, which keeps the stripe
  * saturated while staying distinguishable from the CELEBRATION band directly
  * above it, which is already `tone="crimson"`. (If that band's tone ever
  * changes, this one can go back to a flat `crimson` ground and drop the
@@ -25,8 +25,8 @@ import { CraftShowcaseCard } from "./craft-card";
  * Left-aligned, because the band above is centred and a page of nine centred
  * mastheads is precisely the failure mode of the site being borrowed from.
  *
- * Rows arrive as a prop — `page.tsx` calls `getCrafts({ featured: true,
- * limit: 8 })` — so the band is a pure server component with no data
+ * Rows arrive as a prop (`page.tsx` calls `getCrafts({ featured: true,
+ * limit: 8 })`), so the band is a pure server component with no data
  * dependency of its own, and it never assumes a row exists.
  */
 export function CraftsBand({ crafts }: { crafts: Craft[] }) {
@@ -41,11 +41,11 @@ export function CraftsBand({ crafts }: { crafts: Craft[] }) {
       backdrop={
         <div aria-hidden className="absolute inset-0 -z-10">
           {/* Verified by eye before use: stacked unglazed black clay pots and
-              storage jars, the Andro form. Deliberately NOT the phanek frame —
+              storage jars, the Andro form. Deliberately NOT the phanek frame:
               that photograph is the Moirang Phee card's own cover, and running
               it here made the band's backdrop repeat one of its own cards. At
               3456px it also has the resolution a full-bleed ground needs.
-              Not preloaded — the hero owns the LCP. */}
+              Not preloaded: the hero owns the LCP. */}
           <Image
             src="/file-uploads/pot.jpg"
             alt=""
@@ -82,7 +82,7 @@ export function CraftsBand({ crafts }: { crafts: Craft[] }) {
         <BandEmpty
           tone="dark"
           title="The maker directory is still being strung"
-          body="Weavers, potters and bamboo workers are listed one at a time, each with their own contact details. Discover Manipur takes no commission on any of it — the money and the relationship stay with the artisan."
+          body="Weavers, potters and bamboo workers are listed one at a time, each with their own contact details. Discover Manipur takes no commission on any of it. The money and the relationship stay with the artisan."
           href="/store"
           cta="See what is listed so far"
         />

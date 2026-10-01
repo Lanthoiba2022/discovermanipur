@@ -198,7 +198,7 @@ export function EarningsEstimator() {
           <Info className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
           <span>
             This is an estimate, not an offer. It assumes you fill the nights you set here and
-            excludes your own costs — food, laundry, electricity, repairs — and any tax you owe.
+            excludes your own costs (food, laundry, electricity, repairs) and any tax you owe.
             Demand in Manipur is strongly seasonal: November around the Sangai Festival and the
             Shirui lily season in May run far fuller than the monsoon months.
           </span>

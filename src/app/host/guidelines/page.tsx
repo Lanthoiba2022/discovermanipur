@@ -40,9 +40,9 @@ const SECTIONS: GuidelineSection[] = [
     rules: [
       "Working locks on every guest room and on the main gate, and a room key the guest keeps.",
       "A smoke alarm or, at minimum, a working fire extinguisher within reach of the kitchen, and a clear way out of the building that is never locked or blocked.",
-      "A stocked first-aid box, and the nearest hospital or PHC number written somewhere visible — not only in your phone.",
+      "A stocked first-aid box, and the nearest hospital or PHC number written somewhere visible, not only in your phone.",
       "Electrical wiring without exposed joints; geysers, heaters and gas cylinders serviced and turned off when unattended.",
-      "Safe drinking water — filtered, boiled or sealed — and you say plainly which it is.",
+      "Safe drinking water (filtered, boiled or sealed), and you say plainly which it is.",
       "On or near water, a life jacket for every guest on every boat, with no exceptions for short crossings on Loktak.",
       "On treks and rides, a briefing before you set off, water, a charged phone, and a turn-back plan for weather.",
       "You tell guests about real risks up front: an unlit approach lane, a steep stair, a dog, a landslide-prone stretch, a curfew or bandh that could affect their travel.",
@@ -54,11 +54,11 @@ const SECTIONS: GuidelineSection[] = [
     title: "3. Cleanliness and food",
     intro: "Clean is a standard, not an aspiration. It is also the thing guests write about first.",
     rules: [
-      "Fresh, sun-dried or laundered bedding and towels for every new guest — not turned over, not reused.",
+      "Fresh, sun-dried or laundered bedding and towels for every new guest, not turned over, not reused.",
       "Bathroom cleaned before each arrival, with soap, a bucket and mug or a working shower, and a way to keep water hot.",
       "Dustbins emptied daily, and waste disposed of properly rather than burned next to the guest room.",
       "If you cook for guests: clean hands and utensils, food cooked to order rather than kept warm for hours, drinking water offered without being asked.",
-      "You declare what is in the food. Ngari, umorok, pork fat, beef and axone are part of our kitchens — never disguise them. Ask about allergies and about what a guest does not eat.",
+      "You declare what is in the food. Ngari, umorok, pork fat, beef and axone are part of our kitchens. Never disguise them. Ask about allergies and about what a guest does not eat.",
       "A guest who asks for a vegetarian or vegan meal gets a real one, cooked in clean vessels, not rice and one side dish.",
     ],
   },
@@ -70,9 +70,9 @@ const SECTIONS: GuidelineSection[] = [
     rules: [
       "Your listed rate includes everything a guest must pay to stay or take part. Taxes and cleaning charges go in the rate or are listed as a named extra before booking.",
       "No separate price for foreign, out-of-state or Manipuri guests, and no asking for more after arrival.",
-      "Optional extras — an airport pickup, a boat ride, dinner, a guide for the day — are priced on the listing before the guest books.",
+      "Optional extras (an airport pickup, a boat ride, dinner, a guide for the day) are priced on the listing before the guest books.",
       "Never ask for a deposit, advance or extra charge that is not stated on your listing.",
-      "Discover Manipur charges no fee: no listing fee and no commission. No money moves through the platform — guests pay you directly, on the terms stated on your listing.",
+      "Discover Manipur charges no fee: no listing fee and no commission. No money moves through the platform. Guests pay you directly, on the terms stated on your listing.",
     ],
   },
   {
@@ -83,7 +83,7 @@ const SECTIONS: GuidelineSection[] = [
     rules: [
       "No refusal or different treatment on grounds of religion, caste, tribe or community, place of origin, language, gender, sexuality, disability, marital status or age.",
       "An unmarried couple with valid ID is a booking like any other.",
-      "Reply to messages within 24 hours — a late reply costs a guest their whole plan.",
+      "Reply to messages within 24 hours. A late reply costs a guest their whole plan.",
       "Photographs of guests, and of anything inside your home that a guest is in, only with their permission.",
       "What a guest tells you stays with you: no sharing their itinerary, their phone number or their photos with anyone.",
     ],
@@ -97,14 +97,14 @@ const SECTIONS: GuidelineSection[] = [
       "Brief guests before they arrive on what matters locally: removing shoes indoors, quiet after 9pm, dressing modestly at a temple, church or Umang Lai grove, and asking before photographing people, rituals or interiors.",
       "Sacred spaces, community forests and Lai Haraoba grounds are visited on the community's terms, with permission, and sometimes not at all. Never sell access to something the community has not agreed to share.",
       "Crafts, weaves and recipes you present as yours must be yours, or shared with credit and with the maker's consent. A Wangkhei phee, a Moirang phee or a Tangkhul shawl is named correctly.",
-      "Pay the people who work with you — cooks, porters, boatmen, drivers, performers — at a fair rate and on time.",
+      "Pay the people who work with you (cooks, porters, boatmen, drivers, performers) at a fair rate and on time.",
       "Keep guest numbers within what your lane, your water supply and your neighbours can carry.",
       "No single-use plastic handed out where you can avoid it, no waste into the lake or the river, and no encouraging guests onto phumdi or paddy that is someone's livelihood.",
     ],
   },
   {
     id: "accessibility",
-    title: "7. Accessibility — describe it truthfully",
+    title: "7. Accessibility: describe it truthfully",
     intro:
       "We do not require every home to be step-free. We require every listing to be honest about what it is, so a guest can decide for themselves.",
     rules: [
@@ -113,16 +113,16 @@ const SECTIONS: GuidelineSection[] = [
       "Say whether the toilet is a seat or a squat, and whether there is anything to hold on to.",
       "Say how far the room is from where a car can stop, and whether that path is lit and even after dark.",
       "Note what matters to guests who are not wheelchair users too: a bathroom on the sleeping floor, a handrail, a strong reading light, a quiet room away from the road, whether the stairs can be avoided.",
-      "If a guest asks whether they can manage your place, answer plainly — including when the answer is no. Turning someone away kindly and early is better than a guest stranded at your gate.",
+      "If a guest asks whether they can manage your place, answer plainly, including when the answer is no. Turning someone away kindly and early is better than a guest stranded at your gate.",
     ],
   },
   {
     id: "cancellation",
     title: "8. Cancellations and conduct when plans break",
     intro:
-      "Manipur travel breaks sometimes — a bandh, a landslide, a flight cancelled at Tulihal. How you handle it is the measure of a host.",
+      "Manipur travel breaks sometimes: a bandh, a landslide, a flight cancelled at Tulihal. How you handle it is the measure of a host.",
     rules: [
-      "Honour every confirmed booking. Cancel only for a genuine emergency, illness or bereavement, or a safety situation — never because a longer or better-paying booking came along.",
+      "Honour every confirmed booking. Cancel only for a genuine emergency, illness or bereavement, or a safety situation, never because a longer or better-paying booking came along.",
       "If you must cancel, tell the guest the same day, refund anything they have paid you in full, and help them find somewhere else.",
       "Repeated host cancellations can cost you your featured placement, then your listing.",
       "When a bandh, blockade or weather event makes travel unsafe, waive the guest's cancellation charge. A host is not penalised for cancelling in that situation either.",
@@ -137,7 +137,7 @@ const SECTIONS: GuidelineSection[] = [
       "Reviews are the only thing a first-time guest has to go on, so they are protected carefully.",
     rules: [
       "Never write, buy or ask for a fake review, and never offer a discount for a good one. Asking a happy guest to review you honestly is fine.",
-      "Retaliating against an honest review — a threat, a call, a review of their conduct in return — ends the listing.",
+      "Retaliating against an honest review (a threat, a call, a review of their conduct in return) ends the listing.",
       "Listings are removed for: false information, a safety failure, a discrimination complaint we can substantiate, charging money not stated on the listing, or a pattern of complaints left unfixed.",
       "You will always be told why, in writing, and you can put it right and reapply.",
     ],
@@ -157,7 +157,7 @@ export default function HostingGuidelinesPage() {
         <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
           These are the standards you agree to when you list. Read them before you apply, so you
           know what to expect. They are written plainly on purpose:
-          a host should be able to read this once and know exactly what is expected — and a guest
+          a host should be able to read this once and know exactly what is expected, and a guest
           should be able to read it too.
         </p>
         <p className="mt-4 text-sm text-muted-foreground">Last reviewed 1 October 2026</p>
@@ -211,8 +211,8 @@ export default function HostingGuidelinesPage() {
       <div className="mx-auto mt-16 max-w-3xl rounded-[var(--radius-lg)] border border-border bg-surface p-8 text-center">
         <h2 className="font-display text-2xl">Can you meet these?</h2>
         <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
-          Most homes in Manipur already do. If one or two things are missing — a smoke alarm, a
-          handrail, a filter — apply anyway and say so in your application, so our admins know
+          Most homes in Manipur already do. If one or two things are missing (a smoke alarm, a
+          handrail, a filter), apply anyway and say so in your application, so our admins know
           what you are working on.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">

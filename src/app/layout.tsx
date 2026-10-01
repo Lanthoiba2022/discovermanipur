@@ -16,7 +16,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Discover Manipur — The Land of Jewels",
+    default: "Discover Manipur: The Land of Jewels",
     template: "%s · Discover Manipur",
   },
   description:
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     "Sangai Festival",
   ],
   openGraph: {
-    title: "Discover Manipur — The Land of Jewels",
+    title: "Discover Manipur: The Land of Jewels",
     description:
       "Floating islands, cloud-caught hills and a thousand-year weave. Plan your Manipur journey.",
     type: "website",
@@ -77,7 +77,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SpeedInsights />
         {/* Microsoft Clarity (heatmaps and session replay). Production builds
             only, so `next dev` sessions never land in the recordings. The
-            project id is public by design — it ships in the page either way. */}
+            project id is public by design; it ships in the page either way. */}
         {process.env.NODE_ENV === "production" && (
           <Script id="microsoft-clarity" strategy="afterInteractive">
             {`(function(c,l,a,r,i,t,y){

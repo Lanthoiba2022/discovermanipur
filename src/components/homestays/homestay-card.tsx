@@ -31,7 +31,7 @@ export function HomestayCard({
   className?: string;
 }) {
   const cover = homestay.images[0];
-  // Two amenities, in the card's own meta voice — the rest are on the page.
+  // Two amenities, in the card's own meta voice. The rest are on the page.
   const amenities = homestay.amenities.map((a) => AMENITY_META[a]).filter(Boolean).slice(0, 2);
 
   return (

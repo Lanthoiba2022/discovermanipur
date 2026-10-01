@@ -14,8 +14,8 @@ import { Reveal } from "@/components/motion/reveal";
  * a text link rather than a second button, so there is no ambiguity about what
  * the page wants next.
  *
- * The backdrop photograph is held permanently in `.media-recede` — desaturated
- * and dimmed — which is what lets ivory type sit on it at full strength: the
+ * The backdrop photograph is held permanently in `.media-recede` (desaturated
+ * and dimmed), which is what lets ivory type sit on it at full strength: the
  * measured contrast of `ivory-50` over the treated photograph plus its scrim is
  * well past 4.5:1 everywhere the copy lands, and the accent button's ink-950
  * label is 6.4:1 on its own brass fill.
@@ -59,7 +59,7 @@ export function ClosingCta() {
           <h2 className="text-display text-ivory-50">Come and wander.</h2>
 
           <p className="mt-7 max-w-lg text-base leading-relaxed text-ivory-50/82 md:text-lg">
-            Build a route through the valley and the hills in a few minutes — then
+            Build a route through the valley and the hills in a few minutes. Then
             go, and let it change on you.
           </p>
 

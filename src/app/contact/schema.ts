@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const ENQUIRY_TYPES = [
   { value: "trip", label: "Planning a trip" },
-  { value: "hosting", label: "Hosting — homestay, experience or guiding" },
+  { value: "hosting", label: "Hosting: homestay, experience or guiding" },
   { value: "partnership", label: "Partnership or collaboration" },
   { value: "correction", label: "A correction to something on the site" },
   { value: "accessibility", label: "Accessibility issue" },
@@ -19,7 +19,7 @@ export const contactSchema = z.object({
     .string()
     .trim()
     .min(2, "Please tell us your name (at least 2 characters).")
-    .max(80, "That name is longer than we can store — 80 characters maximum."),
+    .max(80, "That name is longer than we can store: 80 characters maximum."),
   email: z.email("That does not look like an email address we could reply to."),
   enquiryType: z.enum(enquiryValues, {
     message: "Choose the option that fits best.",
@@ -32,7 +32,7 @@ export const contactSchema = z.object({
   message: z
     .string()
     .trim()
-    .min(20, "Please give us a little more detail — at least 20 characters.")
+    .min(20, "Please give us a little more detail: at least 20 characters.")
     .max(4000, "That is longer than 4000 characters. Send the essentials and we will follow up."),
 });
 

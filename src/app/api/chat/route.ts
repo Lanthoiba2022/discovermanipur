@@ -1,5 +1,5 @@
 /**
- * POST /api/chat — the streaming concierge.
+ * POST /api/chat: the streaming concierge.
  *
  * Nothing here throws at import time. While the concierge is not live (no LLM
  * key, or `AI_CHAT_ENABLED` off) the handler streams a canned, friendly
@@ -50,7 +50,7 @@ const RATE_DAILY = { limit: 300, windowMs: 24 * 60 * 60_000 };
 
 /*
  * Only the envelope is checked here: parts are passed through for
- * `convertToModelMessages` to interpret. `role` is the part that matters — a
+ * `convertToModelMessages` to interpret. `role` is the part that matters: a
  * client-sent "system" message would otherwise be handed to the model as a
  * system instruction.
  */
@@ -169,7 +169,7 @@ export async function POST(req: Request) {
   } catch {
     return createUIMessageStreamResponse({
       stream: cannedStream(
-        "Something went wrong on my side just now. Try again in a moment — or browse [places](/hotspots) and [homestays](/homestays) directly while I catch my breath.",
+        "Something went wrong on my side just now. Try again in a moment, or browse [places](/hotspots) and [homestays](/homestays) directly while I catch my breath.",
         false,
       ),
     });

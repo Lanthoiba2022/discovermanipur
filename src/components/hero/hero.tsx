@@ -13,7 +13,7 @@ import { HeroSearch } from "./hero-search";
 import { RotatingSubjects } from "./rotating-subjects";
 
 /**
- * `--ease-flat` — the house easing for anything being read. The hero never
+ * `--ease-flat`: the house easing for anything being read. The hero never
  * springs: an overshoot on a headline reads as a toy. Entrances that may
  * overshoot (`--ease-spring`) are reserved for tiles further down the page.
  */
@@ -26,12 +26,12 @@ const WORD_LEAD = 0.14;
 
 /**
  * The headline, pre-broken into lines so each word can be its own masked
- * reveal. The closing line takes the accent — the sentence completes in brass
+ * reveal. The closing line takes the accent: the sentence completes in brass
  * rather than merely ending, which is the one flourish the fold gets.
  *
  * It names four things rather than one place on purpose: the reel shows
  * water, hills, a dance and a flower, so a headline about one place would not
- * cover it. Four nouns — water, hills, the handloom, the drum — cover what the
+ * cover it. Four nouns (water, hills, the handloom, the drum) cover what the
  * state actually is, and they enumerate straight into the rotating "and …"
  * line below, so the whole fold reads as one sentence listing Manipur.
  */
@@ -66,7 +66,7 @@ const INDEX = [
  *
  * `useReducedMotion()` is null on the server and true on a reduced-motion
  * client, so branching `initial={reduce ? false : {...}}` makes the server
- * emit `opacity: 0` and the client's first render emit `opacity: 1` — React
+ * emit `opacity: 0` and the client's first render emit `opacity: 1`. React
  * reports the attributes as mismatched and refuses to patch them. The rule in
  * `components/motion/reveal.tsx` is that reduced motion must never change what
  * is rendered; the same applies to the inline style framer writes.
@@ -136,7 +136,7 @@ export function Hero({ subjects }: { subjects: string[] }) {
       data-hero-tone="dark"
       className="relative isolate flex min-h-[100svh] flex-col justify-end overflow-hidden bg-ink-950"
     >
-      {/* Layer 1 — the photograph */}
+      {/* Layer 1: the photograph */}
       <motion.div
         ref={stageRef}
         className="absolute inset-0 -z-30"
@@ -145,7 +145,7 @@ export function Hero({ subjects }: { subjects: string[] }) {
         <HeroStage index={reel.index} animated={reel.animated} shown={reel.shown} />
       </motion.div>
 
-      {/* Layer 2 — dawn aurora. Composed from the `--dawn-*` ramp: it costs no JavaScript,
+      {/* Layer 2: dawn aurora. Composed from the `--dawn-*` ramp: it costs no JavaScript,
           paints before hydration and needs no reduced-motion branch because it
           does not move. Inset negatively so its 24px blur has room to fall off
           instead of banding at the edges of the frame. */}
@@ -154,7 +154,7 @@ export function Hero({ subjects }: { subjects: string[] }) {
         className="dawn-wash pointer-events-none absolute -inset-x-24 -top-32 -z-20 h-[72%] opacity-40 mix-blend-screen"
       />
 
-      {/* Layer 3 — scrims. Sized to the copy rather than washed over the
+      {/* Layer 3: scrims. Sized to the copy rather than washed over the
           whole frame, so the phumdi rings still read as water and land. */}
       <div
         aria-hidden
@@ -203,7 +203,7 @@ export function Hero({ subjects }: { subjects: string[] }) {
         </motion.p>
         <p className="sr-only">Also in Manipur: {subjects.join(", ")}.</p>
 
-        {/* The instrument rail — search, index figures and the scroll cue
+        {/* The instrument rail: search, index figures and the scroll cue
             share one ruled band so the fold ends on a hard horizontal. */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}

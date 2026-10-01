@@ -68,7 +68,7 @@ const sections: LegalSection[] = [
   },
   {
     id: "what-this-is",
-    title: "What Discover Manipur is — and is not",
+    title: "What Discover Manipur is, and is not",
     body: (
       <>
         <p>
@@ -168,7 +168,7 @@ const sections: LegalSection[] = [
         </p>
         <p>
           Treat it as a starting point for your own research. Do not rely on it for anything where
-          being wrong would matter — permits, medical needs, weather windows or security.
+          being wrong would matter: permits, medical needs, weather windows or security.
         </p>
       </>
     ),
@@ -205,7 +205,7 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          You keep ownership of anything you submit — a review, a photograph, a host listing. By
+          You keep ownership of anything you submit: a review, a photograph, a host listing. By
           submitting it, you grant us a non-exclusive, worldwide, royalty-free licence to display it
           on the platform for the purpose of running the service.
         </p>
@@ -256,7 +256,7 @@ const sections: LegalSection[] = [
           below. Each was resized and converted to WebP for the web; nothing else was changed.
         </p>
         <p>
-          Cultural material — motifs, dance forms, textiles, rituals — belongs to the communities
+          Cultural material (motifs, dance forms, textiles, rituals) belongs to the communities
           that hold it. Nothing on this site should be read as a claim over any of it.
         </p>
       </>
@@ -299,7 +299,7 @@ const sections: LegalSection[] = [
         <p>
           To the fullest extent permitted by law, we are not liable for any loss, injury, cost or
           damage arising from your use of the site or from travel decisions you make on the basis of
-          it — including anything caused by inaccurate listings, AI-generated itineraries, or
+          it, including anything caused by inaccurate listings, AI-generated itineraries, or
           changes to permits, weather, road conditions or security.
         </p>
         <p>

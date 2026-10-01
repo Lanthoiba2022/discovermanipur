@@ -8,7 +8,7 @@ import { RotatingWordmark } from "./rotating-wordmark";
 const VIDEO_SRC = "/videos/ManipurHorizontalVideo.mp4";
 /**
  * Frame zero of `VIDEO_SRC`, exported at 1920×1080. Using a still cut from the
- * film itself — rather than a library photograph — is what makes the handover
+ * film itself, rather than a library photograph, is what makes the handover
  * from poster to playback invisible.
  */
 const POSTER_SRC = "/videos/manipur-hero-poster.jpg";
@@ -19,9 +19,9 @@ const POSTER_ALT =
 /**
  * The landing fold.
  *
- * Built to the national tourism board's institutional rhythm — a full-bleed
+ * Built to the national tourism board's institutional rhythm (a full-bleed
  * film, the place name floating over it, one question, one search field, and a
- * rail of subjects along the bottom edge — because that sequence is what makes
+ * rail of subjects along the bottom edge), because that sequence is what makes
  * a tourism site read as a government front door rather than a travel blog.
  * The voice underneath it is ours: an oldstyle wordmark instead of a geometric
  * sans, brass instead of saffron, and a film that asks permission before it
@@ -42,7 +42,7 @@ const POSTER_ALT =
  *
  * `overflow-hidden` is deliberately absent: the search field's suggestion
  * listbox drops out of the section's box, and clipping it here would cut the
- * list in half. `isolate z-10` keeps the whole fold — listbox included — above
+ * list in half. `isolate z-10` keeps the whole fold (listbox included) above
  * the bands that follow it without going anywhere near the header's `z-50`.
  */
 export function LandingHero() {
@@ -79,7 +79,7 @@ export function LandingHero() {
           A lily that waits all year to open.
         </p>
 
-        {/* The board's fold puts one short question above its search field —
+        {/* The board's fold puts one short question above its search field:
             the whole institutional trick is that the page asks first and
             offers a field second, rather than presenting a bare search box. */}
         <p className="mt-12 font-display text-[clamp(1.25rem,0.95rem+1.1vw,1.875rem)] font-normal leading-snug text-ivory-50">
@@ -96,7 +96,7 @@ export function LandingHero() {
                token resolves to near-black and the field all but vanishes
                against the footage, so the wrapper lends it a hairline there.
                The ring traces the input exactly and leaves the suggestion
-               listbox — which is absolutely positioned out of this box —
+               listbox, which is absolutely positioned out of this box,
                untouched. */
             className="mx-auto w-full max-w-2xl rounded-[var(--radius)] text-left dark:ring-1 dark:ring-ivory-50/25"
           />
@@ -106,7 +106,7 @@ export function LandingHero() {
 
       {/* Film credit, bottom-left of the fold.
           It sits ABOVE the category rail's top rule rather than inside the
-          rail band — the rule reads as the floor of the fold, and a credit
+          rail band: the rule reads as the floor of the fold, and a credit
           below it looked like part of the navigation. The rail is a fixed
           48px, so `bottom-14` clears it by 8px at every width. */}
       <FilmCredit

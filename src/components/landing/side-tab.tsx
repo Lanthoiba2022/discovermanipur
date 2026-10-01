@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 /**
  * The persistent planning tab, pinned to the right edge of the viewport.
  *
- * The national board pins two of these, one to each edge. Two is clutter — the
- * left one repeats what its header already offers — so this is the single
+ * The national board pins two of these, one to each edge. Two is clutter (the
+ * left one repeats what its header already offers), so this is the single
  * standing invitation on the page, and it goes to the planner.
  *
  * Deliberately not interactive beyond being a link, so it stays a Server

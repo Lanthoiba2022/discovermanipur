@@ -15,7 +15,7 @@
  *     the first failure bounds the lifetime.
  *
  * The log lives in .next/cache, outside the fetch cache the prebuild clears.
- * It holds URLs and timestamps only — never image bytes, which Google's terms
+ * It holds URLs and timestamps only, never image bytes, which Google's terms
  * do not let us store.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";

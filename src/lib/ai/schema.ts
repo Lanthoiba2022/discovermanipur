@@ -23,7 +23,7 @@ export const catalogueKinds = [
 export type CatalogueKind = (typeof catalogueKinds)[number];
 
 /**
- * The compact shape every catalogue tool returns. Never a whole record — just
+ * The compact shape every catalogue tool returns. Never a whole record, just
  * enough for the model to reason about and for the UI to render a linked card.
  */
 export interface CatalogueItem {
@@ -98,7 +98,7 @@ export const itinerarySchema = z.object({
   permitsAndSafety: z
     .array(z.string())
     .optional()
-    .describe("Permits, registration and safety reminders — always tell people to verify officially."),
+    .describe("Permits, registration and safety reminders. Always tell people to verify officially."),
 });
 
 export type ItineraryStop = z.infer<typeof itineraryStopSchema>;
@@ -126,7 +126,7 @@ export interface BookingQuoteLine {
 /**
  * What the `quoteBooking` tool returns. The client renders this as a card with
  * a "Save request" button that writes the request through the usual booking
- * store (no payment is taken online — the site books enquiries, not tickets).
+ * store (no payment is taken online: the site books enquiries, not tickets).
  */
 export interface BookingQuoteResult {
   kind: "booking-quote";

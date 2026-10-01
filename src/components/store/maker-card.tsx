@@ -46,8 +46,8 @@ export function MakerCard({ craft }: { craft: Craft }) {
           <span>
             Made to order
             {craft.leadTimeDays
-              ? ` — allow ${formatLeadTime(craft.leadTimeDays)} from the day you agree the commission.`
-              : " — agree the timeline with the maker."}
+              ? `. Allow ${formatLeadTime(craft.leadTimeDays)} from the day you agree the commission.`
+              : ". Agree the timeline with the maker."}
           </span>
         </p>
       )}

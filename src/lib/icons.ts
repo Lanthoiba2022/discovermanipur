@@ -1,5 +1,5 @@
 /**
- * Icon registry — the bridge between content and the component tree.
+ * Icon registry: the bridge between content and the component tree.
  *
  * Content lives in the database, so an icon choice has to travel as a string.
  * This maps those strings back to components. The registry is explicit rather

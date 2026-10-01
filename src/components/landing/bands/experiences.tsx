@@ -35,7 +35,7 @@ import {
  * After a full-bleed photograph the page needs to exhale, so this one is set
  * on the sand ground with the masthead centred and the cards built the other
  * way round from the destinations rail: photograph on top, copy below on a
- * white card. Same rhythm, opposite construction — which is what stops the
+ * white card. Same rhythm, opposite construction, which is what stops the
  * sequence reading as one component repeated with different nouns.
  */
 
@@ -140,7 +140,7 @@ export function ExperiencesBand({ experiences }: { experiences: Experience[] }) 
       align="center"
       eyebrow="Hosted by Manipuris"
       word="Experiences"
-      tail="you join rather than watch — a loom, a kitchen, a canoe at dawn."
+      tail="you join rather than watch: a loom, a kitchen, a canoe at dawn."
       ghost="ꯑ"
       action={<BandPill href="/experiences">All experiences</BandPill>}
     >

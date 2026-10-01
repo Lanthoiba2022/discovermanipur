@@ -7,13 +7,13 @@ import { KANGLA_CENTER, KANGLA_MAP_BOUNDS, kanglaPlaces, type KanglaPlace } from
 /**
  * Kangla through Google's Photorealistic 3D renderer (`Map3DElement`). Imphal
  * has no 3D building mesh yet, so what renders is Google's satellite imagery
- * draped over terrain — the UI says exactly that rather than promising a mesh.
+ * draped over terrain. The UI says exactly that rather than promising a mesh.
  *
  * This is a map of one place, not a world map that opens on Imphal:
  *
  * - The camera is fenced to the fort (see `BOUNDS` and `clampCenter`) and
  *   cannot climb high enough to see past it.
- * - It opens in SATELLITE mode, which is imagery only — no road labels, no
+ * - It opens in SATELLITE mode, which is imagery only: no road labels, no
  *   place pins, no business names. The Labels toggle switches to HYBRID.
  * - Gestures are GREEDY: scroll and trackpad pinch zoom the map directly
  *   instead of asking for a modifier key, because the map owns the viewport.
@@ -259,7 +259,7 @@ export default function KanglaGoogle3D({ apiKey, tilted, labels, selectedId, ove
           if (alive && !steady) fail("The 3D map is taking too long to load. Check your connection and that this browser supports WebGL, then retry.");
         }, READY_TIMEOUT_MS);
 
-        // Probe hooks for automated browser checks — no UI reads these.
+        // Probe hooks for automated browser checks. No UI reads these.
         (window as unknown as { kanglaMap?: Map3D }).kanglaMap = instance;
         const report = () => {
           if (!instance) return;

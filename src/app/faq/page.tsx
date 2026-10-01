@@ -10,11 +10,11 @@ import { FaqBrowser } from "./faq-browser";
 export const metadata: Metadata = {
   title: "Frequently asked questions",
   description:
-    "Permits and planning, getting to Manipur, homestays and booking, food, festivals and timing, accessibility and hosting — answered, and searchable.",
+    "Permits and planning, getting to Manipur, homestays and booking, food, festivals and timing, accessibility and hosting, answered and searchable.",
   openGraph: {
     title: "Manipur travel FAQ",
     description:
-      "Inner Line Permits, monsoon roads, what to eat first, festival timing and accessibility — in plain language.",
+      "Inner Line Permits, monsoon roads, what to eat first, festival timing and accessibility, in plain language.",
   },
 };
 
@@ -60,7 +60,7 @@ export default async function FaqPage() {
               <p>
                 Inner Line Permit categories and Protected Area rules for foreign nationals have
                 both changed by notification in recent years. Confirm what applies to you with the
-                Government of Manipur, Discover Manipur and — for non-Indian passports — the Ministry
+                Government of Manipur, Discover Manipur and (for non-Indian passports) the Ministry
                 of Home Affairs before you book travel.
               </p>
             </NoteBox>
@@ -69,7 +69,7 @@ export default async function FaqPage() {
               <h2 className="font-display text-xl">Still stuck?</h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 If the answer is not here, ask us directly. We would also like to know which
-                question you expected to find — it tells us what to write next.
+                question you expected to find; it tells us what to write next.
               </p>
               <Button asChild variant="primary" className="mt-6 w-full">
                 <Link href="/contact">Ask a question</Link>

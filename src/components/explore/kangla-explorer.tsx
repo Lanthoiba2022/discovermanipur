@@ -35,7 +35,7 @@ export function KanglaExplorer({ googleKey = "" }: { googleKey?: string }) {
   const [touched, setTouched] = useState(false);
   const reduce = useReducedMotion();
 
-  // Choosing a landmark — from a pin or the list — always brings the panel
+  // Choosing a landmark (from a pin or the list) always brings the panel
   // back; clearing one leaves the panel as it was.
   const choose = useCallback((id: string | null) => {
     setSelectedId(id);
@@ -47,7 +47,7 @@ export function KanglaExplorer({ googleKey = "" }: { googleKey?: string }) {
   const selected = index >= 0 ? kanglaPlaces[index] : null;
 
   // Three of the eight landmarks have recorded narration; the rest simply show
-  // no control. No browser fallback here — the summary on screen is site copy,
+  // no control. No browser fallback here: the summary on screen is site copy,
   // not a script, so a robot voice reading it would not match the recordings.
   const narration = useNarration(narrationFor(selectedId));
   const { stop: stopNarration } = narration;
@@ -72,7 +72,7 @@ export function KanglaExplorer({ googleKey = "" }: { googleKey?: string }) {
         <p className={styles.eyebrow}>Imphal · Manipur <span lang="mni-Mtei">ꯀꯪꯂꯥ</span></p>
         <h1>Kangla <em>in 3D.</em></h1>
       </div>
-      <p className={styles.lede}>The moated seat of Manipur’s kings, seen from the air. Eight places to land on — tap a pin or pick one from the list, and the camera takes you there.</p>
+      <p className={styles.lede}>The moated seat of Manipur’s kings, seen from the air. Eight places to land on: tap a pin or pick one from the list, and the camera takes you there.</p>
     </header>
 
     <section className={styles.stage} aria-label="Interactive Kangla 3D map" role="region" data-lenis-prevent>

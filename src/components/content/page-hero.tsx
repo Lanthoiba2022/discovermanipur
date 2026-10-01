@@ -8,13 +8,13 @@ import { cn } from "@/lib/utils";
  * Chapter mood for a page opener.
  *
  * `light` and `sand` are the two editorial grounds; `dark` and `crimson` are
- * full-bleed opening bands. The mood is the ONLY thing this switches — the
+ * full-bleed opening bands. The mood is the ONLY thing this switches: the
  * structure, the type ramp and the figure index are identical across all four,
  * so every listing route opens with the same hero pattern.
  */
 export type HeroTone = "light" | "sand" | "dark" | "crimson";
 
-/** A single figure in the hero's index — how many, where, from how much. */
+/** A single figure in the hero's index: how many, where, from how much. */
 export interface HeroFigure {
   /** The number or short value. Set in the display face. */
   value: string;
@@ -44,7 +44,7 @@ interface ToneStyle {
  *
  * The light tones also need the dark-theme fallback spelled out. The theme is
  * toggled by a `.dark` class on `<html>` and this stylesheet has no matching
- * `dark:` variant registered, so `[.dark_&]` is what actually reaches it —
+ * `dark:` variant registered, so `[.dark_&]` is what actually reaches it:
  * without it `brass-700` sits at ~3.3:1 on the near-black ground.
  */
 const TONES: Record<HeroTone, ToneStyle> = {
@@ -112,7 +112,7 @@ export function PageHero({
   className,
 }: {
   eyebrow: string;
-  /** The display line. Short reads best — the sentence finishes in `completion`. */
+  /** The display line. Short reads best: the sentence finishes in `completion`. */
   title: string;
   /** Italic accent line that completes the title's sentence. Part of the `h1`. */
   completion?: string;
@@ -137,7 +137,7 @@ export function PageHero({
    * The figure index, rendered in one of two places.
    *
    * With a photo it belongs in the text column, under the standfirst, laid out
-   * 2x2 — that column runs short against a 4:5 photo, and stacking the figures
+   * 2x2: that column runs short against a 4:5 photo, and stacking the figures
    * into the space fills it instead of leaving a hole and pushing the numbers
    * past the fold. Without a photo the standfirst already occupies the right
    * column, so the index keeps the full measure and runs 4-across.

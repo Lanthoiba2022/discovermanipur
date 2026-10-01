@@ -4,7 +4,7 @@
  *   npm run db:seed
  *
  * Idempotent: every table upserts on a natural key, so re-running reconciles
- * rather than duplicating. Connects as the database owner — this is a
+ * rather than duplicating. Connects as the database owner. This is a
  * server-side operator script and must never be imported by the app.
  */
 
@@ -107,7 +107,7 @@ async function upsert<TTable extends PgTable>(
         .onConflictDoUpdate({ target: conflict.map((key) => columns[key]) as never, set: set as never });
     }
   } catch (error) {
-    console.error(`  ${name}: FAILED — ${(error as Error).message}`);
+    console.error(`  ${name}: FAILED: ${(error as Error).message}`);
     throw error;
   }
   console.log(`  ${name}: ${rows.length} rows`);
@@ -326,19 +326,19 @@ async function main() {
   // Page blocks. Each key holds an array whose shape is that block's own; the
   // data layer casts it back to the interface the component expects.
   const sections: [string, string, string, unknown[]][] = [
-    ["about.themes", "About — programme themes", "The six themes the project is built around.", aboutThemes],
-    ["about.principles", "About — editorial principles", "How the writing decides what to claim.", aboutPrinciples],
-    ["host.why", "Host — why list here", "The pitch to a prospective host.", hostWhy],
-    ["host.we_handle", "Host — what we handle", "What Yening does on the host's behalf.", hostWeHandle],
-    ["host.steps", "Host — how it works", "Onboarding, in four steps.", hostSteps],
-    ["host.gallery", "Host — gallery strip", "Images under the host landing hero.", hostGallery],
-    ["contact.channels", "Contact — channels", "Where each kind of message goes.", contactChannels],
-    ["home.stats", "Home — counted facts", "The four figures under the statement.", homeStats],
-    ["home.marquee_words", "Home — marquee", "Scrolling word strip.", marqueeWords.map((w) => ({ word: w }))],
-    ["hero.subjects", "Hero — rotating subjects", "The line that cycles in the hero.", heroSubjects.map((s) => ({ text: s }))],
-    ["responsible.quick_asks", "Responsible travel — quick asks", "The short version, for anyone who reads nothing else.", responsibleQuickAsks],
-    ["pledge.items", "Responsible travel — visitor's pledge", "The commitment checklist.", pledgeItems.map((t) => ({ text: t }))],
-    ["home.statement", "Home — opening statement", "The paragraph under the hero.", [{ text: homeStatement }]],
+    ["about.themes", "About: programme themes", "The six themes the project is built around.", aboutThemes],
+    ["about.principles", "About: editorial principles", "How the writing decides what to claim.", aboutPrinciples],
+    ["host.why", "Host: why list here", "The pitch to a prospective host.", hostWhy],
+    ["host.we_handle", "Host: what we handle", "What Yening does on the host's behalf.", hostWeHandle],
+    ["host.steps", "Host: how it works", "Onboarding, in four steps.", hostSteps],
+    ["host.gallery", "Host: gallery strip", "Images under the host landing hero.", hostGallery],
+    ["contact.channels", "Contact: channels", "Where each kind of message goes.", contactChannels],
+    ["home.stats", "Home: counted facts", "The four figures under the statement.", homeStats],
+    ["home.marquee_words", "Home: marquee", "Scrolling word strip.", marqueeWords.map((w) => ({ word: w }))],
+    ["hero.subjects", "Hero: rotating subjects", "The line that cycles in the hero.", heroSubjects.map((s) => ({ text: s }))],
+    ["responsible.quick_asks", "Responsible travel: quick asks", "The short version, for anyone who reads nothing else.", responsibleQuickAsks],
+    ["pledge.items", "Responsible travel: visitor's pledge", "The commitment checklist.", pledgeItems.map((t) => ({ text: t }))],
+    ["home.statement", "Home: opening statement", "The paragraph under the hero.", [{ text: homeStatement }]],
   ];
 
   await upsert(
@@ -399,7 +399,7 @@ async function main() {
   /** Resolve a group id, aborting rather than orphaning rows if one is missing. */
   const groupOf = (key: string) => {
     const id = groupId.get(key);
-    if (!id) throw new Error(`faq_items: group ${key} failed to resolve — aborting rather than orphaning rows`);
+    if (!id) throw new Error(`faq_items: group ${key} failed to resolve, aborting rather than orphaning rows`);
     return id;
   };
 

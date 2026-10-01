@@ -44,7 +44,7 @@ export function Prose({
   );
 }
 
-/** Opening paragraph — larger, looser, set apart from the body copy. */
+/** Opening paragraph: larger, looser, set apart from the body copy. */
 export function Lede({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <p
@@ -80,7 +80,7 @@ export function PullQuote({
   );
 }
 
-/** A small, high-contrast aside — advisories, caveats, "check this yourself" notes. */
+/** A small, high-contrast aside: advisories, caveats, "check this yourself" notes. */
 export function NoteBox({
   title,
   children,

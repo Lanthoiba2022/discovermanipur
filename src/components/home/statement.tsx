@@ -19,11 +19,11 @@ function Word({
   progress: ReturnType<typeof useScroll>["scrollYProgress"];
 }) {
   // The unread state is a dimmed *colour*, not a low opacity. At 0.22 opacity
-  // the sentence sat around 1.6:1 against the ivory ground — unreadable if the
+  // the sentence sat around 1.6:1 against the ivory ground, unreadable if the
   // scroll link never fires. The floor here is `--ink-500` (#6b5f54), which
   // measures 5.85:1 on `--ivory-50`, so the whole sentence clears 4.5:1 at
   // every point in the sweep and the reveal is a warming, not a switching on.
-  // `--ink-400` was tried first and only makes 3.68:1 — large-text AA, but the
+  // `--ink-400` was tried first and only makes 3.68:1, large-text AA, but the
   // floor here is deliberately held to the small-text bar.
   const color = useTransform(progress, [start, end], ["var(--ink-500)", "var(--ink-900)"]);
   // The space has to live OUTSIDE the inline-block: a trailing space that is
@@ -46,7 +46,7 @@ function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
   // The server renders the real figure, so a client that never runs the
   // animation (no JS, reduced motion, observer never fires) still shows the
   // true number rather than a permanent zero. The zeroing happens in a layout
-  // effect — after hydration has matched, before the browser paints.
+  // effect, after hydration has matched, before the browser paints.
   const [shown, setShown] = useState(value);
   const [armed, setArmed] = useState(false);
 
@@ -72,7 +72,7 @@ function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
   }, [inView, reduce, armed, value]);
 
   // `tabular-nums` so the digits do not reflow the label under them while the
-  // count runs — the figure animates, the layout does not.
+  // count runs: the figure animates, the layout does not.
   return (
     <span
       ref={ref}

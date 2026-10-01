@@ -174,7 +174,7 @@ export function ContactForm() {
           <FieldError id="contact-message-error" message={errors.message.message} />
         ) : (
           <p id="contact-message-hint" className="mt-2 text-sm text-muted-foreground">
-            Twenty characters or more. Detail helps — dates, districts, mobility needs, dietary
+            Twenty characters or more. Detail helps: dates, districts, mobility needs, dietary
             needs.
           </p>
         )}
@@ -197,7 +197,7 @@ export function ContactForm() {
         <p aria-live="polite" className="text-sm text-muted-foreground">
           {sent
             ? "Done. You can send another if you missed something."
-            : "Not delivered to an inbox yet — see the note below."}
+            : "Not delivered to an inbox yet. See the note below."}
         </p>
       </div>
     </form>

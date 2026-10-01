@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
    Two browser preferences read as external stores rather than as effects.
 
    `useSyncExternalStore` is the right shape for both: it subscribes, it keeps
-   the value current, and — the part that matters here — its server snapshot is
+   the value current, and (the part that matters here) its server snapshot is
    what React uses for the hydration render, so the markup the server emitted
    and the markup the client first renders agree by construction. Reading these
    with `useState` + an effect would either flash or, done the obvious wrong
@@ -42,7 +42,7 @@ export interface HeroFilmProps {
   src: string;
   /** Still that paints the fold. Should be a frame of `src`, so nothing jumps. */
   poster: string;
-  /** Describes the still, not the film — it is the image a reader lands on. */
+  /** Describes the still, not the film; it is the image a reader lands on. */
   posterAlt: string;
 }
 
@@ -54,14 +54,14 @@ export interface HeroFilmProps {
  *
  * 1. **The poster carries the fold, not the video.** The mp4 is 4.9 MB; a
  *    reader on a hotel wifi would otherwise stare at a black box while it
- *    arrives. So the still is a real `next/image` — optimised, responsive,
- *    `preload` + eager + high priority, i.e. the LCP candidate — and the
+ *    arrives. So the still is a real `next/image` (optimised, responsive,
+ *    `preload` + eager + high priority, i.e. the LCP candidate), and the
  *    `<video>` is `preload="none"` so it cannot compete for that first
  *    round-trip. The video fades over the still only once it has a frame to
  *    show. Because the still IS frame zero of the film, the handover is
  *    invisible.
  *
- * 2. **Reduced motion means no autoplay.** Not "a shorter animation" — no
+ * 2. **Reduced motion means no autoplay.** Not "a shorter animation": no
  *    playback at all until asked. Those readers get the photograph and a play
  *    control, which is the catalogued guidance for decorative motion at this
  *    scale.
@@ -76,7 +76,7 @@ export interface HeroFilmProps {
  * server assumes, the `<video>` carries no `autoPlay` attribute at all, and
  * playback is started imperatively from an effect. So the server HTML and the
  * first client render are byte-identical on every machine, and only the
- * subsequent *behaviour* differs — the same rule `components/motion/reveal.tsx`
+ * subsequent *behaviour* differs, the same rule `components/motion/reveal.tsx`
  * documents, applied to a media element instead of a transform.
  */
 export function HeroFilm({ src, poster, posterAlt }: HeroFilmProps) {
@@ -97,7 +97,7 @@ export function HeroFilm({ src, poster, posterAlt }: HeroFilmProps) {
     serverTrue,
   );
 
-  /** True once a frame has actually been decoded — only then do we cross-fade. */
+  /** True once a frame has actually been decoded; only then do we cross-fade. */
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(false);
 
@@ -125,7 +125,7 @@ export function HeroFilm({ src, poster, posterAlt }: HeroFilmProps) {
     // render. `useSyncExternalStore` still holds the SERVER snapshot on the
     // hydration pass, so this effect's first run would otherwise see
     // `reduce === false` and fire off a 4.9 MB request for precisely the
-    // reader who asked for less motion — measured: one mp4 request before the
+    // reader who asked for less motion. Measured: one mp4 request before the
     // store corrected itself. The store values stay in the dependency list, so
     // a reader flipping either preference mid-visit still re-runs this.
     const reduced = reduce || window.matchMedia(REDUCE_QUERY).matches;

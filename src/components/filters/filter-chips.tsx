@@ -9,8 +9,8 @@ import { useFilterParams } from "./use-filter-params";
  * Single-select chip row. The selected chip is reflected in `?<name>=<value>`;
  * clicking the active chip (or "All") clears it.
  *
- * Chips are 44px tall with 8px between them — the row is the densest touch
- * target on a listing page — and the row wraps rather than scrolling, because
+ * Chips are 44px tall with 8px between them (the row is the densest touch
+ * target on a listing page), and the row wraps rather than scrolling, because
  * a district list in Manipuri runs long and must never be cut off.
  */
 export function FilterChips({

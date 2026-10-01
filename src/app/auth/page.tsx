@@ -42,7 +42,7 @@ export default async function AuthPage({
         <div className="grain absolute inset-0" aria-hidden="true" />
         <blockquote className="absolute inset-x-0 bottom-0 p-12 text-cream-50">
           <p className="font-display text-3xl leading-tight">
-            &ldquo;Manipur&rdquo; — <span className="font-mayek">ꯃꯅꯤꯄꯨꯔ</span>, the land of jewels.
+            &ldquo;Manipur&rdquo;: <span className="font-mayek">ꯃꯅꯤꯄꯨꯔ</span>, the land of jewels.
           </p>
           <footer className="mt-4 max-w-sm text-sm text-cream-50/80">
             The word we took our name from. Travel that leaves Manipur better looked after than it

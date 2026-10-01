@@ -7,14 +7,14 @@ import { cn } from "@/lib/utils";
  * Infinite decorative motion has three obligations. All three are settled
  * here, in CSS, with no client component:
  *
- *  1. PAUSE ON HOVER / FOCUS — `animation-play-state`, driven off the strip so
+ *  1. PAUSE ON HOVER / FOCUS: `animation-play-state`, driven off the strip so
  *     a pointer anywhere on the band and a tab stop inside it both stop it.
- *  2. PREFERS-REDUCED-MOTION — `animation: none`. The blanket rule in
+ *  2. PREFERS-REDUCED-MOTION: `animation: none`. The blanket rule in
  *     `globals.css` only collapses the *duration*, which snaps a `-50%`
  *     keyframe straight to its end state and leaves the strip parked on the
  *     duplicated, `aria-hidden` half. Killing the animation by name instead
  *     leaves the readable copy at rest where it belongs.
- *  3. STOP WHEN OFF-SCREEN — where scroll-driven animations exist the drift is
+ *  3. STOP WHEN OFF-SCREEN: where scroll-driven animations exist the drift is
  *     bound to `view()`, so its progress is a function of the strip's position
  *     in the viewport and it provably does not tick while the band is not on
  *     screen. `content-visibility: auto` covers the remaining browsers by
@@ -63,7 +63,7 @@ function Track({ words, ariaHidden }: { words: string[]; ariaHidden?: boolean })
       {words.map((word) => (
         <li key={word} className="flex items-center gap-10 md:gap-14">
           <span className="font-display text-xl text-ivory-50/90 md:text-2xl">{word}</span>
-          {/* Decorative tick only — brass-500 never carries text. */}
+          {/* Decorative tick only: brass-500 never carries text. */}
           <span aria-hidden className="size-1.5 rotate-45 bg-brass-500/80" />
         </li>
       ))}

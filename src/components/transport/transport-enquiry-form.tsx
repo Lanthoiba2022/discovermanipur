@@ -79,9 +79,9 @@ export function TransportEnquiryForm({ option }: { option: TransportOption }) {
   const estimate = option.pricePerDay ? option.pricePerDay * Math.max(0, days) : null;
 
   async function onSubmit(values: EnquiryValues) {
-    // No backend yet — nothing is sent or stored, and the toast says so.
+    // No backend yet: nothing is sent or stored, and the toast says so.
     await new Promise((resolve) => setTimeout(resolve, 500));
-    toast.success("Thanks — one more step", {
+    toast.success("Thanks, one more step", {
       description: `Online enquiries aren't connected yet, so this wasn't sent. To hire ${option.name} for ${values.days} day${values.days === 1 ? "" : "s"} from ${
         values.pickupDate
       } (pick-up at ${values.pickup}), please contact ${option.operator} directly.`,
@@ -254,7 +254,7 @@ export function TransportEnquiryForm({ option }: { option: TransportOption }) {
       </Button>
       <p className="text-center text-xs text-muted-foreground">
         Fuel, tolls and driver allowance vary by route, so ask the operator for a final quote.
-        Online enquiries are not connected yet — please contact {option.operator} directly.
+        Online enquiries are not connected yet. Please contact {option.operator} directly.
       </p>
     </form>
   );

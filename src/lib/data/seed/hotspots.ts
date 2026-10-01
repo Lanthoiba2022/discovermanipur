@@ -1,7 +1,7 @@
 import type { Hotspot } from "@/types";
 
 /**
- * Discover Manipur hotspot seed data — 50 places across all 16 districts of Manipur.
+ * Discover Manipur hotspot seed data: 50 places across all 16 districts of Manipur.
  * Facts (timings, fees, distances) reflect on-the-ground norms; always advise
  * travellers to re-confirm locally, as hill-district access changes with weather.
  */
@@ -35,7 +35,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 1,
     durationHours: 2.5,
     tips: [
-      "Hire one of the licensed guides at the western gate — the shrines make little sense without the Pakhangba story.",
+      "Hire one of the licensed guides at the western gate: the shrines make little sense without the Pakhangba story.",
       "Photography of Assam Rifles installations along the perimeter is still restricted; stick to the heritage zone.",
       "Combine with Ima Keithel and Shaheed Minar, all within a 2 km walk.",
     ],
@@ -54,9 +54,9 @@ export const hotspots: Hotspot[] = [
     meiteiName: "Ima Keithel",
     tagline: "The world's largest market run entirely by women",
     description:
-      "Roughly 4,000 Ima (mothers) trade from three purpose-built halls at the centre of Imphal, and no man may hold a stall. One block sells fresh vegetables, ngari (fermented fish), hawaijar and dried river fish; another sells handloom — phanek, innaphi, Moirang Phee bordered cloth; the third sells hardware, brass and toys. The noise, the stacked lotus stems and the rows of women in matching phanek make it the most photographed interior in the state.",
+      "Roughly 4,000 Ima (mothers) trade from three purpose-built halls at the centre of Imphal, and no man may hold a stall. One block sells fresh vegetables, ngari (fermented fish), hawaijar and dried river fish; another sells handloom (phanek, innaphi, Moirang Phee bordered cloth); the third sells hardware, brass and toys. The noise, the stacked lotus stems and the rows of women in matching phanek make it the most photographed interior in the state.",
     history:
-      "The market's roots lie in the Lallup-kaba forced-labour system, which sent men away to work and left trade to women. The Ima have twice been the engine of political revolt — the Nupi Lan (Women's Wars) of 1904 and 1939 both began here.",
+      "The market's roots lie in the Lallup-kaba forced-labour system, which sent men away to work and left trade to women. The Ima have twice been the engine of political revolt: the Nupi Lan (Women's Wars) of 1904 and 1939 both began here.",
     category: "market",
     district: "Imphal West",
     location: "Khwairamband Bazar, BT Road, Imphal",
@@ -75,7 +75,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 0.5,
     durationHours: 2,
     tips: [
-      "Ask before photographing a vendor — most agree warmly, a few do not.",
+      "Ask before photographing a vendor. Most agree warmly, a few do not.",
       "Bargaining is normal for cloth but considered rude for vegetables.",
       "Buy Moirang Phee and chak-hao (black rice) here; prices are far below the airport shops.",
     ],
@@ -94,7 +94,7 @@ export const hotspots: Hotspot[] = [
     meiteiName: "Loktak Pat",
     tagline: "The largest freshwater lake in Northeast India, carpeted in floating islands",
     description:
-      "Loktak covers about 287 sq km and is unlike any other lake in India because of its phumdis — buoyant mats of matted vegetation, soil and organic matter that drift across the surface. Seen from Sendra hillock the lake looks like a green honeycomb: thousands of ring-shaped athaphum fish enclosures built by the lake's fishing families. Sunrise over the phumdis, with mist lifting off the water and single-paddle canoes cutting through it, is the defining image of Manipur.",
+      "Loktak covers about 287 sq km and is unlike any other lake in India because of its phumdis: buoyant mats of matted vegetation, soil and organic matter that drift across the surface. Seen from Sendra hillock the lake looks like a green honeycomb: thousands of ring-shaped athaphum fish enclosures built by the lake's fishing families. Sunrise over the phumdis, with mist lifting off the water and single-paddle canoes cutting through it, is the defining image of Manipur.",
     history:
       "Loktak was designated a Ramsar site in 1990 and placed on the Montreux Record in 1993 as the Ithai barrage altered its hydrology. It sustains around 100,000 people directly through fishing, phumdi farming and reed harvesting.",
     category: "lake",
@@ -116,7 +116,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 48,
     durationHours: 5,
     tips: [
-      "Stay overnight at Sendra or a Thanga homestay — day-trippers always miss the sunrise, which is the point of coming.",
+      "Stay overnight at Sendra or a Thanga homestay: day-trippers always miss the sunrise, which is the point of coming.",
       "Agree the boat price and route (Sendra loop vs. Karang island) before boarding.",
       "Carry a windproof layer; the lake is 10 degrees colder than Imphal on winter mornings.",
     ],
@@ -158,7 +158,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 53,
     durationHours: 4,
     tips: [
-      "Take binoculars — the deer are usually 200–400 m out on the phumdi and the towers are the only vantage point.",
+      "Take binoculars: the deer are usually 200–400 m out on the phumdi and the towers are the only vantage point.",
       "Wear neutral colours and keep voices down; the animals spook easily.",
       "Combine with the INA Memorial at Moirang, 8 km away, in the same trip.",
     ],
@@ -177,7 +177,7 @@ export const hotspots: Hotspot[] = [
     meiteiName: "Shirui Kashong",
     tagline: "The only place on earth where the Shirui lily grows",
     description:
-      "At 2,835 m, Shirui Kashong rises above Shirui village in Ukhrul and is the sole habitat of Lilium mackliniae — the Shirui lily, Manipur's state flower, a pale pink bell that blooms only on this ridge for a few weeks each year. The trek climbs through oak and rhododendron into open grassland, and on a clear day the summit looks across the Tangkhul hills toward Myanmar.",
+      "At 2,835 m, Shirui Kashong rises above Shirui village in Ukhrul and is the sole habitat of Lilium mackliniae, the Shirui lily, Manipur's state flower, a pale pink bell that blooms only on this ridge for a few weeks each year. The trek climbs through oak and rhododendron into open grassland, and on a clear day the summit looks across the Tangkhul hills toward Myanmar.",
     history:
       "The lily was described in 1948 by botanist Frank Kingdon-Ward, who named it for his wife Jean Macklin. The Shirui Lily Festival has been held in Ukhrul each May since 2017; the plant is classed as endangered and collection is prohibited.",
     category: "hill",
@@ -198,14 +198,14 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 101,
     durationHours: 8,
     tips: [
-      "Do not pick or dig the lily — it is protected and the village enforces this.",
+      "Do not pick or dig the lily: it is protected and the village enforces this.",
       "Carry two litres of water per person; there is no source above the village.",
       "Hire a Shirui village guide; the upper grassland has no marked path and fogs over fast.",
     ],
     accessibility: {
       wheelchairAccessible: false,
       notes:
-        "This is a steep unpaved hill trek with loose rock, stream crossings and no steps or handrails — it is not accessible to wheelchair users or to visitors with significant mobility limits. The Shirui village viewpoint, reachable by vehicle, gives a partial view of the ridge without walking.",
+        "This is a steep unpaved hill trek with loose rock, stream crossings and no steps or handrails. It is not accessible to wheelchair users or to visitors with significant mobility limits. The Shirui village viewpoint, reachable by vehicle, gives a partial view of the ridge without walking.",
     },
     tags: ["trek", "shirui-lily", "ukhrul", "tangkhul", "peak", "endemic"],
     featured: true,
@@ -238,7 +238,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 110,
     durationHours: 30,
     tips: [
-      "Fires are banned after the 2020 burn — carry a gas stove, not firewood.",
+      "Fires are banned after the 2020 burn. Carry a gas stove, not firewood.",
       "Carry out every scrap of rubbish; the valley has no waste system.",
       "Book the rest house in advance in peak season or bring a tent; it fills up.",
     ],
@@ -278,7 +278,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 25,
     durationHours: 3,
     tips: [
-      "Buy directly from the potters' homes rather than the roadside stalls — the makers keep the margin.",
+      "Buy directly from the potters' homes rather than the roadside stalls: the makers keep the margin.",
       "Ask permission before entering the Panam Ningthou grove; some areas are restricted to the community.",
       "Pair with Nongmaijing Hill, 10 km back toward Imphal.",
     ],
@@ -317,7 +317,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 45,
     durationHours: 1.5,
     tips: [
-      "Visit on 14 April if you can — the flag anniversary is marked with a public ceremony.",
+      "Visit on 14 April if you can: the flag anniversary is marked with a public ceremony.",
       "The museum labels are in English and Manipuri; a guide is not necessary.",
       "Loktak's Sendra viewpoint is only 12 km further on.",
     ],
@@ -356,7 +356,7 @@ export const hotspots: Hotspot[] = [
     durationHours: 2,
     tips: [
       "Stay the night at the Sendra tourist home or a Thanga homestay to catch the sunrise.",
-      "The causeway is narrow — large vehicles should park at the base.",
+      "The causeway is narrow. Large vehicles should park at the base.",
       "Bring a telephoto lens; the athaphum rings compress beautifully.",
     ],
     accessibility: {
@@ -432,7 +432,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 2,
     durationHours: 1,
     tips: [
-      "Remove footwear at the hall and dress modestly — covered shoulders and knees.",
+      "Remove footwear at the hall and dress modestly: covered shoulders and knees.",
       "Photography inside the sanctum is not permitted.",
       "Visit during Raas Leela nights around Kartik Purnima for the classical dance.",
     ],
@@ -450,7 +450,7 @@ export const hotspots: Hotspot[] = [
     name: "Imphal War Cemetery",
     tagline: "1,600 Commonwealth graves under clipped lawn",
     description:
-      "Maintained by the Commonwealth War Graves Commission, this cemetery on Imphal's northern edge holds the graves of soldiers who died in the Battle of Imphal in 1944 — one of the turning points of the Second World War in Asia. The bronze plaques, terraced lawns and flowering borders make it the quietest, most ordered place in the city.",
+      "Maintained by the Commonwealth War Graves Commission, this cemetery on Imphal's northern edge holds the graves of soldiers who died in the Battle of Imphal in 1944, one of the turning points of the Second World War in Asia. The bronze plaques, terraced lawns and flowering borders make it the quietest, most ordered place in the city.",
     history:
       "Between March and July 1944 Japanese forces and the INA besieged Imphal; the Allied victory here and at Kohima was voted Britain's greatest battle in 2013.",
     category: "memorial",
@@ -506,7 +506,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 1.5,
     durationHours: 1.5,
     tips: [
-      "The Meitei Mayek manuscript case is easy to miss — it is on the upper floor.",
+      "The Meitei Mayek manuscript case is easy to miss: it is on the upper floor.",
       "Photography needs the counter-issued camera ticket.",
       "Allow extra time for the textile gallery if you plan to buy handloom later.",
     ],
@@ -542,7 +542,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 7,
     durationHours: 2.5,
     tips: [
-      "Go on a weekday — weekends are very crowded with school groups.",
+      "Go on a weekday: weekends are very crowded with school groups.",
       "The sangai enclosure is near the rear of the loop; walk anticlockwise to reach it first.",
       "Food stalls are limited; carry water.",
     ],
@@ -560,7 +560,7 @@ export const hotspots: Hotspot[] = [
     name: "Khonghampat Orchidarium",
     tagline: "Over a hundred orchid species, including Manipur's own",
     description:
-      "A 200-acre botanical reserve run by the state forest department on NH-2 north of Imphal, holding more than 110 orchid species — among them endemic and rare varieties such as Vanda coerulea and several Dendrobium. Glasshouses, shaded walkways and a small interpretation hall make it an easy, quiet half-morning.",
+      "A 200-acre botanical reserve run by the state forest department on NH-2 north of Imphal, holding more than 110 orchid species, among them endemic and rare varieties such as Vanda coerulea and several Dendrobium. Glasshouses, shaded walkways and a small interpretation hall make it an easy, quiet half-morning.",
     category: "park",
     district: "Imphal East",
     location: "Khonghampat, NH-2, 12 km north of Imphal",
@@ -578,7 +578,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 12,
     durationHours: 2,
     tips: [
-      "Come in the bloom season — outside April–May many houses are bare.",
+      "Come in the bloom season: outside April–May many houses are bare.",
       "Bring a macro lens or phone macro mode; the best flowers are small.",
       "The forest office can arrange a guided walk if asked at the gate.",
     ],
@@ -615,7 +615,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 27,
     durationHours: 3,
     tips: [
-      "Wear shoes with grip — the rock is algae-covered and genuinely slippery.",
+      "Wear shoes with grip: the rock is algae-covered and genuinely slippery.",
       "Do not swim at the base after heavy rain; the flow is stronger than it looks.",
       "In winter the falls reduce to a trickle; check before making the trip.",
     ],
@@ -689,7 +689,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 97,
     durationHours: 3,
     tips: [
-      "Carry a proper torch and a spare — phone lights are not enough.",
+      "Carry a proper torch and a spare: phone lights are not enough.",
       "Take a village guide; side passages are unlit and easy to lose.",
       "The rock is wet and slick year-round; wear grippy footwear.",
     ],
@@ -707,7 +707,7 @@ export const hotspots: Hotspot[] = [
     name: "Tharon Cave",
     tagline: "A 650-metre cave system with more than thirty mouths",
     description:
-      "Tharon, near Tamenglong town, is the most extensive explored cave in Manipur — roughly 650 m of mapped passages with over thirty entrances, chambers and a stream level. Archaeological work has linked finds here to the Hoabinhian culture of mainland Southeast Asia. It is a genuine caving trip rather than a walk-through attraction.",
+      "Tharon, near Tamenglong town, is the most extensive explored cave in Manipur: roughly 650 m of mapped passages with over thirty entrances, chambers and a stream level. Archaeological work has linked finds here to the Hoabinhian culture of mainland Southeast Asia. It is a genuine caving trip rather than a walk-through attraction.",
     category: "cave",
     district: "Tamenglong",
     location: "Tharon village, 27 km from Tamenglong town",
@@ -726,7 +726,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 177,
     durationHours: 5,
     tips: [
-      "A local guide is mandatory and sensible — the passage network is genuinely confusing.",
+      "A local guide is mandatory and sensible: the passage network is genuinely confusing.",
       "Wear a helmet if one is offered; ceilings are low in several sections.",
       "Never enter during or after heavy rain.",
     ],
@@ -762,7 +762,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 26,
     durationHours: 2.5,
     tips: [
-      "There are no shops or toilets at the dam — carry water and snacks.",
+      "There are no shops or toilets at the dam. Carry water and snacks.",
       "Leave before dusk; the return road is unlit and narrow.",
       "The paddy terraces are at their greenest in August and golden in late October.",
     ],
@@ -838,7 +838,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 36,
     durationHours: 1.5,
     tips: [
-      "The museum at the top has the original battle maps — ask for it to be opened if it looks shut.",
+      "The museum at the top has the original battle maps. Ask for it to be opened if it looks shut.",
       "Go early; the hilltop has no shade by midday.",
       "Waithou Lake is 12 km back toward Imphal.",
     ],
@@ -875,7 +875,7 @@ export const hotspots: Hotspot[] = [
     durationHours: 2,
     tips: [
       "Weekdays are far quieter than Sundays.",
-      "The upper pavilions have the best plains view — worth the climb.",
+      "The upper pavilions have the best plains view, worth the climb.",
       "Kakching Garden is the natural lunch stop on a Sugnu or Chandel run.",
     ],
     accessibility: {
@@ -911,7 +911,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 29,
     durationHours: 2,
     tips: [
-      "Dress modestly — this is an active pilgrimage site.",
+      "Dress modestly: this is an active pilgrimage site.",
       "The climb is short but steep; take water in summer.",
       "Andro village is 15 km north and makes a good pairing.",
     ],
@@ -949,7 +949,7 @@ export const hotspots: Hotspot[] = [
     tips: [
       "Check the current security advisory for Churachandpur district before travelling.",
       "Food options at the dam are minimal; eat in Churachandpur town.",
-      "The embankment walk is exposed — carry a hat.",
+      "The embankment walk is exposed. Carry a hat.",
     ],
     accessibility: {
       wheelchairAccessible: true,
@@ -965,7 +965,7 @@ export const hotspots: Hotspot[] = [
     name: "Tipaimukh",
     tagline: "Where the Barak and Tuivai rivers meet at the state's far southwest",
     description:
-      "Tipaimukh is the confluence of the Barak and Tuivai rivers at Manipur's southwestern corner, deep in Pherzawl district and best known nationally for the long-contested dam proposal. For the traveller it is a remote river gorge of forested slopes, Hmar villages and near-total quiet — one of the hardest places in the state to reach and one of the least visited.",
+      "Tipaimukh is the confluence of the Barak and Tuivai rivers at Manipur's southwestern corner, deep in Pherzawl district and best known nationally for the long-contested dam proposal. For the traveller it is a remote river gorge of forested slopes, Hmar villages and near-total quiet, one of the hardest places in the state to reach and one of the least visited.",
     category: "village",
     district: "Pherzawl",
     location: "Tipaimukh, Pherzawl district",
@@ -1002,7 +1002,7 @@ export const hotspots: Hotspot[] = [
     name: "Ngaloi Waterfall",
     tagline: "A cool forest cascade in the Churachandpur foothills",
     description:
-      "Ngaloi falls through mossy rock into a shallow pool in wooded foothills near Churachandpur, a short walk off the road. It is a local weekend spot rather than a developed attraction, which is exactly its appeal — a picnic, cold water and no crowds on weekdays.",
+      "Ngaloi falls through mossy rock into a shallow pool in wooded foothills near Churachandpur, a short walk off the road. It is a local weekend spot rather than a developed attraction, which is exactly its appeal: a picnic, cold water and no crowds on weekdays.",
     category: "waterfall",
     district: "Churachandpur",
     location: "Ngaloi village, Churachandpur district",
@@ -1020,7 +1020,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 50,
     durationHours: 3,
     tips: [
-      "Carry out your rubbish — there is no collection here.",
+      "Carry out your rubbish: there is no collection here.",
       "The rock ledges are slick; keep off the upper lip of the fall.",
       "Check district advisories before travelling to Churachandpur.",
     ],
@@ -1056,7 +1056,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 110,
     durationHours: 2,
     tips: [
-      "Carry a warm layer even in summer — Mao is 15 degrees cooler than Imphal at night.",
+      "Carry a warm layer even in summer: Mao is 15 degrees cooler than Imphal at night.",
       "Buy the local plums and passionfruit in season; they do not reach Imphal fresh.",
       "Inter-state checkposts here can be slow; carry photo ID.",
     ],
@@ -1130,7 +1130,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 55,
     durationHours: 10,
     tips: [
-      "Treat the summit as a shrine — alcohol, meat and loud behaviour are inappropriate.",
+      "Treat the summit as a shrine: alcohol, meat and loud behaviour are inappropriate.",
       "Carry all your water; there is no reliable source above the trailhead.",
       "Descend before dusk; the trail is unlit and easy to lose.",
     ],
@@ -1167,7 +1167,7 @@ export const hotspots: Hotspot[] = [
     durationHours: 6,
     tips: [
       "Ask in Ukhrul town for a village guide; the trail forks frequently.",
-      "The ridge is windy and exposed — carry a windproof layer.",
+      "The ridge is windy and exposed. Carry a windproof layer.",
       "Pair with Khangkhui Cave for a two-day Ukhrul trip.",
     ],
     accessibility: {
@@ -1184,7 +1184,7 @@ export const hotspots: Hotspot[] = [
     name: "Barak Waterfall",
     tagline: "Seven falls on the young Barak river",
     description:
-      "Near Tamenglong, the Barak river drops through a series of cascades — locally counted as seven — into rock pools ringed by dense forest. In full monsoon the noise carries far up the valley; in winter the pools clear to jade green and the site becomes a swimming and picnic place.",
+      "Near Tamenglong, the Barak river drops through a series of cascades (locally counted as seven) into rock pools ringed by dense forest. In full monsoon the noise carries far up the valley; in winter the pools clear to jade green and the site becomes a swimming and picnic place.",
     category: "waterfall",
     district: "Tamenglong",
     location: "Near Tamenglong town, Tamenglong district",
@@ -1202,7 +1202,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 155,
     durationHours: 5,
     tips: [
-      "Tamenglong's oranges are at their best in December — buy them on the way.",
+      "Tamenglong's oranges are at their best in December. Buy them on the way.",
       "Do not swim during or after heavy rain; the river rises fast.",
       "There is no phone signal at the falls; tell someone your plan.",
     ],
@@ -1274,7 +1274,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 170,
     durationHours: 24,
     tips: [
-      "Carry a proper sleeping bag — the meadow drops near freezing in December.",
+      "Carry a proper sleeping bag: the meadow drops near freezing in December.",
       "There is no water source on the meadow; carry what you need.",
       "Pack out all waste; there is no infrastructure here at all.",
     ],
@@ -1311,7 +1311,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 60,
     durationHours: 8,
     tips: [
-      "Access has been subject to restrictions in recent years — confirm current conditions before planning.",
+      "Access has been subject to restrictions in recent years. Confirm current conditions before planning.",
       "This is a sacred site; follow whatever protocols your guide sets.",
       "Carry all water and food for the day.",
     ],
@@ -1347,7 +1347,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 2,
     durationHours: 1.5,
     tips: [
-      "Phone ahead — hours shift and the museum sometimes closes for private research visits.",
+      "Phone ahead: hours shift and the museum sometimes closes for private research visits.",
       "Ask about the loom and weaving demonstrations if you plan to shop for handloom later.",
       "Pairs naturally with Andro, which Mutua Bahadur also developed.",
     ],
@@ -1366,7 +1366,7 @@ export const hotspots: Hotspot[] = [
     meiteiName: "Pumlen Pat",
     tagline: "A wide seasonal wetland east of Loktak",
     description:
-      "Pumlenpat is a broad shallow wetland between Kakching and Thoubal, filling and shrinking with the season. It is an important feeding ground for waterbirds and a working fishery, with reed beds and long horizons rather than the phumdi drama of Loktak — better for birders than for boat rides.",
+      "Pumlenpat is a broad shallow wetland between Kakching and Thoubal, filling and shrinking with the season. It is an important feeding ground for waterbirds and a working fishery, with reed beds and long horizons rather than the phumdi drama of Loktak. Better for birders than for boat rides.",
     category: "lake",
     district: "Kakching",
     location: "Between Sugnu and Thoubal, Kakching district",
@@ -1385,7 +1385,7 @@ export const hotspots: Hotspot[] = [
     durationHours: 2.5,
     tips: [
       "Bring binoculars and a scope if you have one; the birds are distant.",
-      "The bund roads flood in monsoon — go in the dry months.",
+      "The bund roads flood in monsoon. Go in the dry months.",
       "Ask fishing families before walking onto their sections.",
     ],
     accessibility: {
@@ -1403,7 +1403,7 @@ export const hotspots: Hotspot[] = [
     meiteiName: "Ikop Pat",
     tagline: "A calm valley lake with almost no visitors",
     description:
-      "Ikop Pat, in Thoubal district, is one of the valley's larger lakes and one of its least developed — reed fringes, fishing canoes, big skies and no tourist infrastructure. Come for an hour of quiet and for winter waterfowl, not for facilities.",
+      "Ikop Pat, in Thoubal district, is one of the valley's larger lakes and one of its least developed: reed fringes, fishing canoes, big skies and no tourist infrastructure. Come for an hour of quiet and for winter waterfowl, not for facilities.",
     category: "lake",
     district: "Thoubal",
     location: "Near Kakching Khunou, Thoubal district",
@@ -1421,7 +1421,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 38,
     durationHours: 2,
     tips: [
-      "There are no shops, toilets or shade — bring everything with you.",
+      "There are no shops, toilets or shade. Bring everything with you.",
       "Local fishermen will sometimes take visitors out; agree a price first.",
       "Pair with Waithou Lake and Khongjom on a single Thoubal loop.",
     ],
@@ -1439,7 +1439,7 @@ export const hotspots: Hotspot[] = [
     name: "Moreh",
     tagline: "India's doorway to Myanmar and the markets that come with it",
     description:
-      "Moreh sits on the Indo-Myanmar border at the end of NH-102, a genuinely mixed town of Meitei, Kuki, Tamil and Burmese traders. The border gate, the Namphalong market across in Myanmar and the goods stacked along the main road — textiles, electronics, spices, lacquerware — make it unlike anywhere else in Manipur.",
+      "Moreh sits on the Indo-Myanmar border at the end of NH-102, a genuinely mixed town of Meitei, Kuki, Tamil and Burmese traders. The border gate, the Namphalong market across in Myanmar and the goods stacked along the main road (textiles, electronics, spices, lacquerware) make it unlike anywhere else in Manipur.",
     category: "market",
     district: "Tengnoupal",
     location: "Moreh town, Tengnoupal district",
@@ -1457,7 +1457,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 110,
     durationHours: 4,
     tips: [
-      "Border-crossing rules change frequently — verify the current regime before you count on entering Myanmar.",
+      "Border-crossing rules change frequently. Verify the current regime before you count on entering Myanmar.",
       "Carry photo ID; there are multiple checkposts on NH-102.",
       "Travel in daylight only and check the security advisory before departing.",
     ],
@@ -1475,7 +1475,7 @@ export const hotspots: Hotspot[] = [
     name: "Ukhrul Town",
     tagline: "The Tangkhul hill capital and base for everything east",
     description:
-      "Ukhrul sits at about 1,600 m and is the district headquarters of the Tangkhul Naga country — cold mornings, pine slopes, tin-roofed houses stacked on ridges, and a lively main bazar selling hill produce, smoked meat and woven shawls. It is the base for Shirui, Khangkhui and Khayang and worth a day in its own right.",
+      "Ukhrul sits at about 1,600 m and is the district headquarters of the Tangkhul Naga country: cold mornings, pine slopes, tin-roofed houses stacked on ridges, and a lively main bazar selling hill produce, smoked meat and woven shawls. It is the base for Shirui, Khangkhui and Khayang and worth a day in its own right.",
     category: "village",
     district: "Ukhrul",
     location: "Ukhrul town, Ukhrul district",
@@ -1493,7 +1493,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 83,
     durationHours: 5,
     tips: [
-      "Book accommodation ahead during the Shirui Lily Festival in May — the town fills.",
+      "Book accommodation ahead during the Shirui Lily Festival in May: the town fills.",
       "Buy a Tangkhul shawl in the bazar rather than in Imphal; the range is better.",
       "Nights are genuinely cold from November to February; pack accordingly.",
     ],
@@ -1529,7 +1529,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 113,
     durationHours: 3,
     tips: [
-      "Buy lemons directly from growers — the price supports the village and the fruit keeps for weeks.",
+      "Buy lemons directly from growers: the price supports the village and the fruit keeps for weeks.",
       "Check festival dates with the Ukhrul district office before planning around them.",
       "The road is narrow; avoid travelling after dark.",
     ],
@@ -1548,7 +1548,7 @@ export const hotspots: Hotspot[] = [
     meiteiName: "Nongmaijing Ching",
     tagline: "The valley's eastern sacred hill, an hour's climb from Imphal",
     description:
-      "Nongmaijing rises east of Imphal and is one of the sacred hills of Meitei tradition, associated with the deity Nongpok Ningthou and Panthoibi. A path climbs through woodland to shrines and a clearing that looks back over the whole Imphal valley — the best short walk near the city.",
+      "Nongmaijing rises east of Imphal and is one of the sacred hills of Meitei tradition, associated with the deity Nongpok Ningthou and Panthoibi. A path climbs through woodland to shrines and a clearing that looks back over the whole Imphal valley, the best short walk near the city.",
     category: "hill",
     district: "Imphal East",
     location: "Nongmaijing, east of Imphal",
@@ -1566,7 +1566,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 18,
     durationHours: 3,
     tips: [
-      "The climb takes about an hour each way — carry water.",
+      "The climb takes about an hour each way. Carry water.",
       "This is a sacred hill; behave as you would at a temple.",
       "Continue to Andro village, 10 km further east, on the same trip.",
     ],
@@ -1638,14 +1638,14 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 90,
     durationHours: 5,
     tips: [
-      "Write to the forest office well ahead — turning up without a permit will not work.",
+      "Write to the forest office well ahead: turning up without a permit will not work.",
       "Leeches are a serious nuisance in the wet months; carry salt and gaiters.",
       "Check the current security advisory for the border districts before travelling.",
     ],
     accessibility: {
       wheelchairAccessible: false,
       notes:
-        "There are no visitor facilities, trails or viewing structures — movement is on forest tracks and game paths. Not accessible to wheelchair users; the highway passes the sanctuary boundary if you only want to see the forest.",
+        "There are no visitor facilities, trails or viewing structures: movement is on forest tracks and game paths. Not accessible to wheelchair users; the highway passes the sanctuary boundary if you only want to see the forest.",
     },
     tags: ["wildlife", "forest", "chandel", "gibbon", "permit-required"],
     featured: false,
@@ -1674,7 +1674,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 95,
     durationHours: 24,
     tips: [
-      "Book a homestay ahead through the village council — there are no walk-in options.",
+      "Book a homestay ahead through the village council: there are no walk-in options.",
       "Carry cash; there is no ATM and no card acceptance.",
       "Ask before photographing homes or village ceremonies.",
     ],
@@ -1712,7 +1712,7 @@ export const hotspots: Hotspot[] = [
     durationHours: 4,
     tips: [
       "Arrange a village guide in Kasom Khullen; the turning is unmarked.",
-      "Carry all supplies — there is nothing on the last 40 km.",
+      "Carry all supplies: there is nothing on the last 40 km.",
       "Travel in daylight and check road conditions after rain.",
     ],
     accessibility: {
@@ -1729,7 +1729,7 @@ export const hotspots: Hotspot[] = [
     name: "Noney Railway Bridge Viewpoint",
     tagline: "The world's tallest railway pier bridge, rising out of a jungle gorge",
     description:
-      "The Noney bridge on the Jiribam–Imphal railway carries the line across the Ijai river valley on piers up to 141 m tall — the tallest railway piers in the world. Seen from the highway above Noney, the concrete columns standing in dense green gorge are a genuinely startling sight and the best free viewpoint on the western route.",
+      "The Noney bridge on the Jiribam–Imphal railway carries the line across the Ijai river valley on piers up to 141 m tall, the tallest railway piers in the world. Seen from the highway above Noney, the concrete columns standing in dense green gorge are a genuinely startling sight and the best free viewpoint on the western route.",
     category: "heritage",
     district: "Noney",
     location: "Near Noney town, on the Imphal–Jiribam road",
@@ -1748,7 +1748,7 @@ export const hotspots: Hotspot[] = [
     durationHours: 1.5,
     tips: [
       "Photograph from the designated highway pull-offs; the construction corridor itself is restricted.",
-      "The road is winding — allow two hours each way from Imphal.",
+      "The road is winding. Allow two hours each way from Imphal.",
       "Combine with a Jiribam trip rather than making it a standalone journey.",
     ],
     accessibility: {
@@ -1802,7 +1802,7 @@ export const hotspots: Hotspot[] = [
     name: "Parbung",
     tagline: "A Hmar hill settlement in Manipur's far southwest",
     description:
-      "Parbung is one of the main settlements of Pherzawl district, a Hmar village spread across high ridges with long views into the Barak country. It is remote, hospitable and almost entirely off the tourist map — the kind of place where arriving means being introduced to the village council.",
+      "Parbung is one of the main settlements of Pherzawl district, a Hmar village spread across high ridges with long views into the Barak country. It is remote, hospitable and almost entirely off the tourist map: the kind of place where arriving means being introduced to the village council.",
     category: "village",
     district: "Pherzawl",
     location: "Parbung, Pherzawl district",
@@ -1839,7 +1839,7 @@ export const hotspots: Hotspot[] = [
     name: "Imphal Peace Museum, Red Hill",
     tagline: "The Japanese memorial at the battle's westernmost point",
     description:
-      "At Maibam Lotpa Ching, known as Red Hill, Japanese and Allied troops fought one of the closest actions of the 1944 battle — the furthest west the Japanese advance reached. The Peace Museum, opened in 2019 with Japanese support, holds photographs, letters and artefacts and frames the site as a place of reconciliation rather than triumph.",
+      "At Maibam Lotpa Ching, known as Red Hill, Japanese and Allied troops fought one of the closest actions of the 1944 battle (the furthest west the Japanese advance reached). The Peace Museum, opened in 2019 with Japanese support, holds photographs, letters and artefacts and frames the site as a place of reconciliation rather than triumph.",
     category: "museum",
     district: "Bishnupur",
     location: "Maibam Lotpa Ching (Red Hill), NH-150, Bishnupur district",
@@ -1876,7 +1876,7 @@ export const hotspots: Hotspot[] = [
     meiteiName: "Mapal Kangjeibung",
     tagline: "The oldest living polo ground in the world",
     description:
-      "Sagol Kangjei — the Manipuri game that became modern polo — has been played on this ground in central Imphal for centuries, making it the world's oldest polo field still in use. Matches on Manipuri ponies, with players in traditional dress, are held here during the Sangai Festival and the annual international polo tournament each November.",
+      "Sagol Kangjei (the Manipuri game that became modern polo) has been played on this ground in central Imphal for centuries, making it the world's oldest polo field still in use. Matches on Manipuri ponies, with players in traditional dress, are held here during the Sangai Festival and the annual international polo tournament each November.",
     history:
       "British tea planters and officers watched Sagol Kangjei in Manipur in the 1850s and carried the game outward; the modern sport's rules descend directly from what was played on this turf.",
     category: "heritage",
@@ -1896,7 +1896,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 1,
     durationHours: 1.5,
     tips: [
-      "Time your trip with the November tournament — it is the single best cultural spectacle in Imphal.",
+      "Time your trip with the November tournament: it is the single best cultural spectacle in Imphal.",
       "The Manipuri pony is an endangered breed; the Marjing complex at Heingang tells that story.",
       "The State Museum is next door and gives the polo history in more depth.",
     ],
@@ -1914,7 +1914,7 @@ export const hotspots: Hotspot[] = [
     name: "Langthabal Palace Ruins",
     tagline: "A wooded hill of stone bases and old pine, on the university road",
     description:
-      "Langthabal, on a low hill south of Imphal near Manipur University, holds the remains of the royal capital built by Maharaja Gambhir Singh in the 1820s — stone platforms, tank embankments, a small temple and old pine and jackfruit trees. It is a quiet, uncommercial half-hour of history on the road to Loktak.",
+      "Langthabal, on a low hill south of Imphal near Manipur University, holds the remains of the royal capital built by Maharaja Gambhir Singh in the 1820s: stone platforms, tank embankments, a small temple and old pine and jackfruit trees. It is a quiet, uncommercial half-hour of history on the road to Loktak.",
     history:
       "Gambhir Singh shifted the capital here after the Seven Years' Devastation (1819–1826), before the court returned to Kangla.",
     category: "heritage",
@@ -1934,7 +1934,7 @@ export const hotspots: Hotspot[] = [
     distanceFromImphalKm: 8,
     durationHours: 1,
     tips: [
-      "There are no signboards — read up before you go or take a guide from Imphal.",
+      "There are no signboards. Read up before you go or take a guide from Imphal.",
       "The site is unfenced and overgrown in places; wear closed shoes.",
       "Manipur University's campus next door is pleasant to walk.",
     ],
@@ -1952,7 +1952,7 @@ export const hotspots: Hotspot[] = [
     name: "Waroiching Hill",
     tagline: "Kakching's sunrise hill, above the southern paddy",
     description:
-      "Waroiching, also called Baruni Hill, rises above Kakching town and is climbed for sunrise over the southern valley. A shrine sits near the top and the ridge path is short enough to do before breakfast — one of the better-kept local secrets of the Kakching side.",
+      "Waroiching, also called Baruni Hill, rises above Kakching town and is climbed for sunrise over the southern valley. A shrine sits near the top and the ridge path is short enough to do before breakfast, one of the better-kept local secrets of the Kakching side.",
     category: "hill",
     district: "Kakching",
     location: "Waroiching, Kakching district",
@@ -2008,7 +2008,7 @@ export const hotspots: Hotspot[] = [
     tips: [
       "Never enter without a local guide and two independent light sources.",
       "Check the current advisory for Churachandpur district before planning.",
-      "Wear clothes you are willing to ruin — the floor is wet clay.",
+      "Wear clothes you are willing to ruin: the floor is wet clay.",
     ],
     accessibility: {
       wheelchairAccessible: false,

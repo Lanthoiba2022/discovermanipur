@@ -2,14 +2,14 @@
 
 /* Bind Tailwind's `dark:` variant to the CLASS next-themes sets, not to the
    OS preference. The provider runs `attribute="class"` with `enableSystem`
-   off, but Tailwind v4 defaults `dark:` to `prefers-color-scheme` — without
+   off, but Tailwind v4 defaults `dark:` to `prefers-color-scheme`. Without
    this line the tokens below flip on toggle while the `dark:*` utilities do
    not, leaving e.g. long-form prose dark-on-dark for anyone whose OS is set
    to light. */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================================
-   DISCOVER MANIPUR — Design Tokens
+   DISCOVER MANIPUR: Design Tokens
    "Woven, not painted."
 
    The palette is taken from the Manipuri handloom rather than
@@ -72,7 +72,7 @@
   --stone-500: #9c8b7a;
   --stone-700: #6d5f50;
 
-  /* Second warm ground. One ivory flattens a long page — this is the
+  /* Second warm ground. One ivory flattens a long page; this is the
      alternating band, the menu panel and the card rest. Ink on it is
      15.8:1, so everything that works on ivory works here. */
   --sand-100: #f3ece1;
@@ -121,7 +121,7 @@
   --primary-foreground: var(--ivory-50);
   /* Hover lightens within the hue. Tokenised because the two themes move in
      OPPOSITE directions: on ivory the crimson lifts toward ningthou-700, but
-     in dark mode primary is already a pale lily and must lift paler still —
+     in dark mode primary is already a pale lily and must lift paler still:
      a fixed hover colour puts dark text on a dark ground in one of the two. */
   --primary-hover: var(--ningthou-700);
   --secondary: var(--pine-600);
@@ -163,7 +163,7 @@
      motion read as one system rather than per-component taste:
        `--ease-flat`   long flat tail. Hovers, transforms, colour. 180-400ms.
        `--ease-spring` control point past 1.0, so it overshoots and settles.
-                       Entrances only — never on anything being read. */
+                       Entrances only, never on anything being read. */
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-flat: cubic-bezier(0.4, 0, 0.1, 1);
@@ -308,7 +308,7 @@
   --color-stone-700: var(--stone-700);
   --color-sand-100: var(--sand-100);
 
-  /* Legacy aliases — see the note in :root */
+  /* Legacy aliases: see the note in :root */
   --color-loktak-900: var(--loktak-900);
   --color-loktak-800: var(--loktak-800);
   --color-loktak-700: var(--loktak-700);
@@ -447,7 +447,7 @@
     font-feature-settings: "tnum";
   }
 
-  /* Lead paragraph — the one place body copy gets scale. */
+  /* Lead paragraph: the one place body copy gets scale. */
   .text-lead {
     font-size: clamp(1.125rem, 1.02rem + 0.44vw, 1.375rem);
     line-height: 1.58;
@@ -455,7 +455,7 @@
     max-inline-size: 58ch;
   }
 
-  /* Editorial aside — Newsreader italic at reading size. The one place the
+  /* Editorial aside: Newsreader italic at reading size. The one place the
      display face is allowed below `.text-title`, because an oldstyle italic
      reads naturally as a caption voice. */
   .text-aside {
@@ -508,7 +508,7 @@
     background: var(--ningthou-900);
     color: var(--ivory-50);
     --foreground: var(--ivory-50);
-    /* brass-500 lands at ~4.4:1 on this ground — one step up clears AA. */
+    /* brass-500 lands at ~4.4:1 on this ground; one step up clears AA. */
     --accent: var(--brass-400);
     --muted-foreground: #d5adb4;
     --border: #5c1020;
@@ -516,7 +516,7 @@
     --muted: #4a0d19;
   }
 
-  /* Phumdi — organic floating-island mask */
+  /* Phumdi: organic floating-island mask */
   .mask-phumdi {
     -webkit-mask-image: radial-gradient(ellipse 70% 62% at 50% 46%, #000 62%, transparent 100%);
     mask-image: radial-gradient(ellipse 70% 62% at 50% 46%, #000 62%, transparent 100%);
@@ -526,7 +526,7 @@
     border-radius: 58% 42% 47% 53% / 44% 51% 49% 56%;
   }
 
-  /* Handloom stripe — Manipuri phanek geometry. The structural
+  /* Handloom stripe: Manipuri phanek geometry. The structural
      motif: used as rules, dividers and section markers. */
   .weave-rule {
     background-image: repeating-linear-gradient(
@@ -586,7 +586,7 @@
     --hdr-fg-muted: color-mix(in oklab, var(--foreground) 80%, transparent);
     --hdr-hover: color-mix(in oklab, var(--foreground) 8%, transparent);
     /* The mark keeps the brand crimson while the wordmark takes the page
-       foreground — they are different colours on purpose. */
+       foreground. They are different colours on purpose. */
     --hdr-mark: var(--primary);
   }
 
@@ -599,7 +599,7 @@
     --hdr-mark: var(--ivory-50);
   }
 
-  /* Text scrims — gradients sized to the copy block rather than a flat
+  /* Text scrims: gradients sized to the copy block rather than a flat
      wash over the whole photo, so the landscape still reads.
      `scrim-copy` anchors the bottom band; `scrim-reading` darkens only the
      column the copy actually occupies. Both are needed: over a bright
@@ -657,7 +657,7 @@
     font-variation-settings: "opsz" 24;
   }
 
-  /* Eyebrow flanked by two short rules — the editorial tick that says
+  /* Eyebrow flanked by two short rules: the editorial tick that says
      "a new chapter starts here" without adding another type size. */
   .rule-flank {
     display: flex;
@@ -700,7 +700,7 @@
     font-variation-settings: "opsz" 24;
   }
 
-  /* Ghost mark — a huge, very low-contrast motif sitting behind a light band,
+  /* Ghost mark: a huge, very low-contrast motif sitting behind a light band,
      so the ivory never reads as empty paper. Always decorative. */
   .ghost-mark {
     position: absolute;
@@ -718,7 +718,7 @@
      is used as a MASK filled with `currentColor` rather than drawn as an
      image. That is what lets one file be crimson on the ivory header, ivory
      over the film and ivory again in the footer, with no second asset and no
-     filter hacks — the shape simply inherits whatever colour it is given. */
+     filter hacks. The shape simply inherits whatever colour it is given. */
   .logo-mark {
     -webkit-mask-image: url("/ManipurLOGO.webp");
     mask-image: url("/ManipurLOGO.webp");
@@ -732,7 +732,7 @@
   }
 
   /* ---------- Arch ----------
-     Rounded dome over square shoulders — the profile of a Manipuri gateway
+     Rounded dome over square shoulders: the profile of a Manipuri gateway
      arch. Used to mask feature imagery so the shape language is local
      rather than another generic rounded rectangle. */
   .mask-arch {

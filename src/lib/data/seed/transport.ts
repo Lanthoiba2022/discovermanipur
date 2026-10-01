@@ -1,7 +1,7 @@
 import type { TransportOption } from "@/types";
 
 /**
- * Discover Manipur transport seed data — 10 ways to move around Manipur.
+ * Discover Manipur transport seed data: 10 ways to move around Manipur.
  * Prices are indicative in INR and exclude state permit charges where applicable.
  */
 export const transportOptions: TransportOption[] = [
@@ -37,7 +37,7 @@ export const transportOptions: TransportOption[] = [
     mode: "cab",
     operator: "Discover Manipur Verified Cabs",
     description:
-      "A hatchback or sedan with driver for a full day in and around the valley — Kangla, the market, Andro, Waithou, Khongjom or a Loktak run. Charged as an eight-hour, eighty-kilometre package, with extras billed transparently by the hour and kilometre.",
+      "A hatchback or sedan with driver for a full day in and around the valley: Kangla, the market, Andro, Waithou, Khongjom or a Loktak run. Charged as an eight-hour, eighty-kilometre package, with extras billed transparently by the hour and kilometre.",
     seats: 4,
     pricePerDay: 2600,
     pricePerKm: 16,
@@ -54,7 +54,7 @@ export const transportOptions: TransportOption[] = [
       "English or Hindi speaking driver on request",
     ],
     images: [
-      { src: "/file-uploads/terraced-valley-dusk.webp", alt: "A terraced valley in the Manipur hills at dusk — the country a day cab covers on a valley circuit" },
+      { src: "/file-uploads/terraced-valley-dusk.webp", alt: "A terraced valley in the Manipur hills at dusk, the country a day cab covers on a valley circuit" },
       { src: "/file-uploads/taxi.jpg", alt: "Sedan available for valley sightseeing" },
     ],
     rating: 4.6,
@@ -67,7 +67,7 @@ export const transportOptions: TransportOption[] = [
     mode: "suv",
     operator: "Northeast Hill Transport",
     description:
-      "A Bolero or Scorpio with a driver who actually knows the hill roads — the right vehicle for Ukhrul, Tamenglong, Senapati, Churachandpur or the Moreh run. High clearance, good tyres and a driver who will tell you honestly whether a road is passable after rain.",
+      "A Bolero or Scorpio with a driver who actually knows the hill roads. The right vehicle for Ukhrul, Tamenglong, Senapati, Churachandpur or the Moreh run. High clearance, good tyres and a driver who will tell you honestly whether a road is passable after rain.",
     seats: 7,
     pricePerDay: 4200,
     pricePerKm: 24,
@@ -158,7 +158,7 @@ export const transportOptions: TransportOption[] = [
     mode: "cab",
     operator: "Imphal Drive Rentals",
     description:
-      "A self-drive hatchback for travellers confident on Indian roads who want the valley at their own pace. Valley routes only — the rental agreement excludes the hill districts, where road conditions and recovery make self-drive a poor idea.",
+      "A self-drive hatchback for travellers confident on Indian roads who want the valley at their own pace. Valley routes only: the rental agreement excludes the hill districts, where road conditions and recovery make self-drive a poor idea.",
     seats: 5,
     pricePerDay: 2400,
     routes: ["Imphal city", "Valley circuits within 100 km of Imphal", "Airport pick-up and return"],
@@ -182,7 +182,7 @@ export const transportOptions: TransportOption[] = [
     mode: "bike",
     operator: "Imphal Drive Rentals",
     description:
-      "A 110cc automatic scooter, the most practical way to get around Imphal and the near valley. Flat roads, short distances and no parking problems — but the city traffic is dense and helmets are non-negotiable.",
+      "A 110cc automatic scooter, the most practical way to get around Imphal and the near valley. Flat roads, short distances and no parking problems, but the city traffic is dense and helmets are non-negotiable.",
     seats: 2,
     pricePerDay: 600,
     routes: ["Imphal city", "Andro and Nongmaijing", "Bishnupur and Waithou day runs"],

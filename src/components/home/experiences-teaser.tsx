@@ -12,7 +12,7 @@ import { EmptyNote } from "./empty-note";
 import { Reveal } from "@/components/motion/reveal";
 
 /**
- * Second rung of the measure ladder (75rem) on the warm sand ground — the page
+ * Second rung of the measure ladder (75rem) on the warm sand ground: the page
  * has started to narrow, and the ground change stops two light bands running
  * into one another.
  */
@@ -63,7 +63,7 @@ export function ExperiencesTeaser({ experiences }: { experiences: Experience[] }
                 </div>
 
                 <div className="flex flex-1 flex-col p-6">
-                  {/* Titles carry the promise — never clamped, whatever it
+                  {/* Titles carry the promise: never clamped, whatever it
                       costs in card-height evenness. */}
                   <h3 className="font-display text-[1.375rem] leading-[1.18] tracking-[-0.008em]">
                     {exp.title}

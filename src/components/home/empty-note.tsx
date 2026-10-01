@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
  * The real empty state for a band whose getter came back with nothing.
  *
  * Every home band is required to render correctly against an empty dataset, so
- * this is not a spinner or a collapsed section — it keeps the band's rhythm,
+ * this is not a spinner or a collapsed section: it keeps the band's rhythm,
  * says plainly what is missing, and still offers the onward route.
  *
  * Colour is taken entirely from `currentColor` and the chapter tokens, so the

@@ -1,5 +1,5 @@
 /**
- * Catalogue loaders — the database half of the data layer.
+ * Catalogue loaders: the database half of the data layer.
  *
  * Each loader pulls a whole table, maps snake_case columns back to the domain
  * types, and falls back to the bundled seed module when the database is absent
@@ -124,7 +124,7 @@ function withPhotos<T extends { images: MediaImage[]; photoRefs?: PhotoRef[] }>(
     images: row.photoRefs.map((ref) => ({
       src: placePhotoUrl(ref.ref),
       // Places photos come with no description. Naming the place is the honest
-      // ceiling — inventing detail about a photo nobody has looked at would put
+      // ceiling. Inventing detail about a photo nobody has looked at would put
       // false information into a screen-reader's mouth.
       alt: `${name}, Manipur`,
       credit: creditLine(ref) ?? undefined,

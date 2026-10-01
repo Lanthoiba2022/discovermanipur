@@ -29,11 +29,11 @@ import { getCraftCategories, getCrafts } from "@/lib/data";
 export const metadata: Metadata = {
   title: "Buy from the maker",
   description:
-    "Handloom, Andro black pottery, bamboo and Manipuri silk, listed with the artisan's own contact details. Discover Manipur takes no payment and no commission — you buy direct from the maker.",
+    "Handloom, Andro black pottery, bamboo and Manipuri silk, listed with the artisan's own contact details. Discover Manipur takes no payment and no commission. You buy direct from the maker.",
   openGraph: {
     title: "Buy from the maker | Discover Manipur",
     description:
-      "Manipuri crafts listed with the artisan's own contact details. No cart, no commission — the enquiry and the money go straight to the maker.",
+      "Manipuri crafts listed with the artisan's own contact details. No cart, no commission: the enquiry and the money go straight to the maker.",
     images: [{ url: "/file-uploads/phanek.jpeg" }],
   },
 };
@@ -59,7 +59,7 @@ export default async function StorePage({
         eyebrow="Crafts · direct from the artisan"
         title="Buy from the maker"
         titleScale="display"
-        completion="no cart, no commission — the money and the relationship stay in Manipur."
+        completion="no cart, no commission; the money and the relationship stay in Manipur."
         lede={
           <>
             <p>
@@ -118,7 +118,7 @@ export default async function StorePage({
             description={
               all.length === 0
                 ? "We are working through the weaving and pottery clusters, adding makers who want to be found. In the meantime you can go and make the thing yourself."
-                : "Try clearing the district or widening the price range — the catalogue is small and deliberately so."
+                : "Try clearing the district or widening the price range. The catalogue is small and deliberately so."
             }
             action={
               <Button asChild variant="outline">

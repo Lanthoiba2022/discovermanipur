@@ -27,7 +27,7 @@ import { getEateries } from "@/lib/data";
 export const metadata: Metadata = {
   title: "Where to eat in Manipur",
   description:
-    "Eromba, singju, kangshoi and chak-hao kheer — a guide to Manipuri food and the kitchens, canteens and cafés worth planning a day around.",
+    "Eromba, singju, kangshoi and chak-hao kheer: a guide to Manipuri food and the kitchens, canteens and cafés worth planning a day around.",
 };
 
 export default async function EateriesPage({
@@ -50,10 +50,10 @@ export default async function EateriesPage({
         eyebrow="Boiled, fermented, herb-led"
         title="Eat"
         titleScale="display"
-        completion="Manipuri cooking barely uses oil — it leans on ngari, river fish and herbs picked that morning."
+        completion="Manipuri cooking barely uses oil; it leans on ngari, river fish and herbs picked that morning."
         image={{
           src: "/file-uploads/manipuri-food-leaf.webp",
-          alt: "Manipuri food served on a banana leaf — fried cakes and dried fish.",
+          alt: "Manipuri food served on a banana leaf: fried cakes and dried fish.",
         }}
         lede={
           <p>
@@ -112,7 +112,7 @@ export default async function EateriesPage({
             description={
               all.length === 0
                 ? "We are still visiting kitchens across the valley and the hills. The dishes above will still be waiting for you."
-                : "Try another cuisine, or turn off the reservations filter — many of the best places only take walk-ins."
+                : "Try another cuisine, or turn off the reservations filter. Many of the best places only take walk-ins."
             }
             action={
               <Button asChild variant="outline">

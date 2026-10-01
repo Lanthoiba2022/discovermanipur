@@ -42,8 +42,8 @@ const sections: LegalSection[] = [
         <h3>Keyboard</h3>
         <ul>
           <li>
-            Every interactive control — links, buttons, filters, accordions, dialogs, selects and
-            form fields — is reachable and operable with a keyboard alone.
+            Every interactive control (links, buttons, filters, accordions, dialogs, selects and
+            form fields) is reachable and operable with a keyboard alone.
           </li>
           <li>
             A visible focus ring is drawn on every focusable element, with a two-pixel outline and
@@ -61,7 +61,7 @@ const sections: LegalSection[] = [
         <h3>Structure and screen readers</h3>
         <ul>
           <li>
-            Semantic landmarks throughout — a single <code>header</code>, <code>main</code>,{" "}
+            Semantic landmarks throughout: a single <code>header</code>, <code>main</code>,{" "}
             <code>nav</code> and <code>footer</code> per page.
           </li>
           <li>One <code>h1</code> per page and a heading order that does not skip levels.</li>
@@ -198,7 +198,7 @@ const sections: LegalSection[] = [
         <p>
           The site is designed to work with recent versions of Chrome, Edge, Firefox and Safari on
           desktop and mobile, used with or without assistive technology. It should also work with
-          your browser&apos;s own accessibility features — zoom, reader mode, custom stylesheets and
+          your browser&apos;s own accessibility features: zoom, reader mode, custom stylesheets and
           increased text size.
         </p>
         <p>
@@ -214,7 +214,7 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          If you hit a barrier anywhere on this site, we want to hear about it — including
+          If you hit a barrier anywhere on this site, we want to hear about it, including
           small things. Accessibility reports are triaged ahead of feature work.
         </p>
         <ul>
@@ -245,7 +245,7 @@ const sections: LegalSection[] = [
         </ul>
         <p>
           The maintainers are volunteers. We aim to acknowledge reports within five working days
-          and to tell you what we intend to do about it — including if the honest answer is that we
+          and to tell you what we intend to do about it, including if the honest answer is that we
           cannot fix it soon.
         </p>
       </>
@@ -256,7 +256,7 @@ const sections: LegalSection[] = [
     title: "If we do not get it right",
     body: (
       <p>
-        If you are not satisfied with our response, reply and say so — it escalates to all the
+        If you are not satisfied with our response, reply and say so; it escalates to all the
         maintainers rather than one person. As a non-commercial community project we are not subject to a
         formal enforcement procedure, but we take reports seriously and we will tell you honestly
         what we can and cannot do.

@@ -10,8 +10,8 @@ const getServerSnapshot = () => false;
  * True only after hydration, false on the server and during the first client
  * render.
  *
- * Use this to gate anything whose value differs between server and client —
- * `useReducedMotion()`, the resolved theme, `window`-derived state — so the
+ * Use this to gate anything whose value differs between server and client
+ * (`useReducedMotion()`, the resolved theme, `window`-derived state), so the
  * first client render still matches the server's HTML.
  *
  * Preferred over the `useState(false)` + `useEffect(() => setMounted(true))`

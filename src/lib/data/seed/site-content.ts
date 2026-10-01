@@ -57,16 +57,16 @@ export interface QuickAsk {
   detail: string;
 }
 
-/** Home — the opening statement. */
+/** Home: the opening statement. */
 export const homeStatement =
-  "Manipur sits in a bowl of blue hills on India's eastern edge. The valley floods into a lake, the lake grows islands, the islands carry forest, and the forest hides a deer that lives nowhere else on earth. Everything here is layered — and every layer is still lived in.";
+  "Manipur sits in a bowl of blue hills on India's eastern edge. The valley floods into a lake, the lake grows islands, the islands carry forest, and the forest hides a deer that lives nowhere else on earth. Everything here is layered, and every layer is still lived in.";
 
-/** About — the six programme themes. */
+/** About: the six programme themes. */
 export const aboutThemes: NamedIconCard[] = [
   {
     icon: "Smartphone",
     name: "Smart & Digital Tourism",
-    body: "One place to find a stay, a route, a meal and a guide — instead of five WhatsApp groups and a search engine that has never heard of your village.",
+    body: "One place to find a stay, a route, a meal and a guide, instead of five WhatsApp groups and a search engine that has never heard of your village.",
   },
   {
     icon: "Landmark",
@@ -95,7 +95,7 @@ export const aboutThemes: NamedIconCard[] = [
   },
 ];
 
-/** About — editorial principles. */
+/** About: editorial principles. */
 export const aboutPrinciples: Principle[] = [
   {
     title: "Say what we know",
@@ -115,7 +115,7 @@ export const aboutPrinciples: Principle[] = [
   },
 ];
 
-/** Host landing — why list here. */
+/** Host landing: why list here. */
 export const hostWhy: IconCard[] = [
   {
     icon: "BadgeCheck",
@@ -134,7 +134,7 @@ export const hostWhy: IconCard[] = [
   },
 ];
 
-/** Host landing — what the platform does, and what is still planned. */
+/** Host landing: what the platform does, and what is still planned. */
 export const hostWeHandle: IconCard[] = [
   {
     icon: "Camera",
@@ -158,7 +158,7 @@ export const hostWeHandle: IconCard[] = [
   },
 ];
 
-/** Host landing — gallery strip. */
+/** Host landing: gallery strip. */
 export const hostGallery: ImageItem[] = [
   {
     src: "/file-uploads/h111.avif",
@@ -171,12 +171,12 @@ export const hostGallery: ImageItem[] = [
   { src: "/file-uploads/h112.avif", alt: "Timber loft bedroom with woven mats and a shuttered window" },
 ];
 
-/** Host landing — how it works, in four steps. */
+/** Host landing: how it works, in four steps. */
 export const hostSteps: IconCard[] = [
   {
     icon: "ClipboardList",
     title: "Tell us what you have",
-    body: "Fifteen minutes, four short steps. A room, a kitchen table, a loom, a route you have walked since childhood — that is enough to start. Sign in, fill it in, and our admins review it. Your draft is saved in this browser as you go.",
+    body: "Fifteen minutes, four short steps. A room, a kitchen table, a loom, a route you have walked since childhood: that is enough to start. Sign in, fill it in, and our admins review it. Your draft is saved in this browser as you go.",
   },
   {
     icon: "Handshake",
@@ -195,7 +195,7 @@ export const hostSteps: IconCard[] = [
   },
 ];
 
-/** Host landing — questions hosts actually ask. */
+/** Host landing: questions hosts actually ask. */
 export const hostFaqs: QaItem[] = [
   {
     q: "Do I need a registered guest house or a licence?",
@@ -231,7 +231,7 @@ export const hostFaqs: QaItem[] = [
   },
 ];
 
-/** Contact — where each kind of message goes. */
+/** Contact: where each kind of message goes. */
 export const contactChannels: Channel[] = [
   {
     icon: "Megaphone",
@@ -259,7 +259,7 @@ export const contactChannels: Channel[] = [
   },
 ];
 
-/** Home — the four counted facts. */
+/** Home: the four counted facts. */
 export const homeStats: Stat[] = [
   {
     value: 287,
@@ -271,7 +271,7 @@ export const homeStats: Stat[] = [
     value: 1,
     suffix: "",
     label: "Floating national park",
-    note: "Keibul Lamjao is the world's only floating national park — and the last wild home of the sangai.",
+    note: "Keibul Lamjao is the world's only floating national park, and the last wild home of the sangai.",
   },
   {
     value: 5000,
@@ -287,7 +287,7 @@ export const homeStats: Stat[] = [
   },
 ];
 
-/** Home — scrolling word strip. */
+/** Home: scrolling word strip. */
 export const marqueeWords: string[] = [
   "Loktak",
   "Sangai",
@@ -313,7 +313,7 @@ export const marqueeWords: string[] = [
   "Thang-ta",
 ];
 
-/** Hero — rotating subject line. */
+/** Hero: rotating subject line. */
 export const heroSubjects: string[] = [
   "the sangai's last forest",
   "a market run by 5,000 women",
@@ -321,9 +321,9 @@ export const heroSubjects: string[] = [
   "a lake you can walk on",
 ];
 
-/** Responsible travel — the short version. */
+/** Responsible travel: the short version. */
 export const responsibleQuickAsks: QuickAsk[] = [
-  { label: "Ask before you photograph", detail: "People, homes, rituals and children — every time." },
+  { label: "Ask before you photograph", detail: "People, homes, rituals and children. Every time." },
   { label: "Carry your plastic out", detail: "Bottles, wrappers, wet wipes. There is no collection on the ridge." },
   { label: "Buy from the maker", detail: "The weaver's own price, paid in full, beats any showroom discount." },
   { label: "Keep your distance", detail: "Inside Keibul Lamjao, stay on the marked routes and use a lens, not your feet." },
@@ -331,9 +331,9 @@ export const responsibleQuickAsks: QuickAsk[] = [
   { label: "Check before you go", detail: "Permits, road status and advisories change. Verify with official sources." },
 ];
 
-/** Responsible travel — the visitor's pledge. */
+/** Responsible travel: the visitor's pledge. */
 export const pledgeItems: string[] = [
-  "I will ask before photographing a person, a home or a ritual — and accept no as an answer.",
+  "I will ask before photographing a person, a home or a ritual, and accept no as an answer.",
   "I will carry my plastic back out with me, including on trek routes and boat trips.",
   "I will buy handloom, pottery and bamboo work from the person who made it, at their price.",
   "I will keep my distance from wildlife and stay on marked paths inside protected areas.",

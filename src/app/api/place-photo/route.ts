@@ -21,7 +21,7 @@
  * validated path segments come from the request.
  *
  * The caller MUST render the attribution that ships alongside each ref in
- * `photo_refs[].attribution`. That is a licence condition, not a courtesy —
+ * `photo_refs[].attribution`. That is a licence condition, not a courtesy;
  * see `PlacePhoto` in src/components for the component that does it.
  *
  * Without a key the route 404s, which makes `<Image>` fall back to whatever the
@@ -51,7 +51,7 @@ export const runtime = "nodejs";
  * points at is served with `max-age=86400`. PHOTO_URI_TTL sits under that with
  * margin, and REDIRECT_MAX_AGE is short enough that a CDN copy plus the server
  * copy together stay inside it. `scripts/probe-place-photo-ttl.mjs` measures the
- * real lifetime — raise PHOTO_URI_TTL only once it shows URLs outliving it.
+ * real lifetime. Raise PHOTO_URI_TTL only once it shows URLs outliving it.
  *
  * Note `prebuild` clears the data cache, so every deploy re-resolves each
  * photo on first view.
@@ -59,7 +59,7 @@ export const runtime = "nodejs";
 const PHOTO_URI_TTL = 12 * 60 * 60;
 const REDIRECT_MAX_AGE = 60 * 60;
 
-/** `places/<id>/photos/<id>` — anything else is a caller bug or a probe. */
+/** `places/<id>/photos/<id>`; anything else is a caller bug or a probe. */
 const REF = /^places\/[A-Za-z0-9_-]{1,256}\/photos\/[A-Za-z0-9_-]{1,1024}$/;
 
 /** Requested widths round up to one of these; see the abuse note above. */
@@ -102,7 +102,7 @@ export async function GET(request: Request) {
 
   const key = (process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_API_KEY)?.trim();
   if (!key) {
-    // Not an error state — a dev machine without the key should still render.
+    // Not an error state: a dev machine without the key should still render.
     return plain("Place photos unconfigured", 404);
   }
 

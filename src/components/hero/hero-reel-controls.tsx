@@ -9,8 +9,8 @@ import { HERO_SLIDES } from "./hero-slides";
 /**
  * Caption, frame index and transport for the fold's reel.
  *
- * An auto-rotating region needs a visible, permanent way to stop it — a
- * timer-only carousel is a catalogued anti-pattern — so the pause control is
+ * An auto-rotating region needs a visible, permanent way to stop it (a
+ * timer-only carousel is a catalogued anti-pattern), so the pause control is
  * a real button with `aria-pressed`, not a hover affordance.
  *
  * The caption is also the credit line: naming the place is what makes the fold
@@ -49,7 +49,7 @@ export function HeroReelControls({
         className,
       )}
     >
-      {/* Announced only when the reel is not advancing on its own — a live
+      {/* Announced only when the reel is not advancing on its own: a live
           region that fires every six seconds is noise, not information. */}
       <p
         aria-live={autoplaying ? "off" : "polite"}

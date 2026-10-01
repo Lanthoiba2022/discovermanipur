@@ -92,7 +92,7 @@ export function BookingQuoteCard({ quote, className }: { quote: BookingQuoteResu
     if (!saved) return;
     const filename = `booking-request-${quote.refId}-${quote.startDate}.txt`;
     const text = [
-      "Discover Manipur — booking request",
+      "Discover Manipur: booking request",
       "----------------------------------",
       `Item: ${quote.refTitle}`,
       `Type: ${kindLabel[quote.quoteKind]}`,

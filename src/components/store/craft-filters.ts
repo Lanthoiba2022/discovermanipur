@@ -101,7 +101,7 @@ export function craftDistrictOptions(values: readonly string[]): FilterOption[] 
   return [...new Set(values)].sort().map((value) => ({ value, label: value }));
 }
 
-/** "Made to order · ready in about 2 weeks" — human, never a countdown. */
+/** "Made to order · ready in about 2 weeks": human, never a countdown. */
 export function formatLeadTime(days: number) {
   if (days < 7) return `${days} ${days === 1 ? "day" : "days"}`;
   const weeks = Math.round(days / 7);

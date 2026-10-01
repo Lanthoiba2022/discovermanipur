@@ -28,7 +28,7 @@ export default async function AdminApplicationsPage() {
         Applications queue
       </h2>
       <p className="mb-6 mt-2 max-w-2xl text-sm text-muted-foreground">
-        Approve only once the address and any permit or hygiene certificate check out — photos are
+        Approve only once the address and any permit or hygiene certificate check out. Photos are
         not uploaded with applications yet, so ask the applicant for them. Approving gives a
         traveller account the host role. A rejection needs a reason: the applicant sees it on their
         application page.

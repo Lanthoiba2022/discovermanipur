@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { BandHeader } from "./band";
 
 /**
- * The site's signature scroll chapter — and the ONLY pinned section on the page.
+ * The site's signature scroll chapter, and the ONLY pinned section on the page.
  *
  * Scroll-driven storytelling is catalogued as high accessibility risk and is
  * explicitly not recommended on mobile, so this is built to the most
@@ -23,7 +23,7 @@ import { BandHeader } from "./band";
  *   `useReducedMotion()` here to be null during SSR, because the decision never
  *   reaches React.
  * - Every layer's full text is in the DOM, in order, in one copy, at all times.
- *   With scroll effects disabled — reduced motion, a narrow screen, or no JS —
+ *   With scroll effects disabled (reduced motion, a narrow screen, or no JS),
  *   the chapter degrades to four stacked articles that read top to bottom and
  *   lose nothing but the layering.
  *
@@ -52,7 +52,7 @@ const LAYERS: Layer[] = [
     eyebrow: "Water",
     mayek: "ꯏꯁꯤꯡ",
     title: "Loktak, the lake with a floor that moves",
-    body: "Rafts of matted vegetation — phumdi — drift across 287 km² of fresh water, cut into rings by fishermen. People live on them. Whole huts, whole mornings, afloat.",
+    body: "Rafts of matted vegetation (phumdi) drift across 287 km² of fresh water, cut into rings by fishermen. People live on them. Whole huts, whole mornings, afloat.",
     image: "/file-uploads/loktakComplete.png",
     alt: "Loktak Lake from the air at dawn, its circular and square phumdi fish pens forming a green honeycomb across still water.",
     href: "/hotspots",
@@ -76,9 +76,9 @@ const LAYERS: Layer[] = [
     eyebrow: "Heritage",
     mayek: "ꯀꯪꯂꯥ",
     title: "Kangla, where the kings kept the river",
-    body: "The old seat of Manipur's rulers sits on the Imphal river bank — white kanglasha guarding the gate, a coronation ground, moats and shrines still tended.",
+    body: "The old seat of Manipur's rulers sits on the Imphal river bank: white kanglasha guarding the gate, a coronation ground, moats and shrines still tended.",
     image: "/file-uploads/kangla-kanglasha.webp",
-    alt: "The white kanglasha — dragon-lion guardians — standing on the brick forecourt inside Kangla Fort, Imphal.",
+    alt: "The white kanglasha (dragon-lion guardians) standing on the brick forecourt inside Kangla Fort, Imphal.",
     href: "/explore/kangla",
     cta: "Kangla in 3D",
   },
@@ -88,7 +88,7 @@ const LAYERS: Layer[] = [
     eyebrow: "Weave",
     mayek: "ꯐꯤ",
     title: "The loom in every courtyard",
-    body: "Manipur weaves at home. Phanek, innaphi, moirangphee — patterns that say where a woman is from, made on a loin loom under the house eaves.",
+    body: "Manipur weaves at home. Phanek, innaphi, moirangphee: patterns that say where a woman is from, made on a loin loom under the house eaves.",
     image: "/file-uploads/phanek.jpeg",
     alt: "Folded Manipuri handloom cloth in crimson, saffron, magenta and green, each piece showing its woven temple-spire border.",
     href: "/experiences",
@@ -108,13 +108,13 @@ export function LayersNarrative() {
           eyebrow="The long read"
           word="Manipur, in four layers."
           completion="Water, hills, heritage, and a loom under every eave."
-          standfirst="One state, read the way it is actually built — from the lake floor up through the ridges to the thread. Four chapters; keep scrolling and they stack."
+          standfirst="One state, read the way it is actually built, from the lake floor up through the ridges to the thread. Four chapters; keep scrolling and they stack."
           className="mb-0 border-b-0 pb-0 md:mb-0 md:pb-0"
         />
       </div>
 
       {/* Four sticky siblings in one parent. The browser pins each in turn and
-          the next slides over it — the whole effect, with no script. */}
+          the next slides over it: the whole effect, with no script. */}
       <div className="relative">
         {LAYERS.map((layer, i) => (
           <article

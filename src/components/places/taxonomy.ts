@@ -1,6 +1,6 @@
 import type { District, GeoPoint, Hotspot, HotspotCategory, Season } from "@/types";
 
-/** Imphal city centre — every "distance from Imphal" is measured from here. */
+/** Imphal city centre. Every "distance from Imphal" is measured from here. */
 export const IMPHAL: GeoPoint = { lat: 24.817, lng: 93.9368 };
 
 export const CATEGORY_LABELS: Record<HotspotCategory, string> = {

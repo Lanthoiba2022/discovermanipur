@@ -29,7 +29,7 @@ export interface AuthState {
 }
 
 export interface DemoAccount extends Profile {
-  /** Development only. Never a real credential store — see the banner on /auth. */
+  /** Development only. Never a real credential store. See the banner on /auth. */
   password: string;
 }
 
@@ -101,7 +101,7 @@ export function notifyOtherTabs() {
   try {
     channel?.postMessage("changed");
   } catch {
-    // A closed channel — nothing to tell.
+    // A closed channel: nothing to tell.
   }
 }
 

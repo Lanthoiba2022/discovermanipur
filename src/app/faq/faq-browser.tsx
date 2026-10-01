@@ -55,7 +55,7 @@ export function FaqBrowser({ groups }: { groups: FaqGroup[] }) {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search questions — permits, food, monsoon, wheelchair…"
+            placeholder="Search questions: permits, food, monsoon, wheelchair…"
             className="h-12 pl-11 pr-11"
             autoComplete="off"
           />
@@ -94,8 +94,8 @@ export function FaqBrowser({ groups }: { groups: FaqGroup[] }) {
         <div className="rounded-[var(--radius-lg)] border border-dashed border-border-strong px-6 py-16 text-center">
           <p className="font-display text-2xl">Nothing matches “{query.trim()}”.</p>
           <p className="mx-auto mt-3 max-w-[46ch] leading-relaxed text-muted-foreground">
-            Try a broader word — <em>permit</em>, <em>monsoon</em>, <em>homestay</em>, <em>vegan</em>{" "}
-            — or clear the filter. If the answer genuinely is not here, the contact form is the
+            Try a broader word (<em>permit</em>, <em>monsoon</em>, <em>homestay</em>, <em>vegan</em>)
+            or clear the filter. If the answer genuinely is not here, the contact form is the
             place to ask.
           </p>
           <button

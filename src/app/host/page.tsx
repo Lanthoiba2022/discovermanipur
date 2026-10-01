@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 export const metadata: Metadata = {
   title: "Become a host",
   description:
-    "Share a room, a kitchen, a loom or a route you have walked all your life. Discover Manipur brings travellers to Manipuri families, cooks, guides and weavers — you set the price and the rules.",
+    "Share a room, a kitchen, a loom or a route you have walked all your life. Discover Manipur brings travellers to Manipuri families, cooks, guides and weavers. You set the price and the rules.",
 };
 
 export default async function HostLandingPage() {
@@ -46,7 +46,7 @@ export default async function HostLandingPage() {
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
               A spare room around the courtyard. A kitchen that turns out eromba and singju every
               evening. A loom in the back shed. A ridge you have walked since you were nine. Travellers
-              come to Manipur for exactly these — and Discover Manipur puts them in front of the families,
+              come to Manipur for exactly these, and Discover Manipur puts them in front of the families,
               cooks, guides and weavers who have them.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -136,7 +136,7 @@ export default async function HostLandingPage() {
       <Section
         eyebrow="Earnings"
         title="What could a month look like?"
-        description="Move the sliders to your own price and your own availability. This is an honest estimate, not a promise — demand in Manipur is seasonal and your costs are your own."
+        description="Move the sliders to your own price and your own availability. This is an honest estimate, not a promise. Demand in Manipur is seasonal and your costs are your own."
         className="bg-surface-sunken"
       >
         <EarningsEstimator />

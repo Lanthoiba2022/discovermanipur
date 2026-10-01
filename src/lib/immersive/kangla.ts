@@ -52,7 +52,7 @@ export const kanglaMapUrl = "https://www.google.com/maps/search/?api=1&query=Kan
 export const kanglaSources = [
   { title: "Poly Haven · CC0 scanned materials", href: "https://polyhaven.com/license", note: "Brick, plaster and ground surfaces; HDRI used for lighting, not as a photograph of Kangla." },
   { title: "Kangla Sha · CC0 photograph of the museum replica", href: "https://commons.wikimedia.org/wiki/Category:Statues_of_Kanglasha", note: "The sculpture in the guardians scene is reconstructed from this photograph by image-to-3D and then repaired by hand. CC0, so the derived model is unencumbered." },
-  { title: "OpenStreetMap · Kangla Palace and its features", href: "https://www.openstreetmap.org/way/120515792", note: "Every coordinate on the site map — the enclosure, the moats, the building footprints and each landmark pin — is taken from OSM, not estimated. ODbL." },
+  { title: "OpenStreetMap · Kangla Palace and its features", href: "https://www.openstreetmap.org/way/120515792", note: "Every coordinate on the site map (the enclosure, the moats, the building footprints and each landmark pin) is taken from OSM, not estimated. ODbL." },
   { title: "Esri World Imagery", href: "https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9", note: "Satellite basemap under the site map. Real imagery runs to zoom 18 over Imphal; closer views are the z18 tile enlarged." },
   { title: "Google Maps · Kangla Fort", href: kanglaMapUrl, note: "Cross-check for the site layout and a link out for visitors; no map imagery is copied into the models." },
   { title: "Kangla conservation plan · 2003", href: "https://architexturez.net/doc/az-cf-21173", note: "Historic site context. This predates later reconstructions." },

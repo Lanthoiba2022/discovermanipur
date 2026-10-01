@@ -6,7 +6,7 @@ import { QuoteCarousel } from "./quote-carousel";
 
 /**
  * Third rung of the ladder (62.5rem). A quote wants a short line, so the column
- * narrows again here — and keeps narrowing to the closing call to action.
+ * narrows again here, and keeps narrowing to the closing call to action.
  */
 export function TestimonialsSection({ testimonials }: { testimonials: Testimonial[] }) {
   return (

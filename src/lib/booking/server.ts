@@ -2,7 +2,7 @@
  * Server-side booking logic: listing lookup, pricing and row mapping for
  * `public.bookings`. Called by the Server Actions in `./actions`.
  *
- * Not a `"use server"` module on purpose — every export of one is a public
+ * Not a `"use server"` module on purpose: every export of one is a public
  * endpoint, and these take a database handle and trusted arguments.
  */
 

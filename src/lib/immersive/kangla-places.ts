@@ -4,7 +4,7 @@ import type { LandmarkId } from "./kangla";
  * The places inside Kangla, with real coordinates.
  *
  * Every coordinate here comes from OpenStreetMap, checked against Esri World
- * Imagery at zoom 17–19 — not estimated from a photograph. `source` records
+ * Imagery at zoom 17–19, not estimated from a photograph. `source` records
  * which OSM feature each one came from so a wrong pin can be traced and fixed.
  *
  * A place with `model` set has a detailed reconstruction behind it and opens
@@ -17,7 +17,7 @@ export interface KanglaPlace {
   meiteiName?: string;
   /** Drives the pin colour and the grouping label. */
   kind: "guardian" | "temple" | "gate" | "hall" | "museum" | "water";
-  /** [longitude, latitude] — GeoJSON order, as MapLibre expects. */
+  /** [longitude, latitude]: GeoJSON order, as MapLibre expects. */
   coord: [number, number];
   summary: string;
   /** Set when a photo-referenced 3D model exists for this place. */
@@ -35,7 +35,7 @@ export const KANGLA_CENTER: [number, number] = [93.94202, 24.80894];
  * The only ground the 3D map lets a visitor reach: roughly 1.4 x 1.6 km, the
  * moated enclosure plus the city edge that frames it. The camera is clamped to
  * this box, and `scripts/fetch-kangla-buildings.py` pulls its OpenStreetMap
- * footprints from exactly these numbers — change one and re-run the other.
+ * footprints from exactly these numbers. Change one and re-run the other.
  */
 export const KANGLA_MAP_BOUNDS: [[number, number], [number, number]] = [
   [93.9355, 24.8008],
@@ -56,7 +56,7 @@ export const kanglaPlaces: KanglaPlace[] = [
     kind: "guardian",
     coord: [93.94265, 24.80751],
     summary:
-      "The paired white guardians — a dragon-lion with a single swept-back horn, a beaded collar and an open jaw — standing before the coronation hall. They are the most recognised image of Manipur.",
+      "The paired white guardians (a dragon-lion with a single swept-back horn, a beaded collar and an open jaw) standing before the coronation hall. They are the most recognised image of Manipur.",
     model: "guardians",
     image: "/file-uploads/kangla-kanglasha.webp",
     source: "OSM node, tourism=artwork “Kangla Dragon” (the northern of the pair)",
@@ -96,7 +96,7 @@ export const kanglaPlaces: KanglaPlace[] = [
       "The public entrance from Imphal, on the western moat. A tall central arch between blue timber facades, balconies either side and crossed finials on the roof.",
     model: "western-gate",
     image: "/file-uploads/112.jpg",
-    source: "OSM building, historic=city_gate — the westernmost gate structure",
+    source: "OSM building, historic=city_gate (the westernmost gate structure)",
     view: { zoom: 18.3, pitch: 62, bearing: 75 },
   },
   {
@@ -105,7 +105,7 @@ export const kanglaPlaces: KanglaPlace[] = [
     kind: "museum",
     coord: [93.94152, 24.80346],
     summary:
-      "Near the southern end of the enclosure. A replica Kangla Sha stands outside it — the sculpture most visitors photograph up close, since the colossal pair sit behind a rail.",
+      "Near the southern end of the enclosure. A replica Kangla Sha stands outside it, the sculpture most visitors photograph up close, since the colossal pair sit behind a rail.",
     source: "OSM node, tourism=museum",
     view: { zoom: 18, pitch: 55, bearing: -10 },
   },
@@ -135,7 +135,7 @@ export const kanglaPlaces: KanglaPlace[] = [
     kind: "water",
     coord: [93.9397, 24.80554],
     summary:
-      "Kangla is a moated island. The outer moat runs the western and southern edges, the Imphal river curls around the east, and a rectangular inner moat encloses the citadel — all visible from the air.",
+      "Kangla is a moated island. The outer moat runs the western and southern edges, the Imphal river curls around the east, and a rectangular inner moat encloses the citadel, all visible from the air.",
     source: "OSM water polygons inside the fort boundary (7 features)",
     view: { zoom: 16.2, pitch: 58, bearing: -22 },
   },

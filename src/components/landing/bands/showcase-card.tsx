@@ -12,7 +12,7 @@ import type { MediaImage } from "@/types";
 /**
  * The parts every showcase card in the landing rails is built from.
  *
- * The listing cards elsewhere in the site are a denser register — filters,
+ * The listing cards elsewhere in the site are a denser register: filters,
  * prices, availability, four lines of meta. A landing rail is a shop window:
  * one photograph, one name, one reason to click. So these primitives are
  * deliberately thin, and each band composes its own card on top of them
@@ -25,7 +25,7 @@ import type { MediaImage } from "@/types";
  *  - A category is always an icon AND a word, never a colour on its own.
  */
 
-/** Rail item geometry — one card is always partly visible past the fold. */
+/** Rail item geometry: one card is always partly visible past the fold. */
 export const RAIL_ITEM = "group w-[78vw] shrink-0 snap-start sm:w-[21rem] lg:w-[22.5rem]";
 
 /** The `sizes` that matches `RAIL_ITEM`. */
@@ -91,7 +91,7 @@ export function CardMedia({
 }
 
 /**
- * A category or attribute chip. Always an icon plus its word — colour alone
+ * A category or attribute chip. Always an icon plus its word; colour alone
  * never carries the meaning.
  */
 export function CardChip({
@@ -177,8 +177,8 @@ export function BandPill({
 /**
  * What a band shows when its query comes back empty.
  *
- * Every one of these getters can legitimately return nothing — an unconfigured
- * database, a filter that matches no published row — and a band that assumes
+ * Every one of these getters can legitimately return nothing (an unconfigured
+ * database, a filter that matches no published row), and a band that assumes
  * `rows[0]` takes the whole page down with it. So the empty state is a real
  * piece of the design with a real way onward, not a console warning.
  */

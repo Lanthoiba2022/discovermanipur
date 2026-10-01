@@ -41,7 +41,7 @@ const CATEGORY: Record<HotspotCategory, { label: string; Icon: LucideIcon }> = {
   park: { label: "Park", Icon: TreePine },
 };
 
-/** Hours read as human text — 2.5 is "2 hr 30 min", not "2.5 hours". */
+/** Hours read as human text: 2.5 is "2 hr 30 min", not "2.5 hours". */
 function readableHours(hours: number) {
   const whole = Math.floor(hours);
   const minutes = Math.round((hours - whole) * 60);
@@ -52,8 +52,8 @@ function readableHours(hours: number) {
 /**
  * One quieter place on the rail.
  *
- * The photograph is masked to the Manipuri gateway arch — the shape the site
- * uses for places — and sits on a white card rather than carrying the copy
+ * The photograph is masked to the Manipuri gateway arch (the shape the site
+ * uses for places) and sits on a white card rather than carrying the copy
  * itself, which is what separates this band from the destinations rail above:
  * those are postcards, these are entries in a gazetteer.
  *
@@ -89,7 +89,7 @@ export function LesserKnownCard({ hotspot }: { hotspot: Hotspot }) {
         <div className="flex flex-1 flex-col gap-2.5 px-2 pt-5 pb-2">
           {/* The chip sits BELOW the arch, not on it: `.mask-arch` clips with
               `overflow: hidden` and its dome eats the top corners, which took
-              a bite out of every category label. It reads better here anyway —
+              a bite out of every category label. It reads better here anyway:
               on a light card the chip needs no scrim to stay legible. */}
           <p className="eyebrow flex min-h-5 items-center gap-2 text-brass-700">
             <Icon aria-hidden className="size-3.5 shrink-0" />

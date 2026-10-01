@@ -1,5 +1,5 @@
 /**
- * Content layer — editorial copy, served from the database.
+ * Content layer: editorial copy, served from the database.
  *
  * Same contract as `./index.ts`: call sites import from here and never reach
  * for the seed modules directly. Every getter tries the database first and falls
@@ -47,7 +47,7 @@ import {
 /* ------------------------------------------------------------------ helper -- */
 
 /**
- * Run a read, returning its result — or `null` if the database is unavailable
+ * Run a read, returning its result, or `null` if the database is unavailable
  * or errors. Wrapped in React's `cache` at each call site so one
  * render hits the network once per key, not once per component.
  *
@@ -69,7 +69,7 @@ async function fromDb<T>(run: (db: Db) => Promise<T>, label: string): Promise<T 
 
 /**
  * Page blocks are stored one row per key, payload as a jsonb array. The shape
- * differs per key, so the cast happens here — at the single boundary where the
+ * differs per key, so the cast happens here, at the single boundary where the
  * key and its expected type are both known.
  */
 const sectionPayload = cache(async (key: string): Promise<unknown[] | null> => {
@@ -222,7 +222,7 @@ export async function getImmersiveStops(scene = "kangla-fort"): Promise<Immersiv
   if (!rows || rows.length === 0) return kanglaStops;
 
   return rows.map((r) => ({
-    // Narration audio lives in the local `kanglaStops` table, not in the database —
+    // Narration audio lives in the local `kanglaStops` table, not in the database:
     // the row below has no `narration` column, so spreading the matching local
     // stop first is what keeps the voice tracks when the DB is seeded. Every
     // field the row does carry then overrides it.

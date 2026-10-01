@@ -72,7 +72,7 @@ const sections: LegalSection[] = [
             community Discord
           </a>{" "}
           or open an issue on GitHub. Please do not post personal details in a public channel or
-          issue — say what you need and a maintainer will contact you privately.
+          issue. Say what you need and a maintainer will contact you privately.
         </p>
       </>
     ),
@@ -97,7 +97,7 @@ const sections: LegalSection[] = [
           </li>
           <li>
             <strong>Contact form:</strong> your name, email address, enquiry type, subject and
-            message. At the moment the form checks these on the server and then discards them —
+            message. At the moment the form checks these on the server and then discards them:
             nothing is stored and nothing is forwarded to an inbox, because no mail provider is
             connected to it yet.
           </li>
@@ -116,9 +116,9 @@ const sections: LegalSection[] = [
           </li>
           <li>
             <strong>Host applications:</strong> the draft is saved in your browser as you fill it
-            in. When you submit it (you must be signed in), the details you entered — including
-            your name, phone number, the place you would host and what you offer — are stored
-            with your account and reviewed by our admins. Photos you pick stay on your device and
+            in. When you submit it (you must be signed in), the details you entered are stored
+            with your account and reviewed by our admins. They include your name, phone number,
+            the place you would host and what you offer. Photos you pick stay on your device and
             are not uploaded.
           </li>
         </ul>
@@ -209,7 +209,7 @@ const sections: LegalSection[] = [
             Your messages will be sent to a third-party model provider (Google Gemini, or Anthropic
             as a fallback) to generate the response.
           </li>
-          <li>Do not put anything sensitive into the planner — treat it as a public message.</li>
+          <li>Do not put anything sensitive into the planner. Treat it as a public message.</li>
           <li>
             Generated itineraries are suggestions. They can be wrong about timings, prices, opening
             hours and access, and they must never be used as a substitute for checking permits,
@@ -233,7 +233,7 @@ const sections: LegalSection[] = [
           <li>a session cookie that keeps you signed in, if you have an account;</li>
           <li>your light or dark theme preference;</li>
           <li>
-            your host application draft, and — while you are signed out — any bookings, saved trip
+            your host application draft, and (while you are signed out) any bookings, saved trip
             plans and saved places, kept in your browser&apos;s local storage.
           </li>
         </ul>
@@ -332,7 +332,7 @@ const sections: LegalSection[] = [
         </p>
         <p>
           You can correct your name, phone number and profile photo yourself on your account&apos;s
-          profile page. For anything else — a copy of your data, or deleting your account — ask the
+          profile page. For anything else (a copy of your data, or deleting your account), ask the
           maintainers on{" "}
           <a href={DISCORD_URL} rel="noreferrer noopener" target="_blank">
             Discord
@@ -342,8 +342,8 @@ const sections: LegalSection[] = [
             GitHub issue
           </a>
           , without posting personal details publicly. The maintainers are volunteers; we aim to
-          respond within 30 days. We will ask you to confirm your identity — usually by writing from
-          the email address on the account — before acting on a request, so that nobody can use
+          respond within 30 days. We will ask you to confirm your identity (usually by writing from
+          the email address on the account) before acting on a request, so that nobody can use
           this route to access someone else&apos;s data.
         </p>
       </>
@@ -398,7 +398,7 @@ export default function PrivacyPage() {
     <>
       <PageHero
         eyebrow={`Privacy · Last updated ${LAST_UPDATED}`}
-        title="What we collect, and — mostly — what we don't."
+        title="What we collect, and (mostly) what we don't."
         lede="A short notice for a community project. We would rather describe exactly what this site does than borrow a policy written for a company we are not."
       >
         <NoteBox title="Plain summary" className="my-0 max-w-[60ch]">

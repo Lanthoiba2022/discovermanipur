@@ -11,8 +11,8 @@ const DWELL_MS = 5600;
 /**
  * The fold's carousel state.
  *
- * The track runs one way — left to right, each frame sliding the last one off
- * — so the reel reads as a continuous pan across Manipur rather than a stack
+ * The track runs one way (left to right, each frame sliding the last one off),
+ * so the reel reads as a continuous pan across Manipur rather than a stack
  * of separate transitions. To keep that direction true at the wrap point, the
  * track renders one extra copy of the first frame on the end: the reel slides
  * *forward* onto the clone, then silently re-seats itself on the real first
@@ -24,7 +24,7 @@ const DWELL_MS = 5600;
  * fold is off screen, it stops when the tab is hidden, it stops on hover or
  * keyboard focus of the controls, and there is a real pause button.
  *
- * Reduced motion is read here and used only in effects — never to decide what
+ * Reduced motion is read here and used only in effects, never to decide what
  * gets rendered. The first render is identical either way (`index` 0,
  * `animated` true), so the server HTML and the first client render always
  * agree; see the contract in `components/motion/reveal.tsx`.
@@ -42,7 +42,7 @@ export function useHeroCarousel(
 ) {
   const reduce = useReducedMotion();
 
-  /** 0..count — `count` is the trailing clone of the first frame. */
+  /** 0..count: `count` is the trailing clone of the first frame. */
   const [index, setIndex] = useState(0);
   /** False for the single frame in which the reel re-seats itself. */
   const [animated, setAnimated] = useState(true);
@@ -117,7 +117,7 @@ export function useHeroCarousel(
     userPaused,
     togglePaused: () => setUserPaused((p) => !p),
     goTo,
-    /** Bind to the controls cluster, not the stage — the stage is the viewport. */
+    /** Bind to the controls cluster, not the stage. The stage is the viewport. */
     holdHandlers: {
       onPointerEnter: () => setPointerHeld(true),
       onPointerLeave: () => setPointerHeld(false),

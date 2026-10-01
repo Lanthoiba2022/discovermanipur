@@ -19,7 +19,7 @@ export interface SearchInputProps {
   /** Visually hidden label text for the combobox. */
   label?: string;
   autoFocus?: boolean;
-  /** Called after the user navigates — use it to close a sheet or dialog. */
+  /** Called after the user navigates. Use it to close a sheet or dialog. */
   onNavigate?: () => void;
   className?: string;
   size?: "md" | "lg";

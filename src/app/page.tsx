@@ -22,12 +22,12 @@ import {
 import { getHomeStats } from "@/lib/data/content";
 
 export const metadata: Metadata = {
-  title: "Discover Manipur — The Land of Jewels",
+  title: "Discover Manipur: The Land of Jewels",
   description:
     "Floating islands on Loktak, the sangai's last forest, a market run by 5,000 women and a hill that blooms once a year. Plan a Manipur trip with local homestays, hosted experiences, real food and an AI concierge.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Discover Manipur — The Land of Jewels",
+    title: "Discover Manipur: The Land of Jewels",
     description:
       "Floating islands, cloud-caught hills and a thousand-year weave. Plan your Manipur journey with Discover Manipur.",
     url: "/",
@@ -64,7 +64,7 @@ export default async function HomePage() {
       getHomeStats(),
     ]);
 
-  // The quiet half of the catalogue — everything the featured rail skips.
+  // The quiet half of the catalogue: everything the featured rail skips.
   const lesserKnown = allSpots.filter((spot) => !spot.featured).slice(0, 8);
 
   return (

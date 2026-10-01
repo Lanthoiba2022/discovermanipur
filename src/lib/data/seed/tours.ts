@@ -1,7 +1,7 @@
 import type { Tour } from "@/types";
 
 /**
- * Discover Manipur tour seed data — 10 guided itineraries.
+ * Discover Manipur tour seed data: 10 guided itineraries.
  * Prices are per person in INR on a twin-share basis.
  */
 export const tours: Tour[] = [
@@ -149,7 +149,7 @@ export const tours: Tour[] = [
     slug: "dzukou-valley-trek",
     title: "Dzukou Valley Trek",
     description:
-      "Three days to reach and camp in the valley behind Mount Iso — a flat green bowl of dwarf bamboo cut by an ice-cold stream, filling with lilies in late monsoon. Includes a night in Senapati, the climb in, a night in the valley rest house or tents, and the descent. Fires are banned since the 2020 burn; everything is carried in and out.",
+      "Three days to reach and camp in the valley behind Mount Iso: a flat green bowl of dwarf bamboo cut by an ice-cold stream, filling with lilies in late monsoon. Includes a night in Senapati, the climb in, a night in the valley rest house or tents, and the descent. Fires are banned since the 2020 burn; everything is carried in and out.",
     durationDays: 3,
     pricePerPerson: 11500,
     groupSizeMax: 8,
@@ -234,7 +234,7 @@ export const tours: Tour[] = [
     ],
     excludes: ["Alcohol", "Additional shopping", "Tips"],
     images: [
-      { src: "/file-uploads/manipuri-food-leaf.webp", alt: "Manipuri food served on a banana leaf — fried cakes and dried fish" },
+      { src: "/file-uploads/manipuri-food-leaf.webp", alt: "Manipuri food served on a banana leaf: fried cakes and dried fish" },
       { src: "/file-uploads/kha2.jpg", alt: "Market produce at Ima Keithel at opening time" },
       { src: "/file-uploads/foodcar1.png", alt: "Home cooking session during the Manipuri culinary tour" },
     ],
@@ -406,7 +406,7 @@ export const tours: Tour[] = [
     slug: "battle-of-imphal-battlefield-tour",
     title: "Battle of Imphal Battlefield Tour",
     description:
-      "Two days on the ground where the 1944 Battle of Imphal was fought — voted Britain's greatest battle and still barely visited. The Imphal War Cemetery, Red Hill and the Peace Museum, the Shenam saddle on the Tamu road, Kanglatongbi and the INA sites at Moirang, with a military historian guiding throughout.",
+      "Two days on the ground where the 1944 Battle of Imphal was fought, voted Britain's greatest battle and still barely visited. The Imphal War Cemetery, Red Hill and the Peace Museum, the Shenam saddle on the Tamu road, Kanglatongbi and the INA sites at Moirang, with a military historian guiding throughout.",
     durationDays: 2,
     pricePerPerson: 9800,
     groupSizeMax: 8,
