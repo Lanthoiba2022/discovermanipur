@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { ImageOff, MapPinned, Plus } from "lucide-react";
 
 import { StatusBadge } from "@/components/community/status-badge";
+import { VerifyEmailPanel } from "@/components/community/verify-email-panel";
 import { Button } from "@/components/ui/button";
 import { isAuthConfigured } from "@/lib/auth/env";
 import { listMySubmissions } from "@/lib/community/queries";
@@ -197,9 +198,16 @@ export default async function Page() {
           <p className="mt-2 max-w-sm text-muted-foreground">
             {viewer.canParticipate
               ? "Know somewhere visitors should not miss? List it, and verified members will vote on it."
-              : "Verify your email address to list places and vote on them."}
+              : viewer.banned
+                ? "This account cannot list or vote on places."
+                : "Verify your email address to list places and vote on them."}
           </p>
           {addButton && <div className="mt-6">{addButton}</div>}
+          {!viewer.emailVerified && !viewer.banned && (
+            <div className="mt-6 w-full">
+              <VerifyEmailPanel email={viewer.email} />
+            </div>
+          )}
         </div>
       ) : (
         <ul className="mt-8 space-y-4">

@@ -30,6 +30,18 @@ export interface AuthResult {
    * should collect it and call `verifyEmailCode`.
    */
   needsVerification?: boolean;
+  /**
+   * With `needsVerification`: the code could not be sent, although the account
+   * exists. The code step shows this and offers to send again; telling the
+   * person their account was not created would be untrue.
+   */
+  sendError?: string;
+  /**
+   * With `needsVerification`: Neon Auth already set a session cookie for the
+   * unverified address ("Verify at sign-up" off). Backing out of the code step
+   * must sign it out again.
+   */
+  sessionCreated?: boolean;
 }
 
 /**
@@ -91,6 +103,17 @@ function messageOf(error: { message?: string; statusText?: string } | null | und
   return error.message || error.statusText || "Something went wrong. Try again.";
 }
 
+/**
+ * True when Neon Auth answered with a session for an address that is not
+ * verified. That happens when "Verify at sign-up" is off in the Neon console:
+ * the app then asks for the code itself rather than trusting that setting, so
+ * nobody ends up signed in with an address that can never be verified.
+ */
+function signedInUnverified(data: unknown): boolean {
+  const user = (data as { user?: { emailVerified?: boolean } } | null)?.user;
+  return user?.emailVerified === false;
+}
+
 /** Ask Neon Auth to email a fresh verification code. */
 async function requestVerificationCode(email: string): Promise<string | null> {
   const client = getAuthClient();
@@ -111,12 +134,15 @@ export async function signInWithPassword(input: {
 
   if (client) {
     const email = input.email.trim();
-    const { error } = await attempt(() => client.signIn.email({ email, password: input.password }));
-    if (isUnverified(error)) {
+    const { data, error } = await attempt(() => client.signIn.email({ email, password: input.password }));
+    const liveUnverified = !error && signedInUnverified(data);
+    if (isUnverified(error) || liveUnverified) {
       // Right password, unverified address (e.g. they closed the tab before
-      // entering the code). Send a fresh code rather than a dead end.
+      // entering the code). Send a fresh code rather than a dead end. The
+      // session, if one was set, is not mirrored into the store until the code
+      // is accepted: a signed-in store would navigate away from the code step.
       const sendError = await requestVerificationCode(email);
-      return sendError ? { error: sendError } : { error: null, needsVerification: true };
+      return { error: null, needsVerification: true, sendError: sendError ?? undefined, sessionCreated: liveUnverified };
     }
     if (error) return { error: messageOf(error) };
     await refreshSession();
@@ -173,13 +199,22 @@ export async function signUpWithPassword(input: {
     // session (`token` is null) until the code is entered.
     if (!data?.token) {
       const sendError = await requestVerificationCode(email);
-      return sendError ? { error: sendError } : { error: null, needsVerification: true };
+      return { error: null, needsVerification: true, sendError: sendError ?? undefined };
     }
 
-    // Verification off: sign-up left a live session. Record the name exactly
-    // as typed. Splitting `name` back apart would guess wrong for multi-word
-    // first names.
+    // Verification off in the console: sign-up left a live session. Record the
+    // name exactly as typed (splitting `name` back apart would guess wrong for
+    // multi-word first names); this only needs the cookie.
     await saveProfile({ firstName, lastName, phone: "", avatarUrl: "" });
+
+    // Still verify the address: listing and voting need it, and nothing else
+    // would ever send the code. The store is refreshed only once the code is
+    // accepted (`verifyEmailCode`), so the form stays on the code step.
+    if (signedInUnverified(data)) {
+      const sendError = await requestVerificationCode(email);
+      return { error: null, needsVerification: true, sendError: sendError ?? undefined, sessionCreated: true };
+    }
+
     await refreshSession();
     notifyOtherTabs();
     return { error: null };
