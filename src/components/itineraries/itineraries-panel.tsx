@@ -4,13 +4,22 @@ import Link from "next/link";
 import { Map } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/lib/auth";
-import { useSavedItineraries } from "@/lib/itineraries";
+import { useItineraryStorage, useSavedItineraries, type ItineraryStorage } from "@/lib/itineraries";
 import { SavedItineraryCard } from "./saved-itinerary-card";
+
+const WHERE: Record<ItineraryStorage, string> = {
+  account: "They are saved to your account and follow you to any device you sign in on.",
+  browser: "They are kept in this browser only, so clearing site data removes them.",
+  pending: "",
+  error: "We could not load your saved plans just now. Refresh the page to try again.",
+};
 
 export function ItinerariesPanel() {
   const { user } = useAuth();
   const rows = useSavedItineraries(user?.id);
+  const storage = useItineraryStorage(user?.id);
 
   return (
     <section aria-labelledby="itineraries-heading">
@@ -19,10 +28,15 @@ export function ItinerariesPanel() {
       </h2>
       <p className="mt-2 text-muted-foreground">
         Plans you built with the Discover Manipur concierge. Open one to see the day-by-day timeline, rename
-        it, or copy it for your travel group.
+        it, or copy it for your travel group. {WHERE[storage]}
       </p>
 
-      {rows.length === 0 ? (
+      {storage === "pending" ? (
+        <div className="mt-8 space-y-4" aria-busy="true">
+          <Skeleton className="h-40 w-full rounded-[var(--radius-lg)]" />
+          <Skeleton className="h-40 w-full rounded-[var(--radius-lg)]" />
+        </div>
+      ) : storage === "error" ? null : rows.length === 0 ? (
         <div className="mt-8 flex flex-col items-center rounded-[var(--radius-lg)] border border-dashed border-border-strong bg-surface-sunken px-6 py-16 text-center">
           <span className="mb-5 flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
             <Map className="size-6" aria-hidden="true" />

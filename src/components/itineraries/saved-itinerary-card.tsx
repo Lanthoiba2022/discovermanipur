@@ -40,6 +40,10 @@ function formatDate(iso: string): string {
   return date.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 }
 
+function errorMessage(err: unknown, fallback: string): string {
+  return err instanceof Error && err.message ? err.message : fallback;
+}
+
 export function SavedItineraryCard({ row }: { row: SavedItinerary }) {
   const panelId = useId();
   const renameId = useId();
@@ -62,14 +66,23 @@ export function SavedItineraryCard({ row }: { row: SavedItinerary }) {
     }
     setRenaming(false);
     if (clean === row.title) return;
-    await renameItinerary(row.id, clean);
-    toast.success("Plan renamed", { description: clean });
+    try {
+      await renameItinerary(row.id, clean);
+      toast.success("Plan renamed", { description: clean });
+    } catch (err) {
+      setTitle(row.title);
+      toast.error(errorMessage(err, "We could not rename that plan. Please try again."));
+    }
   }
 
   async function confirmDelete() {
-    await deleteItinerary(row.id);
-    setConfirmingDelete(false);
-    toast.message("Plan deleted", { description: row.title });
+    try {
+      await deleteItinerary(row.id);
+      setConfirmingDelete(false);
+      toast.message("Plan deleted", { description: row.title });
+    } catch (err) {
+      toast.error(errorMessage(err, "We could not delete that plan. Please try again."));
+    }
   }
 
   async function copy() {
@@ -206,7 +219,7 @@ export function SavedItineraryCard({ row }: { row: SavedItinerary }) {
           <DialogHeader>
             <DialogTitle>Delete this plan?</DialogTitle>
             <DialogDescription id={`${panelId}-delete-description`}>
-              “{row.title}” will be removed from your account. This cannot be undone.
+              “{row.title}” will be deleted. This cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
