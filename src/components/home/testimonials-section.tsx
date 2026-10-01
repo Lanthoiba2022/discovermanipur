@@ -23,7 +23,7 @@ export function TestimonialsSection({ testimonials }: { testimonials: Testimonia
           title="The first stories are on their way"
           body="Traveller accounts appear here as trips are completed."
           href="/about"
-          cta="About Manipur Tourism"
+          cta="About Discover Manipur"
         />
       ) : (
         <QuoteCarousel testimonials={testimonials} />

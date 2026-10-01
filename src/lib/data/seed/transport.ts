@@ -1,7 +1,7 @@
 import type { TransportOption } from "@/types";
 
 /**
- * Manipur Tourism transport seed data — 10 ways to move around Manipur.
+ * Discover Manipur transport seed data — 10 ways to move around Manipur.
  * Prices are indicative in INR and exclude state permit charges where applicable.
  */
 export const transportOptions: TransportOption[] = [
@@ -10,7 +10,7 @@ export const transportOptions: TransportOption[] = [
     slug: "imphal-airport-sedan-transfer",
     name: "Imphal Airport Sedan Transfer",
     mode: "cab",
-    operator: "Manipur Tourism Verified Cabs",
+    operator: "Discover Manipur Verified Cabs",
     description:
       "A clean air-conditioned sedan for airport pick-ups and drops anywhere in the Imphal valley, with a driver who tracks your flight and waits free for 45 minutes after landing. The simplest way to start a trip, and the one thing worth pre-booking before you arrive.",
     seats: 4,
@@ -35,7 +35,7 @@ export const transportOptions: TransportOption[] = [
     slug: "imphal-valley-day-cab",
     name: "Imphal Valley Day Cab",
     mode: "cab",
-    operator: "Manipur Tourism Verified Cabs",
+    operator: "Discover Manipur Verified Cabs",
     description:
       "A hatchback or sedan with driver for a full day in and around the valley — Kangla, the market, Andro, Waithou, Khongjom or a Loktak run. Charged as an eight-hour, eighty-kilometre package, with extras billed transparently by the hour and kilometre.",
     seats: 4,

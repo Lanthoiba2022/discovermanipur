@@ -5,9 +5,8 @@ import type { IconName } from "@/lib/icons";
  * menu, the mobile drawer and the footer.
  *
  * The rule this file exists to enforce: **if a route is a feature, it is
- * reachable from the chrome.** The previous version exposed 9 of ~45 routes,
- * which left the 3D Kangla explorer, the whole host funnel, sign-in and the
- * search page with no entry point at all. Anything genuinely role-gated
+ * reachable from the chrome.** That includes the 3D Kangla explorer, the host
+ * funnel, sign-in and the search page. Anything genuinely role-gated
  * (`/admin/*`) or reached from a card (`/[slug]` details) stays out by design.
  */
 
@@ -175,7 +174,7 @@ export const navGroups: NavGroup[] = [
     blurb: "Who built this, and how to reach a person.",
     items: [
       {
-        label: "About Manipur Tourism",
+        label: "About Discover Manipur",
         href: "/about",
         description: "The place, and our part in it",
         icon: "Megaphone",
@@ -261,7 +260,7 @@ export const footerNav = [
   {
     label: "About",
     items: [
-      { label: "About Manipur Tourism", href: "/about" },
+      { label: "About Discover Manipur", href: "/about" },
       { label: "Contact", href: "/contact" },
       { label: "FAQ", href: "/faq" },
       { label: "Accessibility", href: "/accessibility" },

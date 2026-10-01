@@ -23,10 +23,10 @@ export function itineraryToText(plan: ItineraryPlan): string {
     out.push(day.summary);
     for (const stop of day.stops) {
       const when = stop.timeOfDay ? `${stop.timeOfDay}: ` : "";
-      out.push(`  • ${when}${stop.title}${stop.href ? ` (manipurtourism.example${stop.href})` : ""} — ${stop.note}`);
+      out.push(`  • ${when}${stop.title}${stop.href ? ` (discovermanipur.example${stop.href})` : ""} — ${stop.note}`);
     }
     for (const meal of day.meals) {
-      out.push(`  • ${meal.slot}: ${meal.suggestion}${meal.href ? ` (manipurtourism.example${meal.href})` : ""}`);
+      out.push(`  • ${meal.slot}: ${meal.suggestion}${meal.href ? ` (discovermanipur.example${meal.href})` : ""}`);
     }
     if (day.stay) out.push(`  • stay: ${day.stay.title}${day.stay.note ? ` — ${day.stay.note}` : ""}`);
     if (day.travelNotes) out.push(`  • getting around: ${day.travelNotes}`);
@@ -37,7 +37,7 @@ export function itineraryToText(plan: ItineraryPlan): string {
   if (plan.totalEstimatedCostInr) out.push(`Estimated total: ${inr(plan.totalEstimatedCostInr)} per person (rough).`);
   if (plan.packingNotes?.length) out.push("", "Packing:", ...plan.packingNotes.map((n) => `  • ${n}`));
   if (plan.permitsAndSafety?.length) out.push("", "Permits & safety:", ...plan.permitsAndSafety.map((n) => `  • ${n}`));
-  out.push("", "Built with the Manipur Tourism concierge. Verify permits, prices and road conditions with official sources.");
+  out.push("", "Built with the Discover Manipur concierge. Verify permits, prices and road conditions with official sources.");
 
   return out.join("\n");
 }

@@ -429,7 +429,7 @@ export default async function ResponsibleTravelPage() {
           </Prose>
           <NoteBox title="Why we are being careful here" tone="warning">
             <p>
-              Manipur Tourism is a demonstration project. We do not have a live feed of permit rules or
+              Discover Manipur is a volunteer-run community platform. We do not have a live feed of permit rules or
               advisories, and we will not pretend otherwise by printing a number that may already be
               out of date. Treat everything on this site as a starting point for planning and
               confirm the specifics with an official source.

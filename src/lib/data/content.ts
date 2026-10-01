@@ -1,5 +1,5 @@
 /**
- * Yening content layer — editorial copy, served from the database.
+ * Content layer — editorial copy, served from the database.
  *
  * Same contract as `./index.ts`: call sites import from here and never reach
  * for the seed modules directly. Every getter tries the database first and falls
@@ -51,8 +51,8 @@ import {
  * or errors. Wrapped in React's `cache` at each call site so one
  * render hits the network once per key, not once per component.
  *
- * Every table read here is published editorial copy that was world-readable
- * under Supabase's RLS too, so none of these queries needs a visibility filter.
+ * Every table read here holds published editorial copy with no hidden rows, so
+ * unlike `catalogue.ts` none of these queries needs a visibility filter.
  */
 async function fromDb<T>(run: (db: Db) => Promise<T>, label: string): Promise<T | null> {
   const db = getDb();

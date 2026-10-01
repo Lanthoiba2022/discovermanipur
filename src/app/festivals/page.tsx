@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   description:
     "Sangai, Yaoshang, Lai Haraoba, Kut, Ningol Chakouba — Manipur's festival calendar laid out January to December so you can time your trip to the drums.",
   openGraph: {
-    title: "Festivals of Manipur, month by month · Manipur Tourism",
+    title: "Festivals of Manipur, month by month · Discover Manipur",
     description:
       "Manipur's festival calendar from January to December — plan your trip around the drums.",
     images: [

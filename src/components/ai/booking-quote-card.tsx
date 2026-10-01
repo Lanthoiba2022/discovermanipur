@@ -82,7 +82,7 @@ export function BookingQuoteCard({ quote, className }: { quote: BookingQuoteResu
   function downloadConfirmation() {
     const filename = `booking-${quote.refId}-${quote.startDate}.txt`;
     const text = [
-      "Manipur Tourism — booking confirmation",
+      "Discover Manipur — booking confirmation",
       "--------------------------------------",
       `Item: ${quote.refTitle}`,
       `Type: ${kindLabel[quote.quoteKind]}`,
@@ -213,7 +213,7 @@ export function BookingQuoteCard({ quote, className }: { quote: BookingQuoteResu
 
       {!isAuthenticated && !booked && (
         <p className="mt-3 text-[11px] text-muted-foreground">
-          Signed out — your booking will be saved to the demo profile. Sign in to keep it with your account.
+          You are signed out, so this request will be saved in this browser only. Sign in to keep bookings with your account.
         </p>
       )}
 

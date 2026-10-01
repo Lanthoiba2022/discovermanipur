@@ -161,7 +161,7 @@ export function BookingsPanel() {
         Your bookings
       </h2>
       <p className="mt-2 text-muted-foreground">
-        Every request you have sent to a Manipur Tourism host, newest trip first.
+        Every request you have sent to a Discover Manipur host, newest trip first.
       </p>
 
       {rows.length === 0 ? (

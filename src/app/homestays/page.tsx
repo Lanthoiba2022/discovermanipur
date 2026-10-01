@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     "Stay with Manipuri host families — lakeside huts on Loktak, weaver's houses in Imphal and cloud-level lodges in Ukhrul. Filter by district, price, guests and amenities.",
   alternates: { canonical: "/homestays" },
   openGraph: {
-    title: "Homestays in Manipur · Manipur Tourism",
+    title: "Homestays in Manipur · Discover Manipur",
     description:
       "Lakeside huts, weavers' houses and hill lodges — book a stay with a Manipuri family.",
     url: "/homestays",

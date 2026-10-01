@@ -152,13 +152,11 @@ function MegaPanel({
 /**
  * The site chrome.
  *
- * Two things drove this rebuild. First, the old nav reached 9 of ~45 routes —
- * the 3D explorer, the host funnel, search and sign-in had no entry point at
- * all, so the mega menu exists to surface the whole site at once. Second, the
- * old dropdowns opened on `:hover`/`:focus-within` only: the triggers were
- * buttons with no handler, which meant they could never be opened from a
- * keyboard and behaved unpredictably on touch. This is a real disclosure —
- * click, Enter/Space, Escape, outside-click and following a link all close it.
+ * The mega menu exists to surface the whole site at once — the 3D explorer,
+ * the host funnel, search and sign-in all need an entry point here. Each panel
+ * is a real disclosure rather than a `:hover`/`:focus-within` dropdown, so it
+ * opens from a keyboard and behaves predictably on touch: click, Enter/Space,
+ * Escape, outside-click and following a link all close it.
  */
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);

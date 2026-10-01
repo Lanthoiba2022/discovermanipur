@@ -2,14 +2,16 @@ import type { Metadata } from "next";
 
 import { ListingsTable, type ModerationRow } from "@/components/admin/listings-table";
 import { getExperiences, getHomestays } from "@/lib/data";
+import { requireAdmin } from "@/lib/host/role";
 
 export const metadata: Metadata = {
   title: "Listing moderation",
   description:
-    "Feature, unfeature, activate or deactivate the homestays and experiences published on Manipur Tourism.",
+    "Feature, unfeature, activate or deactivate the homestays and experiences published on Discover Manipur.",
 };
 
 export default async function AdminListingsPage() {
+  await requireAdmin("/admin/listings");
   const [homestays, experiences] = await Promise.all([getHomestays(), getExperiences()]);
 
   const rows: ModerationRow[] = [

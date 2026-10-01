@@ -14,13 +14,13 @@ import {
   myApplication,
 } from "@/lib/host/mock-data";
 import { HOST_TYPE_LABEL } from "@/lib/host/types";
-import { getSessionUser } from "@/lib/host/role";
+import { requireHost } from "@/lib/host/role";
 import { formatINR } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Host dashboard",
   description:
-    "Your Manipur Tourism listings, upcoming bookings, occupancy and payouts, and the status of your host application.",
+    "Your Discover Manipur listings, upcoming bookings, occupancy and payouts, and the status of your host application.",
 };
 
 function formatDate(iso: string) {
@@ -32,14 +32,14 @@ function formatDate(iso: string) {
 }
 
 const APPLICATION_COPY = {
-  pending: "A coordinator from your district will call within three working days.",
+  pending: "Applications are not reviewed yet. Join the community Discord to follow progress.",
   approved: "You are cleared to publish. Add photos and open your calendar.",
   rejected: "See the note below, put it right and reapply — most hosts do.",
 } as const;
 
 export default async function HostDashboardPage() {
-  // Role comes from the adapter in src/lib/host/role.ts.
-  const user = await getSessionUser();
+  // Hosts and admins only; anyone else is redirected before any data is read.
+  const user = await requireHost("/host/dashboard");
 
   const liveListings = hostListings.filter((l) => l.status === "live");
   const avgOccupancy = liveListings.length
@@ -63,11 +63,11 @@ export default async function HostDashboardPage() {
       <header className="mb-10">
         <p className="eyebrow mb-3 text-muted-foreground">Host dashboard</p>
         <h1 className="text-headline">
-          Khurumjari{user ? `, ${user.name.split(" ")[0]}` : ""}
+          Khurumjari, {user.name.split(" ")[0]}
         </h1>
         <p className="mt-4 max-w-2xl text-muted-foreground">
-          Your listings, the guests on their way, and what Manipur Tourism owes you. Figures update as
-          bookings are confirmed.
+          Your listings, the guests on their way, and what they paid. The figures below are sample
+          data for now: listings and bookings are not connected to this dashboard yet.
         </p>
       </header>
 
@@ -109,12 +109,13 @@ export default async function HostDashboardPage() {
             Your payouts
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            After Manipur Tourism&rsquo;s 10% fee, released within five working days of each checkout.
+            What guests paid you each month. Discover Manipur takes no fee and no money moves through
+            the site.
           </p>
           <ColumnChart
             className="mt-6"
             data={hostEarningsByMonth}
-            caption="Payouts released to you each month, after fees."
+            caption="What guests paid you each month."
             valueLabel="Payout"
             format="inr-compact"
           />
@@ -154,7 +155,7 @@ export default async function HostDashboardPage() {
           </p>
           {myApplication.adminNotes && (
             <p className="mt-3 rounded-[var(--radius)] bg-surface-sunken p-4 text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">Note from Manipur Tourism: </span>
+              <span className="font-medium text-foreground">Note from Discover Manipur: </span>
               {myApplication.adminNotes}
             </p>
           )}
@@ -179,7 +180,7 @@ export default async function HostDashboardPage() {
           Guests on their way
         </h2>
         <p className="mb-5 mt-2 text-sm text-muted-foreground">
-          Confirm a pending request within 24 hours or it lapses back to the traveller.
+          Requests from travellers will appear here once online booking is connected.
         </p>
         <TableScroller label="Upcoming bookings">
           <table className="w-full min-w-[48rem] border-collapse text-sm">

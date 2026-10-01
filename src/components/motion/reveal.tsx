@@ -38,14 +38,14 @@ export const revealVariants: Variants = {
  *
  * `useReducedMotion()` returns null during SSR and true on a reduced-motion
  * client. So it must never decide *what gets rendered* — not the tag, not the
- * DOM structure, and not the inline style framer writes. An earlier version
- * branched `variants`/`initial` on it, which meant the server emitted
- * `opacity: 0` while a reduced-motion client's first render emitted no opacity
- * at all: React reported mismatched attributes, and a tree it declines to patch
- * can leave a reduced-motion reader looking at permanently invisible content.
+ * DOM structure, and not the inline style framer writes. Branching
+ * `variants`/`initial` on it makes the server emit `opacity: 0` while a
+ * reduced-motion client's first render emits no opacity at all: React reports
+ * mismatched attributes, and a tree it declines to patch can leave a
+ * reduced-motion reader looking at permanently invisible content.
  *
- * The fix is that `variants`, `initial` and `whileInView` are now constant, and
- * only the transition *timing* collapses — so the markup is identical either
+ * Instead `variants`, `initial` and `whileInView` are constant, and only the
+ * transition *timing* collapses — so the markup is identical either
  * way and a reduced-motion reader simply lands on the finished state in one
  * frame. `custom` carries the flag into the variant, where it is safe: variants
  * resolve after hydration.

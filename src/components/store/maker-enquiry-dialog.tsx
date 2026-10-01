@@ -15,13 +15,13 @@ import {
 import type { Craft } from "@/types";
 
 /**
- * Manipur Tourism takes no payment and no commission, so this is not a checkout — it
+ * Discover Manipur takes no payment and no commission, so this is not a checkout — it
  * hands the visitor the maker's own contact details and gets out of the way.
  */
 export function MakerEnquiryDialog({ craft }: { craft: Craft }) {
   const [copied, setCopied] = useState<"phone" | "message" | null>(null);
 
-  const message = `Hello ${craft.maker}, I found your ${craft.name} on Manipur Tourism and would like to enquire about buying one${
+  const message = `Hello ${craft.maker}, I found your ${craft.name} on Discover Manipur and would like to enquire about buying one${
     craft.madeToOrder ? ", made to order" : ""
   }. Could you tell me about availability and delivery?`;
 
@@ -51,7 +51,7 @@ export function MakerEnquiryDialog({ craft }: { craft: Craft }) {
         <DialogHeader>
           <DialogTitle>Contact {craft.maker}</DialogTitle>
           <DialogDescription id="enquiry-description">
-            Your enquiry goes straight to the artisan — not to Manipur Tourism. We take no payment and no
+            Your enquiry goes straight to the artisan — not to Discover Manipur. We take no payment and no
             commission, so you agree the price, the making and the delivery with them directly.
           </DialogDescription>
         </DialogHeader>
@@ -119,8 +119,8 @@ export function MakerEnquiryDialog({ craft }: { craft: Craft }) {
 
           <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
             <Info className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
-            Contact details are placeholders in this prototype and are not verified numbers. On the
-            live site they are supplied and confirmed by the maker.
+            These contact details are placeholders for now and are not verified numbers. Real
+            numbers will be added once each maker supplies and confirms them.
           </p>
         </div>
       </DialogContent>

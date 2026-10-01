@@ -56,7 +56,7 @@ export function MakerCard({ craft }: { craft: Craft }) {
 
       <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
         <HandCoins className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
-        Manipur Tourism takes no payment and no commission. You pay {craft.maker} directly, in full.
+        Discover Manipur takes no payment and no commission. You pay {craft.maker} directly, in full.
       </p>
     </section>
   );

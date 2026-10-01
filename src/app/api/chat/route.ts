@@ -1,9 +1,13 @@
 /**
  * POST /api/chat — the streaming concierge.
  *
- * Nothing here throws at import time. Without `ANTHROPIC_API_KEY` the handler
- * streams a canned, friendly assistant turn (plus a real sample itinerary) so
- * the interface behaves identically and the demo is never dead.
+ * Nothing here throws at import time. While the concierge is not live (no LLM
+ * key, or `AI_CHAT_ENABLED` off) the handler streams a canned, friendly
+ * assistant turn plus a real sample itinerary, and never calls a model.
+ *
+ * Public and backed by a paid model, so every request is rate-limited per IP,
+ * size-capped, shape-checked and bounded in output tokens before it can cost
+ * anything.
  */
 
 import {
@@ -15,18 +19,61 @@ import {
   type UIMessage,
   type UIMessageChunk,
 } from "ai";
+import { z } from "zod";
 
 import {
   CONCIERGE_SYSTEM_PROMPT,
   NOT_CONFIGURED_MESSAGE,
   conciergeModel,
   conciergeTools,
-  isAIConfigured,
+  isConciergeLive,
   sampleItinerary,
 } from "@/lib/ai";
+import { rateLimit, tooManyRequests } from "@/lib/security/rate-limit";
+import { clientIp, isSameOrigin, jsonError, readBodyText } from "@/lib/security/request";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
+
+/** A long conversation with several itinerary cards stays well under this. */
+const MAX_BODY_BYTES = 256 * 1024;
+const MAX_MESSAGES = 100;
+/** What one traveller turn may say. The input box is one short message. */
+const MAX_USER_TEXT = 2_000;
+/** Only the recent turns reach the model, so input cost per call is bounded. */
+const CONTEXT_MESSAGES = 30;
+/** Replies are ~100 words; the headroom is for Gemini's thinking tokens. */
+const MAX_OUTPUT_TOKENS = 2_048;
+
+const RATE = { limit: 20, windowMs: 60_000 };
+const RATE_DAILY = { limit: 300, windowMs: 24 * 60 * 60_000 };
+
+/*
+ * Only the envelope is checked here: parts are passed through for
+ * `convertToModelMessages` to interpret. `role` is the part that matters — a
+ * client-sent "system" message would otherwise be handed to the model as a
+ * system instruction.
+ */
+const bodySchema = z.looseObject({
+  messages: z
+    .array(
+      z.looseObject({
+        id: z.string().max(200),
+        role: z.enum(["user", "assistant"]),
+        parts: z.array(z.looseObject({ type: z.string().max(100) })).max(100),
+      }),
+    )
+    .min(1)
+    .max(MAX_MESSAGES),
+});
+
+function userText(message: { parts: { type: string }[] }) {
+  return message.parts.reduce(
+    (total, part) =>
+      total + (part.type === "text" ? String((part as { text?: unknown }).text ?? "").length : 0),
+    0,
+  );
+}
 
 /** Emits a complete assistant turn as a UI message stream, with no model call. */
 function cannedStream(text: string, withSample: boolean): ReadableStream<UIMessageChunk> {
@@ -59,20 +106,41 @@ function cannedStream(text: string, withSample: boolean): ReadableStream<UIMessa
 }
 
 export async function POST(req: Request) {
-  let messages: UIMessage[] = [];
+  if (!isSameOrigin(req)) return jsonError(403, "Cross-site requests are not accepted.");
 
-  try {
-    const body: unknown = await req.json();
-    if (body && typeof body === "object" && Array.isArray((body as { messages?: unknown }).messages)) {
-      messages = (body as { messages: UIMessage[] }).messages;
-    }
-  } catch {
-    return Response.json({ error: "Invalid request body." }, { status: 400 });
+  const ip = clientIp(req.headers);
+  for (const [bucket, rule] of [["chat", RATE], ["chat-day", RATE_DAILY]] as const) {
+    const verdict = rateLimit(bucket, ip, rule);
+    if (!verdict.ok) return tooManyRequests(verdict);
   }
 
-  if (!isAIConfigured) {
+  const raw = await readBodyText(req, MAX_BODY_BYTES);
+  if (raw === null) return jsonError(413, "That conversation is too long. Start a new one.");
+
+  let body: z.infer<typeof bodySchema>;
+  try {
+    const parsed = bodySchema.safeParse(JSON.parse(raw));
+    if (!parsed.success) return jsonError(400, "Invalid request body.");
+    body = parsed.data;
+  } catch {
+    return jsonError(400, "Invalid request body.");
+  }
+
+  const last = body.messages[body.messages.length - 1];
+  if (last.role !== "user") return jsonError(400, "Invalid request body.");
+  if (body.messages.some((m) => m.role === "user" && userText(m) > MAX_USER_TEXT)) {
+    return jsonError(413, `Keep each message under ${MAX_USER_TEXT} characters.`);
+  }
+
+  if (!isConciergeLive) {
     return createUIMessageStreamResponse({ stream: cannedStream(NOT_CONFIGURED_MESSAGE, true) });
   }
+
+  // The recent window, starting on a traveller turn so the model never opens
+  // on an orphaned assistant reply.
+  const recent = body.messages.slice(-CONTEXT_MESSAGES);
+  const firstUser = recent.findIndex((m) => m.role === "user");
+  const messages = recent.slice(Math.max(0, firstUser)) as unknown as UIMessage[];
 
   try {
     const modelMessages = await convertToModelMessages(messages);
@@ -83,6 +151,8 @@ export async function POST(req: Request) {
       messages: modelMessages,
       tools: conciergeTools,
       stopWhen: stepCountIs(6),
+      maxOutputTokens: MAX_OUTPUT_TOKENS,
+      abortSignal: req.signal,
     });
 
     // Failures inside the model call surface *in* the stream, not as a throw,
@@ -90,7 +160,9 @@ export async function POST(req: Request) {
     // hand the UI something a reader can act on.
     return result.toUIMessageStreamResponse({
       onError: (error) => {
-        console.error("[/api/chat] concierge stream failed:", error);
+        // Message only: SDK errors carry the request body, i.e. the traveller's
+        // conversation, which does not belong in logs.
+        console.error("[/api/chat] concierge stream failed:", (error as Error)?.message);
         return "I couldn't reach the concierge model just now. Browse [places](/hotspots) and [homestays](/homestays) in the meantime.";
       },
     });

@@ -8,9 +8,18 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        // Search result pages and authenticated areas are not useful in an
-        // index, and the API routes are not pages at all.
-        disallow: ["/api/", "/search", "/account", "/dashboard", "/admin"],
+        // Search result pages, sign-in and the signed-in areas are not useful
+        // in an index, and the API routes are not pages at all. This only
+        // asks politely: the private areas are protected by their own checks.
+        disallow: [
+          "/api/",
+          "/search",
+          "/auth",
+          "/access-denied",
+          "/account",
+          "/admin",
+          "/host/dashboard",
+        ],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

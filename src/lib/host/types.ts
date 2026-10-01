@@ -8,7 +8,7 @@ import type {
 /**
  * An application row as operations sees it: the domain `HostApplication`
  * contract plus the contact detail the review queue needs. The extra fields
- * live only in this slice so `@/types` stays the shared contract.
+ * live only here so `@/types` stays the shared contract.
  */
 export interface HostApplicationRecord extends HostApplication {
   reference: string;

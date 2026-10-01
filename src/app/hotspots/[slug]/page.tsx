@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   if (!hotspot) {
     return {
       title: "Place not found",
-      description: "This Manipur destination is not on Manipur Tourism yet.",
+      description: "This Manipur destination is not on Discover Manipur yet.",
     };
   }
 

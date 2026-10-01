@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   if (!festival) {
     return {
       title: "Festival not found",
-      description: "This Manipur festival is not on Manipur Tourism yet.",
+      description: "This Manipur festival is not on Discover Manipur yet.",
     };
   }
 

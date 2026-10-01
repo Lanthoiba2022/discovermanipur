@@ -1,7 +1,7 @@
 import type { Experience } from "@/types";
 
 /**
- * Manipur Tourism experience seed data — 18 host-led activities.
+ * Discover Manipur experience seed data — 18 host-led activities.
  * Prices are per person in INR and assume a minimum of two participants.
  */
 export const experiences: Experience[] = [
@@ -331,7 +331,7 @@ export const experiences: Experience[] = [
     description:
       "Lai Haraoba, the 'pleasing of the gods', is the oldest surviving ritual performance in Manipur — maibi priestesses dancing the creation of the world, night after night, in village courtyards through spring and early summer. Attend with a guide who can explain the sequence, the hand gestures and the thougal jagoi that closes the evening. Held only in season.",
     category: "festival",
-    host: "Manipur Tourism cultural desk with local Lai Haraoba committees",
+    host: "Discover Manipur cultural desk with local Lai Haraoba committees",
     location: "Rotating village venues around Imphal East and Bishnupur",
     district: "Imphal East",
     durationHours: 3,

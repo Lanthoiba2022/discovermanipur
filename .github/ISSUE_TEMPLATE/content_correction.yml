@@ -1,0 +1,71 @@
+name: Content correction
+description: Report wrong, outdated or misleading information on a listing or page.
+title: "content: "
+labels: ["content", "correction", "needs-verification"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for keeping the guide accurate. A source for the correct information lets us
+        fix it quickly.
+  - type: input
+    id: url
+    attributes:
+      label: Page with the problem
+      description: The full URL or route of the listing or page.
+      placeholder: /hotspots/kangla-fort
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem is it?
+      multiple: true
+      options:
+        - Wrong or outdated timings, fees or prices
+        - Place has closed or moved
+        - Wrong location, district or directions
+        - Wrong history, name or spelling
+        - Photo does not show this place
+        - Photo is used without permission or credit
+        - Accessibility information is wrong
+        - Offensive or culturally inaccurate content
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: What does the page say now?
+      description: Quote the wrong text, or describe the photo.
+    validations:
+      required: true
+  - type: textarea
+    id: correct
+    attributes:
+      label: What should it say?
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Source for the correction
+      description: A link, or how you know (for example "I visited on 12 October 2026" or "I am the owner").
+    validations:
+      required: true
+  - type: dropdown
+    id: relationship
+    attributes:
+      label: Your relationship to this listing
+      options:
+        - I am not connected to it
+        - I am the owner, or I work there or represent it
+        - I am the photographer or rights holder of a photo on the page
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I would like to make this correction myself in a pull request.

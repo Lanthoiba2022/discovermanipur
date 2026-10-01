@@ -1,7 +1,7 @@
 import type { Tour } from "@/types";
 
 /**
- * Manipur Tourism tour seed data — 10 guided itineraries.
+ * Discover Manipur tour seed data — 10 guided itineraries.
  * Prices are per person in INR on a twin-share basis.
  */
 export const tours: Tour[] = [

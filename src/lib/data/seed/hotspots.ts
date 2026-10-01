@@ -1,7 +1,7 @@
 import type { Hotspot } from "@/types";
 
 /**
- * Manipur Tourism hotspot seed data — 50 places across all 16 districts of Manipur.
+ * Discover Manipur hotspot seed data — 50 places across all 16 districts of Manipur.
  * Facts (timings, fees, distances) reflect on-the-ground norms; always advise
  * travellers to re-confirm locally, as hill-district access changes with weather.
  */

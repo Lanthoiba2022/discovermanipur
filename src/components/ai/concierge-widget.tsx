@@ -46,7 +46,7 @@ function PausedPanel({ onNavigate }: { onNavigate: () => void }) {
           The concierge is resting
         </p>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          Live chat is switched off while this site is a demo, so there is no one here to answer just now.
+          Live chat is switched off for now, so there is no one here to answer just yet.
         </p>
       </div>
 
@@ -85,7 +85,7 @@ function PausedPanel({ onNavigate }: { onNavigate: () => void }) {
  * `<Concierge />` that `/plan` does. Mount it once in the root layout and the
  * whole site gets the concierge.
  *
- * Three behaviours worth knowing about:
+ * Four behaviours worth knowing about:
  *
  * 1. **It stands down on `/plan`.** That route *is* the concierge, full width,
  *    beside the trip brief. Floating a second copy of the same conversation
@@ -100,9 +100,8 @@ function PausedPanel({ onNavigate }: { onNavigate: () => void }) {
  *    not render a chat at all — an input box that accepts a question and then
  *    apologises is worse than one that was never offered. It says the concierge
  *    is paused and points at the sample conversation on `/plan`.
- * 4. **One close control, not two.** The launcher used to stay on screen as a
- *    "Close" pill while the panel was open, directly below a panel that
- *    already had a close button. The launcher now hides while the panel is up.
+ * 4. **One close control, not two.** The panel carries its own close button,
+ *    so the launcher hides while the panel is up.
  */
 export function ConciergeWidget({
   className,
@@ -257,10 +256,10 @@ export function ConciergeWidget({
           id={panelId}
           role="dialog"
           aria-modal="false"
-          aria-label="Manipur Tourism concierge"
+          aria-label="Discover Manipur concierge"
           className={cn(
-            // Roughly two thirds of the height it used to take: at 86dvh the
-            // panel was the page, and the reader lost the site behind it.
+            // Capped well short of full height so the reader never loses the
+            // site behind the panel.
             "mb-3 flex w-[min(92vw,23rem)] flex-col overflow-hidden",
             live ? "h-[min(68dvh,34rem)]" : "h-auto",
             "rounded-[var(--radius-lg)] border border-border bg-surface shadow-[var(--shadow-lg)]",
@@ -280,7 +279,7 @@ export function ConciergeWidget({
 
             <div className="min-w-0 flex-1">
               <p className="truncate font-display text-[0.8125rem] font-semibold tracking-tight text-foreground">
-                Manipur Tourism concierge
+                Discover Manipur concierge
               </p>
               <Link
                 href="/plan"
@@ -306,7 +305,7 @@ export function ConciergeWidget({
               variant="panel"
               suggestions={WIDGET_SUGGESTIONS}
               greeting="Khurumjari. Ask me anything about Manipur — or tell me how many days you have and I'll sketch a plan."
-              footerNote="Grounded in Manipur Tourism's own listings."
+              footerNote="Grounded in Discover Manipur's own listings."
               className="min-h-0 flex-1 rounded-none border-0"
             />
           ) : (
@@ -374,7 +373,7 @@ export function ConciergeWidget({
               }}
               aria-expanded={false}
               aria-controls={panelId}
-              aria-label={live ? "Open the Manipur Tourism concierge" : "About the Manipur Tourism concierge"}
+              aria-label={live ? "Open the Discover Manipur concierge" : "About the Discover Manipur concierge"}
               className={cn(
                 "flex h-12 items-center gap-2.5 rounded-full text-sm font-medium",
                 "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",

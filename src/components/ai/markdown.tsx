@@ -34,18 +34,22 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
       const href = token.slice(split + 2, -1);
       const classes =
         "font-medium text-primary underline decoration-primary/35 underline-offset-4 transition-colors hover:decoration-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
-      if (href.startsWith("/")) {
+      // Model output is untrusted: "//host" and "/\host" leave the site, and
+      // `javascript:` and friends must never reach an href.
+      if (/^\/(?![\/\\])/.test(href)) {
         nodes.push(
           <Link key={key} href={href} className={classes}>
             {label}
           </Link>,
         );
-      } else {
+      } else if (/^https?:\/\//i.test(href)) {
         nodes.push(
           <a key={key} href={href} className={classes} target="_blank" rel="noreferrer noopener">
             {label}
           </a>,
         );
+      } else {
+        nodes.push(label);
       }
     } else if (token.startsWith("**")) {
       nodes.push(

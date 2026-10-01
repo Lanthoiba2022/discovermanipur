@@ -1,5 +1,5 @@
 /**
- * A compact digest of the Manipur Tourism catalogue, handed to the model as grounding
+ * A compact digest of the Discover Manipur catalogue, handed to the model as grounding
  * for /api/itinerary. Titles and hrefs come straight from the data layer, so a
  * plan can only ever reference listings that really exist.
  */

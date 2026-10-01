@@ -17,7 +17,7 @@ export function RatingSummary({
           No reviews yet
         </h2>
         <p className="mt-2 text-muted-foreground">
-          This home has just joined Manipur Tourism. Be the first to stay and tell the next traveller what
+          This home has just joined Discover Manipur. Be the first to stay and tell the next traveller what
           the mornings are like.
         </p>
       </section>

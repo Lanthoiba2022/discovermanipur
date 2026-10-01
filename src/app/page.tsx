@@ -22,14 +22,14 @@ import {
 import { getHomeStats } from "@/lib/data/content";
 
 export const metadata: Metadata = {
-  title: "Manipur Tourism — The Land of Jewels",
+  title: "Discover Manipur — The Land of Jewels",
   description:
     "Floating islands on Loktak, the sangai's last forest, a market run by 5,000 women and a hill that blooms once a year. Plan a Manipur trip with local homestays, hosted experiences, real food and an AI concierge.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Manipur Tourism — The Land of Jewels",
+    title: "Discover Manipur — The Land of Jewels",
     description:
-      "Floating islands, cloud-caught hills and a thousand-year weave. Plan your Manipur journey with Manipur Tourism.",
+      "Floating islands, cloud-caught hills and a thousand-year weave. Plan your Manipur journey with Discover Manipur.",
     url: "/",
     type: "website",
     images: [
@@ -44,15 +44,9 @@ export const metadata: Metadata = {
 };
 
 /**
- * The landing page.
- *
- * Built to the rhythm of a national tourism board's home page: a full-bleed
- * film, then a run of bands that each open with one enormous word, finish the
- * sentence in an italic line, and close on a single pill. What is ours is the
- * voice inside that frame — an oldstyle serif answering the sans, the Manipuri
- * gateway arch instead of a generic card, and a ground that alternates
- * photo → sand → ivory → crimson so the page never marches down one axis the
- * way the site it borrows from does.
+ * The landing page: a full-bleed film, then a run of bands that each open with
+ * one enormous word and finish the sentence in an italic line, on a ground that
+ * alternates photo → sand → ivory → crimson.
  *
  * `LandingHero` must stay first: it carries `data-hero-tone="dark"`, which the
  * fixed header reads in CSS to flip its wordmark to ivory on the first paint.

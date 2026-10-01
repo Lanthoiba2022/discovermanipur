@@ -11,8 +11,8 @@ import { cn } from "@/lib/utils";
  * page down, so every band renders this instead and the page still reads as a
  * finished national tourism page rather than a hole.
  *
- * Shared by all four bands in this slice; the `gs-` prefix is only a
- * filename-ownership convention, not a hint that it belongs to Get Started.
+ * Shared by all four bands; the `gs-` prefix is only a filename convention,
+ * not a hint that it belongs to Get Started.
  */
 export function BandEmpty({
   title,

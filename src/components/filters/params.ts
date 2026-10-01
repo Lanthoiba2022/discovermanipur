@@ -1,7 +1,7 @@
 /**
  * Server-safe helpers for reading URL-driven filter state.
  *
- * Every index route in the Experiences / Eateries / Tours / Transport slice
+ * Every index route in Experiences / Eateries / Tours / Transport
  * reads its filters out of `searchParams` with these helpers so that the
  * rendered page is fully shareable and server-rendered.
  */

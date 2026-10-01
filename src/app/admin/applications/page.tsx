@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { ApplicationsTable } from "@/components/admin/applications-table";
 import { hostApplications } from "@/lib/host/mock-data";
+import { requireAdmin } from "@/lib/host/role";
 
 export const metadata: Metadata = {
   title: "Host applications",
@@ -9,7 +10,8 @@ export const metadata: Metadata = {
     "Review, approve or reject applications from Manipuri homestay hosts, cooks, guides and experience makers.",
 };
 
-export default function AdminApplicationsPage() {
+export default async function AdminApplicationsPage() {
+  await requireAdmin("/admin/applications");
   return (
     <section aria-labelledby="applications-heading">
       <h2 id="applications-heading" className="font-display text-2xl">

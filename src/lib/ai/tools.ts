@@ -2,7 +2,7 @@
  * The concierge's toolbelt.
  *
  * Every tool is backed by `@/lib/data` — the concierge can only ever recommend
- * things that actually exist in the Manipur Tourism catalogue. Results are deliberately
+ * things that actually exist in the Discover Manipur catalogue. Results are deliberately
  * compact (title, slug, href, one-line summary, price) rather than whole
  * records: it keeps the context small and gives the UI a clean card shape.
  *
@@ -135,7 +135,7 @@ function emptyResults(heading: string, what: string): CatalogueResults {
     heading,
     count: 0,
     items: [],
-    note: `No ${what} in the Manipur Tourism catalogue match that yet. Say so plainly, offer to widen the search, and do not invent listings.`,
+    note: `No ${what} in the Discover Manipur catalogue match that yet. Say so plainly, offer to widen the search, and do not invent listings.`,
   };
 }
 
@@ -422,7 +422,7 @@ export async function assembleItinerary(input: AssembleInput): Promise<Itinerary
       withinABudget ? ` budgeted at about ${inr(input.totalBudgetInr ?? 0)} per person` : ""
     }${
       interests.length ? `, leaning into ${interests.join(", ")}` : ""
-    }. Every stop below links to its page on Manipur Tourism.`,
+    }. Every stop below links to its page on Discover Manipur.`,
     travelMonth: input.travelMonth,
     pace: input.pace,
     groupType: input.groupType,
@@ -663,7 +663,7 @@ async function quoteBooking(input: {
 export const conciergeTools = {
   searchPlaces: tool({
     description:
-      "Search Manipur Tourism's catalogue of places to visit in Manipur — lakes, hills, heritage sites, markets, waterfalls, wildlife. Use this before recommending any place.",
+      "Search Discover Manipur's catalogue of places to visit in Manipur — lakes, hills, heritage sites, markets, waterfalls, wildlife. Use this before recommending any place.",
     inputSchema: z.object({
       query: z.string().optional().describe("Free text, e.g. 'floating lake', 'war memorial', 'sunrise viewpoint'."),
       district: districtEnum.optional(),
@@ -701,7 +701,7 @@ export const conciergeTools = {
   }),
 
   findStays: tool({
-    description: "Find homestays on Manipur Tourism. Use for any question about where to sleep, hosts, or nightly prices.",
+    description: "Find homestays on Discover Manipur. Use for any question about where to sleep, hosts, or nightly prices.",
     inputSchema: z.object({
       query: z.string().optional(),
       district: districtEnum.optional(),
@@ -789,7 +789,7 @@ export const conciergeTools = {
   }),
 
   findTours: tool({
-    description: "Find curated multi-day tours already packaged by Manipur Tourism. Prefer these when someone wants everything organised.",
+    description: "Find curated multi-day tours already packaged by Discover Manipur. Prefer these when someone wants everything organised.",
     inputSchema: z.object({
       query: z.string().optional(),
       maxDurationDays: z.number().int().min(1).max(21).optional(),
@@ -827,7 +827,7 @@ export const conciergeTools = {
 
   buildItinerary: tool({
     description:
-      "Assemble a grounded day-by-day itinerary from real Manipur Tourism listings. Call this once you know roughly how many days, the budget and the interests. The result renders as a timeline in the chat — introduce it in a sentence or two rather than repeating it.",
+      "Assemble a grounded day-by-day itinerary from real Discover Manipur listings. Call this once you know roughly how many days, the budget and the interests. The result renders as a timeline in the chat — introduce it in a sentence or two rather than repeating it.",
     inputSchema: z.object({
       days: z.number().int().min(1).max(14).default(4),
       budget: z.enum(budgetLevels).default("comfortable"),

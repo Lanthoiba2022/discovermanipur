@@ -3,7 +3,7 @@
 /**
  * Saved itinerary persistence.
  *
- * Mock-backed today (localStorage, one key per user id), with the async
+ * Stored in localStorage for now (one key per user id), with the async
  * signatures ready for the database. Moving to `public.saved_itineraries`
  * means session-checked Server Actions, and nothing at the call sites
  * changes — exactly like `src/lib/booking/bookings.ts`.

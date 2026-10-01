@@ -16,7 +16,7 @@ export function writeJSON(key: string, value: unknown) {
   try {
     window.localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    // Quota exceeded or storage blocked — demo state is best-effort only.
+    // Quota exceeded or storage blocked — local state is best-effort only.
   }
 }
 

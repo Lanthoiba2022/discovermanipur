@@ -81,9 +81,9 @@ export function RotatingWordmark({ className }: { className?: string }) {
           lang={script.key === "mtei" ? "mni-Mtei" : script.key === "deva" ? "hi" : "en"}
           style={{ fontSize: script.scale }}
           /* A HANDOVER, not a cross-dissolve.
-             Fading both scripts at once put two different alphabets on the
+             Fading both scripts at once puts two different alphabets on the
              same spot at half opacity each, which reads as a smudge rather
-             than a change — and the blur that was here made it worse. So the
+             than a change — and adding a blur makes it worse. So the
              outgoing word leaves on its own (340ms), and only then does the
              incoming one begin (620ms, starting at 340ms). They never share
              the screen, the movement is pure opacity, and the eye reads one

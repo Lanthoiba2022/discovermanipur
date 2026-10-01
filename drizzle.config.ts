@@ -7,8 +7,12 @@ import { defineConfig } from "drizzle-kit";
  *                         and write the next SQL file into drizzle/
  *   npm run db:migrate    apply pending drizzle/ migrations
  *
- * Uses the DIRECT connection: the pooled one runs PgBouncer in transaction
- * mode, which is fine for the app and wrong for DDL.
+ * Uses DATABASE_URL, the pooled connection, like the app. Neon's pooler runs
+ * PgBouncer in transaction mode; Drizzle applies each migration inside one
+ * transaction, so that is fine. If a migration ever needs session state
+ * (`SET`, advisory locks, `CREATE INDEX CONCURRENTLY`) and fails oddly, run it
+ * once with the direct URL instead:
+ *   DATABASE_URL="<direct url, pooling off>" npm run db:migrate
  */
 try {
   process.loadEnvFile(".env.local");
@@ -16,8 +20,8 @@ try {
   // No .env.local (CI, Vercel) — the variables come from the environment.
 }
 
-const url = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL;
-if (!url) throw new Error("DATABASE_URL_UNPOOLED (or DATABASE_URL) is not set");
+const url = process.env.DATABASE_URL;
+if (!url) throw new Error("DATABASE_URL is not set");
 
 export default defineConfig({
   dialect: "postgresql",

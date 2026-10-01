@@ -11,7 +11,7 @@ import type { MediaImage } from "@/types";
 
 /**
  * Shared detail-page gallery for the experiences / eateries / tours /
- * transport slice. Main frame plus keyboard-operable thumbnails.
+ * transport pages. Main frame plus keyboard-operable thumbnails.
  */
 export function MediaGallery({
   images,

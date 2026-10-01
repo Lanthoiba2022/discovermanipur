@@ -40,7 +40,7 @@ export const DEFAULT_SUGGESTIONS = [
 ];
 
 const DEFAULT_GREETING = [
-  "Khurumjari — welcome. I'm Manipur Tourism's concierge.",
+  "Khurumjari — welcome. I'm Discover Manipur's concierge.",
   "",
   "Tell me how long you have, roughly when you're coming and what you're drawn to, and I'll build you a plan out of real places on this site. Ask me anything about Manipur along the way.",
 ].join("\n");
@@ -232,7 +232,7 @@ export function Concierge({
         role="log"
         aria-live="polite"
         aria-relevant="additions text"
-        aria-label="Conversation with the Manipur Tourism concierge"
+        aria-label="Conversation with the Discover Manipur concierge"
         tabIndex={0}
         className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring md:p-5"
       >
@@ -293,7 +293,7 @@ export function Concierge({
         className="border-t border-border p-4 md:p-5"
       >
         <label htmlFor={inputId} className="sr-only">
-          Ask the Manipur Tourism concierge about travelling in Manipur
+          Ask the Discover Manipur concierge about travelling in Manipur
         </label>
         <div className="flex items-end gap-2">
           <textarea
@@ -330,7 +330,7 @@ export function Concierge({
 
         <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2">
           <p className="text-[11px] leading-snug text-muted-foreground">
-            {footerNote ?? "I only recommend places listed on Manipur Tourism. Verify permits and conditions officially."}
+            {footerNote ?? "I only recommend places listed on Discover Manipur. Verify permits and conditions officially."}
           </p>
           {hasConversation && !busy && (
             <Button

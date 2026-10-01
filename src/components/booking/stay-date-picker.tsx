@@ -9,7 +9,7 @@ import { startOfToday } from "@/lib/booking";
 export type { DateRange };
 
 /**
- * Range calendar, themed onto the Manipur Tourism design tokens through
+ * Range calendar, themed onto the Discover Manipur design tokens through
  * react-day-picker's own custom properties. They are set inline **on the
  * picker root** because the library defines its defaults on that same element,
  * which would otherwise win over an inherited value. No global stylesheet is

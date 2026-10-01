@@ -10,6 +10,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { isPlacePhoto } from "@/lib/data/photos";
 import { cn } from "@/lib/utils";
 import type { MediaImage } from "@/types";
 
@@ -65,6 +66,7 @@ export function HomestayGallery({ images, title }: { images: MediaImage[]; title
         >
           <Image
             src={hero.src}
+            unoptimized={isPlacePhoto(hero.src)}
             alt={hero.alt}
             fill
             preload
@@ -91,6 +93,7 @@ export function HomestayGallery({ images, title }: { images: MediaImage[]; title
               >
                 <Image
                   src={img.src}
+                  unoptimized={isPlacePhoto(img.src)}
                   alt={img.alt}
                   fill
                   sizes="(min-width: 768px) 25vw, 45vw"
@@ -127,6 +130,7 @@ export function HomestayGallery({ images, title }: { images: MediaImage[]; title
             <Image
               key={active.src}
               src={active.src}
+              unoptimized={isPlacePhoto(active.src)}
               alt={active.alt}
               fill
               sizes="(min-width: 1024px) 60vw, 92vw"
@@ -177,7 +181,14 @@ export function HomestayGallery({ images, title }: { images: MediaImage[]; title
                     i === index ? "border-primary" : "border-transparent opacity-70",
                   )}
                 >
-                  <Image src={img.src} alt="" fill sizes="64px" className="object-cover" />
+                  <Image
+                    src={img.src}
+                    unoptimized={isPlacePhoto(img.src)}
+                    alt=""
+                    fill
+                    sizes="64px"
+                    className="object-cover"
+                  />
                 </button>
               ))}
             </div>

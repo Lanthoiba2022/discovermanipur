@@ -1,0 +1,72 @@
+name: Bug report
+description: Something on the site or in the code does not work as it should.
+title: "bug: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. Please search the existing issues first.
+        **Security problems go through private reporting, not here** (see SECURITY.md).
+        Wrong information on a listing? Use the *Content correction* form instead.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug.
+      placeholder: On /homestays, the price filter resets when I change the district.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to /homestays
+        2. Set a price range
+        3. Choose a district
+        4. The price range is cleared
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Page or route
+      description: The URL or route where it happens.
+      placeholder: /homestays?district=Ukhrul
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where did you see it?
+      options:
+        - The live site
+        - Local development (npm run dev)
+        - Local production build (npm run build && npm run start)
+        - CI
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser, device and OS
+      placeholder: Chrome 140 on Android 15, Pixel 8
+  - type: textarea
+    id: logs
+    attributes:
+      label: Screenshots, console output or logs
+      description: Remove any keys, tokens, emails or other personal data before pasting.
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched the existing issues and this is not a duplicate.
+          required: true
+        - label: I would like to work on a fix for this.

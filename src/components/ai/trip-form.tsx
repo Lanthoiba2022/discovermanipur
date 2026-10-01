@@ -122,7 +122,7 @@ export function briefToPrompt(brief: TripBrief): string {
   const lines = [`${bits}.`];
   if (brief.interests.length) lines.push(`I'm most interested in ${brief.interests.join(", ").toLowerCase()}.`);
   if (brief.accessibilityNeeds.trim()) lines.push(`Accessibility: ${brief.accessibilityNeeds.trim()}.`);
-  lines.push("Build me a day-by-day plan from real listings on Manipur Tourism, and tell me anything I should know before I go.");
+  lines.push("Build me a day-by-day plan from real listings on Discover Manipur, and tell me anything I should know before I go.");
 
   return lines.join(" ");
 }

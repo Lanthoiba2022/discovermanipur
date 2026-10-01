@@ -8,18 +8,17 @@
  * Why fetch whole tables rather than push filters into SQL: the catalogue is
  * ~160 rows across nine tables, and `index.ts` already implements the exact
  * filter, sort, paginate and search semantics the UI expects. Loading the rows
- * and reusing that logic keeps behaviour identical to the seed-backed version,
- * which is the contract the routes were written against. React's `cache` makes
- * it one round trip per table per render.
+ * and reusing that logic keeps behaviour identical whether rows come from the
+ * database or the seed fallback. React's `cache` makes it one round trip per
+ * table per render.
  *
  * If the catalogue ever grows past a few thousand rows, this is the seam to
  * change: push `matches`/`sortRows`/`paginate` down into SQL.
  *
- * Visibility is enforced here, not by the database. Under Supabase the anon key
- * only ever saw active homestays and crafts and approved testimonials, because
- * RLS filtered them. This connection is the table owner and sees every row, so
- * each loader passes the same filter as `where` — drop one and hidden listings
- * go public.
+ * Visibility is enforced here, not by the database. This connection is the
+ * table owner and sees every row, so the loaders for homestays and crafts
+ * (`is_active`) and testimonials (`approved`) pass that filter as `where`.
+ * Drop one and hidden listings go public.
  *
  * Each mapper receives the table's Drizzle row type, so a renamed or misspelt
  * column is a type error rather than a silently empty field.
@@ -103,9 +102,8 @@ const arr = <T,>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
  *
  * The 2026 research rows carry their photography in `photo_refs` (Google Places
  * references resolved per request) and have an empty `images`. Every card and
- * gallery in the app reads `images`, so without this they all fell through to
- * the shared placeholder — which is why 100+ different places rendered the same
- * Kangla Sha photo.
+ * gallery in the app reads `images`, so without this they would all fall
+ * through to the shared placeholder.
  *
  * Fixing it here rather than in the ~20 components that render a photo means
  * each of them keeps working unchanged, and there is one place to reason about

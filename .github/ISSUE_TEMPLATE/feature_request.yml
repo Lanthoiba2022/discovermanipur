@@ -1,0 +1,42 @@
+name: Feature request
+description: Suggest an improvement or a new feature for the platform.
+title: "feat: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Want to add a place, homestay or eatery? Use *Suggest a new place* instead.
+        Bigger ideas are easier to shape on [Discord](https://discord.gg/hgGfm6UpU) first.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Who is it for (visitors, local people, hosts, maintainers) and what is hard for them today?
+      placeholder: As a visitor without mobile data in the hills, I cannot ...
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What do you propose?
+      description: Describe the change. Mock-ups and links to similar features elsewhere are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+  - type: input
+    id: area
+    attributes:
+      label: Area of the code, if you know it
+      placeholder: src/app/plan, src/lib/booking
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched the existing issues and docs/GOOD_FIRST_ISSUES.md.
+          required: true
+        - label: I would like to work on this.

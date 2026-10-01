@@ -1,8 +1,8 @@
 /**
- * Chart colours for the host + admin slice.
+ * Chart colours for the host and admin dashboards.
  *
  * These are chart-surface colours, not brand tokens. Each series hue was
- * chosen by stepping the Manipur Tourism hues (loktak teal, kangla gold, leirum plum,
+ * chosen by stepping the Discover Manipur hues (loktak teal, kangla gold, leirum plum,
  * shirui blush) until the palette passed the lightness-band, chroma-floor,
  * CVD-separation and normal-vision checks against the chart surface.
  *

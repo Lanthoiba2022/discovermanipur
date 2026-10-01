@@ -59,12 +59,12 @@ export function ConciergeTeaser() {
 
             <p className="mt-6 max-w-md text-base leading-relaxed text-ivory-50/75">
               Days, distances, seasons and opening hours — worked out against real
-              places, stays and experiences on Manipur Tourism, not guesswork.
+              places, stays and experiences on Discover Manipur, not guesswork.
             </p>
 
             <Button asChild variant="accent" size="lg" className="mt-9">
               <Link href="/plan">
-                Plan with Manipur Tourism
+                Plan with Discover Manipur
                 <ArrowUpRight aria-hidden className="size-4" />
               </Link>
             </Button>
@@ -73,7 +73,7 @@ export function ConciergeTeaser() {
           <div aria-hidden className="glass rounded-[var(--radius-lg)] p-4 md:p-6">
             <p className="eyebrow mb-5 flex items-center gap-2 text-foreground/60">
               <span className="size-2 rounded-full bg-success" />
-              Manipur Tourism concierge
+              Discover Manipur concierge
             </p>
             <ul className="flex flex-col gap-3">
               {PREVIEW.map((m, i) => (

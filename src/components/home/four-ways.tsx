@@ -22,13 +22,10 @@ interface Way {
 
 /**
  * Photography note — every file below was opened and checked before it was
- * used. Two were replaced in the process:
- *   `uhk.jpg`   was a European chalet with terracotta pantiles and clipped
- *               box hedging, captioned as a Manipuri homestay courtyard.
- *   `imafoo.jpg` was a genuine but 399x265 snapshot, i.e. roughly an eighth of
- *               the pixels this band needs across its widest tile, and soft
- *               at any size the tile would render it.
- * Both now point at credited Wikimedia files (see `src/lib/data/photo-credits.ts`).
+ * used. The inherited photo library contains mis-filed stock (`uhk.jpg` is a
+ * European chalet, `imafoo.jpg` is a 399x265 snapshot far too small for this
+ * band), so open any replacement before using it. Credited Wikimedia files are
+ * listed in `src/lib/data/photo-credits.ts`.
  */
 const WAYS: Way[] = [
   {
@@ -76,9 +73,8 @@ const WAYS: Way[] = [
     mayek: "ꯆꯥꯛ",
     title: "Eromba, singju, chak-hao",
     blurb: "Fermented, smoked, wrapped in leaf — the valley's kitchen, mapped.",
-    // A landscape frame on purpose: this tile is a ~5.5:1 letterbox, and the
-    // 3:4 chillies portrait that was here cropped down to a thin band of
-    // out-of-focus background.
+    // A landscape frame on purpose: this tile is a ~5.5:1 letterbox, and a
+    // portrait photo crops down to a thin band of out-of-focus background.
     image: "/file-uploads/manipuri-food-leaf.webp",
     alt: "Manipuri food laid out on a banana leaf — fried cakes, dried fish and a mound of rice.",
     className: "md:col-span-5 min-h-[16rem] md:min-h-[15rem]",

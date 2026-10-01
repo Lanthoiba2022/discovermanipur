@@ -15,9 +15,9 @@ import { LesserKnownCard } from "./lk-card";
  * the band is that these places are not the loud ones. Centred masthead, to
  * put the axis back after the crafts band pushed it left.
  *
- * `hotspots` is whatever the lead hands over — the brief is that `page.tsx`
- * filters `getHotspots({ limit: 8 })` down to the NON-featured rows, so the
- * prop is simply "quieter places" as far as this band is concerned. It makes
+ * `hotspots` is whatever `page.tsx` passes in — it filters the catalogue down
+ * to the first eight NON-featured rows, so the prop is simply "quieter places"
+ * as far as this band is concerned. It makes
  * no assumption about `featured` itself, which means the filter can move or
  * change shape without touching this file.
  */

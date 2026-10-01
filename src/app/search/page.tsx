@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Search",
   description:
-    "Search everything on Manipur Tourism at once — places, homestays, experiences, eateries and multi-day tours across Manipur.",
+    "Search everything on Discover Manipur at once — places, homestays, experiences, eateries and multi-day tours across Manipur.",
   robots: { index: false, follow: true },
 };
 

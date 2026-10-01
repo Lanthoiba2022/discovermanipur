@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { LegalBody, type LegalSection } from "@/components/content/legal-page";
 import { NoteBox } from "@/components/content/prose";
@@ -8,10 +7,13 @@ import { PageHero } from "@/components/content/page-hero";
 export const metadata: Metadata = {
   title: "Accessibility statement",
   description:
-    "Manipur Tourism targets WCAG 2.1 Level AA. What is supported, what we know is still broken, how we test, and how to report a barrier you hit.",
+    "Discover Manipur targets WCAG 2.1 Level AA. What is supported, what we know is still broken, how we test, and how to report a barrier you hit.",
 };
 
-const LAST_UPDATED = "20 September 2026";
+const LAST_UPDATED = "1 October 2026";
+
+const GITHUB_ISSUES_URL = "https://github.com/Lanthoiba2022/Manipur-Tourism-2026/issues";
+const DISCORD_URL = "https://discord.gg/hgGfm6UpU";
 
 const sections: LegalSection[] = [
   {
@@ -20,7 +22,7 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          Manipur Tourism is built to be usable by as many people as possible, including people who navigate
+          Discover Manipur is built to be usable by as many people as possible, including people who navigate
           by keyboard, who use a screen reader or magnifier, who need reduced motion, or who have
           low vision or colour vision deficiency.
         </p>
@@ -182,8 +184,8 @@ const sections: LegalSection[] = [
           <li>Contrast checks on every token pairing in both the light and dark themes.</li>
         </ul>
         <p>
-          This is a demonstration project, so testing is done by the team rather than by an independent
-          auditor. We are stating that plainly rather than implying a certification we do not hold.
+          Discover Manipur is a volunteer-run, open-source project, so testing is done by its
+          contributors rather than by an independent auditor. We are stating that plainly rather than implying a certification we do not hold.
         </p>
       </>
     ),
@@ -217,12 +219,18 @@ const sections: LegalSection[] = [
         </p>
         <ul>
           <li>
-            Use the <Link href="/contact">contact form</Link> and choose{" "}
-            <strong>&ldquo;Accessibility issue&rdquo;</strong> as the enquiry type.
+            Open an issue on{" "}
+            <a href={GITHUB_ISSUES_URL} rel="noreferrer noopener" target="_blank">
+              GitHub
+            </a>{" "}
+            and mention accessibility in the title.
           </li>
           <li>
-            Or email <strong>access@example.com</strong> — a placeholder address for this
-            prototype.
+            Or tell the maintainers on the{" "}
+            <a href={DISCORD_URL} rel="noreferrer noopener" target="_blank">
+              community Discord
+            </a>
+            .
           </li>
         </ul>
         <p>It helps enormously if you can tell us:</p>
@@ -236,8 +244,9 @@ const sections: LegalSection[] = [
           </li>
         </ul>
         <p>
-          We aim to acknowledge reports within five working days and to tell you what we intend to
-          do about it — including if the honest answer is that we cannot fix it soon.
+          The maintainers are volunteers. We aim to acknowledge reports within five working days
+          and to tell you what we intend to do about it — including if the honest answer is that we
+          cannot fix it soon.
         </p>
       </>
     ),
@@ -247,8 +256,8 @@ const sections: LegalSection[] = [
     title: "If we do not get it right",
     body: (
       <p>
-        If you are not satisfied with our response, reply and say so — it escalates to the whole
-        team rather than one person. As a non-commercial demonstration project we are not subject to a
+        If you are not satisfied with our response, reply and say so — it escalates to all the
+        maintainers rather than one person. As a non-commercial community project we are not subject to a
         formal enforcement procedure, but we take reports seriously and we will tell you honestly
         what we can and cannot do.
       </p>
@@ -266,8 +275,15 @@ export default function AccessibilityPage() {
       >
         <NoteBox title="Found a barrier?" className="my-0 max-w-[60ch]">
           <p>
-            Tell us through the <Link href="/contact">contact form</Link> — choose{" "}
-            &ldquo;Accessibility issue&rdquo;. We acknowledge within five working days.
+            Open a{" "}
+            <a href={GITHUB_ISSUES_URL} rel="noreferrer noopener" target="_blank">
+              GitHub issue
+            </a>{" "}
+            or tell us on{" "}
+            <a href={DISCORD_URL} rel="noreferrer noopener" target="_blank">
+              Discord
+            </a>
+            . We aim to acknowledge within five working days.
           </p>
         </NoteBox>
       </PageHero>

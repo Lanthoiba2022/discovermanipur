@@ -27,7 +27,7 @@ const makeSchema = (maxGroup: number) =>
     phone: z
       .string()
       .trim()
-      .regex(/^(\+\d{1,3}[\s-]?)?\d{7,12}$/, "Enter a contact number we can reach you on"),
+      .regex(/^(\+\d{1,3}[\s-]?)?\d{7,12}$/, "Enter a valid phone number"),
   });
 
 type TourBookingValues = {
@@ -68,12 +68,12 @@ export function TourBookingForm({ tour }: { tour: Tour }) {
   }
 
   async function onSubmit(values: TourBookingValues) {
-    // No backend yet — confirmed locally for now.
+    // No backend yet — nothing is sent or stored, and the toast says so.
     await new Promise((resolve) => setTimeout(resolve, 500));
-    toast.success("Tour enquiry received", {
-      description: `${tour.title} · ${values.travellers} traveller${
+    toast.success("Thanks — one more step", {
+      description: `Online enquiries aren't connected yet, so this wasn't sent. To book ${tour.title} for ${values.travellers} traveller${
         values.travellers === 1 ? "" : "s"
-      } departing ${formatDeparture(values.departure)}. Our trip planner will email you an itinerary pack.`,
+      } departing ${formatDeparture(values.departure)}, please contact the tour operator directly.`,
     });
     reset({ departure: departures[0] ?? "", travellers: 2, name: "", email: "", phone: "" });
   }
@@ -251,10 +251,11 @@ export function TourBookingForm({ tour }: { tour: Tour }) {
 
       <Button type="submit" size="lg" disabled={isSubmitting} className="w-full">
         {isSubmitting && <Loader2 className="animate-spin" aria-hidden="true" />}
-        {isSubmitting ? "Sending…" : "Reserve a place"}
+        {isSubmitting ? "One moment…" : "Request a place"}
       </Button>
       <p className="text-center text-xs text-muted-foreground">
-        No payment now. We hold your place for 48 hours while we confirm permits and stays.
+        No payment is taken. Online enquiries are not connected yet, so no place is held — please
+        contact the tour operator directly to book.
       </p>
     </form>
   );

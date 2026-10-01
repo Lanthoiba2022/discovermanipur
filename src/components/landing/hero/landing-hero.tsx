@@ -59,9 +59,8 @@ export function LandingHero() {
       />
 
       <div className="shell relative flex flex-1 flex-col items-center justify-end pb-10 pt-36 text-center md:pb-14 md:pt-44">
-        {/* The Meetei Mayek spelling used to sit here as well as in the
-            wordmark. Now that the wordmark cycles through the scripts, the
-            eyebrow only has to place the state — so it does, and stops. */}
+        {/* The wordmark already cycles through the scripts, so the eyebrow
+            only has to place the state. */}
         <p className="mb-7 flex items-center justify-center gap-4 text-ivory-50/85">
           <span aria-hidden className="h-px w-8 bg-brass-300/50" />
           <span className="eyebrow">North East India</span>

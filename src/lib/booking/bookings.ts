@@ -3,7 +3,7 @@
 /**
  * Booking persistence.
  *
- * Mock-backed today (localStorage), with async signatures ready for the
+ * Stored in localStorage for now, with async signatures ready for the
  * database. Moving to `public.bookings` means Server Actions that resolve the
  * user from the session (see `src/lib/auth/profile.ts`) — nothing at the call
  * sites changes.

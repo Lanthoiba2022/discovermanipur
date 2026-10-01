@@ -11,9 +11,117 @@ const authConfigured =
   Boolean(process.env.NEON_AUTH_BASE_URL?.trim()) &&
   (process.env.NEON_AUTH_COOKIE_SECRET?.trim().length ?? 0) >= 32;
 
+// Not fatal — a fork without Neon still builds and serves the catalogue — but
+// a production build without auth has sign-in, /account, /admin and the host
+// dashboard switched off (see `isDemoAuth` in src/lib/auth/env.ts).
+if (process.env.NODE_ENV === "production" && !authConfigured) {
+  console.warn(
+    "\n[auth] NEON_AUTH_BASE_URL / NEON_AUTH_COOKIE_SECRET (32+ chars) missing: this production build has sign-in disabled.\n",
+  );
+}
+
+const isDev = process.env.NODE_ENV === "development";
+
+/**
+ * Content Security Policy. Every external origin below is one the site really
+ * loads; add to it when a new one appears rather than loosening a directive.
+ *
+ * - Scripts: Google Maps JS (Kangla 3D map) from maps.googleapis.com, which
+ *   pulls its own modules from *.gstatic.com; Vercel Analytics / Speed
+ *   Insights load from the site itself in production and from
+ *   va.vercel-scripts.com in development. `'unsafe-inline'` is there because
+ *   Next.js inlines its bootstrap scripts and a nonce would force every page
+ *   to render dynamically; `'wasm-unsafe-eval'` is for the meshopt decoder
+ *   that unpacks the Kangla 3D model. `'unsafe-eval'` is development-only
+ *   (React uses it for error overlays).
+ * - Images are allowed from any https origin: avatars are user-supplied
+ *   links, and Places photos redirect to Google's CDN.
+ * - Connections: Google map tiles and APIs, OpenStreetMap and Esri tiles and
+ *   the MapLibre glyph server for the 2D maps.
+ * - `frame-ancestors 'none'` (and X-Frame-Options for old browsers) stops the
+ *   site being framed for clickjacking.
+ */
+const csp = [
+  ["default-src", "'self'"],
+  ["base-uri", "'self'"],
+  ["object-src", "'none'"],
+  ["form-action", "'self'"],
+  ["frame-ancestors", "'none'"],
+  [
+    "script-src",
+    "'self'",
+    "'unsafe-inline'",
+    "'wasm-unsafe-eval'",
+    ...(isDev ? ["'unsafe-eval'"] : []),
+    "https://maps.googleapis.com",
+    "https://*.gstatic.com",
+    "https://va.vercel-scripts.com",
+  ],
+  ["style-src", "'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+  ["img-src", "'self'", "data:", "blob:", "https:"],
+  ["font-src", "'self'", "data:", "https://fonts.gstatic.com"],
+  [
+    "connect-src",
+    "'self'",
+    "data:",
+    "blob:",
+    ...(isDev ? ["ws:"] : []),
+    "https://*.googleapis.com",
+    "https://*.gstatic.com",
+    "https://*.google.com",
+    "https://*.tile.openstreetmap.org",
+    "https://server.arcgisonline.com",
+    "https://demotiles.maplibre.org",
+    "https://va.vercel-scripts.com",
+    "https://vitals.vercel-insights.com",
+  ],
+  ["worker-src", "'self'", "blob:"],
+  ["media-src", "'self'", "data:", "blob:"],
+  ["frame-src", "'self'", "https://*.google.com"],
+  ["manifest-src", "'self'"],
+  ...(isDev ? [] : [["upgrade-insecure-requests"]]),
+]
+  .map((directive) => directive.join(" "))
+  .join("; ");
+
+const securityHeaders = [
+  { key: "Content-Security-Policy", value: csp },
+  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), browsing-topics=()",
+  },
+];
+
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   env: {
     NEXT_PUBLIC_AUTH_CONFIGURED: authConfigured ? "true" : "false",
+  },
+  experimental: {
+    serverActions: {
+      // Every Server Action here takes a small form; the 1MB default is only
+      // room for abuse.
+      bodySizeLimit: "128kb",
+    },
+  },
+  async headers() {
+    const privateArea = [
+      { key: "X-Robots-Tag", value: "noindex, nofollow" },
+      { key: "Cache-Control", value: "private, no-store" },
+    ];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      { source: "/account/:path*", headers: privateArea },
+      { source: "/admin/:path*", headers: privateArea },
+      { source: "/host/dashboard/:path*", headers: privateArea },
+      { source: "/auth", headers: privateArea },
+      { source: "/api/auth/:path*", headers: [{ key: "Cache-Control", value: "no-store" }] },
+    ];
   },
   images: {
     /**

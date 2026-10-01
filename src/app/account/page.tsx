@@ -4,7 +4,7 @@ import { OverviewPanel } from "./_components/overview-panel";
 
 export const metadata: Metadata = {
   title: "Account overview",
-  description: "Your Manipur Tourism dashboard — upcoming trips, saved places and profile at a glance.",
+  description: "Your Discover Manipur dashboard — upcoming trips, saved places and profile at a glance.",
   robots: { index: false, follow: false },
 };
 

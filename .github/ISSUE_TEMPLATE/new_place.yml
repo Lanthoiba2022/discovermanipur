@@ -1,0 +1,123 @@
+name: Suggest a new place
+description: Suggest a place, attraction, homestay, eatery, experience or craft maker in Manipur.
+title: "place: "
+labels: ["content", "new-place", "needs-verification"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping people discover Manipur. Every suggestion is checked against
+        public sources before it is listed, so links help a lot.
+
+        Please do not include private individuals' phone numbers, home addresses or emails.
+        Contact details the business publishes itself are fine.
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      description: The name people use, plus the Meitei Mayek or local name if there is one.
+      placeholder: Shirui Kashung Peak (Shirui Hills)
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Place or attraction
+        - Homestay or other stay
+        - Eatery, cafe or restaurant
+        - Experience or activity
+        - Tour or guide
+        - Transport
+        - Festival or event
+        - Handloom, craft or traditional wear
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: district
+    attributes:
+      label: District
+      options:
+        - Bishnupur
+        - Chandel
+        - Churachandpur
+        - Imphal East
+        - Imphal West
+        - Jiribam
+        - Kakching
+        - Kamjong
+        - Kangpokpi
+        - Noney
+        - Pherzawl
+        - Senapati
+        - Tamenglong
+        - Tengnoupal
+        - Thoubal
+        - Ukhrul
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      description: Village or locality, and a map link or coordinates if you have them.
+      placeholder: Shirui village, about 15 km from Ukhrul town; https://maps.app.goo.gl/...
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is it worth visiting?
+      description: What makes it special, in your own words. Facts over adjectives.
+    validations:
+      required: true
+  - type: textarea
+    id: practical
+    attributes:
+      label: Practical details
+      description: Opening hours, entry fee, best season, how to get there, accessibility. Leave out anything you are not sure of.
+  - type: textarea
+    id: sources
+    attributes:
+      label: Public sources
+      description: |
+        Links that confirm the place exists and the details above: an official tourism or
+        district page, news coverage, the business's own website or social page, or a
+        public map listing. One per line.
+      placeholder: |
+        https://...
+        https://...
+    validations:
+      required: true
+  - type: textarea
+    id: photos
+    attributes:
+      label: Photos and their licence
+      description: |
+        Drag photos in here, or link to them. For each one say who took it and under what
+        licence (for example "I took it, CC BY 4.0", or a Wikimedia Commons link). Photos
+        copied from Google, Instagram or blogs cannot be used without the owner's
+        permission.
+  - type: dropdown
+    id: relationship
+    attributes:
+      label: Your relationship to this place
+      description: Owners and staff are welcome to suggest their own business; we just need to know.
+      options:
+        - I am not the owner and not connected to it
+        - I am the owner, or I work there or represent it
+        - I am a relative or friend of the owner
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched the site and existing issues, and this place is not listed yet.
+          required: true
+        - label: The photos I shared are my own or carry a licence that allows reuse.
+        - label: I would like to add this listing myself in a pull request.

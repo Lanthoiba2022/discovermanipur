@@ -9,10 +9,13 @@ import { PageHero } from "@/components/content/page-hero";
 export const metadata: Metadata = {
   title: "Terms of use",
   description:
-    "The terms on which you may use Manipur Tourism: what the platform is, what it is not, what content you may rely on, and what happens when something goes wrong.",
+    "The terms on which you may use Discover Manipur: what the platform is, what it is not, what content you may rely on, and what happens when something goes wrong.",
 };
 
-const LAST_UPDATED = "20 September 2026";
+const LAST_UPDATED = "1 October 2026";
+
+const GITHUB_URL = "https://github.com/Lanthoiba2022/Manipur-Tourism-2026";
+const DISCORD_URL = "https://discord.gg/hgGfm6UpU";
 
 /**
  * Photograph credits, read from the database.
@@ -52,7 +55,7 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          By using Manipur Tourism you agree to these terms. If you do not agree with them, please do not use
+          By using Discover Manipur you agree to these terms. If you do not agree with them, please do not use
           the site. We may update them; the date at the top of this page tells you when they last
           changed, and continued use after a change means you accept the new version.
         </p>
@@ -65,12 +68,13 @@ const sections: LegalSection[] = [
   },
   {
     id: "what-this-is",
-    title: "What Manipur Tourism is — and is not",
+    title: "What Discover Manipur is — and is not",
     body: (
       <>
         <p>
-          Manipur Tourism is a non-commercial demonstration site. It
-          demonstrates how a tourism platform for Manipur could work.
+          Discover Manipur is a non-commercial, open-source public platform run by volunteers. It
+          promotes tourism and local sightseeing in Manipur, for visitors and for the people who
+          live here. It is not an official government service.
         </p>
         <ul>
           <li>
@@ -87,8 +91,9 @@ const sections: LegalSection[] = [
             page.
           </li>
           <li>
-            Any &ldquo;booking&rdquo; made here is a prototype record. It creates no contract,
-            reserves nothing, and obliges no one to host you.
+            Any &ldquo;booking&rdquo; made here is a request saved in your own browser. It is not
+            sent to the property, creates no contract, reserves nothing, and obliges no one to host
+            you.
           </li>
         </ul>
       </>
@@ -101,7 +106,7 @@ const sections: LegalSection[] = [
       <>
         <p>
           You must be at least 13 years old to use the site, and at least 18 to submit a host
-          application or to make any arrangement that would be a commitment in a real deployment. If
+          application or to make an arrangement with a host. If
           you are using the site on behalf of an organisation, you confirm that you are authorised
           to do so.
         </p>
@@ -114,7 +119,7 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          Where accounts are enabled in the demo, you are responsible for the accuracy of what you
+          If you create an account, you are responsible for the accuracy of what you
           enter and for keeping your credentials to yourself. Tell us promptly if you believe your
           account has been accessed by someone else.
         </p>
@@ -132,8 +137,10 @@ const sections: LegalSection[] = [
       <>
         <p>
           Listings, prices, timings, distances, permit descriptions and festival dates on this site
-          are illustrative content assembled to demonstrate the platform. They are offered in good faith and may
-          be incomplete, out of date or wrong.
+          are compiled by volunteers and offered in good faith. They may be incomplete, out of date
+          or wrong. Some stay, food, experience and transport listings are still sample entries that
+          show how the platform works and do not describe a real business; they are being replaced
+          with researched listings over time.
         </p>
         <p>
           <strong>
@@ -153,7 +160,8 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          The AI concierge produces draft itineraries. Its output is generated automatically, is not
+          The AI concierge produces draft itineraries. It is switched off on the live site at
+          present; when it is on, its output is generated automatically, is not
           reviewed by a person before you see it, and can be confidently wrong about opening hours,
           travel times, costs, access and safety.
         </p>
@@ -198,7 +206,7 @@ const sections: LegalSection[] = [
         <p>
           You keep ownership of anything you submit — a review, a photograph, a host listing. By
           submitting it, you grant us a non-exclusive, worldwide, royalty-free licence to display it
-          on the platform for the purpose of running and demonstrating the service.
+          on the platform for the purpose of running the service.
         </p>
         <p>
           You confirm you have the right to grant that licence, including any consent required from
@@ -220,7 +228,7 @@ const sections: LegalSection[] = [
         </p>
         <p>
           We do not inspect or verify properties and we do not mediate disputes between hosts and
-          guests. No commission is charged, because no money moves through this prototype.
+          guests. No commission is charged, because no money moves through the platform.
         </p>
       </>
     ),
@@ -231,8 +239,13 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          The Manipur Tourism name, the interface, the written content and the design system belong
-          to the project team. Photographs remain the property of their respective photographers; if
+          The source code is open source and published on{" "}
+          <a href={GITHUB_URL} rel="noreferrer noopener" target="_blank">
+            GitHub
+          </a>
+          under the MIT License, which says how you may use, copy and change it. The Discover
+          Manipur name and logo identify the project and should not be used in a way that suggests
+          our endorsement. Photographs remain the property of their respective photographers; if
           you own an image on this site and want it removed or credited differently, contact us and
           we will act.
         </p>
@@ -300,9 +313,9 @@ const sections: LegalSection[] = [
     title: "Availability and changes",
     body: (
       <p>
-        This is a demonstration deployment. We may change, suspend or withdraw any part of the service,
-        or take the whole site down, at any time and without notice. Data held in the prototype may
-        be deleted when the deployment ends.
+        Discover Manipur is run by volunteers. We may change, suspend or withdraw any part of the
+        service, or take the whole site down, at any time and without notice. If the site is shut
+        down, the account data in its database is intended to be deleted rather than archived.
       </p>
     ),
   },
@@ -322,8 +335,15 @@ const sections: LegalSection[] = [
     title: "Contact",
     body: (
       <p>
-        Questions about these terms go to <strong>hello@example.com</strong> — a placeholder
-        address for this prototype — or through the <Link href="/contact">contact form</Link>.
+        Questions about these terms go to the maintainers on our{" "}
+        <a href={DISCORD_URL} rel="noreferrer noopener" target="_blank">
+          community Discord
+        </a>{" "}
+        or through a{" "}
+        <a href={`${GITHUB_URL}/issues`} rel="noreferrer noopener" target="_blank">
+          GitHub issue
+        </a>
+        .
       </p>
     ),
   },
@@ -335,11 +355,11 @@ export default async function TermsPage() {
       <PageHero
         eyebrow={`Terms of use · Last updated ${LAST_UPDATED}`}
         title="The rules, written so you can actually read them."
-        lede="Short paragraphs, no defined-term thicket. The most important line is the one about this being a prototype rather than a travel company."
+        lede="Short paragraphs, no defined-term thicket. The most important line is the one about this being a community platform rather than a travel company."
       >
         <NoteBox title="The one that matters" tone="warning" className="my-0 max-w-[60ch]">
           <p>
-            Manipur Tourism does not sell travel. Nothing booked here is a real reservation, and you must
+            Discover Manipur does not sell travel. Nothing booked here is a real reservation, and you must
             confirm permits, advisories and road conditions with official sources before you
             travel.
           </p>

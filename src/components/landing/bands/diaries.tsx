@@ -48,7 +48,7 @@ export function DiariesBand({
           title="The first diaries are still on the road"
           body="Accounts appear here as travellers come back down from the hills and tell us how it went — unedited, hosts named, nothing bought."
           href="/about"
-          cta="How Manipur Tourism works"
+          cta="How Discover Manipur works"
         />
       ) : (
         <ul

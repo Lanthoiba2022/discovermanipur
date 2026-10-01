@@ -173,8 +173,8 @@ export function ApplyWizard() {
 
   async function onSubmit(values: ApplicationValues) {
     setSubmitting(true);
-    // No upload backend yet — the File objects stay in memory and the record is
-    // shaped exactly like the HostApplication the API will accept.
+    // No backend yet — nothing is sent anywhere. The File objects stay in memory
+    // and the record is shaped like a `HostApplication`.
     await new Promise((resolve) => setTimeout(resolve, 600));
     const reference = makeReference();
     const application: HostApplication = {
@@ -195,8 +195,8 @@ export function ApplyWizard() {
     }
     setSubmitted({ reference, application });
     setSubmitting(false);
-    toast.success("Application received", {
-      description: `Keep your reference ${reference}. We call within three working days.`,
+    toast.success("Application ready", {
+      description: `Your reference is ${reference}. Applications aren't sent or reviewed yet, so nobody will contact you about it.`,
     });
   }
 
@@ -208,10 +208,20 @@ export function ApplyWizard() {
         <span className="mx-auto mb-5 flex size-14 items-center justify-center rounded-full bg-success/12 text-success">
           <Check className="size-7" aria-hidden="true" />
         </span>
-        <h2 className="font-display text-3xl">Thank you — it is with us</h2>
+        <h2 className="font-display text-3xl">Thank you for applying</h2>
         <p className="mt-4 text-muted-foreground">
-          A coordinator from the {submitted.application.district} team will call you within three
-          working days, and visit within two weeks.
+          Applications are not sent to or reviewed by anyone yet, so nobody will call or visit
+          about this one. Hosting is free — no fee and no commission — and guests pay you
+          directly. Questions? Ask on the{" "}
+          <a
+            href="https://discord.gg/hgGfm6UpU"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="text-primary underline underline-offset-4"
+          >
+            community Discord
+          </a>
+          .
         </p>
 
         <dl className="mt-8 grid gap-4 rounded-[var(--radius)] bg-surface-sunken p-6 text-left sm:grid-cols-2">
@@ -240,12 +250,12 @@ export function ApplyWizard() {
         </dl>
 
         <p className="mt-6 text-sm text-muted-foreground">
-          Write the reference down — quote it in any email or call about this application.
+          Write the reference down if you would like to quote it when you ask about hosting.
         </p>
 
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button asChild>
-            <Link href="/host/dashboard">Track it in your dashboard</Link>
+            <Link href="/host/dashboard">Open the host dashboard</Link>
           </Button>
           <Button asChild variant="outline">
             <Link href="/host/guidelines">Read the hosting standards</Link>
@@ -421,7 +431,7 @@ export function ApplyWizard() {
               {...register("description")}
             />
             <p id="description-help" className="mt-1.5 text-xs text-muted-foreground">
-              Write it as you would say it. Meiteilon, Hindi or English — we translate.
+              Write it as you would say it, in Meiteilon, Hindi or English.
             </p>
             {errors.description && (
               <p className="mt-1.5 text-sm text-destructive">{errors.description.message}</p>
@@ -433,7 +443,7 @@ export function ApplyWizard() {
       {/* Step 3 — contact + photos */}
       {step === 2 && (
         <fieldset className="space-y-6">
-          <legend className="font-display text-2xl">How do we reach you?</legend>
+          <legend className="font-display text-2xl">Your contact details</legend>
 
           <div>
             <Label htmlFor="applicantName">Your full name</Label>
@@ -484,8 +494,8 @@ export function ApplyWizard() {
           <div>
             <Label htmlFor="photos">Photos of your place</Label>
             <p className="mt-1.5 text-xs text-muted-foreground">
-              Up to 10 images, 8 MB each. Phone photos in daylight are fine — a Manipur Tourism photographer
-              visits before you go live. Photos stay on your device until we build the upload.
+              Up to 10 images, 8 MB each. Phone photos in daylight are fine. Photos stay on your
+              device — nothing is uploaded yet.
             </p>
             <label
               htmlFor="photos"
@@ -570,8 +580,7 @@ export function ApplyWizard() {
               <Link href="/host/guidelines" className="text-primary underline underline-offset-4">
                 hosting standards
               </Link>{" "}
-              and everything above is true. I understand Manipur Tourism may visit and verify before my
-              listing goes live.
+              and everything above is true.
             </Label>
           </div>
           {errors.agree && <p className="text-sm text-destructive">{errors.agree.message}</p>}

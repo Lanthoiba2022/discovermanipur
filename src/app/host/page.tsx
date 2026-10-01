@@ -15,11 +15,8 @@ import { Button } from "@/components/ui/button";
 export const metadata: Metadata = {
   title: "Become a host",
   description:
-    "Share a room, a kitchen, a loom or a route you have walked all your life. Manipur Tourism brings travellers to Manipuri families, cooks, guides and weavers — you set the price and the rules.",
+    "Share a room, a kitchen, a loom or a route you have walked all your life. Discover Manipur brings travellers to Manipuri families, cooks, guides and weavers — you set the price and the rules.",
 };
-
-
-
 
 export default async function HostLandingPage() {
   const [why, weHandle, gallery] = await Promise.all([
@@ -27,8 +24,7 @@ export default async function HostLandingPage() {
     getHostWeHandle(),
     getHostGallery(),
   ]);
-  // Resolve icon names to components here so the JSX below can keep using
-  // `<item.icon />` rather than restructuring every map body.
+  // The content rows store icon names; resolve them to components once here.
   const WHY = why.map((c) => ({ ...c, icon: iconFor(c.icon) }));
   const WE_HANDLE = weHandle.map((c) => ({ ...c, icon: iconFor(c.icon) }));
   const GALLERY = gallery;
@@ -40,7 +36,7 @@ export default async function HostLandingPage() {
           <div>
             <p className="eyebrow mb-5 flex items-center gap-3 text-muted-foreground">
               <span className="weave-rule inline-block h-[3px] w-10 rounded-full" />
-              Host with Manipur Tourism
+              Host with Discover Manipur
             </p>
             <RevealText
               as="h1"
@@ -50,7 +46,7 @@ export default async function HostLandingPage() {
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
               A spare room around the courtyard. A kitchen that turns out eromba and singju every
               evening. A loom in the back shed. A ridge you have walked since you were nine. Travellers
-              come to Manipur for exactly these — and Manipur Tourism puts them in front of the families,
+              come to Manipur for exactly these — and Discover Manipur puts them in front of the families,
               cooks, guides and weavers who have them.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -65,7 +61,7 @@ export default async function HostLandingPage() {
               </Button>
             </div>
             <p className="mt-5 text-sm text-muted-foreground">
-              Free to list · 10% service fee · a call within three working days
+              Free to apply · no commission · applications are not reviewed yet
             </p>
           </div>
 
@@ -94,7 +90,7 @@ export default async function HostLandingPage() {
 
       <Section
         eyebrow="Why host"
-        title="Three reasons families across the valley and the hills said yes"
+        title="Three reasons to list your home here"
         className="bg-surface-sunken"
       >
         <ul className="grid gap-6 md:grid-cols-3">
@@ -116,9 +112,9 @@ export default async function HostLandingPage() {
       </Section>
 
       <Section
-        eyebrow="What we handle"
-        title="You cook, host and guide. We do the rest."
-        description="Hosting should not mean learning to run a website, chase payments or argue over a cancellation."
+        eyebrow="What to expect"
+        title="You cook, host and guide. Here is what the platform does today."
+        description="Hosting is free and run by volunteers. Some of this is live now and some is still being built."
       >
         <ul className="grid gap-6 sm:grid-cols-2">
           {WE_HANDLE.map((item, i) => (
@@ -184,8 +180,9 @@ export default async function HostLandingPage() {
               Ready when you are
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-primary-foreground/80">
-              Start the application now, save it half-finished, and come back to it. Nothing is
-              published until you and the district team are both happy.
+              Start the application now, save it half-finished in this browser, and come back to
+              it. Applications are not sent for review yet, so nothing is published and nothing is
+              charged.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Button asChild size="lg" variant="accent">

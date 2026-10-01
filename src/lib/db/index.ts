@@ -16,9 +16,9 @@ import * as schema from "./schema";
  * the bundled seed data.
  *
  * There is no Row Level Security in front of these queries: the app connects
- * as the table owner, so every WHERE that RLS used to add implicitly (active
- * homestays, approved testimonials, the signed-in user's own rows) has to be
- * written into the query. Keep that in mind when adding one.
+ * as the table owner, so every visibility WHERE (active homestays, approved
+ * testimonials, the signed-in user's own rows) has to be written into the
+ * query. Keep that in mind when adding one.
  */
 
 const rawUrl = process.env.DATABASE_URL?.trim() ?? "";

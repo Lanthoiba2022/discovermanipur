@@ -1,7 +1,7 @@
 import type { Eatery } from "@/types";
 
 /**
- * Manipur Tourism eatery seed data — 16 places to eat, from lake shacks to fine dining.
+ * Discover Manipur eatery seed data — 16 places to eat, from lake shacks to fine dining.
  * priceRange: 1 = under ₹300 a head, 2 = ₹300–800, 3 = ₹800+.
  */
 export const eateries: Eatery[] = [

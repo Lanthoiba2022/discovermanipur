@@ -1,6 +1,6 @@
 import type { Testimonial } from "@/types";
 
-/** Manipur Tourism testimonial seed data — 10 guest quotes. */
+/** Discover Manipur testimonial seed data — 10 guest quotes. */
 export const testimonials: Testimonial[] = [
   {
     id: "ts-priya-sharma",

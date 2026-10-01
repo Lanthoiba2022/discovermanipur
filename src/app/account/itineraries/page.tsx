@@ -4,7 +4,7 @@ import { ItinerariesPanel } from "@/components/itineraries/itineraries-panel";
 
 export const metadata: Metadata = {
   title: "Itineraries",
-  description: "The Manipur trip plans you saved from the Manipur Tourism concierge.",
+  description: "The Manipur trip plans you saved from the Discover Manipur concierge.",
   robots: { index: false, follow: false },
 };
 

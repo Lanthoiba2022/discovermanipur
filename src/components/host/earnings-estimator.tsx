@@ -13,9 +13,6 @@ import {
 } from "@/components/ui/select";
 import { formatINR } from "@/lib/utils";
 
-/** Manipur Tourism's share of a booking. Shown openly — no hidden cut. */
-const SERVICE_FEE = 0.1;
-
 interface Preset {
   id: string;
   label: string;
@@ -93,10 +90,11 @@ export function EarningsEstimator() {
     setUnits(next.defaultUnits);
   }
 
-  const { gross, fee, net, yearly } = useMemo(() => {
+  // Discover Manipur takes no fee or commission and no money moves through the
+  // site, so what guests pay is what the host receives.
+  const { gross, yearly } = useMemo(() => {
     const g = Math.max(0, rate) * Math.max(0, units);
-    const f = Math.round(g * SERVICE_FEE);
-    return { gross: g, fee: f, net: g - f, yearly: (g - f) * 12 };
+    return { gross: g, yearly: g * 12 };
   }, [rate, units]);
 
   return (
@@ -168,12 +166,12 @@ export function EarningsEstimator() {
       </div>
 
       <div className="flex flex-col rounded-[var(--radius)] bg-surface-sunken p-6">
-        <p className="eyebrow text-muted-foreground">Indicative monthly payout</p>
+        <p className="eyebrow text-muted-foreground">What guests would pay you each month</p>
         <p
           className="mt-3 font-sans text-4xl font-semibold leading-none text-foreground md:text-5xl"
           aria-live="polite"
         >
-          {formatINR(net)}
+          {formatINR(gross)}
         </p>
         <p className="mt-2 text-sm text-muted-foreground">
           about {formatINR(yearly, { compact: true })} across a full year at this rate
@@ -187,12 +185,12 @@ export function EarningsEstimator() {
             <dd className="tabular-nums text-foreground">{formatINR(gross)}</dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-muted-foreground">Manipur Tourism service fee (10%)</dt>
-            <dd className="tabular-nums text-foreground">−{formatINR(fee)}</dd>
+            <dt className="text-muted-foreground">Discover Manipur fee or commission</dt>
+            <dd className="tabular-nums text-foreground">{formatINR(0)}</dd>
           </div>
           <div className="flex justify-between gap-4 border-t border-border pt-2 font-medium">
-            <dt>You receive</dt>
-            <dd className="tabular-nums">{formatINR(net)}</dd>
+            <dt>Guests pay you directly</dt>
+            <dd className="tabular-nums">{formatINR(gross)}</dd>
           </div>
         </dl>
 

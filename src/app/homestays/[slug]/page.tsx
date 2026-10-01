@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   if (!homestay) {
     return {
       title: "Homestay not found",
-      description: "This Manipur homestay is no longer listed on Manipur Tourism.",
+      description: "This Manipur homestay is no longer listed on Discover Manipur.",
     };
   }
 

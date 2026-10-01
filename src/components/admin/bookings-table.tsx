@@ -140,7 +140,7 @@ export function BookingsTable({ initial }: { initial: HostBookingRecord[] }) {
               <EmptyRow
                 colSpan={7}
                 title="No bookings match these filters"
-                body="Try another status or booking type — the ledger holds every booking made through Manipur Tourism."
+                body="Try another status or booking type — the ledger holds every booking made through Discover Manipur."
               />
             ) : (
               filtered.map((b) => (

@@ -14,7 +14,7 @@ export function PriceBreakdown({ quote }: { quote: StayQuote }) {
       </div>
       <div className="flex items-baseline justify-between gap-4">
         <dt className="text-muted-foreground underline decoration-dotted underline-offset-4">
-          Manipur Tourism service fee
+          Discover Manipur service fee
         </dt>
         <dd className="tabular-nums">{formatINR(quote.serviceFee)}</dd>
       </div>
