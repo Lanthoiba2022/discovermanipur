@@ -16,6 +16,8 @@ node_modules/
 /build/
 /next-env.d.ts
 *.tsbuildinfo
+# MapLibre worker, copied from node_modules by `predev` / `prebuild`
+/public/maplibre/
 
 # Tests and browser automation
 /coverage/

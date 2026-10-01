@@ -12,7 +12,7 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // Vendored MapLibre worker, copied from node_modules by `predev`/`prebuild`.
+    // MapLibre worker, copied from node_modules by `predev`/`prebuild` (git-ignored).
     "public/maplibre/**",
     // Git-ignored local folders (see .gitignore); ESLint does not read it.
     "_private/**",
