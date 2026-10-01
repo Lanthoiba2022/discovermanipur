@@ -7,7 +7,7 @@
  *
  *   Google Maps Platform terms let you cache a place `id` and a photo reference
  *   indefinitely, but NOT the image bytes. So `photo_refs` holds references and
- *   the image is fetched per request. See data/research/PHOTOS.md.
+ *   the image is fetched per request.
  *
  *   It also keeps the Places key on the server: the browser only ever sees
  *   this route's URL. Set `GOOGLE_PLACES_API_KEY` to a server-only key
