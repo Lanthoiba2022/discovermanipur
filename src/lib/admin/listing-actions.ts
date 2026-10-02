@@ -7,10 +7,11 @@
  */
 
 import { eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { z } from "zod";
 
 import { getSessionProfile } from "@/lib/auth/dal";
+import { CATALOGUE_TAG } from "@/lib/data/cache";
 import { getDb, schema } from "@/lib/db";
 
 import type { ModerationResult } from "./types";
@@ -35,9 +36,11 @@ const activeInput = z.strictObject({
  * Catalogue rows feed prerendered pages across the site (home, detail pages,
  * district and search views, the sitemap), so a moderation change refreshes
  * every cached route rather than a list that would drift out of date. It also
- * re-renders the admin page in the same response.
+ * re-renders the admin page in the same response. `updateTag` drops the cached
+ * catalogue rows those routes read, so they re-render with the change.
  */
 function refreshSite() {
+  updateTag(CATALOGUE_TAG);
   revalidatePath("/", "layout");
 }
 

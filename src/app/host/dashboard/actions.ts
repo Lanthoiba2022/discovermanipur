@@ -1,9 +1,10 @@
 "use server";
 
 import { and, eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { z } from "zod";
 
+import { CATALOGUE_TAG } from "@/lib/data/cache";
 import { getDb, schema } from "@/lib/db";
 import { getSessionUser } from "@/lib/host/role";
 
@@ -49,8 +50,9 @@ export async function setHomestayPaused(input: {
       .returning({ slug: schema.homestays.slug, isActive: schema.homestays.is_active });
     if (!row) return FAILED;
 
-    // The public catalogue is read per render, but the detail pages and the
-    // sitemap are prerendered, so they must be told to rebuild.
+    // Drop the cached catalogue rows, then rebuild the prerendered detail page,
+    // listing and sitemap that read them.
+    updateTag(CATALOGUE_TAG);
     revalidatePath(`/homestays/${row.slug}`);
     revalidatePath("/homestays");
     revalidatePath("/sitemap.xml");

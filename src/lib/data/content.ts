@@ -16,6 +16,8 @@ import { asc, eq } from "drizzle-orm";
 
 import { getDb, schema, type Db } from "@/lib/db";
 
+import { CONTENT_TAG, sharedRead } from "./cache";
+
 import { faqGroups as seedFaqGroups, type FaqGroup } from "@/app/faq/faq-data";
 import { PHOTO_CREDITS, type PhotoCredit } from "./photo-credits";
 import { kanglaSources, kanglaStops } from "@/lib/immersive/kangla";
@@ -47,18 +49,29 @@ import {
 /* ------------------------------------------------------------------ helper -- */
 
 /**
- * Run a read, returning its result, or `null` if the database is unavailable
- * or errors. Wrapped in React's `cache` at each call site so one
- * render hits the network once per key, not once per component.
+ * A read cached across requests (see `./cache.ts`). `run` gets the live
+ * connection and throws on error; it is only invoked through `fromDb`, which
+ * has already checked a database is configured.
  *
  * Every table read here holds published editorial copy with no hidden rows, so
  * unlike `catalogue.ts` none of these queries needs a visibility filter.
  */
-async function fromDb<T>(run: (db: Db) => Promise<T>, label: string): Promise<T | null> {
-  const db = getDb();
-  if (!db) return null;
+function contentRead<A extends unknown[], T>(
+  key: string,
+  run: (db: Db, ...args: A) => Promise<T>,
+): (...args: A) => Promise<T> {
+  return sharedRead(`content:${key}`, CONTENT_TAG, (...args: A) => run(getDb() as Db, ...args));
+}
+
+/**
+ * Run a cached read, returning its result, or `null` if the database is
+ * unavailable or errors. Wrapped in React's `cache` at call sites that run
+ * more than once per render.
+ */
+async function fromDb<T>(read: () => Promise<T>, label: string): Promise<T | null> {
+  if (!getDb()) return null;
   try {
-    return await run(db);
+    return await read();
   } catch (err) {
     console.warn(`[content] ${label} fell back to seed:`, err);
     return null;
@@ -72,16 +85,16 @@ async function fromDb<T>(run: (db: Db) => Promise<T>, label: string): Promise<T 
  * differs per key, so the cast happens here, at the single boundary where the
  * key and its expected type are both known.
  */
+const readSection = contentRead("site_sections", (db, key: string) =>
+  db
+    .select({ payload: schema.site_sections.payload })
+    .from(schema.site_sections)
+    .where(eq(schema.site_sections.key, key))
+    .limit(1),
+);
+
 const sectionPayload = cache(async (key: string): Promise<unknown[] | null> => {
-  const rows = await fromDb(
-    (db) =>
-      db
-        .select({ payload: schema.site_sections.payload })
-        .from(schema.site_sections)
-        .where(eq(schema.site_sections.key, key))
-        .limit(1),
-    `site_sections[${key}]`,
-  );
+  const rows = await fromDb(() => readSection(key), `site_sections[${key}]`);
   const payload = rows?.[0]?.payload;
   return Array.isArray(payload) ? payload : null;
 });
@@ -136,24 +149,24 @@ export async function getHomeStatement(): Promise<string> {
 
 /* ------------------------------------------------------------------- FAQs -- */
 
+const readFaqGroups = contentRead("faq_groups", (db, audience: "traveller" | "host") =>
+  db.query.faq_groups.findMany({
+    columns: { slug: true, label: true, blurb: true, sort_order: true },
+    where: eq(schema.faq_groups.audience, audience),
+    orderBy: asc(schema.faq_groups.sort_order),
+    with: {
+      faq_items: {
+        columns: { question: true, answer: true, sort_order: true },
+        orderBy: asc(schema.faq_items.sort_order),
+      },
+    },
+  }),
+);
+
 export async function getFaqGroups(
   audience: "traveller" | "host" = "traveller",
 ): Promise<FaqGroup[]> {
-  const rows = await fromDb(
-    (db) =>
-      db.query.faq_groups.findMany({
-        columns: { slug: true, label: true, blurb: true, sort_order: true },
-        where: eq(schema.faq_groups.audience, audience),
-        orderBy: asc(schema.faq_groups.sort_order),
-        with: {
-          faq_items: {
-            columns: { question: true, answer: true, sort_order: true },
-            orderBy: asc(schema.faq_items.sort_order),
-          },
-        },
-      }),
-    `faq_groups[${audience}]`,
-  );
+  const rows = await fromDb(() => readFaqGroups(audience), `faq_groups[${audience}]`);
 
   if (!rows || rows.length === 0) {
     return audience === "host"
@@ -182,21 +195,21 @@ export async function getAllFaqItems(): Promise<QaItem[]> {
 
 /* ---------------------------------------------------------- photo credits -- */
 
+const readPhotoCredits = contentRead("photo_credits", (db) =>
+  db
+    .select({
+      file: schema.photo_credits.file,
+      alt: schema.photo_credits.alt,
+      subject: schema.photo_credits.subject,
+      author: schema.photo_credits.author,
+      licence: schema.photo_credits.licence,
+      source: schema.photo_credits.source,
+    })
+    .from(schema.photo_credits),
+);
+
 export const getPhotoCredits = cache(async (): Promise<PhotoCredit[]> => {
-  const rows = await fromDb(
-    (db) =>
-      db
-        .select({
-          file: schema.photo_credits.file,
-          alt: schema.photo_credits.alt,
-          subject: schema.photo_credits.subject,
-          author: schema.photo_credits.author,
-          licence: schema.photo_credits.licence,
-          source: schema.photo_credits.source,
-        })
-        .from(schema.photo_credits),
-    "photo_credits",
-  );
+  const rows = await fromDb(readPhotoCredits, "photo_credits");
   if (!rows || rows.length === 0) return PHOTO_CREDITS;
   return rows as PhotoCredit[];
 });
@@ -209,16 +222,28 @@ export async function getPhotoCredit(file: string): Promise<PhotoCredit | undefi
 
 export type ImmersiveStop = (typeof kanglaStops)[number];
 
+const readImmersiveStops = contentRead("immersive_stops", (db, scene: string) =>
+  db
+    .select({
+      slug: schema.immersive_stops.slug,
+      name: schema.immersive_stops.name,
+      short_name: schema.immersive_stops.short_name,
+      subtitle: schema.immersive_stops.subtitle,
+      image: schema.immersive_stops.image,
+      alt: schema.immersive_stops.alt,
+      description: schema.immersive_stops.description,
+      look_for: schema.immersive_stops.look_for,
+      reconstruction: schema.immersive_stops.reconstruction,
+      camera: schema.immersive_stops.camera,
+      target: schema.immersive_stops.target,
+    })
+    .from(schema.immersive_stops)
+    .where(eq(schema.immersive_stops.scene, scene))
+    .orderBy(asc(schema.immersive_stops.sort_order)),
+);
+
 export async function getImmersiveStops(scene = "kangla-fort"): Promise<ImmersiveStop[]> {
-  const rows = await fromDb(
-    (db) =>
-      db
-        .select()
-        .from(schema.immersive_stops)
-        .where(eq(schema.immersive_stops.scene, scene))
-        .orderBy(asc(schema.immersive_stops.sort_order)),
-    `immersive_stops[${scene}]`,
-  );
+  const rows = await fromDb(() => readImmersiveStops(scene), `immersive_stops[${scene}]`);
   if (!rows || rows.length === 0) return kanglaStops;
 
   return rows.map((r) => ({
@@ -241,20 +266,20 @@ export async function getImmersiveStops(scene = "kangla-fort"): Promise<Immersiv
   })) as ImmersiveStop[];
 }
 
+const readImmersiveSources = contentRead("immersive_sources", (db, scene: string) =>
+  db
+    .select({
+      title: schema.immersive_sources.title,
+      href: schema.immersive_sources.href,
+      note: schema.immersive_sources.note,
+    })
+    .from(schema.immersive_sources)
+    .where(eq(schema.immersive_sources.scene, scene))
+    .orderBy(asc(schema.immersive_sources.sort_order)),
+);
+
 export async function getImmersiveSources(scene = "kangla-fort") {
-  const rows = await fromDb(
-    (db) =>
-      db
-        .select({
-          title: schema.immersive_sources.title,
-          href: schema.immersive_sources.href,
-          note: schema.immersive_sources.note,
-        })
-        .from(schema.immersive_sources)
-        .where(eq(schema.immersive_sources.scene, scene))
-        .orderBy(asc(schema.immersive_sources.sort_order)),
-    `immersive_sources[${scene}]`,
-  );
+  const rows = await fromDb(() => readImmersiveSources(scene), `immersive_sources[${scene}]`);
   if (!rows || rows.length === 0) return kanglaSources;
   return rows as { title: string; href: string; note: string }[];
 }
