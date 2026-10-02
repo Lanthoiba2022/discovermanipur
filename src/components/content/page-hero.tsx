@@ -1,7 +1,6 @@
-import Image from "next/image";
 import type { ReactNode } from "react";
 
-import { Reveal } from "@/components/motion/reveal";
+import { CatalogueImage } from "@/components/shared/catalogue-image";
 import { cn } from "@/lib/utils";
 
 /**
@@ -22,6 +21,12 @@ export interface HeroFigure {
   label: string;
 }
 
+/**
+ * The hero photo. Every caller passes a `/file-uploads` file today, but it
+ * renders through `CatalogueImage`, so a Places or community `src` passed
+ * later skips `/_next/image` instead of throwing in dev and 400ing in prod.
+ * A Places photo here would also need its credit rendered by the caller.
+ */
 export interface PageHeroImage {
   src: string;
   alt: string;
@@ -96,6 +101,12 @@ const TONES: Record<HeroTone, ToneStyle> = {
  * Always carries the `pt-28 md:pt-32` offset the fixed, transparent site
  * header needs, and marks itself `data-hero-tone="dark"` on the dark grounds
  * so the header flips to ivory in CSS on the first paint.
+ *
+ * No scroll `Reveal` in here. Everything in a page opener is above the fold
+ * and the h1 or the photo is usually the page's LCP element, so none of it may
+ * start invisible or wait for JavaScript. The entrance is `hero-rise`
+ * (globals.css): a transform-only 16 px rise with the same 70 ms stagger,
+ * painted with the first HTML and switched off for reduced motion.
  */
 export function PageHero({
   eyebrow,
@@ -193,12 +204,12 @@ export function PageHero({
             t.dark ? "pb-16 md:pb-24" : cn("border-b pb-12 md:pb-16", t.rule),
           )}
         >
-          <Reveal>
+          <div className="hero-rise">
             <p className={cn("eyebrow rule-flank rule-flank-start", t.eyebrow)}>{eyebrow}</p>
-          </Reveal>
+          </div>
 
           <div className="mt-7 grid gap-x-14 gap-y-9 md:mt-9 lg:grid-cols-12">
-            <Reveal className={cn("flex flex-col lg:col-span-7", image && "lg:pb-1")}>
+            <div className={cn("hero-rise flex flex-col lg:col-span-7", image && "lg:pb-1")}>
               <h1>
                 <span className={cn("block", scale === "display" ? "section-word" : "text-headline")}>
                   {title}
@@ -228,12 +239,12 @@ export function PageHero({
               {image && figureIndex && (
                 <div className="mt-10 md:mt-12">{figureIndex}</div>
               )}
-            </Reveal>
+            </div>
 
             {image ? (
-              <Reveal delayIndex={1} className="lg:col-span-4 lg:col-start-9 lg:self-end">
+              <div className="hero-rise [--rise-delay:70ms] lg:col-span-4 lg:col-start-9 lg:self-end">
                 <div className="mask-arch relative aspect-4/5 w-full bg-surface-sunken sm:aspect-3/2 lg:aspect-4/5">
-                  <Image
+                  <CatalogueImage
                     src={image.src}
                     alt={image.alt}
                     fill
@@ -242,24 +253,21 @@ export function PageHero({
                     className="object-cover"
                   />
                 </div>
-              </Reveal>
+              </div>
             ) : (
               (lede || children) && (
-                <Reveal
-                  delayIndex={1}
-                  className="flex flex-col justify-end gap-8 lg:col-span-5 lg:pb-1"
-                >
+                <div className="hero-rise flex flex-col justify-end gap-8 [--rise-delay:70ms] lg:col-span-5 lg:pb-1">
                   {lede && <div className="text-lead text-muted-foreground">{lede}</div>}
                   {children}
-                </Reveal>
+                </div>
               )
             )}
           </div>
 
           {!image && figureIndex && (
-            <Reveal delayIndex={2} className="mt-12 md:mt-16">
+            <div className="hero-rise mt-12 [--rise-delay:140ms] md:mt-16">
               {figureIndex}
-            </Reveal>
+            </div>
           )}
         </div>
       </div>

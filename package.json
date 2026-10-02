@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=20.9.0"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "next dev",
@@ -11,8 +11,9 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
+    "test": "node --import tsx --test 'tests/unit/**/*.test.ts'",
     "audio:kangla": "python3 scripts/generate-kangla-audio-edge.py",
-    "audio:kangla:indic": "python scripts/generate-kangla-audio-indic-parler.py",
+    "audio:kangla:indic": "python3 scripts/generate-kangla-audio-indic-parler.py",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
@@ -21,6 +22,8 @@
     "photos:ttl": "node --env-file=.env.local scripts/probe-place-photo-ttl.mjs",
     "photos:ttl:check": "node scripts/probe-place-photo-ttl.mjs --check",
     "maplibre:worker": "node scripts/copy-maplibre-worker.mjs",
+    "assets:optimize": "node scripts/optimize-assets.mjs",
+    "assets:check": "node scripts/check-assets.mjs",
     "predev": "node scripts/copy-maplibre-worker.mjs",
     "prebuild": "node scripts/copy-maplibre-worker.mjs && node scripts/clear-data-cache.mjs"
   },
@@ -34,29 +37,15 @@
     "@fontsource-variable/noto-serif-devanagari": "^5.3.0",
     "@fontsource/jetbrains-mono": "^5.3.0",
     "@hookform/resolvers": "^5.9.1",
-    "@neondatabase/auth": "^0.5.0-beta",
+    "@neondatabase/auth": "0.5.0-beta",
     "@radix-ui/react-accordion": "^1.2.20",
-    "@radix-ui/react-aspect-ratio": "^1.1.15",
     "@radix-ui/react-avatar": "^1.2.6",
-    "@radix-ui/react-checkbox": "^1.3.11",
     "@radix-ui/react-dialog": "^1.1.23",
-    "@radix-ui/react-dropdown-menu": "^2.1.24",
     "@radix-ui/react-label": "^2.1.15",
-    "@radix-ui/react-popover": "^1.1.23",
-    "@radix-ui/react-progress": "^1.1.16",
-    "@radix-ui/react-radio-group": "^1.4.7",
-    "@radix-ui/react-scroll-area": "^1.2.18",
     "@radix-ui/react-select": "^2.3.7",
     "@radix-ui/react-separator": "^1.1.15",
-    "@radix-ui/react-slider": "^1.4.7",
     "@radix-ui/react-slot": "^1.3.3",
-    "@radix-ui/react-switch": "^1.3.7",
     "@radix-ui/react-tabs": "^1.1.21",
-    "@radix-ui/react-tooltip": "^1.2.16",
-    "@react-three/drei": "^10.7.9",
-    "@react-three/fiber": "^9.8.1",
-    "@tanstack/react-query": "^5.104.0",
-    "@types/three": "^0.186.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.8.0",
     "@vercel/functions": "^3.9.9",
@@ -66,9 +55,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
     "drizzle-orm": "^0.45.3",
-    "embla-carousel-react": "^8.6.0",
     "framer-motion": "^13.4.4",
-    "gsap": "^3.15.0",
     "lenis": "^1.3.26",
     "lucide-react": "^1.48.0",
     "maplibre-gl": "^6.11.2",
@@ -82,22 +69,27 @@
     "sharp": "^0.35.5",
     "sonner": "^2.0.8",
     "tailwind-merge": "^3.7.0",
-    "tailwindcss-animate": "^1.0.7",
     "three": "^0.186.1",
     "zod": "^4.6.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/google.maps": "^3.66.4",
-    "@types/node": "^20",
+    "@types/node": "^24",
     "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.186.0",
     "drizzle-kit": "^0.31.11",
     "eslint": "^9",
     "eslint-config-next": "16.3.8",
     "tailwindcss": "^4",
     "tsx": "^4.23.15",
     "typescript": "^5"
+  },
+  "overrides": {
+    "@neondatabase/auth": {
+      "zod": "$zod"
+    }
   }
 }

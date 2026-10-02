@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
-import { format } from "date-fns";
+import { format, isValid, parseISO } from "date-fns";
 import { Ban, CalendarDays, Loader2, MapPin, Users } from "lucide-react";
 import { toast } from "sonner";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAuth } from "@/lib/auth";
+import { useAuth } from "@/lib/auth/use-auth";
 import {
   BookingError,
   cancelBooking,
@@ -37,6 +37,17 @@ const STATUS_STYLE: Record<BookingStatus, { label: string; className: string }> 
   cancelled: { label: "Cancelled", className: "bg-destructive/12 text-destructive" },
 };
 
+/**
+ * A date-only booking value ("2026-10-05") as "5 Oct 2026". `parseISO` reads a
+ * bare date as local midnight, so the day shown is the day booked in every
+ * time zone; `new Date("2026-10-05")` is UTC midnight, which west of UTC
+ * formats as the day before.
+ */
+function formatDay(value: string): string {
+  const date = parseISO(value);
+  return isValid(date) ? format(date, "d MMM yyyy") : value;
+}
+
 function BookingRow({
   booking,
   onCancel,
@@ -53,9 +64,9 @@ function BookingRow({
         <div className="min-w-0">
           <h4 className="font-display text-lg leading-snug">
             {booking.href ? (
-              <Link href={booking.href} className="underline-offset-4 hover:underline">
+              <IntentLink href={booking.href} className="underline-offset-4 hover:underline">
                 {booking.refTitle}
-              </Link>
+              </IntentLink>
             ) : (
               booking.refTitle
             )}
@@ -75,8 +86,8 @@ function BookingRow({
           <dt className="sr-only">Dates</dt>
           <CalendarDays className="size-4 text-muted-foreground" aria-hidden="true" />
           <dd>
-            {format(new Date(booking.startDate), "d MMM yyyy")}
-            {booking.endDate ? ` – ${format(new Date(booking.endDate), "d MMM yyyy")}` : ""}
+            {formatDay(booking.startDate)}
+            {booking.endDate ? ` – ${formatDay(booking.endDate)}` : ""}
           </dd>
         </div>
         <div className="flex items-center gap-2">
@@ -88,7 +99,10 @@ function BookingRow({
         </div>
         <div className="flex items-center gap-2">
           <dt className="text-muted-foreground">Total</dt>
-          <dd className="font-medium tabular-nums">{formatINR(booking.totalPrice)}</dd>
+          {/* A zero total means the listing has no published rate, not a free stay. */}
+          <dd className="font-medium tabular-nums">
+            {booking.totalPrice > 0 ? formatINR(booking.totalPrice) : "Price on request"}
+          </dd>
         </div>
       </dl>
 
@@ -202,7 +216,7 @@ export function BookingsPanel() {
             total.
           </p>
           <Button asChild className="mt-6">
-            <Link href="/homestays">Find a stay</Link>
+            <IntentLink href="/homestays">Find a stay</IntentLink>
           </Button>
         </div>
       ) : (

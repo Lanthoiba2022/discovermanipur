@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import {
   ArrowUpRight,
   BedDouble,
@@ -14,7 +12,10 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { IntentLink } from "@/components/shared/intent-link";
+import { CatalogueImage } from "@/components/shared/catalogue-image";
 import { Badge } from "@/components/ui/badge";
+import { thumbnailCredit } from "@/lib/data/photos";
 import { cn } from "@/lib/utils";
 import type { CatalogueItem, CatalogueKind, CatalogueResults } from "@/lib/ai/schema";
 
@@ -38,11 +39,19 @@ const kindLabel: Record<CatalogueKind, string> = {
   transport: "Transport",
 };
 
+/**
+ * One concierge result. Most thumbnails are Google Places photos, so the image
+ * renders through `CatalogueImage` (they must bypass `/_next/image`) and
+ * carries its credit as the one-line 9px overlay the gallery grid uses: a
+ * licence condition, not decoration. The model never sees `image` or
+ * `imageCredit` (`toModelOutput` in src/lib/ai/tools.ts); the UI part does.
+ */
 export function ResultCard({ item }: { item: CatalogueItem }) {
   const Icon = kindIcon[item.kind] ?? MapPin;
+  const credit = thumbnailCredit(item.image, item.imageCredit);
 
   return (
-    <Link
+    <IntentLink
       href={item.href}
       className={cn(
         "group relative flex gap-3 rounded-[var(--radius)] border border-border bg-surface p-3",
@@ -54,7 +63,12 @@ export function ResultCard({ item }: { item: CatalogueItem }) {
     >
       {item.image ? (
         <div className="relative size-16 shrink-0 overflow-hidden rounded-[var(--radius-sm)] bg-muted">
-          <Image src={item.image} alt="" fill sizes="64px" className="object-cover" />
+          <CatalogueImage src={item.image} alt="" fill sizes="64px" className="object-cover" />
+          {credit && (
+            <span className="pointer-events-none absolute inset-x-1 bottom-1 truncate text-right text-[9px] leading-none text-white/70 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
+              {credit}
+            </span>
+          )}
         </div>
       ) : (
         <div className="flex size-16 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-muted text-muted-foreground">
@@ -79,7 +93,7 @@ export function ResultCard({ item }: { item: CatalogueItem }) {
           {item.meta && <span className="truncate">{item.meta}</span>}
         </div>
       </div>
-    </Link>
+    </IntentLink>
   );
 }
 
@@ -88,7 +102,7 @@ export function ResultCards({ results }: { results: CatalogueResults }) {
     return (
       <div className="rounded-[var(--radius)] border border-dashed border-border-strong bg-surface-sunken p-4 text-xs text-muted-foreground">
         <span className="font-medium text-foreground">Nothing in the catalogue for that yet.</span> Try a wider search, or
-        browse <Link href="/hotspots" className="text-primary underline underline-offset-4">all places</Link>.
+        browse <IntentLink href="/hotspots" className="text-primary underline underline-offset-4">all places</IntentLink>.
       </div>
     );
   }

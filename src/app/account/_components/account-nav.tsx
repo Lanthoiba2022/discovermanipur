@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bookmark, CalendarDays, LayoutDashboard, Map, MapPinned, User } from "lucide-react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { cn } from "@/lib/utils";
 
 const TABS = [
@@ -26,7 +26,7 @@ export function AccountNav() {
           const Icon = tab.icon;
           return (
             <li key={tab.href} className="flex-1">
-              <Link
+              <IntentLink
                 href={tab.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
@@ -38,7 +38,7 @@ export function AccountNav() {
               >
                 <Icon className="size-4" aria-hidden="true" />
                 {tab.label}
-              </Link>
+              </IntentLink>
             </li>
           );
         })}

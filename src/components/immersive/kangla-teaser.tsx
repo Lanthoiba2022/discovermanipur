@@ -1,7 +1,7 @@
 import Image from "next/image";
-import Link from "next/link";
 import { ArrowUpRight, Map } from "lucide-react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { cn } from "@/lib/utils";
 
 /**
@@ -27,7 +27,7 @@ export function KanglaTeaser({ compact = false }: { compact?: boolean }) {
       aria-label="Explore Kangla in 3D"
     >
       <div className={compact ? undefined : "shell-mid"}>
-        <Link
+        <IntentLink
           href="/explore/kangla"
           className="group relative grid overflow-hidden rounded-[var(--radius-lg)] bg-ink-950 text-ivory-50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring md:grid-cols-[0.85fr_1fr]"
         >
@@ -72,7 +72,7 @@ export function KanglaTeaser({ compact = false }: { compact?: boolean }) {
               OpenStreetMap
             </p>
           </div>
-        </Link>
+        </IntentLink>
       </div>
     </section>
   );

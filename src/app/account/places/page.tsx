@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { ImageOff, MapPinned, Plus } from "lucide-react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { StatusBadge } from "@/components/community/status-badge";
 import { VerifyEmailPanel } from "@/components/community/verify-email-panel";
 import { Button } from "@/components/ui/button";
@@ -44,9 +44,9 @@ function Heading({ children }: { children?: ReactNode }) {
         <p className="mt-2 text-muted-foreground">
           Places you have listed. Each one is published once {UPVOTES_REQUIRED} verified members upvote it
           within {VOTING_WINDOW_HOURS} hours, or held for an admin to review if it does not get there in time.{" "}
-          <Link href="/community#how-verification-works" className="text-primary underline underline-offset-4">
+          <IntentLink href="/community#how-verification-works" className="text-primary underline underline-offset-4">
             How verification works
-          </Link>
+          </IntentLink>
         </p>
       </div>
       {children}
@@ -142,9 +142,9 @@ function PlaceRow({ place }: { place: MySubmission }) {
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <h3 className="font-display text-lg leading-snug">
-            <Link href={`/community/${place.slug}`} className="underline-offset-4 hover:underline">
+            <IntentLink href={`/community/${place.slug}`} className="underline-offset-4 hover:underline">
               {place.name}
-            </Link>
+            </IntentLink>
           </h3>
           <StatusBadge status={place.status} />
         </div>
@@ -166,10 +166,10 @@ export default async function Page() {
 
   const addButton = viewer?.canParticipate ? (
     <Button asChild>
-      <Link href="/community/new">
+      <IntentLink href="/community/new">
         <Plus aria-hidden="true" />
         Add a place
-      </Link>
+      </IntentLink>
     </Button>
   ) : null;
 

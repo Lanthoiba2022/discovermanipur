@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { UUID, n } from "@/components/admin/community-parts";
 import { CommunityPlacesTable } from "@/components/admin/community-places-table";
 import { AdminUnavailable } from "@/components/admin/unavailable";
@@ -103,7 +103,7 @@ export default async function AdminCommunityPlacesPage({ searchParams }: { searc
             const active = tab.status === status;
             return (
               <li key={tab.status}>
-                <Link
+                <IntentLink
                   href={queueHref({ status: tab.status, submitter, q })}
                   aria-current={active ? "page" : undefined}
                   className={cn(
@@ -124,7 +124,7 @@ export default async function AdminCommunityPlacesPage({ searchParams }: { searc
                       {n(counts[tab.status])}
                     </span>
                   )}
-                </Link>
+                </IntentLink>
               </li>
             );
           })}
@@ -145,12 +145,12 @@ export default async function AdminCommunityPlacesPage({ searchParams }: { searc
           Search
         </Button>
         {q && (
-          <Link
+          <IntentLink
             href={queueHref({ status, submitter })}
             className="text-sm text-primary underline-offset-4 hover:underline sm:pb-3"
           >
             Clear search
-          </Link>
+          </IntentLink>
         )}
         {rows && (
           <p className="text-sm text-muted-foreground sm:ml-auto sm:pb-3" aria-live="polite">
@@ -163,9 +163,9 @@ export default async function AdminCommunityPlacesPage({ searchParams }: { searc
       {submitterName && (
         <p className="mb-5 rounded-[var(--radius)] bg-muted px-4 py-3 text-sm text-foreground">
           Showing places listed by <strong className="font-medium">{submitterName}</strong> ·{" "}
-          <Link href={queueHref({ status, q })} className="text-primary underline-offset-4 hover:underline">
+          <IntentLink href={queueHref({ status, q })} className="text-primary underline-offset-4 hover:underline">
             clear
-          </Link>
+          </IntentLink>
           <span className="sr-only"> the contributor filter</span>
         </p>
       )}

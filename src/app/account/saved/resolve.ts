@@ -16,6 +16,10 @@ const keyOf = (ref: { kind: SavedKind; slug: string }) => `${ref.kind}:${ref.slu
  * Cards for the public listings of every kind in `refs`, keyed by `kind:slug`;
  * a reference with no entry no longer points at a public listing. Inactive homestays are left out by `getHomestays`, so a hidden
  * listing never surfaces through someone's old bookmark.
+ *
+ * `imageCredit` carries the lead photo's credit with it: for the research rows
+ * that photo is a Google Places photo, whose attribution must be shown
+ * wherever the photo is.
  */
 export async function resolveCards(refs: readonly SavedRef[]): Promise<Map<string, Card>> {
   const kinds = new Set(refs.map((ref) => ref.kind));
@@ -33,6 +37,7 @@ export async function resolveCards(refs: readonly SavedRef[]): Promise<Map<strin
       title: h.title,
       subtitle: h.location,
       image: h.images[0]?.src,
+      imageCredit: h.images[0]?.credit,
       href: `/homestays/${h.slug}`,
     });
   }
@@ -43,6 +48,7 @@ export async function resolveCards(refs: readonly SavedRef[]): Promise<Map<strin
       title: h.name,
       subtitle: h.location,
       image: h.images[0]?.src,
+      imageCredit: h.images[0]?.credit,
       href: `/hotspots/${h.slug}`,
     });
   }
@@ -53,6 +59,7 @@ export async function resolveCards(refs: readonly SavedRef[]): Promise<Map<strin
       title: e.title,
       subtitle: e.location,
       image: e.images[0]?.src,
+      imageCredit: e.images[0]?.credit,
       href: `/experiences/${e.slug}`,
     });
   }

@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Check, Route, Star, Users } from "lucide-react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { MediaGallery } from "@/components/shared/media-gallery";
 import { TransportEnquiryForm } from "@/components/transport/transport-enquiry-form";
 import { modeLabel } from "@/components/transport/transport-filters";
 import { Badge } from "@/components/ui/badge";
 import { formatINR } from "@/lib/utils";
 import { getTransportBySlug, getTransportOptions } from "@/lib/data";
+import { ogImagesFor } from "@/lib/seo/og";
 
 type Params = { slug: string };
 
@@ -40,7 +41,8 @@ export async function generateMetadata({
     openGraph: {
       title: option.name,
       description: option.description.slice(0, 160),
-      images: option.images[0] ? [{ url: option.images[0].src }] : undefined,
+      // 1200 px optimizer variant of a self-hosted photo, else the site card.
+      images: ogImagesFor(option.images[0]),
     },
   };
 }
@@ -54,9 +56,9 @@ export default async function TransportDetailPage({ params }: { params: Promise<
     <article className="pb-24">
       <div className="shell pt-28 md:pt-32">
         <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-          <Link href="/transport" className="hover:text-foreground">
+          <IntentLink href="/transport" className="hover:text-foreground">
             Transport
-          </Link>
+          </IntentLink>
           <span aria-hidden="true"> / </span>
           <span className="text-foreground">{option.name}</span>
         </nav>

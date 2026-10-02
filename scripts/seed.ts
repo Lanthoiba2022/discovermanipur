@@ -1,7 +1,10 @@
 /**
  * Push the local seed catalogue and editorial content into the database.
  *
- *   npm run db:seed
+ *   npm run db:seed -- --confirm-host=<host>
+ *
+ * Without `--confirm-host` it prints the target host and database and exits
+ * without connecting (see `confirmTarget`).
  *
  * Idempotent: every table upserts on a natural key, so re-running reconciles
  * rather than duplicating. Connects as the database owner. This is a
@@ -72,6 +75,38 @@ if (!url) {
   );
   process.exit(1);
 }
+
+/**
+ * Refuse to write to a database the operator did not name on the command line.
+ *
+ * `.env.local` usually holds the PRODUCTION connection string, so running this
+ * script by habit, or from shell history, would write to production. Print the
+ * target (host and database only, never the user or password) and stop unless
+ * the same host was passed as `--confirm-host=<host>`.
+ */
+function confirmTarget(connectionString: string): void {
+  let target: URL;
+  try {
+    target = new URL(connectionString);
+  } catch {
+    console.error("DATABASE_URL is not a valid connection URL.");
+    process.exit(1);
+  }
+  const host = target.hostname;
+  const database = decodeURIComponent(target.pathname.replace(/^\//, "")) || "(default)";
+  console.log(`Target: ${host}/${database}`);
+
+  if (!process.argv.slice(2).includes(`--confirm-host=${host}`)) {
+    console.error(
+      "Refusing to seed without confirming the target. This upserts every seed row and " +
+        "overwrites live edits to matching rows. If this is the database you mean, run:\n" +
+        `  npm run db:seed -- --confirm-host=${host}`,
+    );
+    process.exit(1);
+  }
+}
+
+confirmTarget(url);
 
 const pool = new pg.Pool({ connectionString: url, max: 1 });
 const db = drizzle({ client: pool });

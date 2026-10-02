@@ -13,7 +13,7 @@ import {
   Utensils,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import Link from "next/link";
+import { IntentLink } from "@/components/shared/intent-link";
 
 import { BandRail } from "@/components/landing/band-rail";
 import { ShowcaseBand } from "@/components/landing/showcase-band";
@@ -67,7 +67,7 @@ function ExperienceCard({ experience }: { experience: Experience }) {
 
   return (
     <li className={RAIL_ITEM}>
-      <Link
+      <IntentLink
         href={`/experiences/${experience.slug}`}
         className="flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface transition-[transform,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-flat)] hover:-translate-y-1 hover:shadow-[var(--shadow-md)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
       >
@@ -127,7 +127,7 @@ function ExperienceCard({ experience }: { experience: Experience }) {
             </div>
           </div>
         </div>
-      </Link>
+      </IntentLink>
     </li>
   );
 }

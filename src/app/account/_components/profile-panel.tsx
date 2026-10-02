@@ -11,13 +11,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  isAuthConfigured,
-  profileSchema,
-  updateProfile,
-  useAuth,
-  type ProfileValues,
-} from "@/lib/auth";
+import { isAuthConfigured } from "@/lib/auth/env";
+import { updateProfile } from "@/lib/auth/actions";
+import { profileSchema, type ProfileValues } from "@/lib/auth/schemas";
+import { useAuth } from "@/lib/auth/use-auth";
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;

@@ -73,6 +73,24 @@ Out of scope:
 - The local development session used when Neon Auth is not configured. It stores data in
   your own browser on purpose and is switched off in production builds.
 
+## Known and accepted advisories
+
+`npm audit` reports these. They have been reviewed and accepted; a report that only
+repeats one of them is not needed.
+
+- **esbuild development server (GHSA-67mh-4wv8-2f99), moderate.** It reaches the tree
+  only through `drizzle-kit` (`@esbuild-kit/esm-loader`), a devDependency. The advisory
+  is about esbuild's own development server answering requests from other websites.
+  drizzle-kit uses esbuild to load its config file and never starts that server, and
+  drizzle-kit is not installed in production or bundled into the site, so the deployed
+  app is not exposed. The only fix npm offers is a major downgrade of drizzle-kit, so
+  the advisory stays until drizzle-kit moves to a patched esbuild.
+
+Dependency changes in pull requests go through GitHub's dependency review, which fails
+on any new high or critical advisory. `@neondatabase/auth`, which bundles Better Auth, is
+a beta pinned to an exact version and upgraded by hand after the sign-up, verification
+code and sign-in flows are tested on a preview.
+
 ## Rules for testing
 
 - **Never access, change or delete other people's accounts or data.** Test only with

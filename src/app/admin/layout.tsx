@@ -12,7 +12,11 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   const user = await requireAdmin("/admin");
 
   return (
-    <div className="shell pb-24 pt-28 md:pt-32">
+    // `data-clarity-mask`: Clarity session replay blanks the whole admin area
+    // before a recording leaves the browser. These pages render other
+    // people's email addresses, bookings and moderation queues, and Clarity's
+    // default masking covers typed input, not rendered text.
+    <div data-clarity-mask="true" className="shell pb-24 pt-28 md:pt-32">
       <header className="mb-6">
         <p className="eyebrow mb-3 text-muted-foreground">Discover Manipur operations</p>
         <h1 className="font-display text-4xl leading-tight md:text-5xl">Admin</h1>

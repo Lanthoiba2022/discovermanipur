@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { IntentLink } from "@/components/shared/intent-link";
 
 import { cn } from "@/lib/utils";
 
@@ -50,7 +50,7 @@ export function BandEmpty({
         {body}
       </p>
 
-      <Link
+      <IntentLink
         href={href}
         className={cn(
           // 44px tall with room to spare, so it clears the touch-target floor
@@ -64,7 +64,7 @@ export function BandEmpty({
         )}
       >
         {cta}
-      </Link>
+      </IntentLink>
     </div>
   );
 }

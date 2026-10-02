@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { Fragment, type ReactNode } from "react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { cn } from "@/lib/utils";
 
 /**
@@ -38,9 +38,9 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
       // `javascript:` and friends must never reach an href.
       if (/^\/(?![\/\\])/.test(href)) {
         nodes.push(
-          <Link key={key} href={href} className={classes}>
+          <IntentLink key={key} href={href} className={classes}>
             {label}
-          </Link>,
+          </IntentLink>,
         );
       } else if (/^https?:\/\//i.test(href)) {
         nodes.push(

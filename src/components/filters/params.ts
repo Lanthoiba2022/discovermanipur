@@ -1,9 +1,11 @@
 /**
- * Server-safe helpers for reading URL-driven filter state.
+ * Server- and client-safe helpers for reading URL-driven filter state.
  *
- * Every index route in Experiences / Eateries / Tours / Transport
- * reads its filters out of `searchParams` with these helpers so that the
- * rendered page is fully shareable and server-rendered.
+ * The static catalogue listings (Experiences, Eateries, Tours, Transport,
+ * the store) parse the browser's query string with these helpers, via
+ * `searchToRawParams`, and server-filtered pages such as /community parse
+ * their `searchParams` prop with the same ones. Either way the URL is the
+ * whole filter state, so every filtered view is shareable.
  */
 
 export type RawSearchParams = Record<string, string | string[] | undefined>;

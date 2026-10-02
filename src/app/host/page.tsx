@@ -1,8 +1,8 @@
 import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { UPVOTES_REQUIRED, VOTING_WINDOW_HOURS } from "@/lib/community/rules";
 import { getHostGallery, getHostWeHandle, getHostWhy } from "@/lib/data/content";
 import { iconFor } from "@/lib/icons";
@@ -52,13 +52,13 @@ export default async function HostLandingPage() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg">
-                <Link href="/community/new">
+                <IntentLink href="/community/new">
                   Add your place
                   <ArrowRight className="size-4" aria-hidden="true" />
-                </Link>
+                </IntentLink>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link href="/host/guidelines">Read the hosting standards</Link>
+                <IntentLink href="/host/guidelines">Read the hosting standards</IntentLink>
               </Button>
             </div>
             <p className="mt-5 text-sm text-muted-foreground">
@@ -187,10 +187,10 @@ export default async function HostLandingPage() {
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Button asChild size="lg" variant="accent">
-                <Link href="/community/new">
+                <IntentLink href="/community/new">
                   Add your place
                   <ArrowRight className="size-4" aria-hidden="true" />
-                </Link>
+                </IntentLink>
               </Button>
               <Button
                 asChild
@@ -198,7 +198,7 @@ export default async function HostLandingPage() {
                 variant="outline"
                 className="border-ivory-50/50 text-ivory-50 hover:bg-ivory-50 hover:text-ningthou-900"
               >
-                <Link href="/host/guidelines">Hosting standards</Link>
+                <IntentLink href="/host/guidelines">Hosting standards</IntentLink>
               </Button>
             </div>
           </div>

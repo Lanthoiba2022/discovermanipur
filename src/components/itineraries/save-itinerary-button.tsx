@@ -1,13 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { BookmarkCheck, BookmarkPlus, LogIn } from "lucide-react";
 import { toast } from "sonner";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/lib/auth";
+import { useAuth } from "@/lib/auth/use-auth";
 import { planToSavedInput, saveItinerary, useItineraryStorage } from "@/lib/itineraries";
 import type { ItineraryPlan } from "@/lib/ai/schema";
 
@@ -28,10 +28,10 @@ export function SaveItineraryButton({ plan }: { plan: ItineraryPlan }) {
   if (!isLoading && !isAuthenticated) {
     return (
       <Button asChild variant="outline" size="sm">
-        <Link href={`/auth?next=${encodeURIComponent(pathname)}`}>
+        <IntentLink href={`/auth?next=${encodeURIComponent(pathname)}`}>
           <LogIn aria-hidden className="size-4" />
           Sign in to save
-        </Link>
+        </IntentLink>
       </Button>
     );
   }

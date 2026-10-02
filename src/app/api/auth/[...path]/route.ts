@@ -38,13 +38,18 @@ function guarded(handler: Handler): Handler {
     const any = rateLimit("auth", ip, RATE_ANY);
     if (!any.ok) return tooManyRequests(any);
 
-    if (request.method === "GET" || request.method === "HEAD") return handler(request, context);
-
+    // Checked for every method, reads included: Better Auth's `verify-email`
+    // (the link form of email verification) is a GET carrying a token, so a
+    // POST-only check left a guessable-secret endpoint on the loose bucket.
+    // `get-session` and the other plain reads do not match and stay on it.
     const path = (await context.params).path.join("/");
     if (SENSITIVE.test(path)) {
       const verdict = rateLimit("auth-sensitive", ip, RATE_SENSITIVE);
       if (!verdict.ok) return tooManyRequests(verdict);
     }
+
+    // Reads have no body to cap.
+    if (request.method === "GET" || request.method === "HEAD") return handler(request, context);
 
     // Buffered here, under a cap, because the upstream proxy reads the whole
     // body with no limit of its own.

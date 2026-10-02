@@ -20,7 +20,27 @@ import { titleCase } from "@/components/filters";
 import { formatINR } from "@/lib/utils";
 import type { Tour } from "@/types";
 
-import { formatDeparture, upcomingDepartures } from "./tour-filters";
+import { TourCardDepartures } from "./tour-card-departures";
+
+/**
+ * Today in Manipur (Asia/Kolkata) as `YYYY-MM-DD`, read on the server when the
+ * page is rendered (for the static tour pages, at build time).
+ *
+ * It is the anchor the departure lists filter against in the server render
+ * and in the hydration render, so the prerendered HTML lists real upcoming
+ * dates and the browser's first render matches it; after mount they filter
+ * against the reader's own day (see `useUpcomingDepartures`). Call it only
+ * from server components: a client render would read the visitor's clock and
+ * defeat the point. `en-CA` formats as `YYYY-MM-DD`.
+ */
+export function departuresAnchor(now: Date = new Date()): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(now);
+}
 
 const DIFFICULTY_LABEL: Record<Tour["difficulty"], string> = {
   easy: "Easy going",
@@ -37,7 +57,6 @@ export function TourCard({
   preload?: boolean;
   className?: string;
 }) {
-  const departures = upcomingDepartures(tour.departureDates);
   const nights = tour.durationDays === 1 ? "1 day" : `${tour.durationDays} days`;
 
   return (
@@ -74,11 +93,10 @@ export function TourCard({
 
         <CardMeta>
           <CardFact icon={CalendarDays} label="Departures">
-            {departures.length > 0
-              ? `Departs ${departures.slice(0, 2).map(formatDeparture).join(", ")}${
-                  departures.length > 2 ? ` +${departures.length - 2} more` : ""
-                }`
-              : "Private departures on request"}
+            {/* Filtered against the render day here and in the hydration
+                render, then against the reader's day once mounted, so the
+                prerendered card names real dates that cannot go stale. */}
+            <TourCardDepartures dates={tour.departureDates} anchorDate={departuresAnchor()} />
           </CardFact>
           <CardFact icon={Users} label="Maximum group size">
             Up to {tour.groupSizeMax}

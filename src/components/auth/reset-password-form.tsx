@@ -2,23 +2,22 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, MailCheck } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { requestPasswordReset, resetPasswordWithCode } from "@/lib/auth/actions";
 import {
   forgotPasswordSchema,
-  requestPasswordReset,
   resetPasswordSchema,
-  resetPasswordWithCode,
   type ForgotPasswordValues,
   type ResetPasswordValues,
-} from "@/lib/auth";
+} from "@/lib/auth/schemas";
 import { safeRedirectPath } from "@/lib/security/redirect";
 
 import { FieldError, PasswordInput } from "./fields";
@@ -107,9 +106,9 @@ export function ResetPasswordForm({ next: requestedNext }: { next: string }) {
 
       <p className="mt-6 text-sm text-muted-foreground">
         Remembered it?{" "}
-        <Link href={signInHref(next)} className="font-medium text-primary underline underline-offset-4">
+        <IntentLink href={signInHref(next)} className="font-medium text-primary underline underline-offset-4">
           Back to sign in
-        </Link>
+        </IntentLink>
       </p>
     </div>
   );

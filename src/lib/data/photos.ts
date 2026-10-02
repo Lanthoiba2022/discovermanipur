@@ -44,7 +44,41 @@ export function isPlacePhoto(src: string | undefined): boolean {
   return Boolean(src?.startsWith("/api/place-photo"));
 }
 
-/** Route a Places reference through our own origin so the API key stays server-side. */
+/**
+ * Must this `src` bypass `/_next/image`? The one rule every catalogue
+ * `next/image` call site applies, via `CatalogueImage`
+ * (`src/components/shared/catalogue-image.tsx`), or by passing
+ * `unoptimized={skipsOptimizer(src)}` itself.
+ *
+ * Two kinds of source skip the optimizer:
+ *
+ *   /api/place-photo          Google Places. See `isPlacePhoto`: the route
+ *                             answers with an empty-bodied 307, which Next's
+ *                             optimizer rejects with a 400 (image-optimizer.js,
+ *                             `fetchInternalImage`), and an optimizer that did
+ *                             follow it would cache Google's bytes, which the
+ *                             Places terms forbid. On Vercel it would also bill
+ *                             one transformation per ref per width.
+ *   /api/community/photos/    Community uploads. Already resized WebP, served
+ *                             from an access-checked route the optimizer
+ *                             cannot authenticate to.
+ *
+ * Everything else (our own /file-uploads files, the placeholder) keeps going
+ * through the optimizer. The same rule card-kit.tsx applies inline.
+ */
+export function skipsOptimizer(src: string | undefined): boolean {
+  return Boolean(src && /^\/api\/(place-photo|community\/photos\/)/.test(src));
+}
+
+/**
+ * Route a Places reference through our own origin so the API key stays server-side.
+ *
+ * Keep to ONE width per ref site-wide (the 1200 default). Every distinct `w`
+ * is a separate CDN entry for `/api/place-photo` and, when that entry is
+ * cold, a separate billed Places Photo call. A narrower thumbnail width
+ * "saves bytes" only by paying Google again for the same photo; the browser
+ * scales the 1200px image down for free.
+ */
 export function placePhotoUrl(ref: string, width = 1200): string {
   return `/api/place-photo?ref=${encodeURIComponent(ref)}&w=${width}`;
 }
@@ -116,18 +150,19 @@ export function creditLine(photo: ResolvedPhoto | PhotoRef): string | null {
 }
 
 /**
- * Is this photo safe to hand to a social-media scraper?
+ * The credit to overlay on a thumbnail, given its `src` and whatever credit
+ * travelled with it.
  *
- * `/api/place-photo` answers with a 307 to a signed googleusercontent URL that
- * expires. A scraper follows it once, caches the result, and the card image is
- * dead soon after, worse than no image, because the stale record sticks around
- * in Slack/X/Facebook caches.
- *
- * Self-hosted files are stable, so only those belong in `openGraph.images`.
- * Returning undefined lets Next fall back to the route's own
- * `opengraph-image.tsx`, which is generated and always valid.
+ * The credit that came with the photo wins. A Places photo that arrives
+ * without one (a shortlist saved in the browser before `imageCredit` existed,
+ * or a caller that dropped it) still gets the source line, because some
+ * attribution is a licence condition and an empty frame corner is not.
+ * Our own files return their credit, which is usually none.
  */
-export function ogImage(image?: MediaImage): MediaImage | undefined {
-  if (!image) return undefined;
-  return image.src.startsWith("/api/place-photo") ? undefined : image;
+export function thumbnailCredit(
+  src: string | undefined,
+  credit: string | undefined,
+): string | undefined {
+  if (credit) return credit;
+  return isPlacePhoto(src) ? "Photo: Google Maps" : undefined;
 }

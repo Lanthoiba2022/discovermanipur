@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,26 +7,30 @@ import { useForm } from "react-hook-form";
 import { CircleAlert, Loader2, MailCheck } from "lucide-react";
 import { toast } from "sonner";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { DemoModeNotice } from "@/components/auth/demo-mode-notice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { isAuthConfigured } from "@/lib/auth/env";
 import {
-  isAuthConfigured,
   resendVerificationCode,
-  signInSchema,
   signInWithPassword,
   signOut,
-  signUpSchema,
   signUpWithPassword,
-  useAuth,
   verifyEmailCode,
+} from "@/lib/auth/actions";
+import {
+  signInSchema,
+  signUpSchema,
   verifyEmailSchema,
   type SignInValues,
   type SignUpValues,
   type VerifyEmailValues,
-} from "@/lib/auth";
+} from "@/lib/auth/schemas";
+import { useAuth } from "@/lib/auth/use-auth";
+import { getSnapshot, refreshSession } from "@/lib/auth/session-store";
 import { safeRedirectPath } from "@/lib/security/redirect";
 
 import { FieldError, PasswordInput } from "./fields";
@@ -197,6 +200,21 @@ export function AuthForm({ next: requestedNext }: { next: string }) {
     if (!isLoading && isAuthenticated && !pending && !submitting.current) router.replace(next);
   }, [isLoading, isAuthenticated, pending, next, router]);
 
+  // The session store skips the server when the browser has no
+  // `dm_signed_in` hint, so a traveller who signed in before the hint existed
+  // (or whose hint was lost) would be shown this form while still signed in.
+  // Check once here, the one page whose visitors expect a sign-in check; a
+  // session found here also sets the hint for every later page. Skipped while
+  // the store's own check is still running. The ref keeps it to one call
+  // even when Strict Mode runs effects twice in development.
+  const checkedSession = useRef(false);
+  useEffect(() => {
+    if (!isAuthConfigured || checkedSession.current) return;
+    checkedSession.current = true;
+    const { user, status } = getSnapshot();
+    if (!user && status === "ready") void refreshSession();
+  }, []);
+
   const signInForm = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: { email: "", password: "" },
@@ -327,12 +345,12 @@ export function AuthForm({ next: requestedNext }: { next: string }) {
             <div>
               <div className="mb-2 flex items-baseline justify-between gap-3">
                 <Label htmlFor="signin-password">Password</Label>
-                <Link
+                <IntentLink
                   href={next === "/account" ? "/auth/reset" : `/auth/reset?next=${encodeURIComponent(next)}`}
                   className="text-sm font-medium text-primary underline-offset-4 hover:underline"
                 >
                   Forgot your password?
-                </Link>
+                </IntentLink>
               </div>
               <PasswordInput
                 id="signin-password"

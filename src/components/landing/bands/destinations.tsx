@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { IntentLink } from "@/components/shared/intent-link";
 
 import { BandRail } from "@/components/landing/band-rail";
 import { ShowcaseBand } from "@/components/landing/showcase-band";
@@ -78,7 +78,7 @@ function DestinationCard({ hotspot }: { hotspot: Hotspot }) {
 
   return (
     <li className={RAIL_ITEM}>
-      <Link
+      <IntentLink
         href={`/hotspots/${hotspot.slug}`}
         className="block rounded-[var(--radius-lg)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-flat)] hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
       >
@@ -122,7 +122,7 @@ function DestinationCard({ hotspot }: { hotspot: Hotspot }) {
             </div>
           </div>
         </CardMedia>
-      </Link>
+      </IntentLink>
     </li>
   );
 }

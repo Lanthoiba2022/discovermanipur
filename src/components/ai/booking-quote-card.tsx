@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
@@ -17,9 +16,10 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/lib/auth";
+import { useAuth } from "@/lib/auth/use-auth";
 import { BookingError, createBooking, useBookingMode, type BookingMode } from "@/lib/booking";
 import { cn, formatINR } from "@/lib/utils";
 import type { BookingQuoteKind, BookingQuoteResult } from "@/lib/ai/schema";
@@ -152,9 +152,9 @@ export function BookingQuoteCard({ quote, className }: { quote: BookingQuoteResu
             </p>
             <h4 className="mt-1 truncate font-display text-base font-semibold tracking-tight text-foreground">
               {quote.href ? (
-                <Link href={quote.href} className="hover:underline hover:decoration-primary/40 hover:underline-offset-4">
+                <IntentLink href={quote.href} className="hover:underline hover:decoration-primary/40 hover:underline-offset-4">
                   {quote.refTitle}
-                </Link>
+                </IntentLink>
               ) : (
                 quote.refTitle
               )}
@@ -209,7 +209,7 @@ export function BookingQuoteCard({ quote, className }: { quote: BookingQuoteResu
           </span>
         ) : priceOnRequest ? null : needsSignIn ? (
           <Button asChild>
-            <Link href={signInHref}>Sign in to request</Link>
+            <IntentLink href={signInHref}>Sign in to request</IntentLink>
           </Button>
         ) : (
           <Button type="button" onClick={confirm} disabled={busy || !mode}>
@@ -223,7 +223,7 @@ export function BookingQuoteCard({ quote, className }: { quote: BookingQuoteResu
               Download confirmation
             </Button>
             <Button asChild variant="outline" size="sm">
-              <Link href="/account/bookings">View my bookings</Link>
+              <IntentLink href="/account/bookings">View my bookings</IntentLink>
             </Button>
           </>
         )}

@@ -24,12 +24,14 @@ import {
   listSavedItems,
   removeSavedItem,
 } from "@/app/account/saved/actions";
+// From the zod-free `types`, not `schema`: this module ships on every page
+// with a save button, and the schema module would bring zod with it.
 import {
   MAX_SAVED_IMPORT,
   type SavedItem,
   type SavedKind,
   type SavedListResult,
-} from "@/app/account/saved/schema";
+} from "@/app/account/saved/types";
 import { isAuthConfigured } from "@/lib/auth/env";
 import {
   getSnapshot as getAuthSnapshot,

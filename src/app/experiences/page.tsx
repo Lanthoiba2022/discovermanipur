@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Suspense } from "react";
 
 import {
   EmptyState,
@@ -7,9 +7,10 @@ import {
   FilterChips,
   FilterRow,
   FilterSelect,
+  FilterUrlModeProvider,
   SORT_OPTIONS,
-  type RawSearchParams,
 } from "@/components/filters";
+import { IntentLink } from "@/components/shared/intent-link";
 import { ExperienceCard } from "@/components/experiences/experience-card";
 import {
   CATEGORY_OPTIONS,
@@ -18,7 +19,11 @@ import {
   applyExperienceFilters,
   districtOptions,
   parseExperienceFilters,
+  type ExperienceFacets,
 } from "@/components/experiences/experience-filters";
+import { ExperienceResults } from "@/components/experiences/experience-results";
+import { ListingResultCount } from "@/components/listing/listing-grid";
+import { UrlSearchBridge } from "@/components/listing/url-search-bridge";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/content/page-hero";
 import { getExperiences } from "@/lib/data";
@@ -30,15 +35,37 @@ export const metadata: Metadata = {
     "Weave on a loinloom, cook eromba with a Meitei family, paddle a phumdi channel at dawn or learn pung cholom. Book small-group experiences hosted by Manipuris.",
 };
 
-export default async function ExperiencesPage({
-  searchParams,
-}: {
-  searchParams: Promise<RawSearchParams>;
-}) {
-  const params = await searchParams;
-  const state = parseExperienceFilters(params);
+/**
+ * /experiences is prerendered once and served from the CDN.
+ *
+ * The page reads no request data: every experience is rendered here, in
+ * `getExperiences()` order, and `ExperienceResults` filters and sorts the
+ * cards in the browser from the query string (copied into the listing store
+ * by `UrlSearchBridge`). The filter controls write with `pushState` (client
+ * URL mode), so shared links and the back button work exactly as before. Only
+ * the fields the filters read travel to the browser as facets.
+ */
+export default async function ExperiencesPage() {
   const all = await getExperiences();
-  const rows = applyExperienceFilters(all, state);
+
+  // The unfiltered view, as the browser will order it: what the static HTML
+  // counts, and which cards lead it (those get their photos preloaded).
+  const defaultRows = applyExperienceFilters(all, parseExperienceFilters({}));
+  const defaultCount = defaultRows.length;
+  const leading = new Set(defaultRows.slice(0, 3).map((row) => row.id));
+
+  const items = all.map((experience) => ({
+    key: experience.id,
+    facets: {
+      category: experience.category,
+      district: experience.district,
+      durationHours: experience.durationHours,
+      pricePerPerson: experience.pricePerPerson,
+      rating: experience.rating,
+      featured: experience.featured,
+    } satisfies ExperienceFacets,
+    node: <ExperienceCard experience={experience} preload={leading.has(experience.id)} />,
+  }));
 
   const districtCount = new Set(all.map((row) => row.district)).size;
   const durations = all.map((row) => row.durationHours).filter((n): n is number => Number.isFinite(n));
@@ -48,6 +75,10 @@ export default async function ExperiencesPage({
 
   return (
     <div className="pb-24">
+      <Suspense fallback={null}>
+        <UrlSearchBridge />
+      </Suspense>
+
       <PageHero
         eyebrow="Do something, not just see something"
         title="Experiences"
@@ -69,56 +100,65 @@ export default async function ExperiencesPage({
       />
 
       <div className="shell mt-10 flex flex-col gap-10">
-        <FilterBar resultCount={rows.length} resultNoun="experience">
-          <FilterChips name="category" label="Category" options={CATEGORY_OPTIONS} />
-          <FilterRow>
-            <FilterSelect
-              name="district"
-              label="District"
-              allLabel="All districts"
-              options={districtOptions(all.map((row) => row.district))}
-            />
-            <FilterSelect
-              name="duration"
-              label="Duration"
-              allLabel="Any length"
-              options={DURATION_BANDS.map((band) => ({ value: band.value, label: band.label }))}
-            />
-            <FilterSelect
-              name="price"
-              label="Price"
-              allLabel="Any price"
-              options={EXPERIENCE_PRICE_BANDS.map((band) => ({
-                value: band.value,
-                label: band.label,
-              }))}
-            />
-            <FilterSelect name="sort" label="Sort" allLabel="Featured first" options={SORT_OPTIONS} />
-          </FilterRow>
-        </FilterBar>
+        <FilterUrlModeProvider mode="client">
+          <FilterBar
+            resultCount={defaultCount}
+            resultNoun="experience"
+            resultSlot={<ListingResultCount total={defaultCount} noun="experience" />}
+          >
+            <FilterChips name="category" label="Category" options={CATEGORY_OPTIONS} />
+            <FilterRow>
+              <FilterSelect
+                name="district"
+                label="District"
+                allLabel="All districts"
+                options={districtOptions(all.map((row) => row.district))}
+              />
+              <FilterSelect
+                name="duration"
+                label="Duration"
+                allLabel="Any length"
+                options={DURATION_BANDS.map((band) => ({ value: band.value, label: band.label }))}
+              />
+              <FilterSelect
+                name="price"
+                label="Price"
+                allLabel="Any price"
+                options={EXPERIENCE_PRICE_BANDS.map((band) => ({
+                  value: band.value,
+                  label: band.label,
+                }))}
+              />
+              <FilterSelect name="sort" label="Sort" allLabel="Featured first" options={SORT_OPTIONS} />
+            </FilterRow>
+          </FilterBar>
+        </FilterUrlModeProvider>
 
-        {rows.length === 0 ? (
+        {all.length === 0 ? (
           <EmptyState
-            title={all.length === 0 ? "Experiences are being gathered" : "No experiences match those filters"}
-            description={
-              all.length === 0
-                ? "We are onboarding hosts across the valley and the hills right now. Check back shortly, or browse curated tours in the meantime."
-                : "Try widening the price range or clearing the district filter to see everything on offer."
-            }
+            title="Experiences are being gathered"
+            description="We are onboarding hosts across the valley and the hills right now. Check back shortly, or browse curated tours in the meantime."
             action={
               <Button asChild variant="outline">
-                <Link href="/tours">Browse multi-day tours</Link>
+                <IntentLink href="/tours">Browse multi-day tours</IntentLink>
               </Button>
             }
           />
         ) : (
-          <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {rows.map((experience, index) => (
-              <li key={experience.id} className="flex">
-                <ExperienceCard experience={experience} preload={index < 3} />
-              </li>
-            ))}
-          </ul>
+          <ExperienceResults
+            items={items}
+            emptyNode={
+              <EmptyState
+                title="No experiences match those filters"
+                description="Try widening the price range or clearing the district filter to see everything on offer."
+                action={
+                  <Button asChild variant="outline">
+                    <IntentLink href="/tours">Browse multi-day tours</IntentLink>
+                  </Button>
+                }
+              />
+            }
+          />
         )}
       </div>
     </div>

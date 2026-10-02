@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useState } from "react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { formatDate, n } from "@/components/admin/community-parts";
 import {
   EmptyRow,
@@ -146,18 +146,18 @@ export function CommunityContributorsTable({ rows }: { rows: ContributorRow[] })
                 </td>
                 <td className="px-4 py-3">
                   <span className="flex flex-col gap-1 whitespace-nowrap">
-                    <Link
+                    <IntentLink
                       href={`/admin/places?submitter=${row.id}&status=all`}
                       className="text-primary underline-offset-4 hover:underline"
                     >
                       Places<span className="sr-only"> listed by {row.name}</span>
-                    </Link>
-                    <Link
+                    </IntentLink>
+                    <IntentLink
                       href={`/admin/photos?uploader=${row.id}`}
                       className="text-primary underline-offset-4 hover:underline"
                     >
                       Photos<span className="sr-only"> uploaded by {row.name}</span>
-                    </Link>
+                    </IntentLink>
                   </span>
                 </td>
               </tr>

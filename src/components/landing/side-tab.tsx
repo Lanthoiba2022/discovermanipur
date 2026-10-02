@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { cn } from "@/lib/utils";
 
 /**
@@ -34,7 +34,7 @@ import { cn } from "@/lib/utils";
  */
 export function SideTab({ className }: { className?: string }) {
   return (
-    <Link
+    <IntentLink
       href="/plan"
       className={cn(
         "group fixed right-0 top-1/2 z-40 hidden -translate-y-1/2 lg:flex",
@@ -55,6 +55,6 @@ export function SideTab({ className }: { className?: string }) {
         aria-hidden
         className="size-3.5 rotate-90 transition-transform duration-[var(--dur-base)] ease-[var(--ease-flat)] group-hover:translate-y-0.5"
       />
-    </Link>
+    </IntentLink>
   );
 }

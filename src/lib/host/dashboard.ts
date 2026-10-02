@@ -14,6 +14,7 @@ import { and, asc, eq, gte, inArray, or, type SQL } from "drizzle-orm";
 import type { MediaImage } from "@/types";
 
 import { getDb, schema } from "@/lib/db";
+import { logDbError } from "@/lib/log";
 
 import type {
   HostDashboardBooking,
@@ -216,7 +217,7 @@ export async function getHostDashboard(hostId: string): Promise<HostDashboardDat
       stats: computeStats(listings, upcoming, byMonth),
     };
   } catch (err) {
-    console.error("[host-dashboard] read failed:", err);
+    logDbError("host-dashboard.read", err);
     return emptyDashboard("error");
   }
 }

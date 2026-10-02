@@ -37,10 +37,55 @@ const serverTrue = () => true;
 /** What the reader has asked for, as distinct from what is actually playing. */
 type Intent = "auto" | "play" | "pause";
 
+/**
+ * Connections slow enough that an unrequested 1-3 MB film is the wrong call.
+ * `effectiveType` is the Network Information API's estimate from measured
+ * round-trip time and throughput, not the radio generation, so a congested
+ * 4G link reports "3g" here, which is exactly when to hold back.
+ */
+const SLOW_CONNECTIONS = new Set(["slow-2g", "2g", "3g"]);
+
+/**
+ * The slice of the Network Information API read here. It is Chromium-only and
+ * absent from TypeScript's DOM lib, so it is typed locally and every field is
+ * optional: Safari and Firefox expose no `navigator.connection` at all, and
+ * those readers get the default (autoplay unless reduced motion).
+ */
+type NetworkInformationLike = { saveData?: boolean; effectiveType?: string };
+
+/** True when the reader asked for less data, or the link is measurably slow. */
+function prefersLessData(): boolean {
+  const connection = (navigator as Navigator & { connection?: NetworkInformationLike })
+    .connection;
+  if (!connection) return false;
+  return (
+    connection.saveData === true ||
+    (connection.effectiveType !== undefined && SLOW_CONNECTIONS.has(connection.effectiveType))
+  );
+}
+
+/** Art direction for the film: one encode per frame shape. */
+export interface HeroFilmSources {
+  /** 1280x720, 30 fps, no audio track. Served to landscape viewports. */
+  landscape: string;
+  /**
+   * A 9:16 centre crop of the same film at the source's full height
+   * (404x720), served to portrait viewports. On a phone, `object-cover` would
+   * otherwise discard about three quarters of every landscape frame the
+   * reader still paid to download.
+   */
+  portrait: string;
+}
+
 export interface HeroFilmProps {
-  /** Path to the mp4, served from `public/`. */
-  src: string;
-  /** Still that paints the fold. Should be a frame of `src`, so nothing jumps. */
+  /** The two encodes, served from `public/`. */
+  sources: HeroFilmSources;
+  /**
+   * Still that paints the fold: frame zero of the landscape encode. The
+   * portrait encode is a centre crop of the same frames, and the poster is
+   * itself centre-cropped by `object-cover` on a portrait screen, so one still
+   * matches both and nothing jumps at the handover.
+   */
   poster: string;
   /** Describes the still, not the film; it is the image a reader lands on. */
   posterAlt: string;
@@ -52,9 +97,9 @@ export interface HeroFilmProps {
  * Three things separate this from the usual `autoplay loop muted playsinline`
  * background video, and all three are deliberate:
  *
- * 1. **The poster carries the fold, not the video.** The mp4 is 4.9 MB; a
- *    reader on a hotel wifi would otherwise stare at a black box while it
- *    arrives. So the still is a real `next/image` (optimised, responsive,
+ * 1. **The poster carries the fold, not the video.** The landscape mp4 is
+ *    about 2.8 MB (the portrait one about 1.2 MB); a reader on a hotel wifi
+ *    would otherwise stare at a black box while it arrives. So the still is a real `next/image` (optimised, responsive,
  *    `preload` + eager + high priority, i.e. the LCP candidate), and the
  *    `<video>` is `preload="none"` so it cannot compete for that first
  *    round-trip. The video fades over the still only once it has a frame to
@@ -64,11 +109,13 @@ export interface HeroFilmProps {
  * 2. **Reduced motion means no autoplay.** Not "a shorter animation": no
  *    playback at all until asked. Those readers get the photograph and a play
  *    control, which is the catalogued guidance for decorative motion at this
- *    scale.
+ *    scale. The same holds for Data Saver and for a connection the browser
+ *    measures as 3G or slower: the film is decoration, so it waits to be
+ *    asked rather than spending someone's mobile data.
  *
  * 3. **It stops when nobody is watching.** Scrolled past (IntersectionObserver)
- *    or tab hidden (`visibilitychange`) both pause it, so a looping 4.9 MB
- *    file is not decoded for an hour behind someone's other work.
+ *    or tab hidden (`visibilitychange`) both pause it, so a looping film is
+ *    not decoded for an hour behind someone's other work.
  *
  * ---
  * **Hydration contract.** Nothing here branches the *markup* on a client-only
@@ -77,9 +124,12 @@ export interface HeroFilmProps {
  * playback is started imperatively from an effect. So the server HTML and the
  * first client render are byte-identical on every machine, and only the
  * subsequent *behaviour* differs, the same rule `components/motion/reveal.tsx`
- * documents, applied to a media element instead of a transform.
+ * documents, applied to a media element instead of a transform. The choice
+ * between the two encodes follows the same rule: it is made by the browser
+ * from static `<source media>` markup, never by script, and with
+ * `preload="none"` neither file is requested until `play()` is called.
  */
-export function HeroFilm({ src, poster, posterAlt }: HeroFilmProps) {
+export function HeroFilm({ sources, poster, posterAlt }: HeroFilmProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -124,13 +174,20 @@ export function HeroFilm({ src, poster, posterAlt }: HeroFilmProps) {
     // Both preferences are re-read live here rather than trusted from the
     // render. `useSyncExternalStore` still holds the SERVER snapshot on the
     // hydration pass, so this effect's first run would otherwise see
-    // `reduce === false` and fire off a 4.9 MB request for precisely the
+    // `reduce === false` and fire off a multi-megabyte request for precisely the
     // reader who asked for less motion. Measured: one mp4 request before the
     // store corrected itself. The store values stay in the dependency list, so
     // a reader flipping either preference mid-visit still re-runs this.
+    //
+    // Data Saver and a slow connection are read the same way, live, and only
+    // gate the automatic start: a reader who presses play has asked, so
+    // `intent === "play"` still plays. There is no subscription to the
+    // connection's `change` event on purpose; a link that improves mid-visit
+    // should not suddenly start a film the reader has been reading past.
     const reduced = reduce || window.matchMedia(REDUCE_QUERY).matches;
     const visible = tabVisible && !document.hidden;
-    const wanted = intent === "play" || (intent === "auto" && !reduced);
+    const wanted =
+      intent === "play" || (intent === "auto" && !reduced && !prefersLessData());
 
     if (wanted && onScreen && visible) {
       // Re-asserted every time: some browsers drop the property on a
@@ -159,9 +216,13 @@ export function HeroFilm({ src, poster, posterAlt }: HeroFilmProps) {
         className="object-cover"
       />
 
+      {/* No `src` attribute: the browser picks the first `<source>` whose
+          `media` matches, once, when playback first needs data. Portrait comes
+          first because the unconditional landscape entry would match
+          everywhere. Square counts as portrait, where the 9:16 crop loses
+          less of the frame than a 16:9 one would. */}
       <video
         ref={videoRef}
-        src={src}
         width={1280}
         height={720}
         loop
@@ -178,7 +239,10 @@ export function HeroFilm({ src, poster, posterAlt }: HeroFilmProps) {
           "transition-opacity duration-700 ease-[var(--ease-flat)] motion-reduce:transition-none",
           ready ? "opacity-100" : "opacity-0",
         )}
-      />
+      >
+        <source src={sources.portrait} type="video/mp4" media="(max-aspect-ratio: 1/1)" />
+        <source src={sources.landscape} type="video/mp4" />
+      </video>
 
       {/* Scrims. A flat wash holds the whole frame down far enough that ivory
           clears AA over the bright paddy and open sky the film cuts through,

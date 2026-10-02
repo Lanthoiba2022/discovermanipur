@@ -6,6 +6,8 @@
  * Rows come from Neon via `./catalogue`, which falls back to the bundled
  * seed data when the project is unconfigured or a query fails. The filter,
  * sort, paginate and search logic below runs in memory over either source.
+ * Ordering itself lives in `./sort.ts`, which client components may import;
+ * this file may not be imported from the browser.
  */
 
 import type {
@@ -33,6 +35,7 @@ import {
   loadTours,
   loadTransportOptions,
 } from "./catalogue";
+import { sortRows as sortListRows, type SortableRow } from "./sort";
 
 type Indexable = { featured?: boolean; district?: string };
 
@@ -52,39 +55,16 @@ function paginate<T>(rows: T[], q?: ListQuery) {
 }
 
 /**
- * Default ordering is cohort first, then featured.
- *
- * `sortWeight` exists so the verified 2026 research rows lead every listing
- * while the original 2025 seed still appears, appended after them. New rows are
- * seeded at 100; everything already in the table sits at the column default of
- * 0. Rows loaded from the bundled seed modules have no weight at all, which
- * `?? 0` puts in the same cohort as the old database rows, so the fallback
- * path orders identically to the database path.
- *
- * An explicit user sort (price, rating) overrides the cohort entirely: someone
- * who asked for "cheapest first" means it, and quietly keeping one cohort on top
- * would just look like the sort is broken.
+ * Ordering lives in `./sort.ts` so the static listing pages can run the same
+ * comparator in the browser. Default: cohort (`sortWeight`) first, then
+ * featured. Explicit price sorts put unpriced rows last. See that file for why.
  */
-function sortRows<T extends { featured?: boolean; rating?: number; sortWeight?: number }>(
+function sortRows<T extends SortableRow>(
   rows: T[],
   q: ListQuery | undefined,
   priceOf: (row: T) => number,
 ) {
-  const out = [...rows];
-  switch (q?.sort) {
-    case "price-asc":
-      return out.sort((a, b) => priceOf(a) - priceOf(b));
-    case "price-desc":
-      return out.sort((a, b) => priceOf(b) - priceOf(a));
-    case "rating":
-      return out.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
-    default:
-      return out.sort(
-        (a, b) =>
-          (b.sortWeight ?? 0) - (a.sortWeight ?? 0) ||
-          Number(b.featured) - Number(a.featured),
-      );
-  }
+  return sortListRows(rows, q?.sort, priceOf);
 }
 
 /* --------------------------------- Hotspots ---------------------------------- */
@@ -203,57 +183,4 @@ export async function getFestivalBySlug(slug: string): Promise<Festival | null> 
 
 export async function getTestimonials(): Promise<Testimonial[]> {
   return loadTestimonials();
-}
-
-/* ------------------------------- Global search ------------------------------- */
-
-export interface SearchResult {
-  kind: "hotspot" | "homestay" | "experience" | "eatery" | "tour" | "craft";
-  slug: string;
-  title: string;
-  subtitle: string;
-  href: string;
-  image?: string;
-}
-
-export async function globalSearch(term: string, limit = 8): Promise<SearchResult[]> {
-  const t = term.trim().toLowerCase();
-  if (!t) return [];
-  const out: SearchResult[] = [];
-
-  const [hotspots, homestays, experiences, eateries, crafts, tours] = await Promise.all([
-    loadHotspots(),
-    loadHomestays(),
-    loadExperiences(),
-    loadEateries(),
-    loadCrafts(),
-    loadTours(),
-  ]);
-
-  for (const h of hotspots) {
-    if (`${h.name} ${h.location} ${h.tags.join(" ")}`.toLowerCase().includes(t))
-      out.push({ kind: "hotspot", slug: h.slug, title: h.name, subtitle: h.location, href: `/hotspots/${h.slug}`, image: h.images[0]?.src });
-  }
-  for (const h of homestays) {
-    if (`${h.title} ${h.location}`.toLowerCase().includes(t))
-      out.push({ kind: "homestay", slug: h.slug, title: h.title, subtitle: h.location, href: `/homestays/${h.slug}`, image: h.images[0]?.src });
-  }
-  for (const e of experiences) {
-    if (`${e.title} ${e.location}`.toLowerCase().includes(t))
-      out.push({ kind: "experience", slug: e.slug, title: e.title, subtitle: e.location, href: `/experiences/${e.slug}`, image: e.images[0]?.src });
-  }
-  for (const e of eateries) {
-    if (`${e.name} ${e.location}`.toLowerCase().includes(t))
-      out.push({ kind: "eatery", slug: e.slug, title: e.name, subtitle: e.location, href: `/eateries/${e.slug}`, image: e.images[0]?.src });
-  }
-  for (const c of crafts) {
-    if (`${c.name} ${c.maker} ${c.materials.join(" ")}`.toLowerCase().includes(t))
-      out.push({ kind: "craft", slug: c.slug, title: c.name, subtitle: c.maker, href: `/store/${c.slug}`, image: c.images[0]?.src });
-  }
-  for (const t2 of tours) {
-    if (`${t2.title} ${t2.themes.join(" ")}`.toLowerCase().includes(t))
-      out.push({ kind: "tour", slug: t2.slug, title: t2.title, subtitle: `${t2.durationDays} days`, href: `/tours/${t2.slug}`, image: t2.images[0]?.src });
-  }
-
-  return out.slice(0, limit);
 }

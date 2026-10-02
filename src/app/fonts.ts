@@ -78,6 +78,12 @@ export const mono = localFont({
     { path: "../../node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff2", weight: "500", style: "normal" },
   ],
   display: "swap",
+  // Not preloaded: mono sets a handful of short labels (error references,
+  // inline code), never the first thing a page paints. Preloading both
+  // weights spent ~43 KB of top-priority bandwidth on every first visit, in
+  // competition with the LCP image. `swap` shows the fallback stack until the
+  // file arrives on the pages that actually use it.
+  preload: false,
   // Metric-matching a monospace face to Arial would be wrong; the CSS stack
   // falls back to ui-monospace instead.
   adjustFontFallback: false,
@@ -97,10 +103,19 @@ export const devanagari = localFont({
     },
   ],
   display: "swap",
+  // Not preloaded: the only Devanagari on the site is the home wordmark, and
+  // मणिपुर is the third script in its rotation (after Latin and Mayek, 3.6 s
+  // each, DWELL_MS in rotating-wordmark.tsx), so the ~127 KB file arrives
+  // long before it is shown. Preloading it made every page, not just the home page, fetch it
+  // at top priority.
+  preload: false,
   adjustFontFallback: false,
 });
 
 // Meetei Mayek: the state's own script, variable weight (covers 400 + 600).
+// Stays preloaded: the footer sets it on every page, and detail-page h1s
+// carry a Mayek line, so it is part of the first paint almost everywhere
+// (and only ~21 KB).
 export const mayek = localFont({
   variable: "--font-mayek",
   src: [

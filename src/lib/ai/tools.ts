@@ -10,7 +10,7 @@
  * tool therefore returns a `note` instead of throwing when nothing matches.
  */
 
-import { tool } from "ai";
+import { tool, type JSONValue } from "ai";
 import { z } from "zod";
 
 import {
@@ -146,6 +146,27 @@ function pack(heading: string, items: CatalogueItem[], what: string): CatalogueR
 
 /* ------------------------------- Row → card ---------------------------------- */
 
+/**
+ * The card's photo and its credit, taken together so the credit (a licence
+ * condition for Google Places photos) cannot be dropped on the way to the UI.
+ */
+function leadImage(
+  images: { src: string; credit?: string }[],
+): Pick<CatalogueItem, "image" | "imageCredit"> {
+  const first = images[0];
+  return first ? { image: first.src, imageCredit: first.credit } : {};
+}
+
+/**
+ * Has this stay published a nightly rate? 31 of the 36 research homestays
+ * carry `pricePerNight = 0`, which means "not known", never "free". Every
+ * price the concierge shows, filters on or quotes goes through this, so an
+ * unpriced stay is never advertised, budgeted or totalled at ₹0.
+ */
+function hasNightlyRate(h: Pick<Homestay, "pricePerNight">): boolean {
+  return h.pricePerNight > 0;
+}
+
 function hotspotCard(h: Hotspot): CatalogueItem {
   return {
     kind: "place",
@@ -155,7 +176,7 @@ function hotspotCard(h: Hotspot): CatalogueItem {
     href: `/hotspots/${h.slug}`,
     price: h.entryFee,
     meta: `${h.category} · ${h.district} · ${h.durationHours}h · ${h.distanceFromImphalKm}km from Imphal`,
-    image: h.images[0]?.src,
+    ...leadImage(h.images),
   };
 }
 
@@ -166,9 +187,9 @@ function homestayCard(h: Homestay): CatalogueItem {
     title: h.title,
     summary: trim(h.description),
     href: `/homestays/${h.slug}`,
-    price: `${inr(h.pricePerNight)} / night`,
+    price: hasNightlyRate(h) ? `${inr(h.pricePerNight)} / night` : "Rate on request",
     meta: `${h.location} · sleeps ${h.maxGuests} · ${h.rating.toFixed(1)}★ (${h.reviewCount})`,
-    image: h.images[0]?.src,
+    ...leadImage(h.images),
   };
 }
 
@@ -181,7 +202,7 @@ function experienceCard(e: Experience): CatalogueItem {
     href: `/experiences/${e.slug}`,
     price: `${inr(e.pricePerPerson)} / person`,
     meta: `${e.category} · ${e.location} · ${e.durationHours}h`,
-    image: e.images[0]?.src,
+    ...leadImage(e.images),
   };
 }
 
@@ -194,7 +215,7 @@ function eateryCard(e: Eatery): CatalogueItem {
     href: `/eateries/${e.slug}`,
     price: "₹".repeat(e.priceRange),
     meta: `${e.cuisines.join(", ")} · ${e.location} · ${e.timings}`,
-    image: e.images[0]?.src,
+    ...leadImage(e.images),
   };
 }
 
@@ -207,7 +228,7 @@ function tourCard(t: Tour): CatalogueItem {
     href: `/tours/${t.slug}`,
     price: `${inr(t.pricePerPerson)} / person`,
     meta: `${t.durationDays} days · ${t.difficulty} · ${t.themes.join(", ")}`,
-    image: t.images[0]?.src,
+    ...leadImage(t.images),
   };
 }
 
@@ -219,7 +240,7 @@ function festivalCard(f: Festival): CatalogueItem {
     summary: trim(f.description),
     href: `/festivals/${f.slug}`,
     meta: `${f.month} · ${f.typicalDates} · ${f.location}`,
-    image: f.images[0]?.src,
+    ...leadImage(f.images),
   };
 }
 
@@ -237,7 +258,7 @@ function transportCard(t: TransportOption): CatalogueItem {
           ? `${inr(t.pricePerKm)} / km`
           : undefined,
     meta: `${t.mode} · ${t.operator} · ${t.seats} seats · ${t.routes.slice(0, 2).join(", ")}`,
-    image: t.images[0]?.src,
+    ...leadImage(t.images),
   };
 }
 
@@ -535,6 +556,20 @@ async function quoteBooking(input: {
   if (kind === "homestay") {
     const stay = await getHomestayBySlug(slug);
     if (!stay) return miss(kind, slug, startDate, guests, "homestay");
+    if (!hasNightlyRate(stay)) {
+      // No published rate means no total: a ₹0 quote would read as a free
+      // stay and save a ₹0 request. `ok: false` renders the note alone, with
+      // no booking button, the same as the other cases with nothing to price.
+      // Checked before the dates: asking for a check-out date first would
+      // only lead to the same answer.
+      return {
+        ...miss(kind, slug, startDate, guests, "homestay"),
+        refTitle: stay.title,
+        href: `/homestays/${stay.slug}`,
+        endDate,
+        note: `${stay.title} has not published a nightly rate, so there is no total to quote. The host confirms the rate directly: open the listing at /homestays/${stay.slug} to get in touch.`,
+      };
+    }
     if (!endDate) {
       return {
         ...miss(kind, slug, startDate, guests, "homestay"),
@@ -668,6 +703,37 @@ async function quoteBooking(input: {
 
 /* ---------------------------------- Tools ------------------------------------ */
 
+/**
+ * What the model sees of a catalogue tool's result: everything except the
+ * UI-only photo fields. Items are copied field by field (an allowlist), so a
+ * UI-only field added to `CatalogueItem` later stays out of the model context
+ * until someone chooses to send it.
+ *
+ * Without this the whole `CatalogueResults` went into the model context,
+ * including each item's ~650-character `/api/place-photo` URL, and was re-sent
+ * on every one of up to six steps: a few thousand input tokens a turn of
+ * opaque references the model cannot use. The tool UI part keeps the full
+ * output, so `ResultCards` still renders the photo and its credit.
+ *
+ * Round-tripped through JSON so optional fields left `undefined` are dropped
+ * rather than handed to the provider as non-JSON values.
+ */
+function catalogueForModel(output: CatalogueResults) {
+  const slim = {
+    ...output,
+    items: output.items.map(({ kind, slug, title, summary, href, price, meta }) => ({
+      kind,
+      slug,
+      title,
+      summary,
+      href,
+      price,
+      meta,
+    })),
+  };
+  return { type: "json" as const, value: JSON.parse(JSON.stringify(slim)) as JSONValue };
+}
+
 export const conciergeTools = {
   searchPlaces: tool({
     description:
@@ -706,6 +772,7 @@ export const conciergeTools = {
         .slice(0, limit);
       return pack(query ? `Places matching “${query}”` : "Places to visit", filtered.map(hotspotCard), "places");
     },
+    toModelOutput: ({ output }) => catalogueForModel(output),
   }),
 
   findStays: tool({
@@ -725,11 +792,16 @@ export const conciergeTools = {
         sort: "price-asc",
       });
       const filtered = rows
-        .filter((h) => (maxPricePerNight ? h.pricePerNight <= maxPricePerNight : true))
+        // A budget cap leaves unpriced stays out: "rate on request" cannot be
+        // shown to fit a budget, and treating 0 as a price let them pass any cap.
+        .filter((h) =>
+          maxPricePerNight ? hasNightlyRate(h) && h.pricePerNight <= maxPricePerNight : true,
+        )
         .filter((h) => (guests ? h.maxGuests >= guests : true))
         .slice(0, limit);
       return pack("Homestays", filtered.map(homestayCard), "homestays");
     },
+    toModelOutput: ({ output }) => catalogueForModel(output),
   }),
 
   findExperiences: tool({
@@ -766,6 +838,7 @@ export const conciergeTools = {
         .slice(0, limit);
       return pack("Experiences", filtered.map(experienceCard), "experiences");
     },
+    toModelOutput: ({ output }) => catalogueForModel(output),
   }),
 
   findEateries: tool({
@@ -794,6 +867,7 @@ export const conciergeTools = {
         .slice(0, limit);
       return pack("Places to eat", filtered.map(eateryCard), "eateries");
     },
+    toModelOutput: ({ output }) => catalogueForModel(output),
   }),
 
   findTours: tool({
@@ -814,6 +888,7 @@ export const conciergeTools = {
         .slice(0, limit);
       return pack("Curated tours", filtered.map(tourCard), "tours");
     },
+    toModelOutput: ({ output }) => catalogueForModel(output),
   }),
 
   getFestivalCalendar: tool({
@@ -831,6 +906,7 @@ export const conciergeTools = {
         .slice(0, limit);
       return pack(month ? `Festivals in ${month}` : "Festival calendar", filtered.map(festivalCard), "festivals");
     },
+    toModelOutput: ({ output }) => catalogueForModel(output),
   }),
 
   buildItinerary: tool({
@@ -871,6 +947,7 @@ export const conciergeTools = {
         .slice(0, limit);
       return pack("Getting around", filtered.map(transportCard), "transport options");
     },
+    toModelOutput: ({ output }) => catalogueForModel(output),
   }),
 
   quoteBooking: tool({

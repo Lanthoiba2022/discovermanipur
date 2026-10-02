@@ -1,3 +1,12 @@
+/**
+ * URL vocabulary and filtering for /homestays.
+ *
+ * Pure and dependency-light, so it runs both on the server and in the
+ * browser: /homestays is a static page that renders every active stay once
+ * and re-filters the cards in the browser from the query string. Inactive
+ * stays never get that far; `getHomestays()` drops them on the server.
+ */
+import { isPriced, sortRows } from "@/lib/data/sort";
 import type { District, Homestay, HomestayAmenity } from "@/types";
 
 export const DISTRICTS: District[] = [
@@ -95,21 +104,89 @@ export function parseHomestayFilters(params: RawParams): HomestayFilters {
   };
 }
 
-/** Filters `getHomestays` cannot express yet, applied after the data call. */
-export function applyLocalFilters(rows: Homestay[], f: HomestayFilters): Homestay[] {
+/** True when the visitor has narrowed the nightly price range at all. */
+export function isPriceNarrowed(f: Pick<HomestayFilters, "min" | "max">) {
+  return f.min > PRICE_MIN || f.max < PRICE_MAX;
+}
+
+/**
+ * The guest, amenity and price filters, applied after the search, district
+ * and sort. Returns a new array in the incoming order.
+ *
+ * A stay with no nightly rate (`pricePerNight <= 0`, "rate on request") is
+ * not free, so it must not pass "Under ₹1,500" just because 0 is under 1,500.
+ * It is excluded only when the visitor has narrowed the price range; with
+ * the full range it stays in, since nothing was asked about price.
+ */
+export function applyLocalFilters<T extends Pick<Homestay, "pricePerNight" | "maxGuests" | "amenities">>(
+  rows: readonly T[],
+  f: HomestayFilters,
+): T[] {
+  const narrowed = isPriceNarrowed(f);
   return rows.filter((h) => {
-    if (h.pricePerNight < f.min || h.pricePerNight > f.max) return false;
+    if (!isPriced(h.pricePerNight)) {
+      if (narrowed) return false;
+    } else if (h.pricePerNight < f.min || h.pricePerNight > f.max) {
+      return false;
+    }
     if (f.guests > 0 && h.maxGuests < f.guests) return false;
     if (f.amenities.length && !f.amenities.every((a) => h.amenities.includes(a))) return false;
     return true;
   });
 }
 
+/**
+ * The text `?q=` searches: title, description, location and district, joined
+ * by spaces, exactly as `getHomestays({ search })` in `@/lib/data` builds its
+ * haystack (a query can therefore match across the join, as it always could).
+ * Computed on the server and shipped as one facet, so the browser does not
+ * need the separate fields.
+ */
+export function homestaySearchText(h: Pick<Homestay, "title" | "description" | "location" | "district">) {
+  return `${h.title} ${h.description} ${h.location} ${h.district}`;
+}
+
+/**
+ * The row fields `selectHomestays` reads. The listing passes slim facet
+ * objects of exactly this shape to the browser instead of whole rows.
+ */
+export interface HomestayFacets
+  extends Pick<
+    Homestay,
+    "district" | "pricePerNight" | "maxGuests" | "amenities" | "rating" | "featured" | "sortWeight"
+  > {
+  /** `homestaySearchText(row)`. */
+  searchText: string;
+}
+
+/**
+ * The browser's equivalent of what the page used to do on the server:
+ * `getHomestays({ search: q, district, sort })` followed by
+ * `applyLocalFilters`.
+ *
+ * `rows` must already be active stays in `getHomestays()` order. The search
+ * is a case-insensitive substring match over `searchText`, the district an
+ * exact match, and the sort the data layer's own `sortRows` (cohort then
+ * featured by default; price sorts put unpriced stays last).
+ */
+export function selectHomestays<T extends HomestayFacets>(rows: readonly T[], f: HomestayFilters): T[] {
+  const q = f.q.toLowerCase();
+  const matched = rows.filter((h) => {
+    if (f.district && h.district !== f.district) return false;
+    if (q && !h.searchText.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  return applyLocalFilters(
+    sortRows(matched, f.sort, (h) => h.pricePerNight),
+    f,
+  );
+}
+
 export function countActiveFilters(f: HomestayFilters) {
   let n = 0;
   if (f.q) n += 1;
   if (f.district) n += 1;
-  if (f.min > PRICE_MIN || f.max < PRICE_MAX) n += 1;
+  if (isPriceNarrowed(f)) n += 1;
   if (f.guests > 0) n += 1;
   n += f.amenities.length;
   return n;

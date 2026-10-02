@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { BedDouble, Check, Copy, Download, Info, MapPin, Printer, Route, UtensilsCrossed } from "lucide-react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SaveItineraryButton } from "@/components/itineraries/save-itinerary-button";
@@ -15,6 +15,54 @@ function inr(value: number): string {
   return `₹${Math.round(value).toLocaleString("en-IN")}`;
 }
 
+/**
+ * The href, if it is a same-site path; otherwise undefined.
+ *
+ * Plan hrefs come from the model (`/api/itinerary`, and the concierge's tool
+ * output), and the traveller's own notes are pasted into that prompt, so a
+ * prompt-injected or hallucinated href could point a "catalogue stop" at an
+ * off-site page. React already blocks `javascript:` URLs; this keeps every
+ * link on the site. A same-site path starts with exactly one slash (not `//`,
+ * which is protocol-relative) and has no whitespace or backslash (browsers
+ * read `/\evil.example` as `//evil.example`). Anything else renders as plain
+ * text, and is left out of the copied and downloaded text too.
+ *
+ * Checked here rather than with a `.refine` on the schema: `itinerarySchema`
+ * is converted to JSON Schema for the model, and a refinement does not
+ * survive that conversion.
+ */
+function siteHref(href: string | undefined): string | undefined {
+  if (!href || !href.startsWith("/") || href.startsWith("//")) return undefined;
+  return /[\s\\]/.test(href) ? undefined : href;
+}
+
+/**
+ * A link for a plan entry when its href is a same-site path (`siteHref`),
+ * otherwise the same text unlinked: in a span with `plainClassName` when one
+ * is given, bare when not.
+ */
+function PlanLink({
+  href,
+  className,
+  plainClassName,
+  children,
+}: {
+  href: string | undefined;
+  className: string;
+  plainClassName?: string;
+  children: ReactNode;
+}) {
+  const safe = siteHref(href);
+  if (safe) {
+    return (
+      <IntentLink href={safe} className={className}>
+        {children}
+      </IntentLink>
+    );
+  }
+  return plainClassName ? <span className={plainClassName}>{children}</span> : <>{children}</>;
+}
+
 /** A plain-text rendering of the plan: what lands on the clipboard. */
 export function itineraryToText(plan: ItineraryPlan): string {
   const out: string[] = [plan.title, "", plan.overview, ""];
@@ -24,10 +72,12 @@ export function itineraryToText(plan: ItineraryPlan): string {
     out.push(day.summary);
     for (const stop of day.stops) {
       const when = stop.timeOfDay ? `${stop.timeOfDay}: ` : "";
-      out.push(`  • ${when}${stop.title}${stop.href ? ` (${SITE_HOST}${stop.href})` : ""}. ${stop.note}`);
+      const href = siteHref(stop.href);
+      out.push(`  • ${when}${stop.title}${href ? ` (${SITE_HOST}${href})` : ""}. ${stop.note}`);
     }
     for (const meal of day.meals) {
-      out.push(`  • ${meal.slot}: ${meal.suggestion}${meal.href ? ` (${SITE_HOST}${meal.href})` : ""}`);
+      const href = siteHref(meal.href);
+      out.push(`  • ${meal.slot}: ${meal.suggestion}${href ? ` (${SITE_HOST}${href})` : ""}`);
     }
     if (day.stay) out.push(`  • stay: ${day.stay.title}${day.stay.note ? `. ${day.stay.note}` : ""}`);
     if (day.travelNotes) out.push(`  • getting around: ${day.travelNotes}`);
@@ -158,16 +208,12 @@ export function ItineraryTimeline({
                             {stop.timeOfDay}
                           </span>
                         )}
-                        {stop.href ? (
-                          <Link
-                            href={stop.href}
-                            className="underline decoration-primary/35 underline-offset-4 hover:decoration-primary"
-                          >
-                            {stop.title}
-                          </Link>
-                        ) : (
-                          stop.title
-                        )}
+                        <PlanLink
+                          href={stop.href}
+                          className="underline decoration-primary/35 underline-offset-4 hover:decoration-primary"
+                        >
+                          {stop.title}
+                        </PlanLink>
                       </p>
                       <p className="text-xs leading-relaxed text-muted-foreground">{stop.note}</p>
                     </div>
@@ -183,13 +229,9 @@ export function ItineraryTimeline({
                     <UtensilsCrossed aria-hidden className="mt-0.5 size-4 shrink-0 text-secondary" />
                     <p className="text-muted-foreground">
                       <span className="capitalize text-foreground">{meal.slot}</span>{" "}
-                      {meal.href ? (
-                        <Link href={meal.href} className="underline decoration-primary/35 underline-offset-4">
-                          {meal.suggestion}
-                        </Link>
-                      ) : (
-                        meal.suggestion
-                      )}
+                      <PlanLink href={meal.href} className="underline decoration-primary/35 underline-offset-4">
+                        {meal.suggestion}
+                      </PlanLink>
                     </p>
                   </li>
                 ))}
@@ -200,13 +242,13 @@ export function ItineraryTimeline({
               <p className="mt-3 flex gap-2.5 text-sm text-muted-foreground">
                 <BedDouble aria-hidden className="mt-0.5 size-4 shrink-0 text-primary" />
                 <span>
-                  {day.stay.href ? (
-                    <Link href={day.stay.href} className="font-medium text-foreground underline underline-offset-4">
-                      {day.stay.title}
-                    </Link>
-                  ) : (
-                    <span className="font-medium text-foreground">{day.stay.title}</span>
-                  )}
+                  <PlanLink
+                    href={day.stay.href}
+                    className="font-medium text-foreground underline underline-offset-4"
+                    plainClassName="font-medium text-foreground"
+                  >
+                    {day.stay.title}
+                  </PlanLink>
                   {day.stay.note ? `: ${day.stay.note}` : null}
                 </span>
               </p>

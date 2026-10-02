@@ -1,4 +1,4 @@
-import { isAllowedSignupEmail, SIGNUP_DOMAIN_MESSAGE } from "@/lib/auth/email-policy";
+import { canonicalEmail, isAllowedSignupEmail, SIGNUP_DOMAIN_MESSAGE } from "@/lib/auth/email-policy";
 import { MAX_AGE_MS, verifyNeonAuthWebhook } from "@/lib/auth/webhook";
 import { sendEmail } from "@/lib/email/brevo";
 import { rateLimit, tooManyRequests } from "@/lib/security/rate-limit";
@@ -60,7 +60,9 @@ function remember(id: string) {
  * Codes emailed to one address. Neon Auth triggers `send.otp` for any address
  * typed into the form, so without this anyone could use the site to flood a
  * stranger's inbox (and spend the Brevo quota). Keyed by recipient, so it
- * holds however many IPs the requests come from.
+ * holds however many IPs the requests come from, and by the canonical
+ * mailbox (`canonicalEmail`), so `a.b+1@gmail.com`, `a.b+2@gmail.com` and
+ * `ab@gmail.com` share one budget: Gmail delivers all three to one inbox.
  */
 const OTP_PER_RECIPIENT = { limit: 5, windowMs: 15 * 60_000 };
 /** Neon's own servers call this; the cap only stops a forged-request flood. */
@@ -149,7 +151,7 @@ export async function POST(request: Request) {
         return jsonError(400, "malformed event");
       }
 
-      const perRecipient = rateLimit("otp-recipient", to.trim().toLowerCase(), OTP_PER_RECIPIENT);
+      const perRecipient = rateLimit("otp-recipient", canonicalEmail(to), OTP_PER_RECIPIENT);
       if (!perRecipient.ok) {
         console.warn("[neon-auth webhook] OTP rate limit hit for a recipient", event.event_id);
         return tooManyRequests(perRecipient);

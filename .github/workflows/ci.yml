@@ -12,9 +12,14 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+# Actions are pinned to a full commit SHA, with the release it was cut from in
+# the trailing comment. A tag can be moved to other code; a SHA cannot.
+# Dependabot (github-actions ecosystem) still proposes updates and rewrites
+# both the SHA and the comment.
+
 jobs:
   check:
-    name: Lint, typecheck and build
+    name: Lint, typecheck, test and build
     runs-on: ubuntu-latest
     timeout-minutes: 20
     # No secrets on purpose: the app must build and run with an empty environment.
@@ -22,19 +27,20 @@ jobs:
       NEXT_TELEMETRY_DISABLED: "1"
     steps:
       - name: Check out
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           persist-credentials: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
-          # Next.js 16 needs Node >= 20.9; build on the current LTS line.
-          node-version: 24
+          # One Node version for contributors, CI and Vercel: .nvmrc, which
+          # matches `engines.node` in package.json.
+          node-version-file: .nvmrc
           cache: npm
 
       - name: Cache Next.js build
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: .next/cache
           key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**', 'next.config.ts') }}
@@ -50,5 +56,33 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      # tests/unit: pure logic only (redirect safety, sign-up policy, price
+      # formatting, ...). No database, no network, no environment.
+      - name: Unit tests
+        run: npm test
+
+      # Fails when a new or changed file under public/ is over the size or
+      # dimension budget (scripts/check-assets.mjs).
+      - name: Asset budget
+        run: npm run assets:check
+
       - name: Build
         run: npm run build
+
+  dependency-review:
+    name: Dependency review
+    # It compares the dependency manifests of the base and head commits, so
+    # it only means something on a pull request.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
+        with:
+          # Blocks a PR that adds or upgrades to a package with a known high
+          # or critical advisory. Moderate ones (such as the dev-only esbuild
+          # advisory under drizzle-kit, see SECURITY.md) are reported only.
+          fail-on-severity: high

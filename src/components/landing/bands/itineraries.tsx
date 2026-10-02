@@ -1,6 +1,6 @@
 import { Footprints, Mountain, MountainSnow, Route } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import Link from "next/link";
+import { IntentLink } from "@/components/shared/intent-link";
 
 import { BandRail } from "@/components/landing/band-rail";
 import { ShowcaseBand } from "@/components/landing/showcase-band";
@@ -39,7 +39,7 @@ function ItineraryCard({ tour }: { tour: Tour }) {
 
   return (
     <li className={RAIL_ITEM}>
-      <Link
+      <IntentLink
         href={`/tours/${tour.slug}`}
         className="flex h-full flex-col items-center text-center transition-transform duration-[var(--dur-base)] ease-[var(--ease-flat)] hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
       >
@@ -87,7 +87,7 @@ function ItineraryCard({ tour }: { tour: Tour }) {
             <span className="text-sm text-muted-foreground"> per person</span>
           </p>
         </div>
-      </Link>
+      </IntentLink>
     </li>
   );
 }

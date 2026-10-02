@@ -13,7 +13,10 @@ export const metadata: Metadata = {
 
 export default function AccountLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="pb-24 pt-28 md:pt-32">
+    // `data-clarity-mask`: Clarity session replay blanks the account area
+    // (name, email, phone, bookings, saved places) before a recording leaves
+    // the browser. Its default masking covers typed input, not rendered text.
+    <div data-clarity-mask="true" className="pb-24 pt-28 md:pt-32">
       <div className="shell max-w-5xl">
         <AuthGuard>
           <AccountHeader />

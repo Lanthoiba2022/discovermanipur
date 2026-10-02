@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { Compass } from "lucide-react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { SearchInput } from "@/components/search/search-input";
 import { Button } from "@/components/ui/button";
 
@@ -60,10 +60,10 @@ export default function NotFound() {
 
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg">
-              <Link href="/">Back to the beginning</Link>
+              <IntentLink href="/">Back to the beginning</IntentLink>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link href="/plan">Ask the AI concierge</Link>
+              <IntentLink href="/plan">Ask the AI concierge</IntentLink>
             </Button>
           </div>
         </div>
@@ -73,7 +73,7 @@ export default function NotFound() {
           <ul className="grid gap-px overflow-hidden rounded-[var(--radius-lg)] border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
             {WAYS_BACK.map((item) => (
               <li key={item.href}>
-                <Link
+                <IntentLink
                   href={item.href}
                   className="block h-full bg-surface p-6 transition-colors hover:bg-muted"
                 >
@@ -81,15 +81,15 @@ export default function NotFound() {
                   <span className="mt-1.5 block text-sm leading-relaxed text-muted-foreground">
                     {item.blurb}
                   </span>
-                </Link>
+                </IntentLink>
               </li>
             ))}
           </ul>
           <p className="mt-8 text-center text-sm text-muted-foreground">
             Think this page should exist?{" "}
-            <Link href="/contact" className="text-primary underline underline-offset-4">
+            <IntentLink href="/contact" className="text-primary underline underline-offset-4">
               Tell us what you were looking for
-            </Link>
+            </IntentLink>
             .
           </p>
         </div>

@@ -2,7 +2,6 @@
 
 import { ImageOff } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import {
@@ -19,6 +18,7 @@ import {
   sortCompare,
   type SortState,
 } from "@/components/admin/table-parts";
+import { IntentLink } from "@/components/shared/intent-link";
 import { UPVOTES_REQUIRED, hoursLeft } from "@/lib/community/rules";
 import { CATEGORY_SHORT_LABELS } from "@/lib/community/taxonomy";
 import type { AdminPlaceRow } from "@/lib/community/types";
@@ -115,9 +115,9 @@ export function CommunityPlacesTable({
                     )}
                   </td>
                   <th scope="row" className="px-4 py-3 text-left font-medium text-foreground">
-                    <Link href={`/admin/places/${row.id}`} className="hover:underline">
+                    <IntentLink href={`/admin/places/${row.id}`} className="hover:underline">
                       {row.name}
-                    </Link>
+                    </IntentLink>
                     <span className="block text-xs font-normal text-muted-foreground">
                       {row.location}
                     </span>

@@ -1,9 +1,11 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useMemo, useState, useTransition } from "react";
-import { Loader2, Search, SlidersHorizontal, X } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Search, SlidersHorizontal, X } from "lucide-react";
 
+import { useListingResultCount } from "@/components/listing/listing-grid";
+import { searchToRawParams } from "@/components/listing/search-params";
+import { useListingUrl, writeListingSearch } from "@/components/listing/url-search-store";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,12 +28,15 @@ import {
   PRICE_MIN,
   SORT_OPTIONS,
   countActiveFilters,
+  isPriceNarrowed,
+  parseHomestayFilters,
   type HomestayFilters,
 } from "./homestay-query";
 
 const ANY = "__any";
 
-function toQueryString(f: HomestayFilters) {
+/** The query string for a filter state. Defaults are left out, so a clean view is a clean URL. */
+function toSearchParams(f: HomestayFilters) {
   const params = new URLSearchParams();
   if (f.q) params.set("q", f.q);
   if (f.district) params.set("district", f.district);
@@ -40,25 +45,33 @@ function toQueryString(f: HomestayFilters) {
   if (f.guests > 0) params.set("guests", String(f.guests));
   if (f.amenities.length) params.set("amenities", f.amenities.join(","));
   if (f.sort !== "featured") params.set("sort", f.sort);
-  const qs = params.toString();
-  return qs ? `/homestays?${qs}` : "/homestays";
+  return params;
 }
 
-export function HomestayFiltersBar({
-  filters,
-  resultCount,
-}: {
-  filters: HomestayFilters;
-  resultCount: number;
-}) {
-  const router = useRouter();
-  const [pending, startTransition] = useTransition();
+/**
+ * Search, district, sort, price, guests and amenities for /homestays.
+ *
+ * /homestays is a static page that filters in the browser, so this bar reads
+ * the current state from the listing store (unfiltered on the server and
+ * while hydrating, then the real query) instead of taking it as a prop, and
+ * writes with `history.pushState`: each change is a back-button step, as it
+ * was when every change was a server navigation. Reading the store rather
+ * than `useSearchParams()` keeps the bar in the prerendered HTML instead of
+ * behind a Suspense fallback.
+ *
+ * `total` is the unfiltered result count the server rendered; the live count
+ * follows the grid.
+ */
+export function HomestayFiltersBar({ total }: { total: number }) {
+  const { pathname, search } = useListingUrl();
+  const filters = useMemo(() => parseHomestayFilters(searchToRawParams(search)), [search]);
+  const resultCount = useListingResultCount(total);
   const [open, setOpen] = useState(false);
 
   const activeCount = useMemo(() => countActiveFilters(filters), [filters]);
 
   const push = (next: HomestayFilters) => {
-    startTransition(() => router.push(toQueryString(next), { scroll: false }));
+    writeListingSearch(pathname, toSearchParams(next), "push");
   };
 
   const set = <K extends keyof HomestayFilters>(key: K, value: HomestayFilters[K]) =>
@@ -172,13 +185,7 @@ export function HomestayFiltersBar({
         </Button>
 
         <p aria-live="polite" className="text-sm text-muted-foreground">
-          {pending ? (
-            <span className="inline-flex items-center gap-2">
-              <Loader2 className="size-3.5 animate-spin" aria-hidden="true" /> Updating…
-            </span>
-          ) : (
-            `${resultCount} ${resultCount === 1 ? "stay" : "stays"}`
-          )}
+          {`${resultCount} ${resultCount === 1 ? "stay" : "stays"}`}
         </p>
 
         {activeCount > 0 && (
@@ -289,7 +296,7 @@ export function HomestayFiltersBar({
         <div className="mt-3 flex flex-wrap gap-2">
           {filters.district && <Badge variant="primary">{filters.district}</Badge>}
           {filters.guests > 0 && <Badge variant="primary">{filters.guests}+ guests</Badge>}
-          {(filters.min > PRICE_MIN || filters.max < PRICE_MAX) && (
+          {isPriceNarrowed(filters) && (
             <Badge variant="primary">
               {formatINR(filters.min)} – {formatINR(filters.max)}
             </Badge>

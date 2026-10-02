@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { BedDouble, Bath, MapPin, Star, Users } from "lucide-react";
 
-import { ogImage } from "@/lib/data/photos";
+import { IntentLink } from "@/components/shared/intent-link";
 import { BookingCard } from "@/components/booking/booking-card";
 import { AMENITY_META } from "@/components/homestays/amenities";
 import { HomestayGallery } from "@/components/homestays/homestay-gallery";
@@ -12,6 +11,7 @@ import { RatingSummary } from "@/components/homestays/rating-summary";
 import { SaveButton } from "@/components/homestays/save-button";
 import { Separator } from "@/components/ui/separator";
 import { getAllHomestaySlugs, getHomestayBySlug } from "@/lib/data";
+import { ogImagesFor } from "@/lib/seo/og";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -27,6 +27,79 @@ export async function generateStaticParams() {
   return (await getAllHomestaySlugs()).map((slug) => ({ slug }));
 }
 
+/**
+ * Literal placeholders the research seed writes where a field was never
+ * researched (see db/research-seed/0008_seed_2026_research.sql). The same set
+ * as the concierge's in src/lib/ai/tools.ts: "Hosted by Host details to be
+ * confirmed" is worse than saying nothing.
+ */
+const HOST_PLACEHOLDERS = new Set([
+  "host details to be confirmed",
+  "tbc",
+  "to be confirmed",
+  "n/a",
+  "unknown",
+]);
+
+/** The host's name, or "" when the row holds a placeholder instead of one. */
+function realHostName(name: string): string {
+  const text = name.trim();
+  return HOST_PLACEHOLDERS.has(text.toLowerCase()) ? "" : text;
+}
+
+/**
+ * `YYYY-MM-DD` in India for the booking calendar's first render. This page is
+ * static, so the value is the day it was rendered; the calendar moves to the
+ * visitor's own today once it hydrates (see `StayDatePicker`). India because
+ * that is where every stay is, and a fixed zone keeps the render reproducible
+ * whatever region the build runs in.
+ */
+function calendarAnchor(now = new Date()): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(now);
+}
+
+/** Below this, a description is a stub ("NEW.") rather than a snippet. */
+const MIN_DESCRIPTION_LENGTH = 40;
+
+/**
+ * The meta and Open Graph description for a stay.
+ *
+ * About half the research rows carry a one-word description such as "NEW.",
+ * which would otherwise become the search snippet and the share text. When
+ * the description is too short to describe anything, a factual line is built
+ * from the fields every row does have: the name, the place and the district,
+ * plus the host's name only when it is a real name. Nothing is invented, so
+ * the line stays true however sparse the row is.
+ */
+function homestayDescription(homestay: {
+  title: string;
+  description: string;
+  location: string;
+  district: string;
+  hostName: string;
+}): string {
+  const own = homestay.description.trim();
+  if (own.length >= MIN_DESCRIPTION_LENGTH) return own.slice(0, 155);
+
+  const location = homestay.location.trim();
+  const district = homestay.district.trim();
+  // "Moirang, Bishnupur", or just the district when the location already
+  // names it (or is missing), so the line never repeats itself.
+  const place =
+    location && !location.toLowerCase().includes(district.toLowerCase())
+      ? `${location}, ${district}`
+      : location || district;
+  const host = realHostName(homestay.hostName);
+  const hosted = host ? ` Hosted by ${host}.` : "";
+
+  return `${homestay.title}, a homestay in ${place}, Manipur.${hosted}`;
+}
+
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const homestay = await getHomestayBySlug(slug);
@@ -38,7 +111,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     };
   }
 
-  const description = homestay.description.slice(0, 155);
+  const description = homestayDescription(homestay);
 
   return {
     title: homestay.title,
@@ -48,10 +121,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       title: `${homestay.title} · ${homestay.location}`,
       description,
       url: `/homestays/${homestay.slug}`,
-      // Places refs expire; only self-hosted files are safe for scrapers.
-      images: ogImage(homestay.images[0])
-        ? [{ url: ogImage(homestay.images[0])!.src }]
-        : undefined,
+      // 1200 px optimizer variant of a self-hosted photo, else the site card.
+      images: ogImagesFor(homestay.images[0]),
       type: "website",
     },
   };
@@ -71,9 +142,9 @@ export default async function HomestayDetailPage({ params }: Params) {
         <nav aria-label="Breadcrumb" className="mb-5 text-sm text-muted-foreground">
           <ol className="flex flex-wrap items-center gap-2">
             <li>
-              <Link href="/homestays" className="underline-offset-4 hover:underline">
+              <IntentLink href="/homestays" className="underline-offset-4 hover:underline">
                 Stays
-              </Link>
+              </IntentLink>
             </li>
             <li aria-hidden="true">/</li>
             <li className="text-foreground">{homestay.district}</li>
@@ -108,6 +179,8 @@ export default async function HomestayDetailPage({ params }: Params) {
               title: homestay.title,
               subtitle: homestay.location,
               image: homestay.images[0]?.src,
+              // Travels with the photo: a licence condition for Places photos.
+              imageCredit: homestay.images[0]?.credit,
               href: `/homestays/${homestay.slug}`,
             }}
           />
@@ -210,7 +283,21 @@ export default async function HomestayDetailPage({ params }: Params) {
           </div>
 
           <div className="lg:sticky lg:top-28 lg:self-start">
-            <BookingCard homestay={homestay} />
+            {/* Only the fields the card reads cross into the client payload.
+                A placeholder host name is passed as "", so the card says
+                "your host" rather than "Host details to be confirmed". */}
+            <BookingCard
+              homestay={{
+                slug: homestay.slug,
+                title: homestay.title,
+                hostName: realHostName(homestay.hostName),
+                pricePerNight: homestay.pricePerNight,
+                maxGuests: homestay.maxGuests,
+                rating: homestay.rating,
+                reviewCount: homestay.reviewCount,
+              }}
+              anchorDate={calendarAnchor()}
+            />
           </div>
         </div>
       </div>

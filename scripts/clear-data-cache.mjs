@@ -1,19 +1,26 @@
 /**
- * Drop Next's fetch cache before a build.
+ * Drop Next's data cache before a build.
  *
- * Next caches fetch responses in `.next/cache/fetch-cache` and reuses them
- * across builds, so a build can prerender a page from data an EARLIER build
- * fetched. The catalogue itself is read through node-postgres (`src/lib/db`),
- * which bypasses `fetch` and this cache, but any `fetch` a page makes at build
- * time is still cached.
+ * Next keeps its data cache in `.next/cache/fetch-cache` and reuses it across
+ * builds. Two things live there:
  *
- * The symptom is a page that disagrees with its own data: `generateStaticParams`
- * sees fresh rows while the page body renders a stale response, so a new slug
- * prerenders as "not found" or an updated photo never appears.
+ *   - every `fetch` a page makes with caching on (the Places lookups in
+ *     /api/place-photo, any build-time fetch);
+ *   - since PR #49, the catalogue and editorial reads too. `sharedRead`
+ *     (src/lib/data/cache.ts) stores each database read through
+ *     `unstable_cache`, which writes to this same cache.
+ *
+ * The catalogue entries are keyed by deployment id, so a Vercel build never
+ * reads rows an earlier deployment cached. Locally that id is always "local",
+ * though, so without this step a second `npm run build` would prerender from
+ * the first build's rows. Clearing first stays correct everywhere and costs
+ * one fresh read per table per build.
+ *
+ * The symptom it prevents is a page that disagrees with the database: a new
+ * slug prerenders as "not found" or an updated photo never appears.
  *
  * Setting `cache: "no-store"` instead would opt those routes out of static
- * rendering. Clearing the cache before the build keeps static generation and
- * costs one fresh round of requests per build.
+ * rendering. Clearing the cache before the build keeps static generation.
  *
  * Run from `prebuild`.
  */

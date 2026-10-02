@@ -1,17 +1,24 @@
 "use client";
 
-import Image from "next/image";
-
-import { isPlacePhoto } from "@/lib/data/photos";
 import { ImageOff } from "lucide-react";
 import { useState } from "react";
 
+import { CatalogueImage } from "@/components/shared/catalogue-image";
 import { cn } from "@/lib/utils";
 import type { MediaImage } from "@/types";
 
 /**
  * Shared detail-page gallery for the experiences / eateries / tours /
  * transport pages. Main frame plus keyboard-operable thumbnails.
+ *
+ * Both the main frame and the thumbnails render through `CatalogueImage`, so
+ * Google Places photos bypass `/_next/image` (one thumbnail used to emit a
+ * 15-entry optimizer srcset for a source the optimizer answers 400 on) and
+ * our own files stay optimized. The main frame carries the active photo's
+ * credit. The 80px thumbnails carry none: they are pickers for the main
+ * frame, and a credit at that size would cover most of the tile. If a
+ * stricter reading of the Places attribution terms is wanted, add the same
+ * 9px overlay `GalleryLightbox` puts on its grid tiles.
  */
 export function MediaGallery({
   images,
@@ -37,11 +44,10 @@ export function MediaGallery({
   return (
     <div className="flex flex-col gap-3">
       <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[var(--radius-lg)] bg-surface-sunken">
-        <Image
+        <CatalogueImage
           src={current.src}
           alt={current.alt}
           fill
-          unoptimized={isPlacePhoto(current.src)}
           preload={preload}
           sizes="(max-width: 768px) 100vw, 60vw"
           className="object-cover"
@@ -68,7 +74,7 @@ export function MediaGallery({
                   index === active ? "border-primary" : "border-transparent opacity-70 hover:opacity-100",
                 )}
               >
-                <Image src={image.src} alt="" fill sizes="80px" className="object-cover" />
+                <CatalogueImage src={image.src} alt="" fill sizes="80px" className="object-cover" />
               </button>
             </li>
           ))}

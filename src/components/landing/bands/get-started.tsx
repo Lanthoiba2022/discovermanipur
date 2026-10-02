@@ -1,5 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
-import Link from "next/link";
+import { IntentLink } from "@/components/shared/intent-link";
 
 import { ShowcaseBand } from "@/components/landing/showcase-band";
 import { Button } from "@/components/ui/button";
@@ -56,18 +56,20 @@ export function GetStartedBand({ stats }: { stats: BandStat[] }) {
       action={
         <div className="flex flex-col items-center gap-6">
           <Button asChild variant="accent" size="lg">
-            <Link href="/plan">
+            <IntentLink href="/plan">
               Plan my trip
               <ArrowUpRight aria-hidden className="size-4" />
-            </Link>
+            </IntentLink>
           </Button>
 
-          <Link
-            href="/itineraries"
+          {/* Ready-made routes are the curated tours. There is no /itineraries
+              page; saved plans live under /account/itineraries. */}
+          <IntentLink
+            href="/tours"
             className="inline-flex min-h-11 items-center border-b border-brass-300/50 px-1 text-sm text-ivory-50 transition-colors duration-[var(--dur-base)] ease-[var(--ease-flat)] hover:border-brass-300 hover:text-brass-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
           >
             Or start from a ready-made route
-          </Link>
+          </IntentLink>
         </div>
       }
     >

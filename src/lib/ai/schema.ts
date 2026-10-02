@@ -34,7 +34,17 @@ export interface CatalogueItem {
   href: string;
   price?: string;
   meta?: string;
+  /**
+   * UI only: the lead photo for the result card. Stripped from what the model
+   * sees (`toModelOutput` in tools.ts): a Places URL is ~650 characters of
+   * opaque reference the model has no use for, re-sent on every step.
+   */
   image?: string;
+  /**
+   * UI only, like `image`: the photographer credit for `image`. Rendering it
+   * on the card is a licence condition when `image` is a Google Places photo.
+   */
+  imageCredit?: string;
 }
 
 export interface CatalogueResults {

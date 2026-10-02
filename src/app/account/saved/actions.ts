@@ -18,6 +18,7 @@ import { ensureProfile } from "@/lib/auth/dal";
 import { isAuthConfigured } from "@/lib/auth/env";
 import { getServerUser } from "@/lib/auth/server";
 import { getDb, schema, type Db } from "@/lib/db";
+import { logDbError } from "@/lib/log";
 import { rateLimit, type RateLimitRule } from "@/lib/security/rate-limit";
 import { clientIp } from "@/lib/security/request";
 
@@ -92,7 +93,7 @@ export async function listSavedItems(): Promise<SavedListResult> {
   try {
     return { storage: "account", items: await listFor(db, user.id) };
   } catch (err) {
-    console.error("[saved] list failed:", err);
+    logDbError("saved.list", err);
     return { error: "We could not load your saved places. Try again in a moment." };
   }
 }
@@ -128,7 +129,7 @@ export async function addSavedItem(input: SavedRef): Promise<SavedWriteResult> {
       .onConflictDoNothing();
     return { ok: true };
   } catch (err) {
-    console.error("[saved] add failed:", err);
+    logDbError("saved.add", err);
     return { ok: false, error: FAILED };
   }
 }
@@ -157,7 +158,7 @@ export async function removeSavedItem(input: SavedRef): Promise<SavedWriteResult
       );
     return { ok: true };
   } catch (err) {
-    console.error("[saved] remove failed:", err);
+    logDbError("saved.remove", err);
     return { ok: false, error: FAILED };
   }
 }
@@ -174,7 +175,7 @@ export async function clearSavedItems(): Promise<SavedWriteResult> {
     await db.delete(savedItems).where(eq(savedItems.user_id, user.id));
     return { ok: true };
   } catch (err) {
-    console.error("[saved] clear failed:", err);
+    logDbError("saved.clear", err);
     return { ok: false, error: FAILED };
   }
 }
@@ -228,7 +229,7 @@ export async function importSavedItems(input: unknown): Promise<SavedListResult>
 
     return { storage: "account", items: await listFor(db, user.id) };
   } catch (err) {
-    console.error("[saved] import failed:", err);
+    logDbError("saved.import", err);
     return { error: FAILED };
   }
 }

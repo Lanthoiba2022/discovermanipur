@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,6 +8,8 @@ import { useForm } from "react-hook-form";
 import { CalendarDays, CircleAlert, CircleCheck, Loader2, ShieldCheck, Star } from "lucide-react";
 import { toast } from "sonner";
 
+import * as z from "@/lib/zod-mini";
+import { IntentLink } from "@/components/shared/intent-link";
 import { GuestStepper } from "@/components/booking/guest-stepper";
 import { PriceBreakdown } from "@/components/booking/price-breakdown";
 import { StayDatePicker, type DateRange } from "@/components/booking/stay-date-picker";
@@ -23,25 +24,102 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/input";
-import { useAuth } from "@/lib/auth";
+// The hook's own module, not the `@/lib/auth` barrel: the barrel also
+// re-exports the sign-in schemas, which would bring classic zod to this page.
+import { useAuth } from "@/lib/auth/use-auth";
 import {
   BookingError,
   createBooking,
   quoteStay,
   useBookingMode,
-  stayBookingSchema,
   toISODate,
-  type StayBookingValues,
 } from "@/lib/booking";
 import { formatINR } from "@/lib/utils";
 import type { Homestay } from "@/types";
 
-export function BookingCard({ homestay }: { homestay: Homestay }) {
+// `zod/mini` instead of classic `zod`, through @/lib/zod-mini, which also
+// registers zod's English messages: classic zod is about 95 KB gzip on each
+// page with this form.
+
+/**
+ * The stay request form's client-side validation.
+ *
+ * Written with `zod/mini` rather than classic `zod`: classic zod's entry
+ * point re-exports every locale, which costs about 95 KB gzip on each page
+ * with this card; the mini build of the same checks is about 7 KB. The rules
+ * and messages are the same as before. The server validates the request again
+ * on its own (`bookingRequestSchema` in `@/lib/booking/schemas`).
+ */
+const stayBookingSchema = z
+  .object({
+    checkIn: z.optional(z.date()),
+    checkOut: z.optional(z.date()),
+    guests: z.number().check(z.int(), z.gte(1, "At least one guest")),
+    note: z.optional(z.string().check(z.maxLength(300, "Keep your note under 300 characters"))),
+  })
+  .check(
+    z.superRefine((value, ctx) => {
+      if (!value.checkIn) {
+        ctx.addIssue({ code: "custom", path: ["checkIn"], message: "Pick a check-in date" });
+      }
+      if (!value.checkOut) {
+        ctx.addIssue({ code: "custom", path: ["checkOut"], message: "Pick a check-out date" });
+      }
+      if (
+        value.checkIn &&
+        value.checkOut &&
+        value.checkOut.getTime() <= value.checkIn.getTime()
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["checkOut"],
+          message: "Check-out must be after check-in",
+        });
+      }
+    }),
+  );
+
+type StayBookingValues = z.infer<typeof stayBookingSchema>;
+
+/**
+ * The fields of a stay this card reads, and nothing else.
+ *
+ * The card is a client component, so whatever the page hands it is
+ * serialised into the RSC payload. A whole `Homestay` row carries the
+ * description, host story, house rules, sources and Places photo refs, none
+ * of which the card shows; naming the fields keeps the payload to what is
+ * used, and the compiler flags any field the card starts reading later.
+ */
+export type BookingCardStay = Pick<
+  Homestay,
+  "slug" | "title" | "hostName" | "pricePerNight" | "maxGuests" | "rating" | "reviewCount"
+>;
+
+/**
+ * Most research rows store `price_per_night = 0`, meaning "not known", not
+ * "free". Those stays show "Rate on request" and no figures at all: a ₹0
+ * total would be untrue. The request flow itself is unchanged (it still saves
+ * a request with the dates and guests); whether an unpriced request should be
+ * refused or stored without a total is a separate product decision.
+ */
+function hasNightlyRate(stay: BookingCardStay): boolean {
+  return stay.pricePerNight > 0;
+}
+
+export function BookingCard({
+  homestay,
+  anchorDate,
+}: {
+  homestay: BookingCardStay;
+  /** `YYYY-MM-DD` the server takes as today; see `StayDatePicker`. */
+  anchorDate: string;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const { user, isLoading, demo, isAuthenticated } = useAuth();
   const mode = useBookingMode();
   const host = homestay.hostName || "your host";
+  const priced = hasNightlyRate(homestay);
 
   const [review, setReview] = useState(false);
   const [confirmed, setConfirmed] = useState<{ total: number; savedTo: string } | null>(null);
@@ -71,7 +149,9 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
   };
 
   const blockedReason = !checkIn
-    ? "Choose your dates to see the total"
+    ? priced
+      ? "Choose your dates to see the total"
+      : "Choose your dates to request a stay"
     : !checkOut
       ? "Choose a check-out date"
       : quote.nights < 1
@@ -133,7 +213,8 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
           {confirmed.savedTo === "account" ? (
             <>
               Your request for {quote.nights} {quote.nights === 1 ? "night" : "nights"} for{" "}
-              {guests} {guests === 1 ? "guest" : "guests"} ({formatINR(confirmed.total)}) is saved
+              {guests} {guests === 1 ? "guest" : "guests"}
+              {priced ? ` (${formatINR(confirmed.total)})` : ""} is saved
               to your account as pending, where Discover Manipur&apos;s admins can see it. {host}{" "}
               is not notified automatically yet. Please contact them directly to book. You have
               not been charged.
@@ -149,7 +230,7 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
         </p>
         <div className="mt-6 flex flex-col gap-2">
           <Button asChild variant="primary" className="w-full">
-            <Link href="/account/bookings">View my bookings</Link>
+            <IntentLink href="/account/bookings">View my bookings</IntentLink>
           </Button>
           <Button
             variant="ghost"
@@ -169,12 +250,16 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
   return (
     <aside className="rounded-[var(--radius-lg)] border border-border bg-surface p-5 shadow-[var(--shadow-md)] md:p-6">
       <div className="flex items-baseline justify-between gap-3">
-        <p>
-          <span className="font-display text-2xl font-medium">
-            {formatINR(homestay.pricePerNight)}
-          </span>
-          <span className="text-sm text-muted-foreground"> / night</span>
-        </p>
+        {priced ? (
+          <p>
+            <span className="font-display text-2xl font-medium">
+              {formatINR(homestay.pricePerNight)}
+            </span>
+            <span className="text-sm text-muted-foreground"> / night</span>
+          </p>
+        ) : (
+          <p className="font-display text-2xl font-medium">Rate on request</p>
+        )}
         {homestay.reviewCount > 0 && (
           <p className="flex items-center gap-1 text-sm">
             <Star className="size-3.5 fill-accent text-accent" aria-hidden="true" />
@@ -192,7 +277,7 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
           </legend>
 
           <div className="rounded-[var(--radius)] border border-border p-2">
-            <StayDatePicker value={range} onChange={onRangeChange} />
+            <StayDatePicker value={range} onChange={onRangeChange} anchorDate={anchorDate} />
           </div>
 
           <p className="mt-2 text-sm text-muted-foreground" aria-live="polite">
@@ -239,7 +324,14 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
           </div>
         )}
 
-        <PriceBreakdown quote={quote} />
+        {priced ? (
+          <PriceBreakdown quote={quote} />
+        ) : (
+          <p className="rounded-[var(--radius-sm)] border border-border px-3 py-2 text-sm text-muted-foreground">
+            This stay has not published a nightly rate. {homestay.hostName || "Your host"} will
+            confirm the price when you contact them.
+          </p>
+        )}
 
         <Button
           type="submit"
@@ -306,7 +398,14 @@ export function BookingCard({ homestay }: { homestay: Homestay }) {
           </dl>
 
           <div className="mt-4">
-            <PriceBreakdown quote={quote} />
+            {priced ? (
+              <PriceBreakdown quote={quote} />
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                No nightly rate is published for this stay, so the request is saved without a
+                price. The host will confirm the price with you directly.
+              </p>
+            )}
           </div>
 
           <DialogFooter>

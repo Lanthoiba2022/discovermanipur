@@ -11,7 +11,7 @@ disable sign-in when Neon Auth is missing.
 
 ## 1. Credentials
 Put these in `.env.local` (see `.env.example`), and in your host's environment
-settings for each deployment:
+settings:
 
 ```
 DATABASE_URL=...            # pooled (-pooler host): app, migrations, seeding
@@ -21,6 +21,16 @@ NEON_AUTH_COOKIE_SECRET=... # openssl rand -base64 32
 
 All three are server-only.
 
+On Vercel, set them for the **Production** environment only. A preview
+deployment given the same values runs every branch's code against the
+production database and its users. Previews should either use a separate Neon
+branch (its own `DATABASE_URL` and Neon Auth URL, scoped to Preview) or have no
+database at all, in which case they serve the seed content. Which of the two is
+the owner's call; sharing production credentials is not one of the options.
+
+A local `.env.local` often holds the production URL too. That is why the
+operator scripts below ask you to confirm the target host (section 4).
+
 ## 2. A new database, from scratch
 
 1. Create a Neon project (or a branch) and **enable Neon Auth on it first**.
@@ -29,8 +39,8 @@ All three are server-only.
 2. Set the credentials above.
 3. Create the schema and load the seed content:
    ```
-   npm run db:migrate    # apply drizzle/ migrations
-   npm run db:seed       # push src/lib/data/seed/* and the content modules
+   npm run db:migrate                          # apply drizzle/ migrations
+   npm run db:seed -- --confirm-host=<host>    # push src/lib/data/seed/* and the content modules
    ```
 4. Optional: load the 2026 research catalogue (about 240 verified hotspots,
    homestays and eateries). It must run after
@@ -44,7 +54,7 @@ All three are server-only.
    they never overwrite later edits), so re-running is safe.
 5. Sign in once on the site, then make yourself an admin:
    ```
-   npm run db:set-role -- you@example.com admin
+   npm run db:set-role -- you@example.com admin --confirm-host=<host>
    ```
 
 ## 3. Schema and migrations (Drizzle)
@@ -56,6 +66,11 @@ npm run db:generate   # after editing schema.ts: writes the next drizzle/NNNN_*.
 npm run db:migrate    # apply pending drizzle/ migrations
 npm run db:studio     # browse the data
 ```
+
+`db:generate` needs no database: it only diffs `schema.ts` against the
+snapshots in `drizzle/meta`, so without `DATABASE_URL` `drizzle.config.ts` uses
+a placeholder URL and warns instead of throwing. The other commands connect,
+and with the usual `.env.local` they connect to production.
 
 Review every generated SQL file before applying it, and run it on a Neon
 branch first. Drizzle does not model functions, triggers or extensions; for
@@ -91,10 +106,25 @@ rating) overrides the cohort entirely.
 ### Photos: `photo_refs` vs `images`
 `images` holds files we host and may cache. `photo_refs` holds Google Places
 references, which are licensed for **display only**: the image bytes must not
-be stored, so `/api/place-photo` resolves them per request and keeps
-`GOOGLE_API_KEY` server-side. The photographer attribution that ships with each
-ref has to be rendered wherever the photo appears. Use `src/lib/data/photos.ts`
+be stored, so `/api/place-photo` resolves them per request and keeps the
+Places key server-side. The photographer attribution that ships with each ref
+has to be rendered wherever the photo appears. Use `src/lib/data/photos.ts`
 rather than reading either column directly.
+
+- The catalogue loader turns refs into `images` (one 1200px URL each, with its
+  credit) and drops `photo_refs` from the cached rows, which would otherwise
+  be about half of the eateries entry.
+- `/api/place-photo` prefers `GOOGLE_PLACES_API_KEY`, a server-only key
+  restricted to the Places API (New). It falls back to `GOOGLE_API_KEY`, the
+  browser-visible Maps key, and logs a warning once per instance when it does.
+  Set the server key; the fallback is kept only so photos do not vanish before
+  it exists.
+- `PLACE_PHOTO_URL_SECRET` (optional, 32+ characters, Production only) signs
+  every photo URL the site renders (`src/lib/data/place-photo-signature.ts`),
+  and the route then 404s any ref it did not sign, so it stops being an open
+  Places proxy. Unset, everything behaves as before. Set it and redeploy:
+  the catalogue cache is keyed by deployment, so the new deployment renders
+  signed URLs.
 
 ## 4. Seeding
 `npm run db:seed` pushes `src/lib/data/seed/*` plus the FAQ, photo-credit and
@@ -104,6 +134,17 @@ re-running reconciles rather than duplicating, **and overwrites any live edit
 to a matching row**. Production content has been edited since it was seeded
 and differs from the seed files, so never run this against production to
 "refresh" it.
+
+Both `db:seed` and `db:set-role` print `Target: <host>/<database>` (never the
+user or password) and exit without connecting unless you repeat that host:
+
+```
+npm run db:seed -- --confirm-host=<host>
+npm run db:set-role -- <email> <role> --confirm-host=<host>
+```
+
+Read the printed host before you copy it. If it is the production endpoint and
+you did not mean production, stop there.
 
 ## 5. How the app reads it
 - `src/lib/db/index.ts`: `getDb()`, a Drizzle instance over one server-only
@@ -115,14 +156,43 @@ and differs from the seed files, so never run this against production to
 - `src/lib/data/content.ts`: editorial content. FAQs use Drizzle's relational
   query (`db.query.faq_groups.findMany({ with: { faq_items } })`, relations in
   `src/lib/db/relations.ts`).
-- Both fall back to the seed modules when the database is unconfigured *or* a
-  query fails. Content should go stale before it goes blank.
+- `src/lib/db/index.ts` bounds every connection: 8 s to connect (covers a
+  Neon cold start), 15 s per query, and `application_name` set to
+  `discover-manipur` so the app's sessions are identifiable in Neon.
+  `statement_timeout` is deliberately not set as a connection option: pg sends
+  it as a startup parameter, which Neon's pooler can reject.
+- Fallbacks. With no database configured, both serve the seed modules (forks,
+  CI, a fresh clone). At runtime, a failed query falls back to the seed too:
+  content should go stale before it goes blank. The exceptions:
+  - testimonials never fall back once a database is configured; the seed
+    quotes are invented, so an empty or failing table shows the empty state;
+  - a catalogue table whose rows are all hidden by `is_active`/`approved`
+    returns an empty list, never the seed rows;
+  - **a Vercel Production build never falls back.** A failed read is retried
+    (after 1 s, then 3 s, for a waking compute) and then fails the build, and
+    so does an empty catalogue table. Shipping seed data into static pages with
+    `dynamicParams = false` would 404 every database-only slug until the next
+    deploy; a failed build leaves the previous deployment serving. For an
+    emergency build during a Neon outage, set `ALLOW_SEED_FALLBACK=1` for that
+    build. Preview and local builds keep the old fallback.
+  Failures are logged as one JSON line (`src/lib/log.ts`) with the Postgres
+  error code and message, never Drizzle's SQL-and-parameters message.
 - Both go through `sharedRead` in `src/lib/data/cache.ts`, Next's data cache,
   keyed by deployment. A build or a running deployment reads each table once,
-  not once per page or per visit. An edit made in the app (admin moderation,
-  a host pausing a listing) clears it with `updateTag`. **An edit made outside
-  the app (Neon console, `db:seed`) shows after the next deploy.** Any new code
-  that writes a catalogue table must call `updateTag(CATALOGUE_TAG)`.
+  not once per page or per visit. **An edit made outside the app (Neon
+  console, `db:seed`) shows after the next deploy.**
+- Tags. Each catalogue entry is tagged `catalogue` and `catalogue:<table>`.
+  Next copies an entry's tags onto every prerendered page that reads it, so an
+  in-app edit calls `updateTag(catalogueTableTag("<table>"))` and that alone
+  refreshes the table's rows and exactly the pages that show them (admin
+  moderation and a host pausing a listing do this). No `revalidatePath` for
+  public pages, and never the whole site. Any new code that writes a catalogue
+  table must call `updateTag` with that table's tag.
+- Size guard. Next silently stops caching an entry near 2 MB, and every
+  request then re-reads the table from Neon (the 2026-10-01 transfer
+  incident). `sharedRead` measures each result: a warning above 1 MB, an error
+  above 1.5 MB, and a failed production build at that point. If it fires,
+  trim what the loader returns, or split the entry.
 - Catalogue pages stay statically generated because nothing here reads
   cookies and the cache has no time-based revalidate.
 
@@ -146,8 +216,8 @@ Email + password only, `@gmail.com` addresses only, email verified with a
 
 - `src/lib/auth/server.ts`: `createNeonAuth`; `src/app/api/auth/[...path]` is
   the same-origin proxy the browser client talks to.
-- `src/proxy.ts`: Neon's middleware on `/account/*` (server-side guard and
-  session refresh).
+- `src/proxy.ts`: Neon's middleware on `/account/*` and `/host/dashboard/*`
+  (server-side guard and session refresh).
 - `src/lib/auth/profile.ts`: Server Actions that read and write
   `public.profiles` for the session's user only. The row is created on first
   read; there is no trigger on `neon_auth`, which Neon manages.

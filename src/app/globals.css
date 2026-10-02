@@ -818,6 +818,89 @@
   to   { transform: scale(1.01); }
 }
 
+/* ---------- Scroll reveals (`components/motion/reveal.tsx`) ----------
+   Progressive enhancement. The server renders every reveal fully visible;
+   the hidden state below applies only when ALL of these hold:
+
+     - `html.js`: set by the inline script at the top of <body> before first
+       paint, and withdrawn by that script if hydration never happens (failed
+       or blocked JavaScript), so no reader is left with blank sections;
+     - the element has not yet been marked `data-revealed`, either by the
+       same inline script (which, at DOMContentLoaded and without waiting for
+       hydration, reveals everything already on screen and watches the rest
+       with its own IntersectionObserver) or by the component's shared
+       observer (elements mounted later, by client navigation);
+     - the reader has not asked for reduced motion. Under `reduce` there is
+       no hidden state and no animation at all, not merely a short one;
+     - the medium is a screen. Print has no scroll to reveal on, so a printed
+       page always shows every section.
+
+   `data-revealed="instant"` is what the inline script sets on reveals that
+   were already on screen at DOMContentLoaded: they show at once, with no
+   entrance, since the reader has been looking at that spot while the page
+   loaded. Only reveals that scroll into view later (plain `data-revealed`)
+   play the rise.
+
+   The entrance is an animation with `backwards` fill rather than a
+   transition. It applies its `from` frame during the stagger delay, then
+   hands the element back to its own styles, so a reveal never pins an
+   opacity or translate that a hover or a utility class on the same element
+   wants to own afterwards. `--reveal-delay` and `--reveal-ease` come from the
+   component's inline style (delayIndex times 70 ms; one of the house
+   easings). */
+@keyframes reveal-rise {
+  from { opacity: 0; translate: 0 28px; }
+}
+@keyframes reveal-word {
+  from { translate: 0 110%; }
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+    translate: 0 28px;
+  }
+  html.js [data-reveal][data-revealed]:not([data-revealed="instant"]) {
+    animation: reveal-rise 0.6s var(--reveal-ease, var(--ease-out-expo)) var(--reveal-delay, 0ms) backwards;
+  }
+  /* RevealText: each word rises out of its own overflow-hidden mask, 50 ms
+     after the word before it. No opacity change; the mask does the hiding. */
+  html.js [data-reveal-text]:not([data-revealed]) [data-reveal-word] {
+    translate: 0 110%;
+  }
+  html.js [data-reveal-text][data-revealed]:not([data-revealed="instant"]) [data-reveal-word] {
+    animation: reveal-word 0.7s var(--reveal-ease, var(--ease-flat)) var(--reveal-delay, 0ms) backwards;
+  }
+}
+
+/* ---------- Page-hero entrance (`components/content/page-hero.tsx`) ----------
+   The eyebrow, h1, standfirst and hero photo are above the fold and LCP
+   candidates, so they never start invisible: this is a transform-only rise
+   (no opacity), painted with the very first HTML, before any JavaScript. A
+   transform does not delay LCP. `--rise-delay` carries the old stagger. */
+@keyframes hero-rise {
+  from { translate: 0 16px; }
+}
+
+/* ---------- Header motion (`components/layout/site-header.tsx`) ---------- */
+/* Mega panel: fade in with an 8 px drop. Closing is instant. */
+@keyframes mega-in {
+  from { opacity: 0; translate: 0 -8px; }
+}
+/* Mobile drawer: a circle wipe out of the Menu button's corner, and back.
+   Radix keeps the content mounted until the closing animation ends. */
+@keyframes drawer-open {
+  from { clip-path: circle(0% at 92% 6%); }
+  to   { clip-path: circle(145% at 92% 6%); }
+}
+@keyframes drawer-close {
+  from { clip-path: circle(145% at 92% 6%); }
+  to   { clip-path: circle(0% at 92% 6%); }
+}
+/* Drawer links: a staggered rise; each item's `--drawer-delay` is set inline. */
+@keyframes drawer-item-in {
+  from { opacity: 0; translate: 0 14px; }
+}
+
 @keyframes float-slow {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50% { transform: translateY(-14px) rotate(2deg); }
@@ -835,4 +918,38 @@
   .hero-drift { animation: hero-drift 9s ease-out both; will-change: transform; }
   .animate-float-slow { animation: float-slow 9s ease-in-out infinite; }
   .animate-drift { animation: drift 40s linear infinite; }
+
+  .site-drawer[data-state="open"] { animation: drawer-open 0.6s var(--ease-out-expo) both; }
+  .site-drawer[data-state="closed"] { animation: drawer-close 0.6s var(--ease-out-expo) both; }
+  .drawer-item { animation: drawer-item-in 0.36s var(--ease-flat) var(--drawer-delay, 0ms) backwards; }
+
+  /* Reduced motion: the drawer cross-fades (the blanket rule above collapses
+     it to an instant switch) and the items and the other entrances do not
+     move at all. Not left to the blanket rule alone, because it shortens
+     durations but not delays: a staggered item would sit hidden through its
+     delay and then pop in. */
+  @media (prefers-reduced-motion: reduce) {
+    .site-drawer[data-state="open"] { animation-name: fade-in; }
+    .site-drawer[data-state="closed"] { animation-name: fade-out; }
+    .drawer-item { animation: none; }
+  }
+  /* Screen only, like the reveals: a page printed mid-entrance would
+     otherwise print its first frame. */
+  @media screen and (prefers-reduced-motion: no-preference) {
+    .mega-in { animation: mega-in 0.28s var(--ease-flat) both; }
+    .hero-rise { animation: hero-rise 0.6s var(--ease-out-expo) var(--rise-delay, 0ms) backwards; }
+  }
+}
+
+/* Print: every element at rest. Each animation above ends on (or fills back
+   to) the element's own styles, so removing them never hides anything; it
+   only stops a page printed mid-entrance (the drawer's staggered items, a
+   fade-in, the fold's drift) from printing a half-transparent or shifted
+   first frame. */
+@media print {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+  }
 }

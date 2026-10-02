@@ -1,9 +1,12 @@
 "use client";
 
 import { SlidersHorizontal, X } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useMemo, useTransition } from "react";
+import { useCallback, useMemo } from "react";
 
+import type { RawSearchParams } from "@/components/filters/params";
+import { useListingResultCount } from "@/components/listing/listing-grid";
+import { searchToRawParams } from "@/components/listing/search-params";
+import { useListingUrl, writeListingSearch } from "@/components/listing/url-search-store";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -16,49 +19,96 @@ export interface HotspotFilterState {
   accessible: boolean;
 }
 
-interface HotspotFiltersProps {
-  categories: string[];
-  districts: string[];
-  value: HotspotFilterState;
-  resultCount: number;
+/** The URL keys this rail owns. `view` belongs to the view switch and survives "Clear all". */
+const FILTER_KEYS = ["category", "district", "season", "accessible"] as const;
+
+function first(value: string | string[] | undefined): string {
+  if (Array.isArray(value)) return value[0] ?? "";
+  return value ?? "";
 }
 
 /**
- * URL-driven filter rail. Every control writes to the query string, so the
- * server component re-renders the filtered list and the view is shareable.
+ * Read the rail's state from the query string. The URL vocabulary is the one
+ * /hotspots has always used, so links shared before the page went static
+ * still resolve: the first value of each key, verbatim, and step-free access
+ * as `accessible=1`.
  */
-export function HotspotFilters({
-  categories,
-  districts,
-  value,
-  resultCount,
-}: HotspotFiltersProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
+export function parseHotspotFilters(params: RawSearchParams): HotspotFilterState {
+  return {
+    category: first(params.category),
+    district: first(params.district),
+    season: first(params.season),
+    accessible: first(params.accessible) === "1",
+  };
+}
+
+export function hasHotspotFilters(state: HotspotFilterState): boolean {
+  return Boolean(state.category || state.district || state.season || state.accessible);
+}
+
+/** The row fields `applyHotspotFilters` reads; a real `Hotspot` satisfies it. */
+export interface HotspotFacets {
+  category: string;
+  district: string;
+  bestSeasons?: readonly string[];
+  accessibility?: { wheelchairAccessible?: boolean };
+}
+
+/**
+ * Keep the places that match every active filter, in the incoming order
+ * (`getHotspots()` order: cohort, then featured). There is no sort control on
+ * /hotspots. Returns a new array.
+ */
+export function applyHotspotFilters<T extends HotspotFacets>(
+  rows: readonly T[],
+  state: HotspotFilterState,
+): T[] {
+  return rows.filter((h) => {
+    if (state.category && h.category !== state.category) return false;
+    if (state.district && h.district !== state.district) return false;
+    if (state.season && !h.bestSeasons?.includes(state.season)) return false;
+    if (state.accessible && !h.accessibility?.wheelchairAccessible) return false;
+    return true;
+  });
+}
+
+interface HotspotFiltersProps {
+  categories: string[];
+  districts: string[];
+  /** Places in the unfiltered list: the count the prerendered HTML shows. */
+  total: number;
+}
+
+/**
+ * URL-driven filter rail. Every control writes to the query string, so a
+ * filtered view is shareable, and the grid (and map) below re-filter in the
+ * browser: /hotspots is a static page.
+ *
+ * It reads the query from the listing store rather than `useSearchParams()`,
+ * so it is prerendered (unfiltered) instead of being held behind a Suspense
+ * fallback, and writes with `history.replaceState`: refining a search has
+ * never added a back-button step here, and still does not.
+ */
+export function HotspotFilters({ categories, districts, total }: HotspotFiltersProps) {
+  const { pathname, search } = useListingUrl();
+  const value = useMemo(() => parseHotspotFilters(searchToRawParams(search)), [search]);
+  const resultCount = useListingResultCount(total);
 
   const setParam = useCallback(
     (key: string, next: string | null) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(search);
       if (next === null || next === "" || next === "all") params.delete(key);
       else params.set(key, next);
-      const query = params.toString();
-      startTransition(() => {
-        router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
-      });
+      writeListingSearch(pathname, params, "replace");
     },
-    [pathname, router, searchParams],
+    [pathname, search],
   );
 
   const clearAll = useCallback(() => {
-    const params = new URLSearchParams(searchParams.toString());
-    ["category", "district", "season", "accessible"].forEach((k) => params.delete(k));
-    const query = params.toString();
-    startTransition(() => {
-      router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
-    });
-  }, [pathname, router, searchParams]);
+    const params = new URLSearchParams(search);
+    FILTER_KEYS.forEach((k) => params.delete(k));
+    writeListingSearch(pathname, params, "replace");
+  }, [pathname, search]);
 
   const chips = useMemo(() => {
     const out: { key: string; label: string }[] = [];
@@ -70,13 +120,7 @@ export function HotspotFilters({
   }, [value]);
 
   return (
-    <div
-      className={cn(
-        "transition-opacity duration-200",
-        isPending && "opacity-60",
-      )}
-      aria-busy={isPending}
-    >
+    <div>
       {chips.length > 0 && (
         <div className="mb-6 flex flex-wrap items-center gap-2">
           <span className="eyebrow text-muted-foreground">Active</span>

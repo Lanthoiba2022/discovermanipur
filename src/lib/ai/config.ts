@@ -17,6 +17,8 @@ import { createAnthropic } from "@ai-sdk/anthropic";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import type { LanguageModel } from "ai";
 
+import { readAnthropicKey, readGeminiKey } from "./flags";
+
 /**
  * The Anthropic model used when an `ANTHROPIC_API_KEY` is configured.
  * Sonnet 5 is fast enough to feel conversational.
@@ -26,29 +28,11 @@ export const ANTHROPIC_MODEL = "claude-sonnet-5";
 /** The Gemini model used when a Gemini key is configured. Overridable via env. */
 export const GEMINI_MODEL = process.env.GEMINI_MODEL?.trim() || "gemini-2.5-flash";
 
-function readAnthropicKey(): string {
-  return process.env.ANTHROPIC_API_KEY?.trim() ?? "";
-}
-
-function readGeminiKey(): string {
-  // Never `GOOGLE_API_KEY`: that is the Maps key, and the Kangla map hands it
-  // to the browser. A key anyone can copy out of the page must not also be
-  // able to bill Gemini, so the LLM key has to be a separate, server-only one.
-  return (
-    process.env.GEMINI_API_KEY?.trim() ||
-    process.env.GOOGLE_GENERATIVE_AI_API_KEY?.trim() ||
-    ""
-  );
-}
-
-/**
- * True when an LLM key is present in this (server) process.
- *
- * On the client this is always `false` (the key is never exposed to the
- * browser), so UI code should take the `configured` flag the server hands it
- * rather than reading this directly.
- */
-export const isAIConfigured: boolean = readGeminiKey().length > 0 || readAnthropicKey().length > 0;
+// The key readers and both on/off flags live in the dependency-free
+// `flags.ts`, so the root layout can read `isConciergeLive` without
+// evaluating the provider SDKs imported above. They are re-exported here so
+// existing `@/lib/ai` and `@/lib/ai/config` imports keep working unchanged.
+export { isAIConfigured, isConciergeLive } from "./flags";
 
 /** The model name in use, for logging/display. */
 export const CONCIERGE_MODEL: string = readGeminiKey().length > 0 ? GEMINI_MODEL : ANTHROPIC_MODEL;
@@ -64,18 +48,3 @@ export function conciergeModel(): LanguageModel {
   }
   return createAnthropic({ apiKey: readAnthropicKey() })(ANTHROPIC_MODEL);
 }
-
-/**
- * Whether the concierge is allowed to answer live.
- *
- * Deliberately opt-*in*: every live answer is a paid model call, and a
- * half-configured key produced a chat that looked alive and then failed
- * mid-answer. With the flag off the UI says so plainly, `/plan` shows a
- * curated sample conversation built from the real catalogue instead, and the
- * `/api/chat` and `/api/itinerary` routes never call a model, so the switch
- * also caps spend, not just what the UI shows.
- *
- * Set `AI_CHAT_ENABLED=true` (alongside a working key) to switch it on.
- */
-export const isConciergeLive: boolean =
-  process.env.AI_CHAT_ENABLED?.trim().toLowerCase() === "true" && isAIConfigured;

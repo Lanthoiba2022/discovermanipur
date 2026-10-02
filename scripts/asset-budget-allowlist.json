@@ -1,0 +1,45 @@
+{
+  "$comment": "Exceptions to scripts/check-assets.mjs. Key: path from the repo root. reason: why this file may exceed its budget, written for a reviewer. maxBytes: the size as reviewed; the file fails again if it grows past it. Prune entries the check reports as missing or within budget.",
+  "files": {
+    "public/file-uploads/foodCarousel.png": {
+      "reason": "3240x2700 six-dish photo collage, already re-encoded losslessly by optimize-assets. A palette (lossy) PNG or a downscale to about 1920 px would bring it near 1.5 MB; that is a quality decision for the content owner, deferred. The path is in seeds and the live DB, so it must stay a PNG under this name.",
+      "maxBytes": 10754830
+    },
+    "public/file-uploads/loktakComplete.png": {
+      "reason": "2160x1350 Loktak aerial, re-encoded losslessly. Palette quantisation (about 1.1 MB) is a deferred quality decision; the path is in seeds and the live DB, so it stays a PNG.",
+      "maxBytes": 3227488
+    },
+    "public/file-uploads/marjing.png": {
+      "reason": "2160x1350 photo, re-encoded losslessly. Palette quantisation (about 1.0 MB) is a deferred quality decision; the path is in seeds and the live DB, so it stays a PNG.",
+      "maxBytes": 2561015
+    },
+    "public/file-uploads/foodcar1.png": {
+      "reason": "1200x900 collage with real transparent gaps (alpha kept), re-encoded losslessly. Palette quantisation (about 0.6 MB) is a deferred quality decision; the path is in seeds and the live DB.",
+      "maxBytes": 2145280
+    },
+    "public/file-uploads/hotspotcar.png": {
+      "reason": "1200x900 collage, unused alpha dropped and re-encoded losslessly. Palette quantisation (about 0.6 MB) is a deferred quality decision; the path is in seeds and the live DB.",
+      "maxBytes": 2076170
+    },
+    "public/file-uploads/hotspotcar5.png": {
+      "reason": "Seven-panel panoramic strip (originally 15120x1350, 14 MB), downscaled to 7560x675 and re-encoded losslessly. It renders as a cropped 4:3 cover tile, so the short edge is what matters: 675 px gives a 900x675 crop for a ~450 CSS px tile on 2x screens (at 3840 px wide it was 343 px tall and visibly soft). Palette quantisation is a deferred quality decision. The path is in seeds and the live DB.",
+      "maxBytes": 5208046
+    },
+    "public/file-uploads/tourcar.png": {
+      "reason": "1200x900 collage, unused alpha dropped and re-encoded losslessly. Palette quantisation (about 0.5 MB) is a deferred quality decision; the path is in seeds and the live DB.",
+      "maxBytes": 1706067
+    },
+    "public/file-uploads/tourcar2.png": {
+      "reason": "1200x900 collage, unused alpha dropped and re-encoded losslessly. Palette quantisation (about 0.45 MB) is a deferred quality decision; the path is in seeds and the live DB.",
+      "maxBytes": 1539593
+    },
+    "public/file-uploads/share.png": {
+      "reason": "1200x900 hotel-room collage, unused alpha dropped and re-encoded losslessly. Palette quantisation (about 0.5 MB) is a deferred quality decision; the path is in seeds and the live DB.",
+      "maxBytes": 1433549
+    },
+    "public/file-uploads/sangai-pair-keibul.webp": {
+      "reason": "2000x1535 WebP at 1.09 MB, just over budget. A re-encode at lower quality is a visual call on a lead photo (three seeds use it as a cover); the path is in seeds and the live DB, so any re-encode must keep the name.",
+      "maxBytes": 1143366
+    }
+  }
+}

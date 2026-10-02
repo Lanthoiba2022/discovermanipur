@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { IntentLink } from "@/components/shared/intent-link";
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -74,7 +74,11 @@ export function CardMedia({
           src={image.src}
           alt={image.alt || fallbackAlt}
           fill
-          unoptimized={isPlacePhoto(image.src)}
+          /* Places photos 307 to a signed Google URL the optimizer cannot
+             follow, and community photos sit behind an access-checked route it
+             cannot authenticate to: both go straight to the browser. Featured
+             research hotspots on the destinations rail often lead with one. */
+          unoptimized={isPlacePhoto(image.src) || image.src.startsWith("/api/community/photos/")}
           sizes={RAIL_SIZES}
           className="object-cover transition-transform duration-[var(--dur-slow)] ease-[var(--ease-flat)] group-hover:scale-[1.04]"
         />
@@ -141,7 +145,10 @@ export function CardMeta({
   );
 }
 
-/** The single pill that closes every band. */
+/**
+ * The single pill that closes every band. An `IntentLink` (prefetch on hover,
+ * focus or touch), because every band has one and they all scroll past.
+ */
 export function BandPill({
   href,
   children,
@@ -163,13 +170,13 @@ export function BandPill({
           : "border-ink-900/25 text-foreground hover:border-primary hover:bg-primary hover:text-primary-foreground",
       )}
     >
-      <Link href={href}>
+      <IntentLink href={href}>
         {children}
         <ArrowRight
           aria-hidden
           className="transition-transform duration-[var(--dur-fast)] ease-[var(--ease-flat)] group-hover/pill:translate-x-1"
         />
-      </Link>
+      </IntentLink>
     </Button>
   );
 }

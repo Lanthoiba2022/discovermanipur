@@ -1,13 +1,100 @@
 "use client";
 
 import { ArrowRight, ChevronLeft, ChevronRight, GripHorizontal, MessageCircle, PauseCircle, X } from "lucide-react";
-import Link from "next/link";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { cn } from "@/lib/utils";
 
-import { Concierge } from "./concierge";
+/**
+ * Stand-in for the chat while its chunk downloads: the rough shape of the
+ * greeting, a reply and the composer, so the panel does not jump when the
+ * real thing arrives. `animate-pulse` collapses to a single frame under
+ * reduced motion (the blanket rule in globals.css).
+ */
+function ConciergeSkeleton() {
+  return (
+    <div className="flex min-h-0 flex-1 flex-col gap-3 p-4" aria-busy="true">
+      <span className="sr-only">Loading the concierge</span>
+      <div aria-hidden className="h-16 w-4/5 animate-pulse rounded-[var(--radius)] bg-surface-sunken" />
+      <div aria-hidden className="ml-auto h-9 w-1/2 animate-pulse rounded-[var(--radius)] bg-surface-sunken" />
+      <div aria-hidden className="mt-auto h-11 animate-pulse rounded-full bg-surface-sunken" />
+    </div>
+  );
+}
+
+/**
+ * What the panel shows when the chat's chunk cannot be fetched.
+ *
+ * The widget sits in the root layout, outside every `error.tsx`, so a lazy
+ * chunk that fails (a deploy since the page was opened: the Hobby plan has no
+ * Skew Protection, so the old chunk is gone; or a dropped connection) would
+ * otherwise throw out of `React.lazy` and replace the whole page with
+ * `global-error`. The loader below resolves to this instead. Its link is a
+ * plain `<a>`, not `next/link`, on purpose: a document load of `/plan` picks
+ * up the current deployment, where a client navigation would ask for more
+ * chunks from the one that just failed. It ignores the chat's props, which
+ * the dynamic component still passes.
+ */
+function ConciergeUnavailable() {
+  return (
+    <div className="flex min-h-0 flex-1 flex-col justify-center gap-3 p-5 text-center" role="status">
+      <p className="font-display text-base font-semibold tracking-tight text-foreground">
+        The chat did not load
+      </p>
+      <p className="text-sm leading-relaxed text-muted-foreground">
+        This can happen just after the site updates, or on a patchy connection. The full planner
+        opens in a fresh page.
+      </p>
+      <a
+        href="/plan"
+        className={cn(
+          "mx-auto flex w-fit items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground",
+          "transition-colors hover:bg-primary/90",
+          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+        )}
+      >
+        Open the planner
+        <ArrowRight aria-hidden className="size-4" />
+      </a>
+    </div>
+  );
+}
+
+/**
+ * The chat itself, loaded on demand.
+ *
+ * `Concierge` brings the AI SDK client (`useChat`, the transport), the
+ * markdown and result-card renderers and zod (through `@/lib/ai/schema`).
+ * Imported statically, all of it shipped in the first-load JavaScript of
+ * every route, because this widget sits in the root layout, even though it
+ * renders only once a reader opens the panel and only while the concierge is
+ * live. Loaded here with `ssr: false` it becomes its own chunk, fetched on
+ * the first open (or earlier, by `warmConcierge`). `/plan` imports
+ * `Concierge` directly and is unaffected.
+ */
+const Concierge = dynamic(
+  () =>
+    import("./concierge")
+      .then((m) => m.Concierge)
+      // A failed chunk degrades to a link to /plan instead of reaching
+      // global-error (see `ConciergeUnavailable`).
+      .catch(() => ConciergeUnavailable),
+  {
+    ssr: false,
+    loading: () => <ConciergeSkeleton />,
+  },
+);
+
+/**
+ * Start fetching the chat chunk before the click, on hover or focus. A failed
+ * warm-up is ignored: opening the panel retries, and degrades on failure.
+ */
+const warmConcierge = () => {
+  import("./concierge").catch(() => undefined);
+};
 
 const WIDGET_SUGGESTIONS = [
   "Plan me three days",
@@ -50,7 +137,7 @@ function PausedPanel({ onNavigate }: { onNavigate: () => void }) {
         </p>
       </div>
 
-      <Link
+      <IntentLink
         href="/plan"
         onClick={onNavigate}
         className={cn(
@@ -61,17 +148,17 @@ function PausedPanel({ onNavigate }: { onNavigate: () => void }) {
       >
         See a sample conversation
         <ArrowRight aria-hidden className="size-4" />
-      </Link>
+      </IntentLink>
 
       <p className="text-xs leading-relaxed text-muted-foreground">
         Everything else is live: browse{" "}
-        <Link href="/hotspots" onClick={onNavigate} className="underline underline-offset-4 hover:text-foreground">
+        <IntentLink href="/hotspots" onClick={onNavigate} className="underline underline-offset-4 hover:text-foreground">
           places
-        </Link>{" "}
+        </IntentLink>{" "}
         and{" "}
-        <Link href="/homestays" onClick={onNavigate} className="underline underline-offset-4 hover:text-foreground">
+        <IntentLink href="/homestays" onClick={onNavigate} className="underline underline-offset-4 hover:text-foreground">
           homestays
-        </Link>{" "}
+        </IntentLink>{" "}
         as normal.
       </p>
     </div>
@@ -122,16 +209,43 @@ export function ConciergeWidget({
   const rootRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
+  /** True between an open and the close that follows it, so the focus
+   *  return below runs on a real close and not on first mount. */
+  const wasOpen = useRef(false);
   const drag = useRef<{ dx: number; dy: number; startX: number; startY: number } | null>(null);
   /** Set once a pointer travels far enough to be a drag rather than a tap. */
   const moved = useRef(false);
 
-  const close = useCallback(() => {
-    setOpen(false);
-    launcherRef.current?.focus();
-  }, []);
+  const close = useCallback(() => setOpen(false), []);
+
+  // Focus goes back to the launcher once the panel has closed. Not in
+  // `close()`: the launcher renders only while the panel is shut, so at that
+  // moment it is not in the document yet. This runs after the commit that
+  // mounts it. Only when focus has nowhere better to be, i.e. it fell to
+  // <body> with the panel it was in (the close button, Escape, a link inside
+  // the panel). If the reader had already moved focus out to the page, the
+  // panel being non-modal, it stays where they put it.
+  useEffect(() => {
+    if (open) {
+      wasOpen.current = true;
+      return;
+    }
+    if (!wasOpen.current) return;
+    wasOpen.current = false;
+    const active = document.activeElement;
+    if (!active || active === document.body) launcherRef.current?.focus();
+  }, [open]);
 
   // Escape closes; focus moves into the panel when it opens.
+  //
+  // The launcher that held focus unmounts on open, so focus has to be placed
+  // or it drops to <body>. The textarea gets it when it exists. When it does
+  // not (paused mode has none; on a first open the chat is a lazy chunk and
+  // the skeleton is showing), the panel itself takes focus (it is
+  // `tabIndex={-1}`), so a screen reader lands in the dialog and Escape and
+  // Tab work from there. While the skeleton shows, a MutationObserver waits
+  // for the textarea to mount and moves focus to it, unless the reader has
+  // already put focus somewhere outside the panel in the meantime.
   useEffect(() => {
     if (!open) return;
 
@@ -143,9 +257,32 @@ export function ConciergeWidget({
     }
 
     document.addEventListener("keydown", onKeyDown);
-    panelRef.current?.querySelector<HTMLTextAreaElement>("textarea")?.focus();
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [open, close]);
+
+    const panel = panelRef.current;
+    const textarea = () => panel?.querySelector<HTMLTextAreaElement>("textarea") ?? null;
+    let waitForChat: MutationObserver | undefined;
+    const now = textarea();
+    if (now) {
+      now.focus();
+    } else {
+      panel?.focus();
+    }
+    if (!now && panel && live) {
+      waitForChat = new MutationObserver(() => {
+        const el = textarea();
+        if (!el) return;
+        waitForChat?.disconnect();
+        const active = document.activeElement;
+        if (!active || active === document.body || panel.contains(active)) el.focus();
+      });
+      waitForChat.observe(panel, { childList: true, subtree: true });
+    }
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      waitForChat?.disconnect();
+    };
+  }, [open, close, live]);
 
   // A window that shrinks under a dragged panel must not strand it off screen.
   useEffect(() => {
@@ -257,7 +394,10 @@ export function ConciergeWidget({
           role="dialog"
           aria-modal="false"
           aria-label="Discover Manipur concierge"
+          // Focusable from script only, for the open-focus effect above.
+          tabIndex={-1}
           className={cn(
+            "outline-none",
             // Capped well short of full height so the reader never loses the
             // site behind the panel.
             "mb-3 flex w-[min(92vw,23rem)] flex-col overflow-hidden",
@@ -281,13 +421,13 @@ export function ConciergeWidget({
               <p className="truncate font-display text-[0.8125rem] font-semibold tracking-tight text-foreground">
                 Discover Manipur concierge
               </p>
-              <Link
+              <IntentLink
                 href="/plan"
                 onClick={close}
                 className="text-[11px] text-muted-foreground underline underline-offset-4 hover:text-foreground"
               >
                 {live ? "Open the full planner" : "See the sample conversation"}
-              </Link>
+              </IntentLink>
             </div>
 
             <button
@@ -363,6 +503,11 @@ export function ConciergeWidget({
             <button
               ref={launcherRef}
               type="button"
+              // Warm the chat chunk while the pointer is on its way to a
+              // click, or as keyboard focus arrives. Paused, there is no chat
+              // to load, so nothing is fetched.
+              onPointerEnter={live ? warmConcierge : undefined}
+              onFocus={live ? warmConcierge : undefined}
               onClick={() => {
                 // A drag ends with a click event too; ignore that one.
                 if (moved.current) {

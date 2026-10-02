@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { Reveal } from "@/components/motion/reveal";
 
 interface Tradition {
@@ -75,13 +75,13 @@ export function CraftTraditions() {
               )}
             </h3>
             <p className="text-sm leading-relaxed text-muted-foreground">{tradition.body}</p>
-            <Link
+            <IntentLink
               href={tradition.href}
               className="mt-auto inline-flex items-center gap-2 pt-2 text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               {tradition.cta}
               <ArrowRight className="size-4" aria-hidden="true" />
-            </Link>
+            </IntentLink>
           </Reveal>
         ))}
       </ul>

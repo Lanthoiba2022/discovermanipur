@@ -8,7 +8,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { resendVerificationCode, verifyEmailCode, verifyEmailSchema } from "@/lib/auth";
+import { resendVerificationCode, verifyEmailCode } from "@/lib/auth/actions";
+import { verifyEmailSchema } from "@/lib/auth/schemas";
 
 /** Same countdown as the sign-in page's resend button. Client-side only; Neon Auth's rate limit is the real one. */
 const RESEND_COOLDOWN_S = 30;

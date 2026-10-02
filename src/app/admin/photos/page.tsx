@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { UUID, n } from "@/components/admin/community-parts";
 import { CommunityPhotoGrid } from "@/components/admin/community-photo-grid";
 import { AdminUnavailable } from "@/components/admin/unavailable";
@@ -66,26 +66,26 @@ export default async function AdminCommunityPhotosPage({ searchParams }: { searc
         {uploaderName && (
           <p className="rounded-[var(--radius)] bg-muted px-4 py-2 text-foreground">
             Uploaded by <strong className="font-medium">{uploaderName}</strong> ·{" "}
-            <Link href={photosHref({ place, removed })} className={linkClass}>
+            <IntentLink href={photosHref({ place, removed })} className={linkClass}>
               clear<span className="sr-only"> the uploader filter</span>
-            </Link>
+            </IntentLink>
           </p>
         )}
         {placeName && (
           <p className="rounded-[var(--radius)] bg-muted px-4 py-2 text-foreground">
             Photos of{" "}
-            <Link href={`/admin/places/${place}`} className="font-medium hover:underline">
+            <IntentLink href={`/admin/places/${place}`} className="font-medium hover:underline">
               {placeName}
-            </Link>{" "}
+            </IntentLink>{" "}
             ·{" "}
-            <Link href={photosHref({ uploader, removed })} className={linkClass}>
+            <IntentLink href={photosHref({ uploader, removed })} className={linkClass}>
               clear<span className="sr-only"> the place filter</span>
-            </Link>
+            </IntentLink>
           </p>
         )}
-        <Link href={photosHref({ uploader, place, removed: !removed })} className={linkClass}>
+        <IntentLink href={photosHref({ uploader, place, removed: !removed })} className={linkClass}>
           {removed ? "Hide removed photos" : "Include removed photos"}
-        </Link>
+        </IntentLink>
         {photos && (
           <p className="text-muted-foreground sm:ml-auto">
             {photos.length === 1 ? "1 photo" : `${n(photos.length)} photos`}

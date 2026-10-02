@@ -2,9 +2,9 @@
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import Link from "next/link";
 import { ArrowLeft, ArrowRight, Box, Check, ChevronLeft, ChevronRight, ExternalLink, Focus, Glasses, Info, LoaderCircle, Maximize, Minus, Pause, Play, Plus, RotateCcw, Smartphone, Sun, Volume2, VolumeX, X } from "lucide-react";
 import { Component, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { IntentLink } from "@/components/shared/intent-link";
 import { kanglaMapUrl, type LandmarkId } from "@/lib/immersive/kangla";
 import { narrationFor, narrationLanguages } from "@/lib/immersive/narration";
 import { useNarration } from "./use-narration";
@@ -118,7 +118,7 @@ export function KanglaExperience({
     <div className={styles.page}>
       <div className="shell pt-28 md:pt-32">
         <div className={styles.topline}>
-          <Link href="/explore/kangla" className={styles.back}><ArrowLeft size={15} aria-hidden /> Back to map explorer</Link>
+          <IntentLink href="/explore/kangla" className={styles.back}><ArrowLeft size={15} aria-hidden /> Back to map explorer</IntentLink>
           <span className="eyebrow text-muted-foreground">Kangla / Landmark studio / 3D · AR · VR</span>
         </div>
         <header className={styles.heading}>
@@ -210,7 +210,7 @@ export function KanglaExperience({
           <section className={styles.context}>
             <span className="eyebrow text-muted-foreground">The real place</span><h2>Find your bearings.</h2><p>Choose Whole site in the 3D viewer to explore the mapped buildings, paths and water in desktop, AR or VR. The detailed scenes are separate architectural studies. The satellite map places the landmarks at their mapped OpenStreetMap coordinates.</p>
             <div className={styles.mapActions}><a href={kanglaMapUrl} target="_blank" rel="noreferrer">Open in Google Maps <ExternalLink size={14} aria-hidden /></a></div>
-            <Link href="/hotspots/kangla-fort" className={styles.visitLink}>Plan a real visit to Kangla <ArrowRight size={17} aria-hidden /></Link>
+            <IntentLink href="/hotspots/kangla-fort" className={styles.visitLink}>Plan a real visit to Kangla <ArrowRight size={17} aria-hidden /></IntentLink>
           </section>
           <section className={styles.context}>
             <span className="eyebrow text-muted-foreground">Built with context</span><h2>From photograph to form.</h2><p>{stop.reconstruction} This is not a photogrammetric scan or a measured digital twin.</p>

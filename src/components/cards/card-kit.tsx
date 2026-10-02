@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import { Star } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { IntentLink } from "@/components/shared/intent-link";
 import type { ReactNode } from "react";
 
 import { PLACEHOLDER_IMAGE } from "@/components/places/taxonomy";
@@ -229,6 +229,10 @@ export function CardEyebrow({
 /**
  * The card's one link. The name wraps (it is never truncated to equalise
  * card heights), and the anchor's overlay spans the whole shell.
+ *
+ * An `IntentLink`, so a listing of 159 cards does not prefetch 159 detail
+ * pages as it scrolls past: each card's route is prefetched when the visitor
+ * points at, focuses or touches it.
  */
 export function CardTitle({
   href,
@@ -246,12 +250,12 @@ export function CardTitle({
         className,
       )}
     >
-      <Link
+      <IntentLink
         href={href}
         className="after:absolute after:inset-0 after:z-0 after:content-[''] focus-visible:outline-none"
       >
         {children}
-      </Link>
+      </IntentLink>
     </h3>
   );
 }

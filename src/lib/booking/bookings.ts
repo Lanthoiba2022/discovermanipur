@@ -27,6 +27,7 @@ import {
   type BookingMode,
 } from "./actions";
 import { bookingHref, type BookingView } from "./links";
+import { toISODate } from "./pricing";
 
 export type { BookingMode };
 
@@ -57,12 +58,41 @@ export class BookingError extends Error {
 
 /* ----------------------------------- Mode ----------------------------------- */
 
+/**
+ * The mode `next.config.ts` fixed for this deployment at build time
+ * (`NEXT_PUBLIC_BOOKING_MODE`: "account" with both Neon Auth and a usable
+ * database, otherwise "browser"), or `null` on a build that predates the flag.
+ * Read through the literal `process.env.NEXT_PUBLIC_BOOKING_MODE` so Next.js
+ * inlines it into the bundle; any other value is ignored rather than trusted.
+ */
+const BUILD_MODE: BookingMode | null = (() => {
+  const value = process.env.NEXT_PUBLIC_BOOKING_MODE;
+  return value === "account" || value === "browser" ? value : null;
+})();
+
+/**
+ * The mode as known without asking the server: the build-time flag, or
+ * "browser" when this build has no Neon Auth (nothing could be on an
+ * account), or `null` when only the server can say.
+ */
+function knownMode(): BookingMode | null {
+  if (!isAuthConfigured) return "browser";
+  return BUILD_MODE;
+}
+
 let modePromise: Promise<BookingMode> | null = null;
 
-/** Where this deployment keeps requests. Asked of the server once per page load. */
+/**
+ * Where this deployment keeps requests. Known at build time on current builds,
+ * so this resolves without a request; only a build without
+ * `NEXT_PUBLIC_BOOKING_MODE` asks the `getBookingMode` Server Action, once per
+ * page load.
+ */
 export function resolveBookingMode(): Promise<BookingMode> {
-  if (!isAuthConfigured) return Promise.resolve("browser");
-  modePromise ??= getBookingMode().catch(() => {
+  if (modePromise) return modePromise;
+  const known = knownMode();
+  if (known) return Promise.resolve(known);
+  modePromise = getBookingMode().catch(() => {
     modePromise = null;
     // Never quietly fall back to the browser on a deployment with sign-in: a
     // request the traveller thinks is on their account would be lost.
@@ -75,10 +105,15 @@ function settleMode(mode: BookingMode) {
   modePromise = Promise.resolve(mode);
 }
 
-/** The booking mode, or `null` while it is being looked up. */
+/**
+ * The booking mode, or `null` while it is being looked up. Synchronous (no
+ * effect, no request) whenever the build carries the flag, which also means
+ * the first render already shows the right copy.
+ */
 export function useBookingMode(): BookingMode | null {
-  const [mode, setMode] = useState<BookingMode | null>(isAuthConfigured ? null : "browser");
+  const [mode, setMode] = useState<BookingMode | null>(knownMode);
   useEffect(() => {
+    if (mode) return;
     let alive = true;
     void resolveBookingMode().then((next) => {
       if (alive) setMode(next);
@@ -86,7 +121,7 @@ export function useBookingMode(): BookingMode | null {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [mode]);
   return mode;
 }
 
@@ -211,17 +246,21 @@ export async function cancelBooking(id: string): Promise<void> {
   );
 }
 
-/** Upcoming = not cancelled and ending today or later. */
+/**
+ * Upcoming = not cancelled and ending today or later, by the traveller's own
+ * calendar. Booking dates are date-only strings ("2026-10-05"), so they are
+ * compared as strings against today's local date in the same format.
+ * `new Date("2026-10-05")` would be UTC midnight, which west of UTC is the
+ * evening before, and would file a stay ending today under "past".
+ */
 export function partitionBookings<T extends Booking>(rows: T[]) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const today = toISODate(new Date());
   const upcoming: T[] = [];
   const past: T[] = [];
 
   for (const b of rows) {
-    const end = new Date(b.endDate ?? b.startDate);
-    end.setHours(0, 0, 0, 0);
-    if (b.status !== "cancelled" && end.getTime() >= today.getTime()) upcoming.push(b);
+    const end = (b.endDate ?? b.startDate).slice(0, 10);
+    if (b.status !== "cancelled" && end >= today) upcoming.push(b);
     else past.push(b);
   }
 

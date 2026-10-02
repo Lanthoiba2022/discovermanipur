@@ -10,13 +10,20 @@
  * property that this app builds and runs with zero environment variables, and
  * the fact that a page of prose should not 500 because the database had a bad
  * minute. Content is the one thing safe to serve slightly stale.
+ *
+ * One exception: inside a Vercel Production build a failed read is retried
+ * and then fails the build (`readWithBuildRetry` in ./cache.ts). Seed copy
+ * baked into static pages would stay until the next deploy, and the edited
+ * live copy differs from the seed files. `ALLOW_SEED_FALLBACK=1` overrides.
  */
 import { cache } from "react";
 import { asc, eq } from "drizzle-orm";
 
 import { getDb, schema, type Db } from "@/lib/db";
 
-import { CONTENT_TAG, sharedRead } from "./cache";
+import { logDbError } from "@/lib/log";
+
+import { CONTENT_TAG, isProductionBuild, readWithBuildRetry, sharedRead } from "./cache";
 
 import { faqGroups as seedFaqGroups, type FaqGroup } from "@/app/faq/faq-data";
 import { PHOTO_CREDITS, type PhotoCredit } from "./photo-credits";
@@ -25,15 +32,12 @@ import {
   aboutPrinciples,
   aboutThemes,
   contactChannels,
-  heroSubjects,
-  homeStatement,
   homeStats,
   hostFaqs,
   hostGallery,
   hostSteps,
   hostWeHandle,
   hostWhy,
-  marqueeWords,
   pledgeItems,
   responsibleQuickAsks,
   type Channel,
@@ -64,16 +68,18 @@ function contentRead<A extends unknown[], T>(
 }
 
 /**
- * Run a cached read, returning its result, or `null` if the database is
- * unavailable or errors. Wrapped in React's `cache` at call sites that run
- * more than once per render.
+ * Run a cached read, returning its result, or `null` (use the seed) if the
+ * database is unconfigured or, at runtime, errors. Inside a production build
+ * an error is retried and then rethrown, failing the build (see the header).
+ * Wrapped in React's `cache` at call sites that run more than once per render.
  */
 async function fromDb<T>(read: () => Promise<T>, label: string): Promise<T | null> {
   if (!getDb()) return null;
   try {
-    return await read();
+    return await readWithBuildRetry(`content:${label}`, read);
   } catch (err) {
-    console.warn(`[content] ${label} fell back to seed:`, err);
+    if (isProductionBuild()) throw err;
+    logDbError("content", err, { read: label, fallback: "seed" });
     return null;
   }
 }
@@ -117,34 +123,17 @@ export const getHomeStats = () => section<Stat>("home.stats", homeStats);
 export const getResponsibleQuickAsks = () =>
   section<QuickAsk>("responsible.quick_asks", responsibleQuickAsks);
 
-/** Stored as `[{ word }]` so the payload stays a uniform array of objects. */
-export async function getMarqueeWords(): Promise<string[]> {
-  const rows = await section<{ word?: string }>(
-    "home.marquee_words",
-    marqueeWords.map((word) => ({ word })),
-  );
-  return rows.map((r) => r.word ?? "").filter(Boolean);
-}
+// `home.marquee_words`, `hero.subjects` and `home.statement` are still seeded
+// (scripts/seed.ts) but have no getter: the home components that showed them
+// were removed. Add a getter back here if a component needs one again.
 
-export async function getHeroSubjects(): Promise<string[]> {
-  const rows = await section<{ text?: string }>(
-    "hero.subjects",
-    heroSubjects.map((text) => ({ text })),
-  );
-  return rows.map((r) => r.text ?? "").filter(Boolean);
-}
-
+/** Stored as `[{ text }]` so the payload stays a uniform array of objects. */
 export async function getPledgeItems(): Promise<string[]> {
   const rows = await section<{ text?: string }>(
     "pledge.items",
     pledgeItems.map((text) => ({ text })),
   );
   return rows.map((r) => r.text ?? "").filter(Boolean);
-}
-
-export async function getHomeStatement(): Promise<string> {
-  const rows = await section<{ text?: string }>("home.statement", [{ text: homeStatement }]);
-  return rows[0]?.text || homeStatement;
 }
 
 /* ------------------------------------------------------------------- FAQs -- */

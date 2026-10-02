@@ -1,7 +1,7 @@
 import { CalendarDays, Home, IndianRupee, Star } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { ColumnChart } from "@/components/admin/column-chart";
 import { StatTile } from "@/components/admin/stat-tile";
 import { StatusPill, TableScroller } from "@/components/admin/table-parts";
@@ -79,7 +79,10 @@ export default async function HostDashboardPage() {
   const hasBookingValue = byMonth.some((m) => m.value > 0);
 
   return (
-    <div className="shell pb-24 pt-28 md:pt-32">
+    // `data-clarity-mask`: Clarity session replay blanks everything in here
+    // (guest names, booking details, earnings) before a recording leaves the
+    // browser. Its default masking covers typed input, not rendered text.
+    <div data-clarity-mask="true" className="shell pb-24 pt-28 md:pt-32">
       <header className="mb-10">
         <p className="eyebrow mb-3 text-muted-foreground">Host dashboard</p>
         <h1 className="text-headline">Khurumjari, {user.name.split(" ")[0]}</h1>
@@ -173,13 +176,13 @@ export default async function HostDashboardPage() {
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
             <Button asChild size="sm">
-              <Link href="/community/new">Add your place</Link>
+              <IntentLink href="/community/new">Add your place</IntentLink>
             </Button>
             <Button asChild variant="outline" size="sm">
-              <Link href="/account/places">My places</Link>
+              <IntentLink href="/account/places">My places</IntentLink>
             </Button>
             <Button asChild variant="outline" size="sm">
-              <Link href="/host/guidelines">Hosting standards</Link>
+              <IntentLink href="/host/guidelines">Hosting standards</IntentLink>
             </Button>
           </div>
         </section>

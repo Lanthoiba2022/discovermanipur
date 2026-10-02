@@ -6,7 +6,7 @@ import { Loader2, LogOut } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { signOut } from "@/lib/auth";
+import { signOut } from "@/lib/auth/actions";
 
 export function SignOutButton({ className }: { className?: string }) {
   const router = useRouter();

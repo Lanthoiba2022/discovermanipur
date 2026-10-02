@@ -18,7 +18,7 @@ import {
 import Image from "next/image";
 
 import { isPlacePhoto } from "@/lib/data/photos";
-import Link from "next/link";
+import { IntentLink } from "@/components/shared/intent-link";
 
 import type { Hotspot, HotspotCategory } from "@/types";
 
@@ -75,7 +75,8 @@ export function LesserKnownCard({ hotspot }: { hotspot: Hotspot }) {
               src={photo.src}
               alt={photo.alt || `A view of ${hotspot.location}, ${hotspot.district} district`}
               fill
-              unoptimized={isPlacePhoto(photo.src)}
+              // Places and community photos bypass the optimizer (see showcase-card).
+              unoptimized={isPlacePhoto(photo.src) || photo.src.startsWith("/api/community/photos/")}
               sizes={RAIL_SIZES}
               className="object-cover transition-transform duration-[var(--dur-slow)] ease-[var(--ease-flat)] group-hover:scale-[1.04]"
             />
@@ -99,7 +100,7 @@ export function LesserKnownCard({ hotspot }: { hotspot: Hotspot }) {
           {/* Place names wrap. A clipped name is a broken promise, whatever it
               costs in card-height symmetry. */}
           <h3 className="font-display text-[1.375rem] leading-[1.18] text-balance text-foreground">
-            <Link
+            <IntentLink
               href={`/hotspots/${hotspot.slug}`}
               className={cn(
                 "after:absolute after:inset-0 after:rounded-[var(--radius-lg)]",
@@ -111,7 +112,7 @@ export function LesserKnownCard({ hotspot }: { hotspot: Hotspot }) {
               )}
             >
               {hotspot.name}
-            </Link>
+            </IntentLink>
           </h3>
 
           {alias && <p className="-mt-1 font-mayek text-sm text-stone-700">{alias}</p>}

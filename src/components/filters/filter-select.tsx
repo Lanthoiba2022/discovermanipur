@@ -11,24 +11,35 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
+import { FilterParamsGate } from "./filter-params-gate";
 import { ALL, type FilterOption } from "./params";
-import { useFilterParams } from "./use-filter-params";
+import type { FilterParams } from "./use-filter-params";
 
-/** Dropdown filter bound to `?<name>=<value>`. */
-export function FilterSelect({
-  name,
-  label,
-  options,
-  allLabel = "Any",
-  className,
-}: {
+interface FilterSelectProps {
   name: string;
   label: string;
   options: FilterOption[];
   allLabel?: string;
   className?: string;
-}) {
-  const { get, setParam, isPending } = useFilterParams();
+}
+
+/**
+ * Dropdown filter bound to `?<name>=<value>`. Reads and writes the URL through
+ * `FilterParamsGate`, so it works in either URL mode.
+ */
+export function FilterSelect(props: FilterSelectProps) {
+  return <FilterParamsGate>{(params) => <FilterSelectView {...props} params={params} />}</FilterParamsGate>;
+}
+
+function FilterSelectView({
+  name,
+  label,
+  options,
+  allLabel = "Any",
+  className,
+  params,
+}: FilterSelectProps & { params: FilterParams }) {
+  const { get, setParam, isPending } = params;
   const id = useId();
   // A shared URL can carry a value this list does not offer (a district with
   // nothing in it, a stale slug). Radix would then render an empty trigger, so

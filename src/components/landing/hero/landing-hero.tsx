@@ -5,11 +5,25 @@ import { FilmCredit } from "./film-credit";
 import { HeroFilm } from "./hero-film";
 import { RotatingWordmark } from "./rotating-wordmark";
 
-const VIDEO_SRC = "/videos/ManipurHorizontalVideo.mp4";
 /**
- * Frame zero of `VIDEO_SRC`, exported at 1920×1080. Using a still cut from the
+ * The film, encoded twice from one 60 fps master: 1280x720 for landscape
+ * screens and a 404x720 (9:16) centre crop for portrait ones. Both are 30 fps
+ * H.264 High with no audio track (the element is muted, so a track was only
+ * ever downloaded, never heard), CRF 28 and 27, and `+faststart`.
+ *
+ * The files are code-only (no database row names them), so a re-encode gets a
+ * new filename rather than overwriting, which also busts every cache.
+ */
+const VIDEO_SOURCES = {
+  landscape: "/videos/manipur-hero-720.mp4",
+  portrait: "/videos/manipur-hero-portrait.mp4",
+} as const;
+/**
+ * Frame zero of the film, exported at 1920×1080. Using a still cut from the
  * film itself, rather than a library photograph, is what makes the handover
- * from poster to playback invisible.
+ * from poster to playback invisible. Both encodes keep the master's first
+ * frame (the fps filter drops frames after it, not before), and the portrait
+ * one is the same centre crop `object-cover` makes of this still on a phone.
  */
 const POSTER_SRC = "/videos/manipur-hero-poster.jpg";
 
@@ -53,7 +67,7 @@ export function LandingHero() {
       className="relative isolate z-10 flex min-h-[100svh] flex-col bg-ink-950"
     >
       <HeroFilm
-        src={VIDEO_SRC}
+        sources={VIDEO_SOURCES}
         poster={POSTER_SRC}
         posterAlt={POSTER_ALT}
       />

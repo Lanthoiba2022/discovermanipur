@@ -63,7 +63,9 @@ export function quoteTour(input: { pricePerPerson: number; guests: number }): Pe
     people: input.guests,
     rate: input.pricePerPerson,
     subtotal,
-    adjustment: -discount,
+    // `-0` when there is no discount would format as "-₹0" (Intl keeps the
+    // sign of negative zero), so a zero discount is a plain 0.
+    adjustment: discount === 0 ? 0 : -discount,
     total: subtotal - discount,
   };
 }

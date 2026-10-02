@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { getPhotoCredits } from "@/lib/data/content";
 import { LegalBody, type LegalSection } from "@/components/content/legal-page";
 import { NoteBox } from "@/components/content/prose";
@@ -60,8 +60,8 @@ const sections: LegalSection[] = [
           changed, and continued use after a change means you accept the new version.
         </p>
         <p>
-          These terms sit alongside our <Link href="/privacy">privacy notice</Link> and our{" "}
-          <Link href="/accessibility">accessibility statement</Link>.
+          These terms sit alongside our <IntentLink href="/privacy">privacy notice</IntentLink> and our{" "}
+          <IntentLink href="/accessibility">accessibility statement</IntentLink>.
         </p>
       </>
     ),
@@ -149,7 +149,7 @@ const sections: LegalSection[] = [
             advisories with official sources.
           </strong>{" "}
           Nothing on this site is a substitute for that, and our{" "}
-          <Link href="/responsible-travel">responsible travel guidance</Link> says so at greater
+          <IntentLink href="/responsible-travel">responsible travel guidance</IntentLink> says so at greater
           length.
         </p>
       </>
@@ -219,7 +219,7 @@ const sections: LegalSection[] = [
           knowledge, and you must say if you own the place or are connected to it. Photos must be
           your own or carry an open licence, which you name with its source. A new place is
           published only if the community verifies it, under rules that are the same for everyone
-          and described on the <Link href="/community">community places</Link> page. An admin may
+          and described on the <IntentLink href="/community">community places</IntentLink> page. An admin may
           hold, reject or unpublish a place, or remove a photo, when it breaks these terms.
         </p>
       </>
