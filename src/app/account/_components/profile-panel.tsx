@@ -31,7 +31,15 @@ export function ProfilePanel() {
 
   const form = useForm<ProfileValues>({
     resolver: zodResolver(profileSchema),
-    defaultValues: { firstName: "", lastName: "", phone: "", avatarUrl: "" },
+    // Filled from the start (AuthGuard renders this only once a user is
+    // known), so a client navigation never shows a frame of empty fields; the
+    // effect below still follows later changes to the user.
+    defaultValues: {
+      firstName: user?.firstName ?? "",
+      lastName: user?.lastName ?? "",
+      phone: user?.phone ?? "",
+      avatarUrl: user?.avatarUrl ?? "",
+    },
   });
 
   useEffect(() => {

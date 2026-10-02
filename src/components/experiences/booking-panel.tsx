@@ -226,10 +226,18 @@ export function ExperienceBookingPanel({ experience }: { experience: Experience 
         </div>
       </dl>
 
-      <Button type="submit" size="lg" disabled={isSubmitting || busy} className="w-full">
-        {(isSubmitting || busy) && <Loader2 className="animate-spin" aria-hidden="true" />}
+      {/* Neutral while the session settles, as in the stay booking card: the
+          static HTML is "loading" for everyone, anonymous visitors included. */}
+      <Button
+        type="submit"
+        size="lg"
+        disabled={isSubmitting || busy}
+        aria-busy={busy || undefined}
+        className="w-full"
+      >
+        {isSubmitting && <Loader2 className="animate-spin" aria-hidden="true" />}
         {busy
-          ? "Checking your session…"
+          ? "Request to book"
           : isSubmitting
             ? "Saving…"
             : isAuthenticated

@@ -1,7 +1,9 @@
 import Image from "next/image";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 
 import { AuthForm } from "@/components/auth/auth-form";
+import { SESSION_HINT_COOKIE } from "@/lib/auth/session-hint";
 import { safeRedirectPath } from "@/lib/security/redirect";
 
 export const metadata: Metadata = {
@@ -19,14 +21,17 @@ export default async function AuthPage({
 }) {
   const params = await searchParams;
   const next = safeRedirectPath(params.next);
+  // Only a rendering hint for the first paint (see `AuthForm`), never trusted
+  // for anything else. Reading it costs no network call.
+  const probablySignedIn = (await cookies()).has(SESSION_HINT_COOKIE);
 
   return (
     <div className="grid min-h-[100svh] lg:grid-cols-2">
       <div className="flex items-center justify-center px-4 pb-20 pt-28 md:px-10 md:pt-32">
-        <AuthForm next={next} />
+        <AuthForm next={next} probablySignedIn={probablySignedIn} />
       </div>
 
-      <div className="relative hidden overflow-hidden lg:block">
+      <div className="relative hidden overflow-hidden bg-loktak-900 lg:block">
         <Image
           src="/file-uploads/112.jpg"
           alt="An ornate blue and white Manipuri temple gateway, framed by tall trees on a quiet Imphal lane"

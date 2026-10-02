@@ -1,10 +1,30 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { createContext, useContext } from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 import type { HotspotMapProps } from "./hotspot-map";
+
+/**
+ * The caller's `className` (its height and margin), for the loading skeleton.
+ * `dynamic`'s `loading` gets no props, so without this the skeleton guessed a
+ * 60vh box and the page jumped twice: to that box, then to the map's own.
+ */
+const MapBoxClass = createContext<string | undefined>(undefined);
+
+function MapSkeleton() {
+  const className = useContext(MapBoxClass);
+  return (
+    <Skeleton
+      role="status"
+      aria-label="Loading the map"
+      className={cn("min-h-[60vh] w-full rounded-[var(--radius-lg)]", className && "min-h-0", className)}
+    />
+  );
+}
 
 /**
  * MapLibre touches `window` at module scope, so the real map is loaded only in
@@ -12,9 +32,7 @@ import type { HotspotMapProps } from "./hotspot-map";
  */
 const HotspotMap = dynamic(() => import("./hotspot-map"), {
   ssr: false,
-  loading: () => (
-    <Skeleton className="h-full min-h-[60vh] w-full rounded-[var(--radius-lg)]" />
-  ),
+  loading: () => <MapSkeleton />,
 });
 
 export function MapPanel(props: HotspotMapProps) {
@@ -34,5 +52,9 @@ export function MapPanel(props: HotspotMapProps) {
     );
   }
 
-  return <HotspotMap {...props} />;
+  return (
+    <MapBoxClass.Provider value={props.className}>
+      <HotspotMap {...props} />
+    </MapBoxClass.Provider>
+  );
 }

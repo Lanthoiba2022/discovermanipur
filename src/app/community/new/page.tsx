@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import { Ban, LogIn, MailCheck, MapPinned } from "lucide-react";
 
 import { PlaceForm } from "@/components/community/place-form";
 import { VerifyEmailPanel } from "@/components/community/verify-email-panel";
 import { IntentLink } from "@/components/shared/intent-link";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { isAuthConfigured } from "@/lib/auth/env";
 import { LIMITS, UPVOTES_REQUIRED, VOTING_WINDOW_HOURS } from "@/lib/community/rules";
 import { isPhotoStorageConfigured } from "@/lib/community/storage";
@@ -172,12 +173,39 @@ async function Body() {
   );
 }
 
+/** Holds the place of the form while `Body` reads the session and profile. */
+function BodySkeleton() {
+  return (
+    <div aria-busy="true" aria-label="Loading the place form">
+      <Skeleton className="mb-10 h-44 w-full rounded-[var(--radius-lg)]" />
+      <div className="space-y-6 rounded-[var(--radius-lg)] border border-border bg-surface p-5 sm:p-8">
+        <Skeleton className="h-7 w-48" />
+        <Skeleton className="h-4 w-3/4" />
+        <div className="grid gap-3 sm:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-20 w-full rounded-[var(--radius)]" />
+          ))}
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2">
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+        </div>
+        <Skeleton className="h-32 w-full" />
+      </div>
+    </div>
+  );
+}
+
 export default function NewCommunityPlacePage() {
   return (
     <div className="pb-24 pt-28 md:pt-32">
       <div className="shell max-w-3xl">
         <Header />
-        <Body />
+        {/* The header is static copy, so it streams first; only the part that
+            depends on who is signed in waits for the session read. */}
+        <Suspense fallback={<BodySkeleton />}>
+          <Body />
+        </Suspense>
       </div>
     </div>
   );

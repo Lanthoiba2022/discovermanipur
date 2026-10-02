@@ -78,7 +78,9 @@ export function ParallaxHero({
       // wordmark and nav invert until the page scrolls past this image.
       data-hero-tone="dark"
       className={cn(
-        "relative isolate flex flex-col justify-end overflow-hidden",
+        // Ink ground under the photo: a slow image (often a redirected Places
+        // photo) left the cream title on the ivory page until it arrived.
+        "relative isolate flex flex-col justify-end overflow-hidden bg-ink-950",
         heightClassName,
         className,
       )}

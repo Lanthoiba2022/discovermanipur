@@ -67,7 +67,7 @@ export default async function HostLandingPage() {
           </div>
 
           <div className="relative">
-            <div className="overflow-hidden rounded-[var(--radius-lg)] shadow-[var(--shadow-lg)]">
+            <div className="overflow-hidden rounded-[var(--radius-lg)] bg-surface-sunken shadow-[var(--shadow-lg)]">
               <Image
                 src="/file-uploads/share.png"
                 alt="A Manipuri host welcoming guests onto the veranda of a family home"

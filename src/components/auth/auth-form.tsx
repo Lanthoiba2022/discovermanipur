@@ -12,6 +12,7 @@ import { DemoModeNotice } from "@/components/auth/demo-mode-notice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { isAuthConfigured } from "@/lib/auth/env";
 import {
@@ -32,6 +33,7 @@ import {
 import { useAuth } from "@/lib/auth/use-auth";
 import { getSnapshot, refreshSession } from "@/lib/auth/session-store";
 import { safeRedirectPath } from "@/lib/security/redirect";
+import { useMounted } from "@/lib/use-mounted";
 
 import { FieldError, PasswordInput } from "./fields";
 
@@ -184,12 +186,38 @@ function VerifyEmailStep({
   );
 }
 
-export function AuthForm({ next: requestedNext }: { next: string }) {
+/** Stands in for the form while a session check runs or a signed-in visitor is sent on. */
+function AuthFormSkeleton() {
+  return (
+    <div className="w-full max-w-md" aria-busy="true" aria-live="polite">
+      <span className="sr-only">Checking your session…</span>
+      <Skeleton className="h-10 w-4/5" />
+      <Skeleton className="mt-4 h-4 w-full" />
+      <Skeleton className="mt-2 h-4 w-3/5" />
+      <Skeleton className="mt-8 h-10 w-full" />
+      <div className="mt-6 space-y-4">
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-11 w-full rounded-full" />
+      </div>
+    </div>
+  );
+}
+
+export function AuthForm({
+  next: requestedNext,
+  probablySignedIn = false,
+}: {
+  next: string;
+  /** The request carried the `dm_signed_in` hint; picks the first paint only. */
+  probablySignedIn?: boolean;
+}) {
   const router = useRouter();
   // The page already sanitises `next`; checked again because this component
   // is what actually navigates, whoever renders it.
   const next = safeRedirectPath(requestedNext);
   const { isAuthenticated, isLoading } = useAuth();
+  const mounted = useMounted();
   const [tab, setTab] = useState("signin");
   const [pending, setPending] = useState<PendingVerification | null>(null);
   // While a submit runs or the code step shows, a signed-in store must not
@@ -286,6 +314,13 @@ export function AuthForm({ next: requestedNext }: { next: string }) {
   }
 
   const busy = signInForm.formState.isSubmitting || signUpForm.formState.isSubmitting;
+
+  // A signed-in visitor never sees the form flash before the redirect above:
+  // a skeleton covers the session check and the hop to `next`. Before
+  // hydration the store reads "loading" for everyone, so the server's hint
+  // decides the first paint and an anonymous visitor gets the form at once.
+  const checking = mounted ? isLoading : probablySignedIn;
+  if (!pending && !busy && (checking || isAuthenticated)) return <AuthFormSkeleton />;
 
   if (pending) {
     return (

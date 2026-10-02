@@ -6,7 +6,8 @@ import { toast } from "sonner";
 // The wishlist module directly rather than the `@/lib/booking` barrel: this
 // button is on every homestay card, and the barrel's other modules are not
 // needed to render one.
-import { toggleSaved, useIsSaved, type SavedItem } from "@/lib/booking/wishlist";
+import { toggleSaved, useIsSaved, useSavedStorage, type SavedItem } from "@/lib/booking/wishlist";
+import { useMounted } from "@/lib/use-mounted";
 import { cn } from "@/lib/utils";
 
 export function SaveButton({
@@ -19,11 +20,19 @@ export function SaveButton({
   variant?: "overlay" | "inline";
 }) {
   const saved = useIsSaved(item);
+  // A signed-in traveller's list is still on its way from the server: an
+  // empty heart would claim "not saved". Dimmed until it lands. Gated on
+  // hydration because the server snapshot is always "pending", and an
+  // anonymous visitor's list settles the moment the page hydrates.
+  const mounted = useMounted();
+  const storage = useSavedStorage();
+  const checking = mounted && storage === "pending";
 
   return (
     <button
       type="button"
       aria-pressed={saved}
+      aria-busy={checking || undefined}
       aria-label={saved ? `Remove ${item.title} from saved` : `Save ${item.title}`}
       onClick={(e) => {
         e.preventDefault();
@@ -43,7 +52,11 @@ export function SaveButton({
       )}
     >
       <Heart
-        className={cn("size-4", saved ? "fill-shirui-500 text-shirui-500" : "text-foreground")}
+        className={cn(
+          "size-4 transition-opacity duration-300",
+          saved ? "fill-shirui-500 text-shirui-500" : "text-foreground",
+          checking && "animate-pulse opacity-40",
+        )}
         aria-hidden="true"
       />
       {variant === "inline" && <span>{saved ? "Saved" : "Save"}</span>}

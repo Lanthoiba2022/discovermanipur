@@ -21,7 +21,10 @@ import {
 
 import { Logo } from "@/components/layout/logo";
 import { CatalogueImage } from "@/components/shared/catalogue-image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/lib/auth/use-auth";
 import { iconFor } from "@/lib/icons";
 import { isDynamicHref } from "@/lib/prefetch-policy";
 import { useMounted } from "@/lib/use-mounted";
@@ -257,6 +260,76 @@ function MegaPanel({
   );
 }
 
+const accountButtonClass = "hidden text-[var(--hdr-fg)] hover:bg-[var(--hdr-hover)] sm:inline-flex";
+
+/**
+ * The header's profile button, in step with the session store.
+ *
+ * A signed-in traveller goes straight to `/account` behind their initials.
+ * Linking them to `/auth` instead painted the sign-in form for a frame before
+ * its redirect, then the account skeleton: the flash this replaces. While the
+ * store is still checking a `dm_signed_in` hint it shows a skeleton of the
+ * avatar and already points at `/account` (the hint says "probably signed
+ * in"; the proxy sends anyone it is wrong about to `/auth`). Before hydration
+ * it renders the signed-out icon, which is what the server knows, so an
+ * anonymous visitor never sees it change.
+ */
+function AccountButton({ mounted }: { mounted: boolean }) {
+  const { user, isLoading, isAuthenticated, displayName, initials } = useAuth();
+
+  if (mounted && isAuthenticated) {
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        aria-label={`Your account, ${displayName}`}
+        className={accountButtonClass}
+        asChild
+      >
+        <Link href="/account" prefetch={prefetchFor("/account")}>
+          <Avatar className="size-8">
+            {user?.avatarUrl?.startsWith("https://") && <AvatarImage src={user.avatarUrl} alt="" />}
+            <AvatarFallback className="bg-[var(--hdr-hover)] text-xs font-semibold text-[var(--hdr-fg)]">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+        </Link>
+      </Button>
+    );
+  }
+
+  if (mounted && isLoading) {
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        aria-label="Your account"
+        aria-busy="true"
+        className={accountButtonClass}
+        asChild
+      >
+        <Link href="/account" prefetch={prefetchFor("/account")}>
+          <Skeleton className="size-8 rounded-full bg-[var(--hdr-hover)]" />
+        </Link>
+      </Button>
+    );
+  }
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      aria-label="Sign in to your account"
+      className={accountButtonClass}
+      asChild
+    >
+      <Link href="/auth" prefetch={prefetchFor("/auth")}>
+        <User />
+      </Link>
+    </Button>
+  );
+}
+
 /**
  * The site chrome.
  *
@@ -282,6 +355,15 @@ export function SiteHeader() {
   const pathname = usePathname();
   const scrolled = useSyncExternalStore(subscribeScrolled, getScrolled, getScrolledServer);
   const mounted = useMounted();
+  const { isAuthenticated } = useAuth();
+  // The drawer's "Sign in" entry becomes the account itself once signed in,
+  // for the same reason as `AccountButton`.
+  const drawerAccountNav =
+    mounted && isAuthenticated
+      ? accountNav.map((item) =>
+          item.href === "/auth" ? { ...item, label: "Your account", href: "/account" } : item,
+        )
+      : accountNav;
 
   const headerRef = useRef<HTMLElement>(null);
   const searchButtonRef = useRef<HTMLButtonElement>(null);
@@ -519,17 +601,7 @@ export function SiteHeader() {
                 {mounted && resolvedTheme === "dark" ? <Sun /> : <Moon />}
               </Button>
 
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Sign in to your account"
-                className="hidden text-[var(--hdr-fg)] hover:bg-[var(--hdr-hover)] sm:inline-flex"
-                asChild
-              >
-                <Link href="/auth" prefetch={prefetchFor("/auth")}>
-                  <User />
-                </Link>
-              </Button>
+              <AccountButton mounted={mounted} />
 
               <Button variant="primary" size="pill" className="hidden sm:inline-flex" asChild>
                 <Link href="/plan">Plan my trip</Link>
@@ -631,7 +703,7 @@ export function SiteHeader() {
               <div className="mb-9">
                 <p className="eyebrow mb-4 text-brass-400">Account</p>
                 <ul className="flex flex-wrap gap-x-5 gap-y-2">
-                  {accountNav.map((item) => (
+                  {drawerAccountNav.map((item) => (
                     <li key={item.href}>
                       <Link
                         href={item.href}

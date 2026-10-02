@@ -41,7 +41,7 @@ const kindLabel: Record<BookingQuoteKind, string> = {
 };
 
 export function BookingQuoteCard({ quote, className }: { quote: BookingQuoteResult; className?: string }) {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
   const pathname = usePathname();
   const mode = useBookingMode();
   const [saved, setSaved] = useState<{ savedTo: BookingMode; total: number } | null>(null);
@@ -50,7 +50,9 @@ export function BookingQuoteCard({ quote, className }: { quote: BookingQuoteResu
   const Icon = kindIcon[quote.quoteKind] ?? Compass;
   // Per-kilometre transport has no total to request; the note says to ask the operator.
   const priceOnRequest = quote.quoteKind === "transport" && quote.lineItems.length === 0;
-  const needsSignIn = mode === "account" && !isAuthenticated;
+  // Not while the session is still loading: a signed-in traveller would see
+  // (and could follow) "Sign in to request" before the store knows them.
+  const needsSignIn = mode === "account" && !isLoading && !isAuthenticated;
   const signInHref = `/auth?next=${encodeURIComponent(pathname)}`;
 
   async function confirm() {
@@ -212,7 +214,7 @@ export function BookingQuoteCard({ quote, className }: { quote: BookingQuoteResu
             <IntentLink href={signInHref}>Sign in to request</IntentLink>
           </Button>
         ) : (
-          <Button type="button" onClick={confirm} disabled={busy || !mode}>
+          <Button type="button" onClick={confirm} disabled={busy || !mode || isLoading}>
             {busy ? "Saving…" : "Save request"}
           </Button>
         )}
