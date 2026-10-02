@@ -4,19 +4,31 @@ import { Check } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-import { useFilterParams } from "./use-filter-params";
+import { FilterParamsGate } from "./filter-params-gate";
+import type { FilterParams } from "./use-filter-params";
 
-/** Boolean chip bound to `?<name>=true`. Same 44px target as a filter chip. */
-export function FilterToggle({
-  name,
-  label,
-  className,
-}: {
+interface FilterToggleProps {
   name: string;
   label: string;
   className?: string;
-}) {
-  const { get, setParam, isPending } = useFilterParams();
+}
+
+/**
+ * Boolean chip bound to `?<name>=true`. Same 44px target as a filter chip.
+ * Reads and writes the URL through `FilterParamsGate`, so it works in either
+ * URL mode.
+ */
+export function FilterToggle(props: FilterToggleProps) {
+  return <FilterParamsGate>{(params) => <FilterToggleView {...props} params={params} />}</FilterParamsGate>;
+}
+
+function FilterToggleView({
+  name,
+  label,
+  className,
+  params,
+}: FilterToggleProps & { params: FilterParams }) {
+  const { get, setParam, isPending } = params;
   const active = get(name) === "true";
 
   return (

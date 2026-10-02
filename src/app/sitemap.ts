@@ -9,7 +9,7 @@ import {
   getHotspots,
   getTours,
 } from "@/lib/data";
-import { listPublishedSlugs } from "@/lib/community/queries";
+import { listPublishedSlugsCached } from "@/lib/community/public-reads";
 import { SITE_URL } from "@/lib/site";
 
 type Entry = MetadataRoute.Sitemap[number];
@@ -41,7 +41,13 @@ const STATIC_ROUTES: { path: string; priority: number; changeFrequency: Entry["c
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // The data layer is still being populated; every one of these may legitimately
   // return an empty array, which simply yields a sitemap of the static routes.
-  // `listPublishedSlugs` returns [] when there is no database or the query fails.
+  // None of them silently drops URLs from a production deployment: the
+  // catalogue loaders and `listPublishedSlugsCached` fail a Vercel Production
+  // build on a database error instead of baking in a short list, and fall
+  // back (seed data, or no community URLs) only in local and preview builds
+  // and at runtime. The community slugs are a cached read, refreshed when a
+  // place is published or taken down (`COMMUNITY_TAG`), so regenerating this
+  // file after `revalidatePath("/sitemap.xml")` costs no extra Neon query.
   const [hotspots, homestays, experiences, eateries, tours, festivals, crafts, community] =
     await Promise.all([
       getHotspots(),
@@ -51,15 +57,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       getTours(),
       getFestivals(),
       getCrafts(),
-      listPublishedSlugs(),
+      listPublishedSlugsCached(),
     ]);
 
-  const lastModified = new Date();
-
+  // No `lastModified` on static and catalogue entries: the only date they had
+  // was the build time, which told crawlers every page changed on every
+  // deploy. Community places carry their real `updated_at`.
   const detail = (base: string, rows: { slug: string }[], priority: number): Entry[] =>
     rows.map((row) => ({
       url: `${SITE_URL}${base}/${row.slug}`,
-      lastModified,
       changeFrequency: "monthly" as const,
       priority,
     }));
@@ -68,7 +74,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...STATIC_ROUTES.map(
       (route): Entry => ({
         url: `${SITE_URL}${route.path === "/" ? "" : route.path}`,
-        lastModified,
         changeFrequency: route.changeFrequency,
         priority: route.priority,
       }),

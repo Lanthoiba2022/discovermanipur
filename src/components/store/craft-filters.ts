@@ -1,8 +1,12 @@
 /**
- * Server-safe filter vocabulary for the craft store.
+ * Filter vocabulary for the craft store.
  *
  * Every control on /store writes into the URL, so a filtered catalogue is
- * shareable and rendered on the server exactly like the other index routes.
+ * shareable. Pure, so it runs both on the server and in the browser, where
+ * the static listing re-filters its cards after a change to the URL. Imports
+ * the params module directly rather than the `@/components/filters` barrel,
+ * which would pull the filter UI into every client bundle that only needs
+ * these functions.
  */
 import {
   type FilterOption,
@@ -13,7 +17,7 @@ import {
   readOneOf,
   readParam,
   titleCase,
-} from "@/components/filters";
+} from "@/components/filters/params";
 import type { Craft, CraftCategory } from "@/types";
 
 export const CRAFT_SORT_VALUES = ["featured", "price-asc", "price-desc"] as const;
@@ -64,7 +68,23 @@ export function parseCraftFilters(
   };
 }
 
-export function applyCraftFilters(rows: Craft[], state: CraftFilterState): Craft[] {
+/**
+ * The row fields `applyCraftFilters` reads. The listing passes slim facet
+ * objects of exactly this shape to the browser instead of whole rows.
+ */
+export type CraftFacets = Pick<
+  Craft,
+  "category" | "district" | "madeToOrder" | "giTagged" | "price" | "featured" | "name"
+>;
+
+/**
+ * Filter, then sort. Returns a new array; `rows` is not mutated. The stable
+ * sort keeps the incoming (data layer) order for ties.
+ */
+export function applyCraftFilters<T extends CraftFacets>(
+  rows: readonly T[],
+  state: CraftFilterState,
+): T[] {
   const filtered = rows.filter((row) => {
     if (state.category && row.category !== state.category) return false;
     if (state.district && row.district !== state.district) return false;

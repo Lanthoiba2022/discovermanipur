@@ -19,10 +19,10 @@ import { alias } from "drizzle-orm/pg-core";
 
 import { getDb, schema, type Db } from "@/lib/db";
 import { neonAuthUser } from "@/lib/db/neon-auth";
+import { logDbError } from "@/lib/log";
 
 import { effectiveStatus, hoursLeft, isVotingOpen, UPVOTES_REQUIRED, type CommunityPlaceStatus } from "./rules";
 import { photoCredit, photoUrl } from "./photo-links";
-import type { CommunityCategory } from "./taxonomy";
 import type {
   AdminPerson,
   AdminPhoto,
@@ -43,11 +43,53 @@ import { displayName } from "./viewer";
 const { community_places: places, community_place_photos: photos, community_place_votes: votes, profiles } = schema;
 
 type PlaceRow = typeof places.$inferSelect;
-type PhotoRow = typeof photos.$inferSelect;
+
+/**
+ * The photo columns a card or gallery shows, and the two that order them.
+ * Storage keys, uploader and byte size are left out: nothing outside the
+ * admin photo list (which selects its own columns) and the photo route
+ * (likewise) reads them, and every byte selected here is Neon egress.
+ */
+export const photoColumns = {
+  id: photos.id,
+  place_id: photos.place_id,
+  width: photos.width,
+  height: photos.height,
+  alt: photos.alt,
+  licence: photos.licence,
+  author: photos.author,
+  source_url: photos.source_url,
+  sort_order: photos.sort_order,
+  created_at: photos.created_at,
+};
+
+/** A photo row as `photosFor` selects it (`photoColumns`). */
+export type PhotoCardRow = Pick<
+  typeof photos.$inferSelect,
+  "id" | "place_id" | "width" | "height" | "alt" | "licence" | "author" | "source_url" | "sort_order" | "created_at"
+>;
+
+/** The place columns `toCard` reads, so a narrow select can be mapped as well as a whole row. */
+export type PlaceCardRow = Pick<
+  PlaceRow,
+  "id" | "slug" | "name" | "category" | "district" | "location" | "description" | "published_at"
+>;
+
+/** The place columns the visibility and vote rules read (`canView`, `voteStateFor`). */
+type PlaceRuleRow = Pick<PlaceRow, "status" | "voting_ends_at" | "submitted_by">;
 
 /* --------------------------------- mapping --------------------------------- */
 
-function toPhoto(photo: PhotoRow, placeName: string): CommunityPhoto {
+/*
+ * The mappers below are exported for `./public-reads`, which builds the
+ * cached public cards and place pages with them so the public and signed-in
+ * views of a place can never drift apart. They are pure and JSON-safe.
+ */
+
+export function toPhoto(
+  photo: Omit<PhotoCardRow, "place_id" | "sort_order" | "created_at">,
+  placeName: string,
+): CommunityPhoto {
   return {
     id: photo.id,
     src: photoUrl(photo.id),
@@ -62,18 +104,18 @@ function toPhoto(photo: PhotoRow, placeName: string): CommunityPhoto {
   };
 }
 
-function excerptOf(text: string, max = 180) {
+export function excerptOf(text: string, max = 180) {
   const flat = text.replace(/\s+/g, " ").trim();
   if (flat.length <= max) return flat;
   return `${flat.slice(0, max).replace(/\s+\S*$/, "")}…`;
 }
 
-const iso = (value: Date | null) => (value ? value.toISOString() : null);
+export const iso = (value: Date | null) => (value ? value.toISOString() : null);
 
-const statusOf = (row: PlaceRow, now: Date) =>
+const statusOf = (row: Pick<PlaceRow, "status" | "voting_ends_at">, now: Date) =>
   effectiveStatus({ status: row.status, votingEndsAt: row.voting_ends_at }, now);
 
-function toCard(row: PlaceRow, rowPhotos: PhotoRow[]): CommunityPlaceCard {
+export function toCard(row: PlaceCardRow, rowPhotos: PhotoCardRow[]): CommunityPlaceCard {
   return {
     id: row.id,
     slug: row.slug,
@@ -88,12 +130,15 @@ function toCard(row: PlaceRow, rowPhotos: PhotoRow[]): CommunityPlaceCard {
   };
 }
 
-/** Live photos of the given places, grouped by place and in display order. */
-async function photosFor(db: Db, placeIds: string[]): Promise<Map<string, PhotoRow[]>> {
-  const grouped = new Map<string, PhotoRow[]>();
+/**
+ * Live photos of the given places (not removed by an admin, not discarded by
+ * their uploader), grouped by place and in display order.
+ */
+export async function photosFor(db: Db, placeIds: string[]): Promise<Map<string, PhotoCardRow[]>> {
+  const grouped = new Map<string, PhotoCardRow[]>();
   if (placeIds.length === 0) return grouped;
   const rows = await db
-    .select()
+    .select(photoColumns)
     .from(photos)
     .where(and(inArray(photos.place_id, placeIds), isNull(photos.removed_at), isNull(photos.discarded_at)))
     .orderBy(asc(photos.sort_order), asc(photos.created_at));
@@ -110,7 +155,7 @@ async function photosFor(db: Db, placeIds: string[]): Promise<Map<string, PhotoR
  * stored `upvote_count` is only rewritten when someone votes, so a ban or a
  * deleted account would otherwise leave the shown number too high.
  */
-async function liveUpvotes(db: Db, placeIds: string[]): Promise<Map<string, number>> {
+export async function liveUpvotes(db: Db, placeIds: string[]): Promise<Map<string, number>> {
   if (placeIds.length === 0) return new Map();
   const rows = await db
     .select({ placeId: votes.place_id, value: count() })
@@ -149,8 +194,12 @@ async function votedBy(db: Db, userId: string, placeIds: string[]): Promise<Set<
   return new Set(rows.map((r) => r.placeId));
 }
 
+/**
+ * What `viewer` may do about a place's vote. Pure, so `./public-reads` can
+ * apply the same rules to a cached published place for a signed-out visitor.
+ */
 export function voteStateFor(
-  row: PlaceRow,
+  row: PlaceRuleRow & Pick<PlaceRow, "upvote_count">,
   viewer: CommunityViewer | null,
   hasVoted: boolean,
   now = new Date(),
@@ -178,8 +227,11 @@ export function voteStateFor(
   };
 }
 
-/** Whether `viewer` may see a place in this state at all. */
-export function canView(row: PlaceRow, viewer: CommunityViewer | null, now = new Date()): boolean {
+/**
+ * Whether `viewer` may see a place in this state at all. It reads only the
+ * three rule columns, so the photo route can pass a narrow select.
+ */
+export function canView(row: PlaceRuleRow, viewer: CommunityViewer | null, now = new Date()): boolean {
   const status = statusOf(row, now);
   if (status === "published") return true;
   if (!viewer) return false;
@@ -205,58 +257,29 @@ export async function sweepExpired(db: Db): Promise<number> {
 
 /* --------------------------------- public ---------------------------------- */
 
-export interface PublishedFilters {
-  category?: CommunityCategory;
-  district?: string;
-  q?: string;
-  limit?: number;
+/*
+ * The signed-out reads (the published list, the sitemap slugs, a published
+ * place page and the photo key map) are cached across requests and live in
+ * `./public-reads`. Everything below reads live, per viewer.
+ */
+
+/** The first name of the person who listed a place, as public pages show it. */
+export async function submitterFirstName(db: Db, profileId: string | null): Promise<string | null> {
+  if (!profileId) return null;
+  const [row] = await db
+    .select({ first_name: profiles.first_name })
+    .from(profiles)
+    .where(eq(profiles.id, profileId))
+    .limit(1);
+  return row?.first_name?.trim() || null;
 }
 
-/** Published places, newest first. Empty when there is no database. */
-export async function listPublishedPlaces(filters: PublishedFilters = {}): Promise<CommunityPlaceCard[]> {
-  const db = getDb();
-  if (!db) return [];
-
-  const where: SQL[] = [eq(places.status, "published")];
-  if (filters.category) where.push(eq(places.category, filters.category));
-  if (filters.district) where.push(eq(places.district, filters.district));
-  const q = filters.q?.trim().slice(0, 100);
-  if (q) {
-    const pattern = `%${q.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
-    where.push(or(ilike(places.name, pattern), ilike(places.location, pattern))!);
-  }
-
-  try {
-    const rows = await db
-      .select()
-      .from(places)
-      .where(and(...where))
-      .orderBy(desc(places.published_at))
-      .limit(Math.min(filters.limit ?? 60, 200));
-    const grouped = await photosFor(db, rows.map((r) => r.id));
-    return rows.map((row) => toCard(row, grouped.get(row.id) ?? []));
-  } catch (err) {
-    console.error("[community] published list failed:", (err as Error).message);
-    return [];
-  }
-}
-
-/** Slugs of published places, for the sitemap. */
-export async function listPublishedSlugs(): Promise<{ slug: string; updatedAt: string }[]> {
-  const db = getDb();
-  if (!db) return [];
-  try {
-    const rows = await db
-      .select({ slug: places.slug, updatedAt: places.updated_at })
-      .from(places)
-      .where(eq(places.status, "published"));
-    return rows.map((r) => ({ slug: r.slug, updatedAt: r.updatedAt.toISOString() }));
-  } catch {
-    return [];
-  }
-}
-
-/** One place, or `null` when it does not exist or the viewer may not see it (the page 404s). */
+/**
+ * One place, or `null` when it does not exist or the viewer may not see it
+ * (the page 404s). Live on every call: it is the path for signed-in viewers,
+ * whose vote state and access depend on who they are. Signed-out visitors go
+ * through `getPublicPlace` in `./public-reads` instead.
+ */
 export async function getPlaceForViewer(
   slug: string,
   viewer: CommunityViewer | null,
@@ -267,19 +290,15 @@ export async function getPlaceForViewer(
   const now = new Date();
   const [found] = await db.select().from(places).where(eq(places.slug, slug)).limit(1);
   if (!found || !canView(found, viewer, now)) return null;
-  const [row] = await withLiveUpvotes(db, [found]);
 
-  const [grouped, voted, [submitter]] = await Promise.all([
-    photosFor(db, [row.id]),
-    viewer ? votedBy(db, viewer.userId, [row.id]) : Promise.resolve(new Set<string>()),
-    row.submitted_by
-      ? db
-          .select({ first_name: profiles.first_name })
-          .from(profiles)
-          .where(eq(profiles.id, row.submitted_by))
-          .limit(1)
-      : Promise.resolve([]),
+  // Each of these needs only the place id, so they share one round trip.
+  const [live, grouped, voted, listedBy] = await Promise.all([
+    liveUpvotes(db, [found.id]),
+    photosFor(db, [found.id]),
+    viewer ? votedBy(db, viewer.userId, [found.id]) : Promise.resolve(new Set<string>()),
+    submitterFirstName(db, found.submitted_by),
   ]);
+  const row = { ...found, upvote_count: live.get(found.id) ?? 0 };
   const rowPhotos = grouped.get(row.id) ?? [];
 
   return {
@@ -293,7 +312,7 @@ export async function getPlaceForViewer(
     lng: row.lng,
     photos: rowPhotos.map((p) => toPhoto(p, row.name)),
     createdAt: row.created_at.toISOString(),
-    listedBy: submitter?.first_name?.trim() || null,
+    listedBy,
     heldBy: heldBy(row, now),
     isOwn: viewer !== null && row.submitted_by === viewer.userId,
     vote: voteStateFor(row, viewer, voted.has(row.id), now),
@@ -326,7 +345,7 @@ export async function listVerificationQueue(viewer: CommunityViewer | null): Pro
       vote: voteStateFor(row, viewer, voted.has(row.id), now),
     }));
   } catch (err) {
-    console.error("[community] verification queue failed:", (err as Error).message);
+    logDbError("community.verification-queue", err);
     return [];
   }
 }
@@ -368,7 +387,7 @@ export async function listMySubmissions(userId: string): Promise<MySubmission[] 
       };
     });
   } catch (err) {
-    console.error("[community] my submissions failed:", (err as Error).message);
+    logDbError("community.my-submissions", err);
     return null;
   }
 }
@@ -412,7 +431,7 @@ async function adminPlaceRows(db: Db, where: SQL | undefined, limit: number) {
 
 function toAdminRow(
   row: Awaited<ReturnType<typeof adminPlaceRows>>[number],
-  rowPhotos: PhotoRow[],
+  rowPhotos: PhotoCardRow[],
   liveCount: number,
   now: Date,
 ): AdminPlaceRow {
@@ -462,7 +481,7 @@ export async function adminListPlaces(filters: AdminPlaceFilters = {}): Promise<
     const [grouped, live] = await Promise.all([photosFor(db, ids), liveUpvotes(db, ids)]);
     return rows.map((row) => toAdminRow(row, grouped.get(row.place.id) ?? [], live.get(row.place.id) ?? 0, now));
   } catch (err) {
-    console.error("[community] admin list failed:", (err as Error).message);
+    logDbError("community.admin-list", err);
     return null;
   }
 }
@@ -487,7 +506,7 @@ export async function adminCountPlaces(
     const counts = { pending: by.pending ?? 0, published: by.published ?? 0, held: by.held ?? 0, rejected: by.rejected ?? 0 };
     return { ...counts, all: counts.pending + counts.published + counts.held + counts.rejected };
   } catch (err) {
-    console.error("[community] admin counts failed:", (err as Error).message);
+    logDbError("community.admin-counts", err);
     return null;
   }
 }
@@ -585,7 +604,7 @@ export async function adminListPhotos(filters: AdminPhotoFilters = {}): Promise<
       removedAt: iso(photo.removed_at),
     }));
   } catch (err) {
-    console.error("[community] admin photos failed:", (err as Error).message);
+    logDbError("community.admin-photos", err);
     return null;
   }
 }
@@ -663,7 +682,7 @@ export async function adminListContributors(): Promise<ContributorRow[] | null> 
       lastSubmittedAt: r.lastSubmittedAt ? new Date(r.lastSubmittedAt).toISOString() : null,
     }));
   } catch (err) {
-    console.error("[community] contributors failed:", (err as Error).message);
+    logDbError("community.contributors", err);
     return null;
   }
 }
@@ -689,7 +708,7 @@ export async function adminCommunityStats(): Promise<CommunityStats | null> {
       photos: photoRow?.value ?? 0,
     };
   } catch (err) {
-    console.error("[community] stats failed:", (err as Error).message);
+    logDbError("community.stats", err);
     return null;
   }
 }

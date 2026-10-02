@@ -1,9 +1,9 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, Expand } from "lucide-react";
-import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
+import { CatalogueImage } from "@/components/shared/catalogue-image";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,15 @@ import {
 import { cn } from "@/lib/utils";
 import type { MediaImage } from "@/types";
 
+/**
+ * Photo grid plus a keyboard-operable lightbox, used by the hotspot and
+ * festival detail pages.
+ *
+ * Most of these photos are Google Places photos, so both frames render
+ * through `CatalogueImage` (Places sources bypass `/_next/image`, our own
+ * files stay optimized) and both show the photo's `credit`: on the grid tile,
+ * because the photo is already on screen there, and in the lightbox caption.
+ */
 export function GalleryLightbox({
   images,
   title,
@@ -71,7 +80,7 @@ export function GalleryLightbox({
               onClick={() => setOpenIndex(index)}
               className="group relative block aspect-[4/3] w-full overflow-hidden rounded-[var(--radius)] bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
-              <Image
+              <CatalogueImage
                 src={image.src}
                 alt={image.alt}
                 fill
@@ -106,7 +115,7 @@ export function GalleryLightbox({
           {active && (
             <figure className="relative">
               <div className="relative aspect-[3/2] w-full overflow-hidden rounded-[var(--radius-lg)] bg-ink-900">
-                <Image
+                <CatalogueImage
                   src={active.src}
                   alt={active.alt}
                   fill

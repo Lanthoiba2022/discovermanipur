@@ -15,7 +15,6 @@ import {
   UserRound,
 } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache, type ReactNode } from "react";
 
@@ -25,8 +24,10 @@ import { formatCommunityDate } from "@/components/community/place-card";
 import { StatusBadge } from "@/components/community/status-badge";
 import { hoursLeftLabel, VoteButton } from "@/components/community/vote-button";
 import { readParam, type RawSearchParams } from "@/components/filters";
+import { IntentLink } from "@/components/shared/intent-link";
 import { Button } from "@/components/ui/button";
 import { isAuthConfigured } from "@/lib/auth/env";
+import { getPublicPlace } from "@/lib/community/public-reads";
 import { getPlaceForViewer } from "@/lib/community/queries";
 import { UPVOTES_REQUIRED, VOTING_WINDOW_HOURS } from "@/lib/community/rules";
 import { CATEGORY_LABELS, RELATIONSHIP_DISCLOSURES } from "@/lib/community/taxonomy";
@@ -42,11 +43,17 @@ const NOINDEX = { index: false, follow: false } as const;
  * The place as this viewer may see it, memoised per request so the metadata
  * and the page share one lookup. `null` when it does not exist, when the
  * viewer may not see it, or when the feature is switched off.
+ *
+ * Signed-out visitors can only ever see a published place, so they get the
+ * cached public read (`getPublicPlace`): no database query once it is warm,
+ * and none at all for a slug that is not published. Signed-in viewers read
+ * live, because what they may see (pending places, their own) and their vote
+ * state depend on who they are.
  */
 const loadPlace = cache(async (slug: string): Promise<CommunityPlaceDetail | null> => {
   if (!isAuthConfigured || !isDatabaseConfigured) return null;
   const viewer = await getCommunityViewer();
-  return getPlaceForViewer(slug, viewer);
+  return viewer ? getPlaceForViewer(slug, viewer) : getPublicPlace(slug);
 });
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
@@ -163,13 +170,13 @@ export default async function CommunityPlacePage({
       </PageHero>
 
       <div className="shell mt-10 md:mt-12">
-        <Link
+        <IntentLink
           href={published ? "/community" : "/community/verify"}
           className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-4" aria-hidden="true" />
           {published ? "All community places" : "Places waiting for votes"}
-        </Link>
+        </IntentLink>
 
         {justListed && (
           <Notice icon={CircleCheck} tone="success" title="Your place is listed" live>
@@ -239,12 +246,12 @@ export default async function CommunityPlacePage({
 
           <p className="mt-14 border-t border-border pt-6 text-sm text-muted-foreground">
             This place was listed by a member of the community.{" "}
-            <Link
+            <IntentLink
               href="/community#how-verification-works"
               className="font-medium text-primary underline underline-offset-4 hover:no-underline"
             >
               How verification works
-            </Link>
+            </IntentLink>
           </p>
         </article>
 

@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { Map } from "lucide-react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAuth } from "@/lib/auth";
+import { useAuth } from "@/lib/auth/use-auth";
 import { useItineraryStorage, useSavedItineraries, type ItineraryStorage } from "@/lib/itineraries";
 import { SavedItineraryCard } from "./saved-itinerary-card";
 
@@ -47,7 +47,7 @@ export function ItinerariesPanel() {
             will be waiting here.
           </p>
           <Button asChild className="mt-6">
-            <Link href="/plan">Plan a trip</Link>
+            <IntentLink href="/plan">Plan a trip</IntentLink>
           </Button>
         </div>
       ) : (

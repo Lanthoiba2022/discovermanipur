@@ -4,38 +4,67 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
+import * as z from "@/lib/zod-mini";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toISODate } from "@/lib/booking/pricing";
+import { useMounted } from "@/lib/use-mounted";
 import type { Eatery } from "@/types";
 
+/**
+ * Today as `YYYY-MM-DD` in the visitor's own time zone. The UTC slice this
+ * replaced was a day behind for evening visitors west of Greenwich (and a day
+ * ahead east of it before midnight UTC), so "today" could be rejected as past.
+ * The date input's value is a local calendar date, so it compares as one.
+ */
 function today() {
-  return new Date().toISOString().slice(0, 10);
+  return toISODate(new Date());
 }
 
+// `zod/mini` instead of classic `zod`, through @/lib/zod-mini, which also
+// registers zod's English messages: classic zod is about 95 KB gzip on each
+// page with this form.
 const schema = z.object({
   date: z
     .string()
-    .min(1, "Pick a date")
-    .refine((value) => value >= today(), "Pick today or a later date"),
-  time: z.string().min(1, "Pick a time"),
+    .check(
+      z.minLength(1, "Pick a date"),
+      z.refine((value) => value >= today(), "Pick today or a later date"),
+    ),
+  time: z.string().check(z.minLength(1, "Pick a time")),
   partySize: z
     .number({ error: "How many people are coming?" })
-    .int("Use a whole number")
-    .min(1, "At least one guest")
-    .max(30, "For parties over 30, call the restaurant directly"),
-  name: z.string().trim().min(2, "Enter the name for the booking"),
+    .check(
+      z.int("Use a whole number"),
+      z.gte(1, "At least one guest"),
+      z.lte(30, "For parties over 30, call the restaurant directly"),
+    ),
+  name: z.string().check(z.trim(), z.minLength(2, "Enter the name for the booking")),
   phone: z
     .string()
-    .trim()
-    .regex(/^(\+91[\s-]?)?[6-9]\d{9}$/, "Enter a 10-digit Indian mobile number"),
+    .check(
+      z.trim(),
+      z.regex(/^(\+91[\s-]?)?[6-9]\d{9}$/, "Enter a 10-digit Indian mobile number"),
+    ),
 });
 
 type ReservationValues = z.infer<typeof schema>;
 
-export function TableReservationForm({ eatery }: { eatery: Eatery }) {
+/**
+ * The fields of an eatery this form reads. It is a client component, so the
+ * page passes exactly these rather than the whole row (description, menu,
+ * sources, Places photo refs), which would all be serialised into the RSC
+ * payload for nothing.
+ */
+export type ReservationEatery = Pick<Eatery, "name" | "phone" | "timings" | "acceptsReservations">;
+
+export function TableReservationForm({ eatery }: { eatery: ReservationEatery }) {
+  // The `min` date is set only after hydration: this page is static, so a
+  // date rendered on the server is the build day and would not match the
+  // client's first render. The schema still rejects a past date on submit.
+  const mounted = useMounted();
   const {
     register,
     handleSubmit,
@@ -100,7 +129,7 @@ export function TableReservationForm({ eatery }: { eatery: Eatery }) {
           <Input
             id="res-date"
             type="date"
-            min={today()}
+            min={mounted ? today() : undefined}
             aria-invalid={Boolean(errors.date)}
             aria-describedby={errors.date ? "res-date-error" : undefined}
             {...register("date")}

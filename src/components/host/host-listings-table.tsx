@@ -1,11 +1,10 @@
 "use client";
 
 import { ImageOff } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
 import { useMemo, useOptimistic, useState, useTransition } from "react";
 import { toast } from "sonner";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { setHomestayPaused } from "@/app/host/dashboard/actions";
 import {
   EmptyRow,
@@ -16,6 +15,7 @@ import {
   sortCompare,
   type SortState,
 } from "@/components/admin/table-parts";
+import { CatalogueImage } from "@/components/shared/catalogue-image";
 import { Button } from "@/components/ui/button";
 import { HOST_TYPE_LABEL, type HostDashboardListing } from "@/lib/host/types";
 import { formatINR } from "@/lib/utils";
@@ -103,7 +103,10 @@ export function HostListingsTable({
                 <th scope="row" className="px-4 py-3 text-left font-medium text-foreground">
                   <span className="flex items-center gap-3">
                     {row.image ? (
-                      <Image
+                      /* `dashboard.ts` only hands over self-hosted files, so this
+                         stays optimized today; `CatalogueImage` keeps it safe if a
+                         Places or community photo is ever passed through. */
+                      <CatalogueImage
                         src={row.image.src}
                         alt={row.image.alt}
                         width={56}
@@ -121,12 +124,12 @@ export function HostListingsTable({
                     )}
                     <span>
                       {row.isActive ? (
-                        <Link
+                        <IntentLink
                           href={`/${row.kind === "homestay" ? "homestays" : "experiences"}/${row.slug}`}
                           className="underline-offset-4 hover:underline"
                         >
                           {row.title}
-                        </Link>
+                        </IntentLink>
                       ) : (
                         row.title
                       )}

@@ -67,6 +67,47 @@ export interface CommunityPlaceDetail extends CommunityPlaceCard {
   vote: VoteState;
 }
 
+/* ------------------------------ public reads ------------------------------ */
+
+/*
+ * Shapes of the cross-request cached reads in `./public-reads`. Only
+ * published places ever enter them, and nothing in them depends on who is
+ * looking, so one copy serves every signed-out visitor.
+ */
+
+/**
+ * The published list for `/community`. `ok: false` means the read failed (a
+ * database outage), which the page says plainly instead of claiming that
+ * nothing has been published. No database or no sign-in is `ok: true` with
+ * no places: the page shows its own switched-off state for that.
+ */
+export type PublishedCardsResult = { ok: true; places: CommunityPlaceCard[] } | { ok: false };
+
+/** A published place's slug and last change, for the sitemap and the slug check. */
+export interface PublishedSlug {
+  slug: string;
+  updatedAt: string;
+}
+
+/** Where a published photo's bytes are stored, and its place (for the CDN purge tag). */
+export interface PublishedPhotoKey {
+  storageKey: string;
+  thumbKey: string;
+  placeId: string;
+}
+
+/**
+ * Everything a published place page shows that is the same for every
+ * visitor. The per-viewer parts of `CommunityPlaceDetail` (`isOwn`, the vote
+ * state) are built from it per request, outside the cache.
+ */
+export interface PublicPlaceSnapshot
+  extends Omit<CommunityPlaceDetail, "status" | "heldBy" | "isOwn" | "vote"> {
+  /** Live count of eligible upvotes when the entry was cached. */
+  upvotes: number;
+  votingEndsAt: string;
+}
+
 export interface VerificationQueueItem extends CommunityPlaceCard {
   createdAt: string;
   isOwn: boolean;

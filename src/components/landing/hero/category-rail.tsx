@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { IntentLink } from "@/components/shared/intent-link";
 
 import { HERO_CATEGORIES } from "./hero-links";
 
@@ -14,6 +14,11 @@ import { HERO_CATEGORIES } from "./hero-links";
  * document. The row bleeds to the viewport edge on phones (`-mx-4 px-4`, the
  * exact inverse of the shell gutter) so the last link is reachable at the edge
  * instead of being cut off inside a gutter.
+ *
+ * The links are `IntentLink`s: the rail sits in the first viewport of the
+ * most-viewed page, and prefetching all eight routes on every home view cost
+ * more than it saved. A route is prefetched once a visitor points at, focuses
+ * or touches its link.
  */
 export function CategoryRail() {
   return (
@@ -31,12 +36,12 @@ export function CategoryRail() {
         <ul className="-mx-4 flex items-center overflow-x-auto pl-4 pr-24 [scrollbar-width:none] md:-mx-8 md:pl-8 lg:justify-center lg:pr-8 [&::-webkit-scrollbar]:hidden">
           {HERO_CATEGORIES.map((category, i) => (
             <li key={category.href} className="flex shrink-0 items-center">
-              <Link
+              <IntentLink
                 href={category.href}
                 className="inline-block whitespace-nowrap px-3 py-3.5 text-sm font-medium text-ivory-50/85 underline-offset-[6px] transition-colors duration-[var(--dur-base)] ease-[var(--ease-flat)] hover:text-brass-300 hover:underline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-brass-300"
               >
                 {category.label}
-              </Link>
+              </IntentLink>
               {i < HERO_CATEGORIES.length - 1 && (
                 <span aria-hidden className="select-none text-ivory-50/25">
                   |

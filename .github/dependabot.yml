@@ -6,12 +6,38 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
+    # A version has to be a week old before it is proposed: most hijacked
+    # releases are found and pulled within days. Security updates ignore this.
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: chore
       include: scope
     labels:
       - dependencies
+    # Packages that only work at matching versions move together, in one PR
+    # that can pass CI, instead of separate PRs that each fail on their own.
+    # A dependency joins the first group it matches, so the named groups come
+    # before the catch-all.
     groups:
+      next:
+        patterns:
+          - next
+          - eslint-config-next
+      react:
+        patterns:
+          - react
+          - react-dom
+          - "@types/react"
+          - "@types/react-dom"
+      drizzle:
+        patterns:
+          - drizzle-orm
+          - drizzle-kit
+      ai-sdk:
+        patterns:
+          - ai
+          - "@ai-sdk/*"
       npm-minor-and-patch:
         update-types:
           - minor
@@ -19,6 +45,12 @@ updates:
     # Major versions of the toolchain are upgraded by hand: they change the
     # compiler and lint rules for the whole codebase, and @types/node should
     # follow the Node version CI and production run, not the newest release.
+    #
+    # Neon Auth is a beta whose 0.x "minor" and "patch" releases can break
+    # sign-in, so it is pinned exactly in package.json and upgraded by hand
+    # after testing sign-up, the OTP email, sign-in and the role gate on a
+    # preview. Ignoring version updates does not stop security updates, which
+    # still arrive as their own PRs.
     ignore:
       - dependency-name: typescript
         update-types: ["version-update:semver-major"]
@@ -26,6 +58,8 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
+      - dependency-name: "@neondatabase/*"
+        update-types: ["version-update:semver-minor", "version-update:semver-patch"]
 
   - package-ecosystem: github-actions
     directory: /

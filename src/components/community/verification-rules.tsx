@@ -9,9 +9,9 @@ import {
   UserPlus,
   type LucideIcon,
 } from "lucide-react";
-import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { LIMITS, UPVOTES_REQUIRED, VOTING_WINDOW_HOURS } from "@/lib/community/rules";
 import { LICENCES, LICENCE_LABELS, licenceNeedsSource } from "@/lib/community/taxonomy";
 import { cn } from "@/lib/utils";
@@ -168,9 +168,9 @@ export function VerificationRules({
 
       <p className="mt-10 text-sm text-muted-foreground">
         If you have listed a place, you can follow it under{" "}
-        <Link href="/account/places" className="font-medium text-primary underline underline-offset-4 hover:no-underline">
+        <IntentLink href="/account/places" className="font-medium text-primary underline underline-offset-4 hover:no-underline">
           My places
-        </Link>
+        </IntentLink>
         .
       </p>
     </section>

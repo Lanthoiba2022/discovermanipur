@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { AlertTriangle, RotateCcw } from "lucide-react";
 import * as React from "react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -49,10 +49,10 @@ export default function GlobalError({
               Try again
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link href="/">Go to the homepage</Link>
+              <IntentLink href="/">Go to the homepage</IntentLink>
             </Button>
             <Button asChild variant="ghost" size="lg">
-              <Link href="/contact">Report the problem</Link>
+              <IntentLink href="/contact">Report the problem</IntentLink>
             </Button>
           </div>
 

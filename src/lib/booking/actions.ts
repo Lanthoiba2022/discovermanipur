@@ -14,7 +14,7 @@
  * `unavailable`, and `./bookings` keeps requests in the browser instead.
  */
 
-import { and, desc, eq, inArray } from "drizzle-orm";
+import { and, count, desc, eq, inArray } from "drizzle-orm";
 import { headers } from "next/headers";
 import { z } from "zod";
 
@@ -45,6 +45,13 @@ const CREATE_RATE = { limit: 10, windowMs: 10 * 60_000 };
 const CREATE_RATE_DAILY = { limit: 30, windowMs: 24 * 60 * 60_000 };
 const CANCEL_RATE = { limit: 20, windowMs: 10 * 60_000 };
 const MAX_LISTED = 200;
+/**
+ * Most requests one account may have waiting for a host at once. The rate
+ * limits above are per instance and reset; this is a lifetime cap on open
+ * rows, so no account can pile up an unbounded number of them. Real trips
+ * come nowhere near it, and cancelling one (or a host answering) frees room.
+ */
+const MAX_PENDING = 20;
 
 const UNAVAILABLE: BookingFailure = {
   ok: false,
@@ -66,11 +73,35 @@ function failed(error: string): BookingFailure {
   return { ok: false, reason: "failed", error };
 }
 
+/**
+ * Log a failed query without its contents. Drizzle's error message embeds the
+ * SQL parameters, which here include the traveller's free-text note, so the
+ * raw error never reaches the logs: only the scope, the Postgres error code
+ * (from the error or its `cause`, where Drizzle puts the driver error) and
+ * the error class.
+ */
+function logFailure(scope: string, err: unknown) {
+  let code: string | undefined;
+  for (let e = err as { code?: unknown; cause?: unknown } | undefined, depth = 0; e && depth < 5; depth += 1) {
+    if (typeof e.code === "string") {
+      code = e.code;
+      break;
+    }
+    e = e.cause as typeof e;
+  }
+  const kind = err instanceof Error ? err.name : typeof err;
+  console.error(`[bookings] ${scope} failed`, { pgCode: code ?? null, kind });
+}
+
 function online() {
   return isAuthConfigured ? getDb() : null;
 }
 
-/** Where this deployment keeps booking requests. Reveals nothing beyond that. */
+/**
+ * Where this deployment keeps booking requests. Reveals nothing beyond that.
+ * Only a client built before `NEXT_PUBLIC_BOOKING_MODE` existed still asks;
+ * current builds read the same answer from the bundle (`./bookings`).
+ */
 export async function getBookingMode(): Promise<BookingMode> {
   return online() ? "account" : "browser";
 }
@@ -100,6 +131,18 @@ export async function requestBooking(input: unknown): Promise<RequestBookingResu
   }
 
   try {
+    const [{ open }] = await db
+      .select({ open: count() })
+      .from(schema.bookings)
+      .where(and(eq(schema.bookings.user_id, user.id), eq(schema.bookings.status, "pending")));
+    if (open >= MAX_PENDING) {
+      return {
+        ok: false,
+        reason: "rate-limited",
+        error: `You already have ${MAX_PENDING} requests waiting for a reply. Cancel one you no longer need, or wait for a host to answer, then try again.`,
+      };
+    }
+
     const priced = await priceBookingRequest(db, parsed.data);
     // `bookings.user_id` references `profiles`, which is created on first read.
     await ensureProfile(user);
@@ -122,7 +165,7 @@ export async function requestBooking(input: unknown): Promise<RequestBookingResu
     return { ok: true, booking: toBookingView(row, links.get(row.id)) };
   } catch (err) {
     if (err instanceof BookingRejected) return { ok: false, reason: "invalid", error: err.message };
-    console.error("[bookings] create failed:", err);
+    logFailure("create", err);
     return failed("We could not save that request. Try again in a moment.");
   }
 }
@@ -145,7 +188,7 @@ export async function listMyBookings(): Promise<ListBookingsResult> {
     const links = await listingLinks(db, rows);
     return { ok: true, bookings: rows.map((row) => toBookingView(row, links.get(row.id))) };
   } catch (err) {
-    console.error("[bookings] list failed:", err);
+    logFailure("list", err);
     return failed("We could not load your bookings. Try again in a moment.");
   }
 }
@@ -179,7 +222,7 @@ export async function cancelMyBooking(id: unknown): Promise<CancelBookingResult>
       .returning({ id: schema.bookings.id });
     return row ? { ok: true } : failed("That booking could not be cancelled.");
   } catch (err) {
-    console.error("[bookings] cancel failed:", err);
+    logFailure("cancel", err);
     return failed("That booking could not be cancelled. Try again in a moment.");
   }
 }

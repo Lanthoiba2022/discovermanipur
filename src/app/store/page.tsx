@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Suspense } from "react";
 
 import {
   EmptyState,
@@ -8,8 +8,11 @@ import {
   FilterRow,
   FilterSelect,
   FilterToggle,
-  type RawSearchParams,
+  FilterUrlModeProvider,
 } from "@/components/filters";
+import { IntentLink } from "@/components/shared/intent-link";
+import { ListingResultCount } from "@/components/listing/listing-grid";
+import { UrlSearchBridge } from "@/components/listing/url-search-bridge";
 import { Reveal } from "@/components/motion/reveal";
 import { CraftCard } from "@/components/store/craft-card";
 import {
@@ -19,7 +22,9 @@ import {
   craftCategoryOptions,
   craftDistrictOptions,
   parseCraftFilters,
+  type CraftFacets,
 } from "@/components/store/craft-filters";
+import { CraftResults } from "@/components/store/craft-results";
 import { CraftTraditions } from "@/components/store/craft-traditions";
 import { NoCommissionBand } from "@/components/store/no-commission-band";
 import { Button } from "@/components/ui/button";
@@ -38,15 +43,43 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function StorePage({
-  searchParams,
-}: {
-  searchParams: Promise<RawSearchParams>;
-}) {
-  const params = await searchParams;
+/**
+ * /store is prerendered once and served from the CDN.
+ *
+ * The page reads no request data: every active craft is rendered here, in
+ * `getCrafts()` order, and `CraftResults` filters and sorts the cards in the
+ * browser from the query string (copied into the listing store by
+ * `UrlSearchBridge`). The filter controls write with `pushState` (client URL
+ * mode), so shared links and the back button work exactly as before. Inactive
+ * crafts never leave the server, and only the fields the filters read travel
+ * to the browser as facets.
+ */
+export default async function StorePage() {
   const [all, categories] = await Promise.all([getCrafts(), getCraftCategories()]);
-  const state = parseCraftFilters(params, categories);
-  const rows = applyCraftFilters(all, state);
+
+  // The unfiltered view, as the browser will order it: what the static HTML
+  // counts, and which cards lead it (those get their photos preloaded).
+  const defaultRows = applyCraftFilters(all, parseCraftFilters({}, categories));
+  const defaultCount = defaultRows.length;
+  const leading = new Set(defaultRows.slice(0, 3).map((row) => row.id));
+
+  const items = all.map((craft, index) => ({
+    key: craft.id,
+    facets: {
+      category: craft.category,
+      district: craft.district,
+      madeToOrder: craft.madeToOrder,
+      giTagged: craft.giTagged,
+      price: craft.price,
+      featured: craft.featured,
+      name: craft.name,
+    } satisfies CraftFacets,
+    node: (
+      <Reveal delayIndex={index % 3} className="flex w-full">
+        <CraftCard craft={craft} preload={leading.has(craft.id)} />
+      </Reveal>
+    ),
+  }));
 
   const districtCount = new Set(all.map((row) => row.district)).size;
   const makerCount = new Set(all.map((row) => row.maker)).size;
@@ -54,6 +87,10 @@ export default async function StorePage({
 
   return (
     <div className="pb-24">
+      <Suspense fallback={null}>
+        <UrlSearchBridge />
+      </Suspense>
+
       <PageHero
         tone="sand"
         eyebrow="Crafts · direct from the artisan"
@@ -81,61 +118,70 @@ export default async function StorePage({
       />
 
       <div className="shell mt-14 flex flex-col gap-16 md:mt-16">
-        <FilterBar resultCount={rows.length} resultNoun="craft">
-          <FilterChips
-            name="category"
-            label="Craft"
-            allLabel="Every craft"
-            options={craftCategoryOptions(categories)}
-          />
-          <FilterRow>
-            <FilterSelect
-              name="district"
-              label="District"
-              allLabel="All districts"
-              options={craftDistrictOptions(all.map((row) => row.district))}
+        <FilterUrlModeProvider mode="client">
+          <FilterBar
+            resultCount={defaultCount}
+            resultNoun="craft"
+            resultSlot={<ListingResultCount total={defaultCount} noun="craft" />}
+          >
+            <FilterChips
+              name="category"
+              label="Craft"
+              allLabel="Every craft"
+              options={craftCategoryOptions(categories)}
             />
-            <FilterSelect
-              name="price"
-              label="Price"
-              allLabel="Any price"
-              options={CRAFT_PRICE_BANDS.map((band) => ({ value: band.value, label: band.label }))}
-            />
-            <FilterSelect
-              name="sort"
-              label="Sort"
-              allLabel="Featured first"
-              options={CRAFT_SORT_OPTIONS}
-            />
-            <FilterToggle name="madeToOrder" label="Made to order" />
-            <FilterToggle name="gi" label="GI tagged" />
-          </FilterRow>
-        </FilterBar>
+            <FilterRow>
+              <FilterSelect
+                name="district"
+                label="District"
+                allLabel="All districts"
+                options={craftDistrictOptions(all.map((row) => row.district))}
+              />
+              <FilterSelect
+                name="price"
+                label="Price"
+                allLabel="Any price"
+                options={CRAFT_PRICE_BANDS.map((band) => ({ value: band.value, label: band.label }))}
+              />
+              <FilterSelect
+                name="sort"
+                label="Sort"
+                allLabel="Featured first"
+                options={CRAFT_SORT_OPTIONS}
+              />
+              <FilterToggle name="madeToOrder" label="Made to order" />
+              <FilterToggle name="gi" label="GI tagged" />
+            </FilterRow>
+          </FilterBar>
+        </FilterUrlModeProvider>
 
-        {rows.length === 0 ? (
+        {all.length === 0 ? (
           <EmptyState
-            title={all.length === 0 ? "Makers are still being listed" : "No crafts match those filters"}
-            description={
-              all.length === 0
-                ? "We are working through the weaving and pottery clusters, adding makers who want to be found. In the meantime you can go and make the thing yourself."
-                : "Try clearing the district or widening the price range. The catalogue is small and deliberately so."
-            }
+            title="Makers are still being listed"
+            description="We are working through the weaving and pottery clusters, adding makers who want to be found. In the meantime you can go and make the thing yourself."
             action={
               <Button asChild variant="outline">
-                <Link href="/experiences?category=craft">Browse craft experiences</Link>
+                <IntentLink href="/experiences?category=craft">Browse craft experiences</IntentLink>
               </Button>
             }
           />
         ) : (
-          <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {rows.map((craft, index) => (
-              <Reveal as="li" key={craft.id} delayIndex={index % 3} className="flex">
-                <CraftCard craft={craft} preload={index < 3} />
-              </Reveal>
-            ))}
-          </ul>
+          <CraftResults
+            items={items}
+            categories={categories}
+            emptyNode={
+              <EmptyState
+                title="No crafts match those filters"
+                description="Try clearing the district or widening the price range. The catalogue is small and deliberately so."
+                action={
+                  <Button asChild variant="outline">
+                    <IntentLink href="/experiences?category=craft">Browse craft experiences</IntentLink>
+                  </Button>
+                }
+              />
+            }
+          />
         )}
-
       </div>
 
       <div className="shell-mid mt-16 flex flex-col gap-16 md:mt-20">

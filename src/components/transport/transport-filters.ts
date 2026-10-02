@@ -1,3 +1,10 @@
+/**
+ * Filter vocabulary for /transport. Pure, so it runs both on the server and
+ * in the browser, where the static listing re-filters its cards after a
+ * change to the URL. Imports the params module directly rather than the
+ * `@/components/filters` barrel, which would pull the filter UI into every
+ * client bundle that only needs these functions.
+ */
 import {
   type FilterOption,
   type PriceBand,
@@ -8,7 +15,7 @@ import {
   readOneOf,
   readParam,
   titleCase,
-} from "@/components/filters";
+} from "@/components/filters/params";
 import type { TransportMode, TransportOption } from "@/types";
 
 export const TRANSPORT_MODES: TransportMode[] = [
@@ -56,7 +63,23 @@ export function parseTransportFilters(params: RawSearchParams): TransportFilterS
   };
 }
 
-export function applyTransportFilters(rows: TransportOption[], state: TransportFilterState) {
+/**
+ * The row fields `applyTransportFilters` reads. The listing passes slim facet
+ * objects of exactly this shape to the browser instead of whole rows.
+ */
+export type TransportFacets = Pick<
+  TransportOption,
+  "mode" | "seats" | "pricePerDay" | "rating" | "featured"
+>;
+
+/**
+ * Filter, then sort. Returns a new array; `rows` is not mutated. The stable
+ * sort keeps the incoming (data layer) order for ties.
+ */
+export function applyTransportFilters<T extends TransportFacets>(
+  rows: readonly T[],
+  state: TransportFilterState,
+): T[] {
   const filtered = rows.filter((row) => {
     if (state.mode && row.mode !== state.mode) return false;
     if (state.seats && (row.seats < state.seats.min || row.seats > state.seats.max)) return false;

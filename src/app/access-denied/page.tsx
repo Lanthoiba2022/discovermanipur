@@ -1,7 +1,7 @@
 import { ShieldAlert } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { Button } from "@/components/ui/button";
 import { getSessionUser } from "@/lib/host/role";
 
@@ -49,15 +49,15 @@ export default async function AccessDeniedPage({
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           {unavailable ? (
             <Button asChild>
-              <Link href="/">Back to Discover Manipur</Link>
+              <IntentLink href="/">Back to Discover Manipur</IntentLink>
             </Button>
           ) : (
             <>
               <Button asChild>
-                <Link href="/community/new">Add your place</Link>
+                <IntentLink href="/community/new">Add your place</IntentLink>
               </Button>
               <Button asChild variant="outline">
-                <Link href="/host/guidelines">Hosting standards</Link>
+                <IntentLink href="/host/guidelines">Hosting standards</IntentLink>
               </Button>
             </>
           )}

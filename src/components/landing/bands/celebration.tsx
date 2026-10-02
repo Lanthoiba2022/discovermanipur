@@ -1,5 +1,5 @@
 import { CalendarDays, MapPin } from "lucide-react";
-import Link from "next/link";
+import { IntentLink } from "@/components/shared/intent-link";
 
 import { BandRail } from "@/components/landing/band-rail";
 import { ShowcaseBand } from "@/components/landing/showcase-band";
@@ -29,7 +29,7 @@ function FestivalCard({ festival }: { festival: Festival }) {
 
   return (
     <li className={RAIL_ITEM}>
-      <Link
+      <IntentLink
         href={`/festivals/${festival.slug}`}
         className="flex h-full flex-col rounded-[var(--radius-lg)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-flat)] hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
       >
@@ -78,7 +78,7 @@ function FestivalCard({ festival }: { festival: Festival }) {
             />
           </div>
         </div>
-      </Link>
+      </IntentLink>
     </li>
   );
 }

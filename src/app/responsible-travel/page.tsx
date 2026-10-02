@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { getPledgeItems, getResponsibleQuickAsks } from "@/lib/data/content";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo/og";
 import { Lede, NoteBox, Prose, PullQuote } from "@/components/content/prose";
 import { PageHero } from "@/components/content/page-hero";
 import { VisitorPledge } from "@/components/content/visitor-pledge";
@@ -18,6 +19,9 @@ export const metadata: Metadata = {
     title: "Responsible travel in Manipur",
     description:
       "What is actually under pressure here, and the specific things a visitor can do about it.",
+    // A page-level openGraph replaces the inherited one wholesale, so without
+    // this the root card is dropped and shares unfurl with no picture.
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 
@@ -444,10 +448,10 @@ export default async function ResponsibleTravelPage() {
           <VisitorPledge items={pledge} />
           <Reveal className="mt-10 flex flex-wrap justify-center gap-3">
             <Button asChild variant="primary" size="lg">
-              <Link href="/homestays">Find a homestay</Link>
+              <IntentLink href="/homestays">Find a homestay</IntentLink>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link href="/experiences">Book with a local host</Link>
+              <IntentLink href="/experiences">Book with a local host</IntentLink>
             </Button>
           </Reveal>
         </div>

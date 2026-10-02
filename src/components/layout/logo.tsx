@@ -1,5 +1,4 @@
-import Link from "next/link";
-
+import { IntentLink } from "@/components/shared/intent-link";
 import { cn } from "@/lib/utils";
 
 /**
@@ -16,6 +15,11 @@ import { cn } from "@/lib/utils";
  * the ivory header, ivory over the film and ivory again in the footer, with no
  * second asset, no `filter: invert()`, and it stays in step with the
  * `--hdr-*` custom properties the header already flips on first paint.
+ *
+ * The link is an `IntentLink`: it sits in the header and footer of every page,
+ * and a plain `<Link href="/">` would prefetch the home page segment (the
+ * heaviest on the site) on every page view, opened or not. It now prefetches
+ * when the visitor points at, focuses or touches it.
  */
 export function Logo({
   className,
@@ -46,7 +50,7 @@ export function Logo({
         : "text-primary";
 
   return (
-    <Link
+    <IntentLink
       href="/"
       aria-label="Discover Manipur: The Land of Jewels, home"
       className={cn(
@@ -76,6 +80,6 @@ export function Logo({
           Manipur
         </span>
       </span>
-    </Link>
+    </IntentLink>
   );
 }

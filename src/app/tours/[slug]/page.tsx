@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarDays, Check, Map, Mountain, Star, X } from "lucide-react";
+import { Check, Map, Mountain, Star, X } from "lucide-react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { MediaGallery } from "@/components/shared/media-gallery";
 import { ItineraryTimeline } from "@/components/tours/itinerary-timeline";
 import { TourBookingForm } from "@/components/tours/tour-booking-form";
-import { formatDeparture, upcomingDepartures } from "@/components/tours/tour-filters";
+import { departuresAnchor } from "@/components/tours/tour-card";
+import { TourDepartures } from "@/components/tours/tour-departures";
 import { Badge } from "@/components/ui/badge";
 import { getTourBySlug, getTours } from "@/lib/data";
+import { ogImagesFor } from "@/lib/seo/og";
 
 type Params = { slug: string };
 
@@ -40,7 +42,8 @@ export async function generateMetadata({
     openGraph: {
       title: tour.title,
       description: tour.description.slice(0, 160),
-      images: tour.images[0] ? [{ url: tour.images[0].src }] : undefined,
+      // 1200 px optimizer variant of a self-hosted photo, else the site card.
+      images: ogImagesFor(tour.images[0]),
     },
   };
 }
@@ -50,15 +53,18 @@ export default async function TourDetailPage({ params }: { params: Promise<Param
   const tour = await getTourBySlug(slug);
   if (!tour) notFound();
 
-  const departures = upcomingDepartures(tour.departureDates);
+  // Today in India at render (build) time: the departure list and the booking
+  // form filter against it until hydration, so the static HTML lists real
+  // dates, then against the reader's own day.
+  const anchorDate = departuresAnchor();
 
   return (
     <article className="pb-24">
       <div className="shell pt-28 md:pt-32">
         <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-          <Link href="/tours" className="hover:text-foreground">
+          <IntentLink href="/tours" className="hover:text-foreground">
             Tours
-          </Link>
+          </IntentLink>
           <span aria-hidden="true"> / </span>
           <span className="text-foreground">{tour.title}</span>
         </nav>
@@ -173,27 +179,14 @@ export default async function TourDetailPage({ params }: { params: Promise<Param
               <h2 id="departures-heading" className="font-display text-2xl">
                 Departures
               </h2>
-              {departures.length > 0 ? (
-                <ul className="mt-4 flex flex-wrap gap-2">
-                  {departures.map((date) => (
-                    <li key={date}>
-                      <Badge variant="outline">
-                        <CalendarDays className="size-3.5" aria-hidden="true" />
-                        {formatDeparture(date)}
-                      </Badge>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="mt-3 text-muted-foreground">
-                  No fixed departures listed. Tell us your dates and we will run this privately.
-                </p>
-              )}
+              {/* Upcoming dates as of the build day in the HTML, refiltered
+                  in the browser against the reader's day once hydrated. */}
+              <TourDepartures dates={tour.departureDates} anchorDate={anchorDate} />
             </section>
           </div>
 
           <aside className="lg:sticky lg:top-28 lg:self-start">
-            <TourBookingForm tour={tour} />
+            <TourBookingForm tour={tour} anchorDate={anchorDate} />
           </aside>
         </div>
       </div>

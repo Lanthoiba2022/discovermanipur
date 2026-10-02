@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Clock, Leaf, MapPin, Phone, Star } from "lucide-react";
 
-import { ogImage } from "@/lib/data/photos";
+import { IntentLink } from "@/components/shared/intent-link";
 import { MediaGallery } from "@/components/shared/media-gallery";
 import {
   mapsHref,
@@ -14,6 +13,7 @@ import { titleCase } from "@/components/filters";
 import { Badge } from "@/components/ui/badge";
 import { formatINR, meiteiAlias } from "@/lib/utils";
 import { getEateries, getEateryBySlug } from "@/lib/data";
+import { ogImagesFor } from "@/lib/seo/og";
 
 type Params = { slug: string };
 
@@ -46,9 +46,8 @@ export async function generateMetadata({
       title: eatery.name,
       description: eatery.description.slice(0, 160),
       // Places refs expire; only self-hosted files are safe for scrapers.
-      images: ogImage(eatery.images[0])
-        ? [{ url: ogImage(eatery.images[0])!.src }]
-        : undefined,
+      // 1200 px optimizer variant of a self-hosted photo, else the site card.
+      images: ogImagesFor(eatery.images[0]),
     },
   };
 }
@@ -66,9 +65,9 @@ export default async function EateryDetailPage({ params }: { params: Promise<Par
     <article className="pb-24">
       <div className="shell pt-28 md:pt-32">
         <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-          <Link href="/eateries" className="hover:text-foreground">
+          <IntentLink href="/eateries" className="hover:text-foreground">
             Eateries
-          </Link>
+          </IntentLink>
           <span aria-hidden="true"> / </span>
           <span className="text-foreground">{eatery.name}</span>
         </nav>
@@ -206,7 +205,15 @@ export default async function EateryDetailPage({ params }: { params: Promise<Par
           </div>
 
           <aside className="lg:sticky lg:top-28 lg:self-start">
-            <TableReservationForm eatery={eatery} />
+            {/* Only the fields the form reads cross into the client payload. */}
+            <TableReservationForm
+              eatery={{
+                name: eatery.name,
+                phone: eatery.phone,
+                timings: eatery.timings,
+                acceptsReservations: eatery.acceptsReservations,
+              }}
+            />
           </aside>
         </div>
       </div>

@@ -83,7 +83,7 @@ Open work is listed in [docs/GOOD_FIRST_ISSUES.md](docs/GOOD_FIRST_ISSUES.md) an
 ## Tech stack
 
 - [Next.js 16](https://nextjs.org) (App Router, Server Components, Server Actions), React 19, TypeScript (strict)
-- Tailwind CSS v4, Radix UI primitives, Framer Motion, GSAP, Lenis
+- Tailwind CSS v4, Radix UI primitives, Framer Motion, Lenis
 - [Neon](https://neon.com) Postgres with [Drizzle ORM](https://orm.drizzle.team), and Neon Auth for accounts
 - Vercel AI SDK for the concierge (Google Gemini or Anthropic Claude)
 - Google Maps JavaScript API (3D) for the Kangla map. Three.js landmark studies are in the
@@ -92,8 +92,8 @@ Open work is listed in [docs/GOOD_FIRST_ISSUES.md](docs/GOOD_FIRST_ISSUES.md) an
 
 ## Quick start
 
-You need **Node.js 20.9 or newer** (Next.js 16's minimum) and npm. No accounts, keys or
-database are required.
+You need **Node.js 24** (the version in [.nvmrc](.nvmrc); `nvm use` picks it up) and npm.
+No accounts, keys or database are required.
 
 ```bash
 git clone https://github.com/Lanthoiba2022/discovermanipur.git
@@ -157,6 +157,9 @@ things on, is in [db/README.md](db/README.md).
 | `npm run start` | Serve the production build |
 | `npm run lint` | ESLint |
 | `npm run typecheck` | Generates route types (`next typegen`), then TypeScript with no emit |
+| `npm test` | Unit tests in `tests/unit/` (Node's built-in test runner; no database or keys) |
+| `npm run assets:optimize` | Re-encode oversized images and media under `public/` in place |
+| `npm run assets:check` | Fail if a file under `public/` is over the size or dimension budget (CI runs it) |
 | `npm run db:generate` | Write the next migration from `src/lib/db/schema.ts` into `drizzle/` |
 | `npm run db:migrate` | Apply pending migrations |
 | `npm run db:studio` | Browse the database in Drizzle Studio |
@@ -252,8 +255,8 @@ photos you own, translations and accessibility fixes.
    before you start, so two people do not build the same thing.
 3. Fork the repository, create a branch, and open a pull request against `main` that
    links the issue. One issue per pull request.
-4. Make sure `npm run lint`, `npm run typecheck` and `npm run build` pass. CI runs all
-   three on every pull request.
+4. Make sure `npm run lint`, `npm run typecheck`, `npm test` and `npm run build` pass.
+   CI runs them, plus the asset budget check, on every pull request.
 
 **Where to start**
 

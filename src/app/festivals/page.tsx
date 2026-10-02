@@ -8,12 +8,33 @@ import {
   FestivalTimeline,
   MonthRail,
 } from "@/components/places/festival-timeline";
-import { MONTHS, PLACEHOLDER_IMAGE } from "@/components/places/taxonomy";
+import { MONTHS } from "@/components/places/taxonomy";
 import { Reveal } from "@/components/motion/reveal";
 import { getFestivals } from "@/lib/data";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo/og";
 
-/** The "what's on now" band is date-aware, so refresh the shell once a day. */
+/**
+ * The "what's on now" band depends on the month, so the page is regenerated at
+ * most once a day. This timed revalidate is deliberate and separate from the
+ * catalogue cache: the festival rows still come through `sharedRead`, so a
+ * regeneration re-renders the shell without a database read. Removing it would
+ * freeze the spotlight at the month of the last deploy.
+ */
 export const revalidate = 86400;
+
+/**
+ * The current month (0-11) in Manipur. The server's clock is UTC on Vercel,
+ * where `getMonth()` still reports the previous month from 00:00 to 05:30 IST
+ * on the 1st. Every festival here runs on India's calendar, so India's month
+ * is the one that decides what is "on now".
+ */
+function currentMonthInIndia(now = new Date()): number {
+  const month = new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
+    month: "numeric",
+  }).format(now);
+  return Number(month) - 1;
+}
 
 export const metadata: Metadata = {
   title: "Festivals of Manipur, month by month",
@@ -23,16 +44,16 @@ export const metadata: Metadata = {
     title: "Festivals of Manipur, month by month · Discover Manipur",
     description:
       "Manipur's festival calendar from January to December. Plan your trip around the drums.",
-    images: [
-      { url: PLACEHOLDER_IMAGE, width: 1200, height: 630, alt: "A Manipuri festival in full colour" },
-    ],
+    // The site card. The listing used to name a 400x300 placeholder while
+    // declaring it 1200x630, which platforms then rendered blurry or rejected.
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 
 export default async function FestivalsPage() {
   const festivals = await getFestivals();
   const buckets = bucketByMonth(festivals);
-  const currentMonth = new Date().getMonth();
+  const currentMonth = currentMonthInIndia();
 
   const onNow = buckets[currentMonth]?.festivals ?? [];
   // Wrap around the year to find the next month that actually has something on.

@@ -1,7 +1,11 @@
 "use client";
 
-import { useReducedMotion } from "framer-motion";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+
+import {
+  prefersReducedMotionNow,
+  useReducedMotionPreference,
+} from "@/components/motion/use-reduced-motion";
 
 /** `useLayoutEffect` that degrades to a no-op during SSR. */
 const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -14,10 +18,14 @@ const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffec
  *  - The SERVER renders the TRUE number. A reader with no JavaScript, a reader
  *    on reduced motion, and a reader whose observer never fires because the
  *    band is already on screen all see `5,000+`, never a permanent `0`.
- *  - `useReducedMotion()` returns `null` during SSR and `true` on a
- *    reduced-motion client, so it must never decide what is *rendered*, only
- *    the timing. It is read in effects here, after hydration has matched, and
- *    the markup is byte-identical either way.
+ *  - `useReducedMotionPreference()` reports the server's `false` during the
+ *    hydration pass and the real value right after, so it must never decide
+ *    what is *rendered*, only the timing. It is read in effects here, after
+ *    hydration has matched, and the markup is byte-identical either way. The
+ *    mount-time layout effect also reads the media query directly
+ *    (`prefersReducedMotionNow()`): it runs during that hydration pass, while
+ *    the hook still says `false`, and must not zero the figure for a
+ *    reduced-motion reader.
  *  - The zeroing happens in a layout effect: after hydration, before paint, so
  *    there is no flash of the final figure followed by a jump back to zero.
  *  - `tabular-nums` so the label underneath does not shuffle while the digits
@@ -27,7 +35,7 @@ const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffec
  * server component.
  */
 export function GsFigure({ value, suffix = "" }: { value: number; suffix?: string }) {
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionPreference();
   const ref = useRef<HTMLSpanElement>(null);
   const [shown, setShown] = useState(value);
   const [armed, setArmed] = useState(false);
@@ -36,7 +44,7 @@ export function GsFigure({ value, suffix = "" }: { value: number; suffix?: strin
     // Everything that could stop the count from ever running is checked HERE,
     // before the figure is zeroed, so the failure mode is "the number does
     // not animate", never "the number is stuck at 0".
-    if (reduce || typeof IntersectionObserver === "undefined") return;
+    if (reduce || prefersReducedMotionNow() || typeof IntersectionObserver === "undefined") return;
     setShown(0);
     setArmed(true);
   }, [reduce]);

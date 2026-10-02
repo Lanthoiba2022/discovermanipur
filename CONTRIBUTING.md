@@ -35,7 +35,8 @@ the [LICENSE](LICENSE) file).
 
 ## Development setup
 
-Requirements: Node.js 20.9 or newer, npm, and Git.
+Requirements: Node.js 24, npm, and Git. The version is pinned in [.nvmrc](.nvmrc), so
+`nvm use` (or `fnm use`) picks it up, and CI and Vercel run the same major.
 
 ```bash
 # 1. Fork the repository on GitHub, then:
@@ -108,12 +109,22 @@ secrets**, the same way a fresh clone builds:
 npm ci
 npm run lint
 npm run typecheck     # runs `next typegen` first (PageProps, LayoutProps)
+npm test              # unit tests in tests/unit/
+npm run assets:check  # size and dimension budget for files under public/
 npm run build
 ```
 
 Run these before you push. The app is designed to build with an empty environment; if
-your change only builds with a key or a database, it will fail CI. There is no automated
-test suite yet (adding one is on the [task list](docs/GOOD_FIRST_ISSUES.md)).
+your change only builds with a key or a database, it will fail CI. Pull requests also
+get a dependency review, which fails when a change adds a package with a known high or
+critical advisory.
+
+**Unit tests** live in `tests/unit/*.test.ts` and use Node's built-in runner
+(`node:test` and `node:assert/strict`) through `tsx`, so there is no test framework to
+install and the `@/` alias works as it does in the app. Test pure modules only: a test
+must never import `@/lib/db`, `next/headers` or `next/cache`, or read an environment
+variable, because `.env.local` may point at a real database. New tests for other pure
+logic are welcome (see the [task list](docs/GOOD_FIRST_ISSUES.md)).
 
 ## Code guidelines
 
@@ -169,6 +180,11 @@ async.
 
 - `src/lib/db/schema.ts` is the source of truth. After changing it, run
   `npm run db:generate`, review the SQL it writes to `drizzle/`, and commit both.
+  `db:generate` works without `DATABASE_URL`: it only compares the schema with the
+  snapshots in `drizzle/meta`. `db:migrate` and `db:studio` need a database.
+- `npm run db:seed` and `npm run db:set-role` print the database host they are about to
+  write to and stop unless you repeat that host:
+  `npm run db:seed -- --confirm-host=<host>`. Only ever confirm a database of your own.
 - Never edit a migration that has already been applied; add a new one.
 - `db/research-seed/0008_seed_2026_research.sql` is generated from the maintainers'
   research data, which is not in the repository. Do not edit it by hand; report a
@@ -200,7 +216,8 @@ To add or fix a listing:
 The live site reads from a database, not from the seed files. After your pull request
 is merged, a maintainer applies the change to the live database, so it appears on the
 site after that step rather than immediately on merge. (`npm run db:seed` overwrites
-every matching row, so use it only against your own database.) Listings that exist only
+every matching row, so use it only against your own database; it asks you to confirm
+the host first.) Listings that exist only
 in the live database (the 2026 research rows) come from `db/research-seed/`; for those, a *Content correction* issue is the quickest route. If you do not want to edit code, the *Content correction* and
 *Suggest a new place* issue forms are just as useful.
 
@@ -220,7 +237,16 @@ individuals. Business contact details that the business publishes itself are fin
 - Google Places photos are display-only. They must stay as references (`photoRefs`),
   never be downloaded into the repository, and always be shown with their attribution.
 - Resize large photos for the web (around 2000 px on the long edge, WebP preferred) and
-  remove location metadata from photos of private homes.
+  remove location metadata from photos of private homes. `npm run assets:optimize`
+  shows what it would shrink under `public/` (add `-- --write` to apply), and
+  `npm run assets:check`, which CI runs, fails on any file over the size or dimension
+  budget. A file that genuinely needs to be bigger goes in
+  `scripts/asset-budget-allowlist.json` with a reason.
+- **Give a replaced image a new filename.** The image optimizer caches every resized
+  copy for 31 days and that cache cannot be purged, so a new photo saved under an old
+  name keeps showing the old one for up to a month. Add the new file and point the seed
+  entry or component at it. Leave the old file in place: the live database may still
+  refer to it by name, and a maintainer removes it once nothing does.
 
 ## Hacktoberfest
 

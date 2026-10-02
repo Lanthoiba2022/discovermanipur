@@ -1,8 +1,8 @@
 import { ArrowLeft, CalendarDays, MapPin, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { meiteiAlias } from "@/lib/utils";
 import { GalleryLightbox } from "@/components/places/gallery-lightbox";
 import { HotspotCard } from "@/components/places/hotspot-card";
@@ -12,6 +12,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getFestivalBySlug, getFestivals, getHotspots } from "@/lib/data";
+import { ogImagesFor } from "@/lib/seo/og";
 
 type Params = Promise<{ slug: string }>;
 
@@ -48,14 +49,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       title: `${festival.name} · ${festival.district}, Manipur`,
       description,
       type: "article",
-      images: [
-        {
-          url: festival.images[0]?.src ?? PLACEHOLDER_IMAGE,
-          width: 1200,
-          height: 630,
-          alt: festival.images[0]?.alt ?? `${festival.name} in Manipur`,
-        },
-      ],
+      // No declared size: the optimizer variant keeps the photo's own aspect
+      // ratio, and the site card fallback declares its own. See og.ts.
+      images: ogImagesFor(festival.images[0], festival.images[0]?.alt || `${festival.name} in Manipur`),
     },
   };
 }
@@ -70,20 +66,22 @@ export default async function FestivalDetailPage({ params }: { params: Params })
   const cover = festival.images[0];
   const gallery = festival.images.slice(1);
 
+  // An <article>, not <main>: the root layout already owns `main#main`, the
+  // skip link's target, and a second one would nest landmarks and repeat the id.
   return (
-    <main id="main">
+    <article>
       <ParallaxHero
         src={cover?.src ?? PLACEHOLDER_IMAGE}
         alt={cover?.alt ?? `${festival.name} being celebrated in ${festival.district}, Manipur`}
         heightClassName="min-h-[64vh] md:min-h-[74vh]"
       >
-        <Link
+        <IntentLink
           href="/festivals"
           className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-cream-200 transition-colors hover:text-cream-50"
         >
           <ArrowLeft className="size-4" aria-hidden />
           Festival calendar
-        </Link>
+        </IntentLink>
 
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="glass">
@@ -171,7 +169,7 @@ export default async function FestivalDetailPage({ params }: { params: Params })
             </dl>
 
             <Button asChild variant="primary" size="pill" className="mt-7 w-full">
-              <Link href="/plan">Build a trip around it</Link>
+              <IntentLink href="/plan">Build a trip around it</IntentLink>
             </Button>
           </div>
         </aside>
@@ -194,6 +192,6 @@ export default async function FestivalDetailPage({ params }: { params: Params })
           </div>
         </section>
       )}
-    </main>
+    </article>
   );
 }

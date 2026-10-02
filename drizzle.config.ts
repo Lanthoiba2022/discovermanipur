@@ -20,8 +20,22 @@ try {
   // No .env.local (CI, Vercel) — the variables come from the environment.
 }
 
-const url = process.env.DATABASE_URL;
-if (!url) throw new Error("DATABASE_URL is not set");
+/**
+ * Without DATABASE_URL, fall back to a placeholder instead of throwing, so
+ * `npm run db:generate` works on a machine with no database (a fork, CI, a
+ * contributor checking a schema change). Generate never connects: it only
+ * diffs schema.ts against the snapshots in drizzle/meta. Every other command
+ * (migrate, push, studio) fails to connect to the placeholder, which is the
+ * right outcome.
+ */
+const PLACEHOLDER_URL = "postgres://localhost:5432/generate-only";
+
+const url = process.env.DATABASE_URL?.trim() || PLACEHOLDER_URL;
+if (url === PLACEHOLDER_URL) {
+  console.warn(
+    "[drizzle.config] DATABASE_URL is not set: only `npm run db:generate` works without a database.",
+  );
+}
 
 export default defineConfig({
   dialect: "postgresql",

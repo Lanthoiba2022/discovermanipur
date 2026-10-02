@@ -2,7 +2,6 @@
 
 import { ExternalLink, ImageOff, Maximize2 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 
 import {
@@ -11,6 +10,7 @@ import {
   formatDate,
   formatDateTime,
 } from "@/components/admin/community-parts";
+import { IntentLink } from "@/components/shared/intent-link";
 import { CommunityRemovePhotoButton } from "@/components/admin/community-remove-photo-button";
 import {
   Dialog,
@@ -97,12 +97,12 @@ export function CommunityPhotoGrid({
                 {showPlace && (
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     {photo.placeId ? (
-                      <Link
+                      <IntentLink
                         href={`/admin/places/${photo.placeId}`}
                         className="font-medium text-foreground hover:underline"
                       >
                         {photo.placeName}
-                      </Link>
+                      </IntentLink>
                     ) : (
                       <span className="font-medium text-muted-foreground">Not attached to a place</span>
                     )}
@@ -136,12 +136,12 @@ export function CommunityPhotoGrid({
                   <dd className="min-w-0 text-foreground">
                     {photo.uploader ? (
                       <>
-                        <Link
+                        <IntentLink
                           href={`/admin/photos?uploader=${photo.uploader.id}`}
                           className="hover:underline"
                         >
                           {photo.uploader.name}
-                        </Link>
+                        </IntentLink>
                         <span className="block break-all text-muted-foreground">{photo.uploader.email}</span>
                       </>
                     ) : (

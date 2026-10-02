@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import { IntentLink } from "@/components/shared/intent-link";
 import { getAboutPrinciples, getAboutThemes } from "@/lib/data/content";
 import { iconFor } from "@/lib/icons";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo/og";
 import { Lede, Prose, PullQuote } from "@/components/content/prose";
 import { PageHero } from "@/components/content/page-hero";
 import { Section } from "@/components/layout/section";
@@ -18,6 +19,9 @@ export const metadata: Metadata = {
     title: "About Discover Manipur: an open-source platform for Manipur",
     description:
       "Why Manipur, what the platform does, and how it puts local hosts and honest information first.",
+    // A page-level openGraph replaces the inherited one wholesale, so without
+    // this the root card is dropped and shares unfurl with no picture.
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 
@@ -134,14 +138,14 @@ export default async function AboutPage() {
                 Give it your dates, your pace and what you care about, and it drafts an itinerary
                 from the same catalogue the rest of the site uses, so it cannot recommend a
                 homestay that does not exist. It is paused on the live site for now, and the{" "}
-                <Link href="/plan">planner</Link> shows a sample conversation instead.
+                <IntentLink href="/plan">planner</IntentLink> shows a sample conversation instead.
               </p>
 
               <h3>A responsible-travel layer that is not decorative</h3>
               <p>
                 Loktak&apos;s phumdis, the sangai&apos;s habitat, photography consent, fair pay for
                 guides, buying handloom directly from the person who wove it. Written as{" "}
-                <Link href="/responsible-travel">specific asks</Link>, not as a slogan.
+                <IntentLink href="/responsible-travel">specific asks</IntentLink>, not as a slogan.
               </p>
             </Prose>
           </Reveal>
@@ -188,7 +192,7 @@ export default async function AboutPage() {
                 The same applies to guides, weavers, cooks and drivers. Experiences are priced per
                 person and capped by group size so a host can say no to a coach party without
                 losing the listing, and the{" "}
-                <Link href="/responsible-travel">responsible travel</Link> guidance asks visitors
+                <IntentLink href="/responsible-travel">responsible travel</IntentLink> guidance asks visitors
                 to pay guides properly rather than to bargain them down.
               </p>
             </Prose>
@@ -275,7 +279,7 @@ export default async function AboutPage() {
               </div>
               <div className="mt-9 flex flex-wrap gap-3">
                 <Button asChild variant="accent" size="lg">
-                  <Link href="/hotspots">Start with the places</Link>
+                  <IntentLink href="/hotspots">Start with the places</IntentLink>
                 </Button>
                 <Button
                   asChild
@@ -283,7 +287,7 @@ export default async function AboutPage() {
                   size="lg"
                   className="border-cream-200/35 text-cream-50 hover:bg-cream-50/10"
                 >
-                  <Link href="/contact">Get in touch</Link>
+                  <IntentLink href="/contact">Get in touch</IntentLink>
                 </Button>
               </div>
             </div>

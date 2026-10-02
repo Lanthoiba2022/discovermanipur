@@ -8,12 +8,14 @@
  * rules they apply are in `./mutations` and `./rules`.
  */
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 
 import { getDb } from "@/lib/db";
+import { logDbError } from "@/lib/log";
 import { rateLimit } from "@/lib/security/rate-limit";
 
 import { createPlace, discardOwnUpload, RuleViolation, setVote, type VoteOutcome } from "./mutations";
+import { COMMUNITY_TAG } from "./public-reads";
 import { photoIdSchema, placeIdSchema, placeSubmissionSchema } from "./schema";
 import { getPhotoStore } from "./storage";
 import type { ActionFailure, ActionResult, CommunityViewer } from "./types";
@@ -55,12 +57,16 @@ export async function submitPlace(input: unknown): Promise<ActionResult<{ slug: 
 
   try {
     const { slug } = await createPlace(db, viewer.userId, parsed.data);
+    // No `updateTag(COMMUNITY_TAG)`: a new place is pending, and the cached
+    // public reads (`./public-reads`) hold published places only, so nothing
+    // a signed-out visitor sees has changed. The pages that show pending
+    // places read live.
     revalidatePath("/community/verify");
     revalidatePath("/account/places");
     return { ok: true, data: { slug } };
   } catch (err) {
     if (err instanceof RuleViolation) return fail(err.message, err.field ? { [err.field]: err.message } : undefined);
-    console.error("[community] submit failed:", (err as Error).message);
+    logDbError("community.submit", err);
     return fail("We could not save this place. Try again in a moment.");
   }
 }
@@ -85,13 +91,16 @@ export async function setUpvote(placeId: unknown, want: unknown): Promise<Action
     revalidatePath("/community/verify");
     revalidatePath(`/community/${slug}`);
     if (outcome.status === "published") {
+      // This vote published the place: drop the cached public list, slugs,
+      // place pages and photo keys so it appears for everyone at once.
+      updateTag(COMMUNITY_TAG);
       revalidatePath("/community");
       revalidatePath("/sitemap.xml");
     }
     return { ok: true, data: outcome };
   } catch (err) {
     if (err instanceof RuleViolation) return fail(err.message);
-    console.error("[community] vote failed:", (err as Error).message);
+    logDbError("community.vote", err);
     return fail("Your vote could not be saved. Try again in a moment.");
   }
 }
@@ -116,7 +125,7 @@ export async function discardUpload(photoId: unknown): Promise<ActionResult> {
     });
     return { ok: true };
   } catch (err) {
-    console.error("[community] discard failed:", (err as Error).message);
+    logDbError("community.discard", err);
     return fail("That photo could not be removed. Try again in a moment.");
   }
 }

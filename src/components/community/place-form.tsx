@@ -2,12 +2,12 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus, Send, Trash2 } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState, useTransition, type FormEvent, type ReactNode } from "react";
 import { useForm, useWatch, type FieldPath } from "react-hook-form";
 import { toast } from "sonner";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -568,9 +568,9 @@ export function PlaceForm({ viewerName, photosEnabled }: PlaceFormProps) {
               The details above are accurate to the best of my knowledge, and I have the right to share these
               photos under the licence I chose. I understand the place is shown to verified members for voting
               before it can be published.{" "}
-              <Link href="/community#how-verification-works" className="text-primary underline underline-offset-4">
+              <IntentLink href="/community#how-verification-works" className="text-primary underline underline-offset-4">
                 How verification works
-              </Link>
+              </IntentLink>
             </Label>
           </div>
           <FieldError id="place-agree-error" message={errors.agree?.message} />

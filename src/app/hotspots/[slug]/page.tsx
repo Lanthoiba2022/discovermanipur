@@ -11,13 +11,13 @@ import {
   Sun,
 } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ogImage } from "@/lib/data/photos";
+import { IntentLink } from "@/components/shared/intent-link";
+import { ogImagesFor } from "@/lib/seo/og";
 import { meiteiAlias } from "@/lib/utils";
 import { KanglaTeaser } from "@/components/immersive/kangla-teaser";
-import { MapPanel } from "@/components/map/map-panel";
+import { MapFacade } from "@/components/map/map-facade";
 import { GalleryLightbox } from "@/components/places/gallery-lightbox";
 import { HotspotCard } from "@/components/places/hotspot-card";
 import { ParallaxHero } from "@/components/places/parallax-hero";
@@ -61,10 +61,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     };
   }
 
-  // Only a stable, self-hosted file is safe as an OG image; see `ogImage`.
-  // When the lead photo is a Places ref this is undefined and Next falls back
-  // to the generated opengraph-image route.
-  const og = ogImage(hotspot.images[0]);
+  // A self-hosted JPEG/WebP lead photo becomes a 1200 px optimizer variant;
+  // a Places photo, a PNG collage or no photo gets the site card. See og.ts.
   const description = `${hotspot.tagline} ${hotspot.description}`.slice(0, 180).trim();
 
   return {
@@ -74,9 +72,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       title: `${hotspot.name} · ${hotspot.district}, Manipur`,
       description,
       type: "article",
-      images: og
-        ? [{ url: og.src, alt: og.alt ?? `${hotspot.name}, Manipur` }]
-        : undefined,
+      images: ogImagesFor(hotspot.images[0], hotspot.images[0]?.alt || `${hotspot.name}, Manipur`),
     },
   };
 }
@@ -91,20 +87,22 @@ export default async function HotspotDetailPage({ params }: { params: Params }) 
   const cover = hotspot.images[0];
   const gallery = hotspot.images.slice(1);
 
+  // An <article>, not <main>: the root layout already owns `main#main`, the
+  // skip link's target, and a second one would nest landmarks and repeat the id.
   return (
-    <main id="main">
+    <article>
       <ParallaxHero
         src={cover?.src ?? PLACEHOLDER_IMAGE}
         alt={cover?.alt ?? `${hotspot.name} in ${hotspot.district}, Manipur`}
         credit={cover?.credit}
       >
-        <Link
+        <IntentLink
           href="/hotspots"
           className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-cream-200 transition-colors hover:text-cream-50"
         >
           <ArrowLeft className="size-4" aria-hidden />
           All places
-        </Link>
+        </IntentLink>
 
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="glass" className="uppercase tracking-[0.16em]">
@@ -189,7 +187,9 @@ export default async function HotspotDetailPage({ params }: { params: Params }) 
                 {hotspot.location} · {hotspot.coordinates.lat.toFixed(4)}°N,{" "}
                 {hotspot.coordinates.lng.toFixed(4)}°E
               </p>
-              <MapPanel
+              {/* A card with a Google Maps link until the reader asks for the
+                  map, so MapLibre is not fetched on every place page. */}
+              <MapFacade
                 className="mt-6 h-[22rem]"
                 zoom={12}
                 ariaLabel={`Map showing the location of ${hotspot.name}`}
@@ -249,7 +249,7 @@ export default async function HotspotDetailPage({ params }: { params: Params }) 
             </dl>
 
             <Button asChild variant="primary" size="pill" className="mt-7 w-full">
-              <Link href="/plan">Plan a trip around this</Link>
+              <IntentLink href="/plan">Plan a trip around this</IntentLink>
             </Button>
           </div>
         </aside>
@@ -273,7 +273,7 @@ export default async function HotspotDetailPage({ params }: { params: Params }) 
           </div>
         </section>
       )}
-    </main>
+    </article>
   );
 }
 

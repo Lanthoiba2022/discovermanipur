@@ -1,18 +1,20 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleCheck, Loader2, Users } from "lucide-react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
+import * as z from "@/lib/zod-mini";
+import { IntentLink } from "@/components/shared/intent-link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "@/lib/auth";
+// The hook's own module, not the `@/lib/auth` barrel: the barrel also
+// re-exports the sign-in schemas, which would bring classic zod to this page.
+import { useAuth } from "@/lib/auth/use-auth";
 import {
   BookingError,
   createBooking,
@@ -28,17 +30,24 @@ function today() {
   return toISODate(new Date());
 }
 
+// `zod/mini` instead of classic `zod`, through @/lib/zod-mini, which also
+// registers zod's English messages: classic zod is about 95 KB gzip on each
+// page with this form.
 const makeSchema = (maxGuests: number) =>
   z.object({
     date: z
       .string()
-      .min(1, "Pick a date for your session")
-      .refine((value) => value >= today(), "Pick a date in the future"),
+      .check(
+        z.minLength(1, "Pick a date for your session"),
+        z.refine((value) => value >= today(), "Pick a date in the future"),
+      ),
     guests: z
       .number({ error: "Enter the number of guests" })
-      .int("Guests must be a whole number")
-      .min(1, "At least one guest")
-      .max(maxGuests, `This host takes up to ${maxGuests} guests`),
+      .check(
+        z.int("Guests must be a whole number"),
+        z.gte(1, "At least one guest"),
+        z.lte(maxGuests, `This host takes up to ${maxGuests} guests`),
+      ),
   });
 
 type BookingValues = {
@@ -124,7 +133,7 @@ export function ExperienceBookingPanel({ experience }: { experience: Experience 
         </p>
         <div className="flex flex-col gap-2">
           <Button asChild variant="primary" className="w-full">
-            <Link href="/account/bookings">View my bookings</Link>
+            <IntentLink href="/account/bookings">View my bookings</IntentLink>
           </Button>
           <Button
             variant="ghost"

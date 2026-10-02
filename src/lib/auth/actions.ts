@@ -11,6 +11,7 @@ import type { Profile } from "@/types";
 import { getAuthClient } from "./client";
 import { isDemoAuth } from "./env";
 import { saveProfile } from "./profile";
+import { clearSessionHint } from "./session-hint";
 import {
   type DemoAccount,
   getSnapshot,
@@ -354,11 +355,21 @@ export async function resetPasswordWithCode(input: {
 
 /* -------------------------------- sign out --------------------------------- */
 
+/**
+ * Sign-in, sign-up and verification need no hint handling of their own: each
+ * ends in `refreshSession`, whose `getCurrentProfile` call sets the
+ * `dm_signed_in` hint cookie on the server once it finds the new session.
+ * Sign-out clears it here, in the browser, as soon as Neon Auth confirms, so
+ * this tab and every other one stop checking the session from the next page
+ * load. It is only cleared on success: a failed sign-out leaves the session
+ * (and so the hint) in place.
+ */
 export async function signOut(): Promise<AuthResult> {
   const client = getAuthClient();
   if (client) {
     const { error } = await attempt(() => client.signOut());
     if (error) return { error: messageOf(error) };
+    clearSessionHint();
     setState({ user: null, status: "ready" });
     notifyOtherTabs();
     return { error: null };

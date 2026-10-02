@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { Compass } from "lucide-react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
@@ -15,7 +15,7 @@ export default function NotFound() {
         with a view of the water.
       </p>
       <Button asChild className="mt-8">
-        <Link href="/homestays">Browse all stays</Link>
+        <IntentLink href="/homestays">Browse all stays</IntentLink>
       </Button>
     </div>
   );

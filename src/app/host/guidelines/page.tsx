@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
@@ -217,10 +217,10 @@ export default function HostingGuidelinesPage() {
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Button asChild>
-            <Link href="/community/new">Add your place</Link>
+            <IntentLink href="/community/new">Add your place</IntentLink>
           </Button>
           <Button asChild variant="outline">
-            <Link href="/host">Back to hosting</Link>
+            <IntentLink href="/host">Back to hosting</IntentLink>
           </Button>
         </div>
       </div>

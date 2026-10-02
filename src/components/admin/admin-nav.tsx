@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
@@ -26,7 +26,7 @@ export function AdminNav() {
             pathname === link.href || (link.href !== "/admin" && pathname.startsWith(`${link.href}/`));
           return (
             <li key={link.href}>
-              <Link
+              <IntentLink
                 href={link.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
@@ -37,7 +37,7 @@ export function AdminNav() {
                 )}
               >
                 {link.label}
-              </Link>
+              </IntentLink>
             </li>
           );
         })}

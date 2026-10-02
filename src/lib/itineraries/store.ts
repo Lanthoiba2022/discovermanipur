@@ -9,7 +9,14 @@
  * device. Without a database, or on the local-development session, they stay
  * in localStorage (one key per user id). The call sites are the same either
  * way. On the first account load, plans this browser kept for the same user
- * are copied into the account and the browser copy is cleared.
+ * are copied into the account, and the browser keeps only the ones the
+ * account could not take (over the plan cap or the byte budget, or invalid).
+ *
+ * The account list holds summaries (`SavedItinerarySummary`: title, dates,
+ * day and stop counts, no `days` or `notes`), so mounting a list or a Save
+ * button no longer pulls every plan in full. `getItinerary(id)` loads one
+ * full plan on demand and keeps it for the rest of the page's life. Browser
+ * mode keeps full rows, as before: they are already local.
  *
  * Local reads and writes are wrapped so a blocked or full store never throws:
  * the UI simply renders the empty state.
@@ -31,13 +38,22 @@ import { isAuthConfigured } from "@/lib/auth/env";
 import { getSnapshot as getAuthSnapshot } from "@/lib/auth/session-store";
 import { readJSON, removeKey, writeJSON } from "@/lib/auth/storage";
 
-import { MAX_ITINERARY_IMPORT, type ItineraryListResult } from "./schema";
+import {
+  MAX_ITINERARY_IMPORT,
+  summarizeItinerary,
+  type ItineraryListResult,
+  type SavedItineraryListItem,
+  type SavedItinerarySummary,
+} from "./schema";
 
 const KEY_PREFIX = "mt.itineraries.";
 const KEY_SUFFIX = ".v1";
 
-/** Stable identity so `useSyncExternalStore` never loops on an empty list. */
-const EMPTY: SavedItinerary[] = [];
+/**
+ * Stable identity so `useSyncExternalStore` never loops on an empty list.
+ * `never[]` so the one constant can stand in for a list of any row shape.
+ */
+const EMPTY: never[] = [];
 
 /**
  * Where a user's plans live. `pending` until the account list has loaded;
@@ -121,24 +137,48 @@ function knownUserIds(): string[] {
   return [...ids];
 }
 
-function newest(rows: SavedItinerary[]): SavedItinerary[] {
+function newest<T extends { createdAt: string }>(rows: T[]): T[] {
   return [...rows].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
 /* ------------------------------ Account mode ------------------------------ */
 
-/** Status and rows per user id, as the browser knows that user. */
+/** Status and list (summaries) per user id, as the browser knows that user. */
 const storageOf = new Map<string, ItineraryStorage>();
-const accountRows = new Map<string, SavedItinerary[]>();
+const accountRows = new Map<string, SavedItinerarySummary[]>();
 const loads = new Map<string, Promise<ItineraryStorage>>();
 
-function setAccount(userId: string, rows: SavedItinerary[]) {
+/**
+ * Full account plans already fetched in this page, by plan id: the ones
+ * opened or copied (`getItinerary`) and the ones a save or rename returned.
+ */
+const fullRows = new Map<string, SavedItinerary>();
+
+function setAccount(userId: string, rows: SavedItinerarySummary[]) {
   accountRows.set(userId, rows.length > 0 ? newest(rows) : EMPTY);
   emit();
 }
 
-function updateAccount(userId: string, change: (rows: SavedItinerary[]) => SavedItinerary[]) {
+function updateAccount(
+  userId: string,
+  change: (rows: SavedItinerarySummary[]) => SavedItinerarySummary[],
+) {
   setAccount(userId, change(accountRows.get(userId) ?? EMPTY));
+}
+
+/** Keep a full plan the server just returned, and its summary in the list. */
+function rememberFull(userId: string, row: SavedItinerary) {
+  fullRows.set(row.id, row);
+  const summary = summarizeItinerary(row);
+  updateAccount(userId, (rows) => [summary, ...rows.filter((existing) => existing.id !== row.id)]);
+}
+
+/**
+ * Drop the cached full plans of `userId`, after a fresh list from the server:
+ * a plan may have been edited on another device since it was fetched.
+ */
+function forgetFull(userId: string) {
+  for (const [id, row] of fullRows) if (row.userId === userId) fullRows.delete(id);
 }
 
 /** Keeps each import request well under the 1 MB Server Action body limit. */
@@ -163,24 +203,46 @@ function importBatches(rows: SavedItinerary[]) {
   return batches;
 }
 
+/**
+ * Copy this browser's plans for `userId` into the account, then remove from
+ * the browser exactly the ones the server reports as imported (by the browser
+ * id it was sent). Whatever the account refused stays in localStorage and is
+ * offered again on the next account load, when deleting a plan may have made
+ * room: the server stops silently at the plan cap and the byte budget, so
+ * clearing the whole key on success used to erase the refused plans.
+ *
+ * A batch that fails, or a throw, still writes back what earlier batches
+ * imported, so a plan whose browser id was not a UUID (and so got a new server
+ * id) is not sent, and duplicated, a second time. Once the server says the
+ * cap or budget refused something, the remaining batches are not sent.
+ */
 async function migrateLocal(userId: string) {
-  const local = readAll(userId);
-  if (local.length === 0) return;
+  if (readAll(userId).length === 0) return;
+  const imported = new Set<string>();
+  let rows: SavedItinerarySummary[] | null = null;
   try {
-    let rows: SavedItinerary[] | null = null;
-    for (const batch of importBatches(local)) {
+    for (const batch of importBatches(readAll(userId))) {
       const result = await importMyItineraries(batch);
-      if (!("storage" in result) || result.storage !== "account") return;
+      if (!("storage" in result)) break;
+      for (const id of result.imported) imported.add(id);
       rows = result.rows;
+      if (result.stopped) break;
     }
-    // Only once every batch is in: a retry re-sends the same ids, which the
-    // server skips, so a half-finished copy never duplicates plans.
-    removeKey(keyFor(userId));
-    cache.delete(userId);
-    if (rows) setAccount(userId, rows);
   } catch {
-    // Best effort: the browser copy stays and is offered again next load.
+    // Best effort: whatever was not confirmed stays and is offered next load.
   }
+  if (imported.size > 0) {
+    // Read again rather than reuse the snapshot, in case this browser wrote
+    // to the key while the import was in flight.
+    const remaining = readAll(userId).filter((row) => !imported.has(row.id));
+    if (remaining.length > 0) {
+      writeAll(userId, remaining);
+    } else {
+      removeKey(keyFor(userId));
+      cache.delete(userId);
+    }
+  }
+  if (rows) setAccount(userId, rows);
 }
 
 async function load(userId: string): Promise<ItineraryStorage> {
@@ -229,7 +291,10 @@ async function refresh(userId: string) {
   if (storageOf.get(userId) !== "account") return;
   try {
     const result = await listMyItineraries();
-    if ("storage" in result && result.storage === "account") setAccount(userId, result.rows);
+    if ("storage" in result && result.storage === "account") {
+      forgetFull(userId);
+      setAccount(userId, result.rows);
+    }
   } catch {
     // Keep what is already on screen.
   }
@@ -270,7 +335,11 @@ export type SaveItineraryInput = Omit<SavedItinerary, "id" | "createdAt"> & {
   createdAt?: string;
 };
 
-export async function listItineraries(userId: string): Promise<SavedItinerary[]> {
+/**
+ * The traveller's plans, newest first: full rows in browser mode, summaries in
+ * account mode (open one with `getItinerary`).
+ */
+export async function listItineraries(userId: string): Promise<SavedItineraryListItem[]> {
   if (!userId) return [];
   const where = await resolve(userId);
   if (where === "browser") return newest(readAll(userId));
@@ -278,11 +347,21 @@ export async function listItineraries(userId: string): Promise<SavedItinerary[]>
   return accountRows.get(userId) ?? EMPTY;
 }
 
+/**
+ * One full plan, `days` and `notes` included. In account mode it is fetched
+ * once (`getMyItinerary`, a single row) and then served from memory; `null`
+ * when it is not the traveller's, no longer exists, or the read was refused
+ * (rate limit, signed out). A network failure throws.
+ */
 export async function getItinerary(id: string): Promise<SavedItinerary | null> {
   if (!id) return null;
   const userId = currentUserId();
   if ((await resolve(userId)) === "account") {
-    return (accountRows.get(userId) ?? EMPTY).find((row) => row.id === id) ?? (await getMyItinerary(id));
+    const cached = fullRows.get(id);
+    if (cached) return cached;
+    const row = await getMyItinerary(id);
+    if (row) fullRows.set(row.id, row);
+    return row;
   }
   for (const known of knownUserIds()) {
     const found = readAll(known).find((row) => row.id === id);
@@ -303,7 +382,8 @@ export async function saveItinerary(input: SaveItineraryInput): Promise<SavedIti
     const { row } = await unwrap(
       saveMyItinerary({ title, days, travelMonth, estimatedCostInr, notes }, id),
     );
-    updateAccount(userId, (rows) => [row, ...rows.filter((existing) => existing.id !== row.id)]);
+    // The save returns the full row; the list keeps its summary.
+    rememberFull(userId, row);
     return row;
   }
 
@@ -324,7 +404,9 @@ export async function renameItinerary(id: string, title: string): Promise<SavedI
   const userId = currentUserId();
   if ((await resolve(userId)) === "account") {
     const { row } = await unwrap(renameMyItinerary(id, clean));
-    updateAccount(userId, (rows) => rows.map((existing) => (existing.id === id ? row : existing)));
+    fullRows.set(row.id, row);
+    const summary = summarizeItinerary(row);
+    updateAccount(userId, (rows) => rows.map((existing) => (existing.id === id ? summary : existing)));
     return row;
   }
 
@@ -344,6 +426,7 @@ export async function deleteItinerary(id: string): Promise<boolean> {
   const userId = currentUserId();
   if ((await resolve(userId)) === "account") {
     await unwrap(deleteMyItinerary(id));
+    fullRows.delete(id);
     updateAccount(userId, (rows) => rows.filter((row) => row.id !== id));
     return true;
   }
@@ -360,15 +443,18 @@ export async function deleteItinerary(id: string): Promise<boolean> {
   return false;
 }
 
-/** Reactive read of the signed-in traveller's saved plans, newest first. */
-export function useSavedItineraries(userId: string | undefined): SavedItinerary[] {
+/**
+ * Reactive read of the signed-in traveller's saved plans, newest first: full
+ * rows in browser mode, summaries in account mode.
+ */
+export function useSavedItineraries(userId: string | undefined): SavedItineraryListItem[] {
   useEffect(() => {
     if (!userId) return;
     if (storageOf.get(userId) === "account") void refresh(userId);
     else void resolve(userId);
   }, [userId]);
 
-  const rows = useSyncExternalStore(
+  const rows = useSyncExternalStore<SavedItineraryListItem[]>(
     subscribeToItineraries,
     () => {
       if (!userId) return EMPTY;

@@ -1,8 +1,8 @@
 "use client";
 
 import { LayoutGrid, Map as MapIcon } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
+import { useListingUrl, writeListingSearch } from "@/components/listing/url-search-store";
 import { cn } from "@/lib/utils";
 
 export type HotspotView = "grid" | "map";
@@ -12,17 +12,29 @@ const OPTIONS: { value: HotspotView; label: string; Icon: typeof LayoutGrid }[] 
   { value: "map", label: "Map", Icon: MapIcon },
 ];
 
-export function ViewSwitch({ value }: { value: HotspotView }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+/** `?view=map` selects the map; anything else (or nothing) is the grid. */
+export function parseHotspotView(search: string): HotspotView {
+  return new URLSearchParams(search).get("view") === "map" ? "map" : "grid";
+}
+
+/**
+ * Grid or map, kept in `?view=` so a map view can be shared.
+ *
+ * Reads the listing store rather than `useSearchParams()`, so it is
+ * prerendered (showing "Grid", which is what the static HTML contains)
+ * instead of being held behind a Suspense fallback, and switches with
+ * `history.replaceState`: changing how you look at the same results is not a
+ * step the back button should have to undo.
+ */
+export function ViewSwitch() {
+  const { pathname, search } = useListingUrl();
+  const value = parseHotspotView(search);
 
   function select(next: HotspotView) {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(search);
     if (next === "grid") params.delete("view");
     else params.set("view", next);
-    const query = params.toString();
-    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    writeListingSearch(pathname, params, "replace");
   }
 
   return (

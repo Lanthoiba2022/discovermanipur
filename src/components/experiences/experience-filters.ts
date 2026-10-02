@@ -1,3 +1,10 @@
+/**
+ * Filter vocabulary for /experiences. Pure, so it runs both on the server and
+ * in the browser, where the static listing re-filters its cards after a
+ * change to the URL. Imports the params module directly rather than the
+ * `@/components/filters` barrel, which would pull the filter UI into every
+ * client bundle that only needs these functions.
+ */
 import {
   type FilterOption,
   type PriceBand,
@@ -8,7 +15,7 @@ import {
   readOneOf,
   readParam,
   titleCase,
-} from "@/components/filters";
+} from "@/components/filters/params";
 import type { Experience, ExperienceCategory } from "@/types";
 
 export const EXPERIENCE_CATEGORIES: ExperienceCategory[] = [
@@ -63,7 +70,23 @@ export function parseExperienceFilters(params: RawSearchParams): ExperienceFilte
   };
 }
 
-export function applyExperienceFilters(rows: Experience[], state: ExperienceFilterState) {
+/**
+ * The row fields `applyExperienceFilters` reads. The listing passes slim facet
+ * objects of exactly this shape to the browser instead of whole rows.
+ */
+export type ExperienceFacets = Pick<
+  Experience,
+  "category" | "district" | "durationHours" | "pricePerPerson" | "rating" | "featured"
+>;
+
+/**
+ * Filter, then sort. Returns a new array; `rows` is not mutated. The stable
+ * sort keeps the incoming (data layer) order for ties.
+ */
+export function applyExperienceFilters<T extends ExperienceFacets>(
+  rows: readonly T[],
+  state: ExperienceFilterState,
+): T[] {
   const filtered = rows.filter((row) => {
     if (state.category && row.category !== state.category) return false;
     if (state.district && row.district !== state.district) return false;
@@ -89,7 +112,7 @@ export function applyExperienceFilters(rows: Experience[], state: ExperienceFilt
   }
 }
 
-export function districtOptions(values: string[]): FilterOption[] {
+export function districtOptions(values: readonly string[]): FilterOption[] {
   return [...new Set(values)].sort().map((value) => ({ value, label: value }));
 }
 

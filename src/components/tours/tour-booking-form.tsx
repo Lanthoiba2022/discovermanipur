@@ -2,32 +2,40 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Minus, Plus } from "lucide-react";
+import { useEffect } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
+import * as z from "@/lib/zod-mini";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toISODate } from "@/lib/booking/pricing";
+import { useMounted } from "@/lib/use-mounted";
 import { cn, formatINR } from "@/lib/utils";
 import type { Tour } from "@/types";
 
-import { formatDeparture, upcomingDepartures } from "./tour-filters";
+import { useUpcomingDepartures } from "./tour-departures";
+import { formatDeparture } from "./tour-filters";
 
+// `zod/mini` instead of classic `zod`, through @/lib/zod-mini, which also
+// registers zod's English messages: classic zod is about 95 KB gzip on each
+// page with this form.
 const makeSchema = (maxGroup: number) =>
   z.object({
-    departure: z.string().min(1, "Choose a departure date"),
+    departure: z.string().check(z.minLength(1, "Choose a departure date")),
     travellers: z
       .number({ error: "How many travellers?" })
-      .int("Use a whole number")
-      .min(1, "At least one traveller")
-      .max(maxGroup, `This departure takes up to ${maxGroup} travellers`),
-    name: z.string().trim().min(2, "Enter your full name"),
+      .check(
+        z.int("Use a whole number"),
+        z.gte(1, "At least one traveller"),
+        z.lte(maxGroup, `This departure takes up to ${maxGroup} travellers`),
+      ),
+    name: z.string().check(z.trim(), z.minLength(2, "Enter your full name")),
     email: z.email("Enter a valid email address"),
     phone: z
       .string()
-      .trim()
-      .regex(/^(\+\d{1,3}[\s-]?)?\d{7,12}$/, "Enter a valid phone number"),
+      .check(z.trim(), z.regex(/^(\+\d{1,3}[\s-]?)?\d{7,12}$/, "Enter a valid phone number")),
   });
 
 type TourBookingValues = {
@@ -38,8 +46,36 @@ type TourBookingValues = {
   phone: string;
 };
 
-export function TourBookingForm({ tour }: { tour: Tour }) {
-  const departures = upcomingDepartures(tour.departureDates);
+/**
+ * The tour enquiry form.
+ *
+ * **Dates are anchored, then refreshed.** Tour pages are static and rebuilt
+ * only when the catalogue changes, so anything computed from "today" during
+ * render is frozen at the build day, and the browser's first render reading
+ * its own clock would disagree with the server's HTML (a hydration mismatch).
+ *
+ * So the departure chips come from `useUpcomingDepartures`: the server render
+ * and the hydration render list the departures from `anchorDate` (the day the
+ * server rendered, in India), which puts real dates in the static HTML, and
+ * once mounted the list is refiltered against the reader's actual day in
+ * India. Only then is anything date-dependent written into the form: the
+ * first upcoming departure is preselected, and the date input (shown when a
+ * tour has no upcoming departures) gets its lower bound in the visitor's own
+ * day. The submit-time schema still requires a departure either way.
+ */
+export function TourBookingForm({
+  tour,
+  anchorDate,
+}: {
+  tour: Tour;
+  /** `YYYY-MM-DD` the server took as today; used until hydration. */
+  anchorDate: string;
+}) {
+  const mounted = useMounted();
+  const departures = useUpcomingDepartures(tour.departureDates, anchorDate);
+  // Only the post-mount list is trusted for preselection: the anchored one can
+  // still hold a departure that has passed since the build.
+  const firstDeparture = mounted ? (departures[0] ?? "") : "";
   const maxGroup = Math.max(1, tour.groupSizeMax);
   const schema = makeSchema(maxGroup);
 
@@ -47,14 +83,24 @@ export function TourBookingForm({ tour }: { tour: Tour }) {
     register,
     handleSubmit,
     control,
+    getValues,
     setValue,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<TourBookingValues>({
     resolver: zodResolver(schema),
-    defaultValues: { departure: departures[0] ?? "", travellers: 2, name: "", email: "", phone: "" },
+    // Empty on the server and the hydration render; filled in below.
+    defaultValues: { departure: "", travellers: 2, name: "", email: "", phone: "" },
     mode: "onBlur",
   });
+
+  // Preselect the earliest upcoming departure once the client knows which one
+  // that is, unless the reader has already picked a date. `setValue` writes to
+  // the form store, not React state, so this does not cascade into a re-render
+  // of its own beyond the watched field.
+  useEffect(() => {
+    if (firstDeparture && !getValues("departure")) setValue("departure", firstDeparture);
+  }, [firstDeparture, getValues, setValue]);
 
   const travellers = Number(useWatch({ control, name: "travellers" })) || 0;
   const selected = useWatch({ control, name: "departure" });
@@ -75,7 +121,7 @@ export function TourBookingForm({ tour }: { tour: Tour }) {
         values.travellers === 1 ? "" : "s"
       } departing ${formatDeparture(values.departure)}, please contact the tour operator directly.`,
     });
-    reset({ departure: departures[0] ?? "", travellers: 2, name: "", email: "", phone: "" });
+    reset({ departure: firstDeparture, travellers: 2, name: "", email: "", phone: "" });
   }
 
   return (
@@ -125,7 +171,7 @@ export function TourBookingForm({ tour }: { tour: Tour }) {
               <Input
                 type="date"
                 aria-label="Preferred departure date"
-                min={new Date().toISOString().slice(0, 10)}
+                min={mounted ? toISODate(new Date()) : undefined}
                 value={field.value}
                 onChange={(event) => field.onChange(event.target.value)}
               />

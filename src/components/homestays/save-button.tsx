@@ -3,7 +3,10 @@
 import { Heart } from "lucide-react";
 import { toast } from "sonner";
 
-import { toggleSaved, useIsSaved, type SavedItem } from "@/lib/booking";
+// The wishlist module directly rather than the `@/lib/booking` barrel: this
+// button is on every homestay card, and the barrel's other modules are not
+// needed to render one.
+import { toggleSaved, useIsSaved, type SavedItem } from "@/lib/booking/wishlist";
 import { cn } from "@/lib/utils";
 
 export function SaveButton({

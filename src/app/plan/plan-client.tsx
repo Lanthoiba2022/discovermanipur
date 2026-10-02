@@ -1,9 +1,9 @@
 "use client";
 
 import { BedDouble, CalendarHeart, Info, MapPin, PauseCircle, UtensilsCrossed } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { Concierge, type ConciergeSeed } from "@/components/ai/concierge";
 import { ConciergeShowcase, type ShowcaseTurnView } from "@/components/ai/concierge-showcase";
 import { TripForm } from "@/components/ai/trip-form";
@@ -75,17 +75,17 @@ export function PlanClient({
 
               <p className="text-xs leading-relaxed text-muted-foreground">
                 Browsing works normally in the meantime:{" "}
-                <Link href="/hotspots" className="underline underline-offset-4 hover:text-foreground">
+                <IntentLink href="/hotspots" className="underline underline-offset-4 hover:text-foreground">
                   places
-                </Link>
+                </IntentLink>
                 ,{" "}
-                <Link href="/homestays" className="underline underline-offset-4 hover:text-foreground">
+                <IntentLink href="/homestays" className="underline underline-offset-4 hover:text-foreground">
                   homestays
-                </Link>{" "}
+                </IntentLink>{" "}
                 and{" "}
-                <Link href="/tours" className="underline underline-offset-4 hover:text-foreground">
+                <IntentLink href="/tours" className="underline underline-offset-4 hover:text-foreground">
                   tours
-                </Link>{" "}
+                </IntentLink>{" "}
                 are all live.
               </p>
             </>

@@ -11,8 +11,9 @@ import { revalidatePath, updateTag } from "next/cache";
 import { z } from "zod";
 
 import { getSessionProfile } from "@/lib/auth/dal";
-import { CATALOGUE_TAG } from "@/lib/data/cache";
+import { catalogueTableTag } from "@/lib/data/cache";
 import { getDb, schema } from "@/lib/db";
+import { logDbError } from "@/lib/log";
 
 import type { ModerationResult } from "./types";
 
@@ -33,15 +34,23 @@ const activeInput = z.strictObject({
 });
 
 /**
- * Catalogue rows feed prerendered pages across the site (home, detail pages,
- * district and search views, the sitemap), so a moderation change refreshes
- * every cached route rather than a list that would drift out of date. It also
- * re-renders the admin page in the same response. `updateTag` drops the cached
- * catalogue rows those routes read, so they re-render with the change.
+ * Refresh what one moderation change affects, and nothing more.
+ *
+ * `updateTag(catalogueTableTag(table))` drops the cached rows of that one table.
+ * Next copies a cache entry's tags onto every prerendered page that read it
+ * (see src/lib/data/cache.ts), so the same call also regenerates exactly the
+ * public pages that show the table (its listing and detail pages, search,
+ * district views, the sitemap, home if it shows them). No public
+ * `revalidatePath` is needed, and the other eight tables and every page that
+ * never read this one stay cached. (This used to clear the whole catalogue tag plus
+ * `revalidatePath("/", "layout")`, regenerating the entire site per click.)
+ *
+ * `/admin/listings` is dynamic and not tagged, so it is revalidated by path to
+ * re-render with the change in this same response.
  */
-function refreshSite() {
-  updateTag(CATALOGUE_TAG);
-  revalidatePath("/", "layout");
+function refreshListings(table: "homestays" | "experiences") {
+  updateTag(catalogueTableTag(table));
+  revalidatePath("/admin/listings");
 }
 
 export async function setListingFeatured(input: z.input<typeof featuredInput>): Promise<ModerationResult> {
@@ -70,11 +79,11 @@ export async function setListingFeatured(input: z.input<typeof featuredInput>): 
             .returning({ id: schema.experiences.id });
     if (updated.length === 0) return FAILED;
   } catch (err) {
-    console.error("[admin] set featured failed:", err);
+    logDbError("admin.set-featured", err, { kind });
     return FAILED;
   }
 
-  refreshSite();
+  refreshListings(kind === "homestay" ? "homestays" : "experiences");
   return { ok: true };
 }
 
@@ -98,10 +107,10 @@ export async function setHomestayActive(input: z.input<typeof activeInput>): Pro
       .returning({ id: schema.homestays.id });
     if (updated.length === 0) return FAILED;
   } catch (err) {
-    console.error("[admin] set active failed:", err);
+    logDbError("admin.set-active", err);
     return FAILED;
   }
 
-  refreshSite();
+  refreshListings("homestays");
   return { ok: true };
 }

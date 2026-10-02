@@ -20,6 +20,25 @@ if (process.env.NODE_ENV === "production" && !authConfigured) {
   );
 }
 
+/**
+ * Mirrors `isUsable` in `src/lib/db/index.ts`: a postgres:// URL that is not a
+ * placeholder copied out of `.env.example`. Keep the two in step. The value is
+ * only ever reduced to a boolean here; the URL itself never reaches the bundle.
+ */
+const databaseUrl = process.env.DATABASE_URL?.trim() ?? "";
+const dbUsable =
+  /^postgres(ql)?:\/\//i.test(databaseUrl) && !/(your|changeme|replace|todo|xxx)/i.test(databaseUrl);
+
+/**
+ * Where bookings and the wishlist live, fixed for the life of a deployment:
+ * on the signed-in account when both Neon Auth and the database are
+ * configured, otherwise in the visitor's browser. It used to come back from
+ * the `getBookingMode` Server Action, which cost every anonymous view of a
+ * homestay or experience page one function invocation for a value that is
+ * known at build time. The client reads this flag synchronously instead.
+ */
+const bookingMode = authConfigured && dbUsable ? "account" : "browser";
+
 const isDev = process.env.NODE_ENV === "development";
 
 /**
@@ -108,12 +127,29 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   env: {
     NEXT_PUBLIC_AUTH_CONFIGURED: authConfigured ? "true" : "false",
+    NEXT_PUBLIC_BOOKING_MODE: bookingMode,
   },
   experimental: {
     serverActions: {
       // Every Server Action here takes a small form; the 1MB default is only
       // room for abuse.
       bodySizeLimit: "128kb",
+    },
+    /**
+     * Client router cache for pages that are rendered per request (today
+     * `/community` and `/search`). The default is 0 s, so listing, detail,
+     * then the listing link again was a fresh function render each time.
+     * With 30 s a repeat link navigation inside that window reuses the copy
+     * already in the tab. Back/forward is unaffected (it always restores),
+     * and statically generated pages keep their own 5 minute `static`
+     * default. A just-submitted vote or listing still shows straight away:
+     * a Server Action that calls `updateTag`, `revalidateTag`,
+     * `revalidatePath` or sets a cookie (sign-in, sign-out) clears this cache
+     * (docs: 01-app/04-glossary.md, "Client Cache"). See
+     * 05-config/01-next-config-js/staleTimes.md.
+     */
+    staleTimes: {
+      dynamic: 30,
     },
   },
   async redirects() {
@@ -129,6 +165,9 @@ const nextConfig: NextConfig = {
       { key: "X-Robots-Tag", value: "noindex, nofollow" },
       { key: "Cache-Control", value: "private, no-store" },
     ];
+    const publicMedia = [
+      { key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" },
+    ];
     return [
       { source: "/:path*", headers: securityHeaders },
       { source: "/account/:path*", headers: privateArea },
@@ -139,33 +178,77 @@ const nextConfig: NextConfig = {
       { source: "/auth", headers: privateArea },
       { source: "/auth/:path*", headers: privateArea },
       { source: "/api/auth/:path*", headers: [{ key: "Cache-Control", value: "no-store" }] },
+      // Large static media. Vercel serves /public with `max-age=0,
+      // must-revalidate` by default, so every repeat view paid a conditional
+      // request (an edge request) per file, and the image optimizer, which
+      // keeps the larger of `minimumCacheTTL` and this upstream max-age, saw 0.
+      // A day fresh plus a week of stale-while-revalidate keeps those requests
+      // in the browser and the CDN. Deliberately NOT `immutable`: these names
+      // are fixed, the database refers to them by name, and a file can be
+      // re-encoded in place (`npm run assets:optimize`), so a change still has
+      // to reach visitors within about a day.
+      { source: "/file-uploads/:path*", headers: publicMedia },
+      { source: "/models/:path*", headers: publicMedia },
+      { source: "/audio/:path*", headers: publicMedia },
+      { source: "/videos/:path*", headers: publicMedia },
     ];
   },
   images: {
     /**
-     * `next/image` refuses a local `src` carrying a query string unless the
-     * path is listed here, and the catalogue resolves Google Places photos
-     * through `/api/place-photo?ref=…` at request time (see
-     * `src/lib/data/photos.ts`). Without this the optimizer threw during
-     * render and took the whole page down with a 500.
+     * Every optimized variant counts against the Hobby image allowances
+     * (source transformations and cache writes), so the cache is long and the
+     * set of widths is short.
      *
-     * Note this list is an allowlist: naming one path blocks every other
-     * local image, so the app's own image roots have to be here too. They
-     * pin `search: ""` — they are static files and never take a query.
+     * - `minimumCacheTTL`: 31 days. The optimizer keeps a variant for the
+     *   larger of this and the source file's own max-age (docs:
+     *   02-components/image.md, `minimumCacheTTL`). The 4 hour default
+     *   governed until now, so a popular image was re-transformed up to six
+     *   times a day. There is no way to purge this cache by URL: a REPLACED
+     *   IMAGE MUST GET A NEW FILENAME, or visitors keep seeing the old one for
+     *   up to a month (CONTRIBUTING.md, "Photos and attribution").
+     * - `deviceSizes`: the defaults minus 750, 2048 and 3840, plus 2560 as the
+     *   ceiling for full-bleed heroes on large screens. Every hero here sits
+     *   under a dark overlay, so the 2048 to 3840 variants cost a
+     *   transformation and a cache entry each for no visible gain. 640 and
+     *   1200 MUST stay: the map popups and the Open Graph image URLs request
+     *   exactly those widths, and the optimizer answers 400 to a width that is
+     *   not in this list or `imageSizes`.
+     * - `imageSizes`: the defaults minus 32. The smallest `sizes` in the app is
+     *   56px (avatars, table thumbnails), so 32 was never picked.
+     * - `formats`: WebP only, stated rather than inherited. AVIF would double
+     *   the variants per width and cost more CPU per transform.
+     * - `qualities`: the Next 16 default, stated so a later edit sees that
+     *   each extra value multiplies the variants too.
+     */
+    minimumCacheTTL: 2678400,
+    deviceSizes: [640, 828, 1080, 1200, 1920, 2560],
+    imageSizes: [48, 64, 96, 128, 256, 384],
+    formats: ["image/webp"],
+    qualities: [75],
+    /**
+     * This list is an allowlist: naming one path blocks every other local
+     * image, so the app's own image roots are here and pin `search: ""`
+     * (they are static files and never take a query).
      *
-     * `/api/place-photo` cannot pin a `search`, because the value is a
-     * per-photo Google reference. The exposure that leaves is bounded by the
-     * route itself, which validates the `ref` shape and signs the upstream
-     * call; nothing else under `/api` is listed.
+     * Google Places photos (`/api/place-photo?ref=...`) and community photos
+     * (`/api/community/photos/...`) are deliberately NOT listed. Both must
+     * render `unoptimized` (see `skipsOptimizer` in `src/lib/data/photos.ts`
+     * and `CatalogueImage`): the optimizer will not follow the Places
+     * redirect and answers 400, Google's terms forbid storing its photo bytes
+     * in Vercel's image cache, and a listed community photo would keep a
+     * cached copy after an admin takes it down. With neither listed, a call
+     * site that forgets `unoptimized` throws in `next dev` (the localPatterns
+     * match in next/dist/shared/lib/image-loader.js runs outside production
+     * only), so the mistake surfaces before review; in production it gets the
+     * same optimizer 400 as before (the optimizer checks this list itself),
+     * never a cached copy. The loader's other check, the one that throws on a
+     * query string in every environment including production, fires only
+     * when this list is the single default `**` entry, so it cannot fire here
+     * and take a page down.
      */
     localPatterns: [
       { pathname: "/file-uploads/**", search: "" },
       { pathname: "/videos/**", search: "" },
-      { pathname: "/api/place-photo" },
-      // Community photos (`/api/community/photos/...`) are deliberately NOT
-      // listed: they are already resized WebP and always render `unoptimized`
-      // (which skips this check). Listing them would let `/_next/image` keep
-      // its own cached copy of a photo after an admin takes it down.
     ],
   },
 };

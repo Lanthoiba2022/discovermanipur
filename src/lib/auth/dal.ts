@@ -19,6 +19,7 @@ import { cache } from "react";
 import type { Profile, UserRole } from "@/types";
 
 import { getDb, schema, type Db } from "@/lib/db";
+import { logDbWarn } from "@/lib/log";
 import { isAuthConfigured } from "./env";
 import { getServerUser } from "./server";
 
@@ -114,7 +115,7 @@ export const getSessionProfile = cache(async (): Promise<Profile | null> => {
   try {
     return await ensureProfile(user);
   } catch (err) {
-    console.warn("[auth] profile read failed, using session fields:", err);
+    logDbWarn("auth.profile-read", err, { fallback: "session-fields" });
     return fromSession(user);
   }
 });

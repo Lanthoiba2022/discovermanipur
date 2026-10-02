@@ -1,6 +1,6 @@
-import { PlugZap, Plus, ThumbsUp } from "lucide-react";
+import { CloudOff, type LucideIcon, PlugZap, Plus, ThumbsUp } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { PageHero } from "@/components/content/page-hero";
 import { CommunitySearch } from "@/components/community/community-filters";
@@ -16,9 +16,10 @@ import {
   readParam,
   type RawSearchParams,
 } from "@/components/filters";
+import { IntentLink } from "@/components/shared/intent-link";
 import { Button } from "@/components/ui/button";
 import { isAuthConfigured } from "@/lib/auth/env";
-import { listPublishedPlaces } from "@/lib/community/queries";
+import { listPublishedCards } from "@/lib/community/public-reads";
 import { UPVOTES_REQUIRED, VOTING_WINDOW_HOURS } from "@/lib/community/rules";
 import { CATEGORIES, CATEGORY_SHORT_LABELS, DISTRICTS } from "@/lib/community/taxonomy";
 import { isDatabaseConfigured } from "@/lib/db";
@@ -30,6 +31,16 @@ export const metadata: Metadata = {
     title: "Community places · Discover Manipur",
     description:
       "Places in Manipur listed by the people who know them, and published by verified votes from the community.",
+    // A page-level `openGraph` replaces the inherited one wholesale, images
+    // included, so the shared card has to be named here again.
+    images: [
+      {
+        url: "/og/discover-manipur.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Discover Manipur: floating islands, cloud-caught hills and a thousand-year weave",
+      },
+    ],
   },
 };
 
@@ -51,9 +62,13 @@ export default async function CommunityPage({
   const hasFilters = Boolean(category || district || q);
 
   const available = isAuthConfigured && isDatabaseConfigured;
-  const places = available
-    ? await listPublishedPlaces({ category, district, q, limit: PAGE_LIMIT })
-    : [];
+  // A cached read of every published card, filtered in memory, so a signed-out
+  // visit costs no database query once it is warm (`public-reads.ts`).
+  // `ok: false` is a failed read, which is not the same as nothing published.
+  const result = available
+    ? await listPublishedCards({ category, district, q, limit: PAGE_LIMIT })
+    : ({ ok: true, places: [] } as const);
+  const places = result.ok ? result.places : [];
 
   return (
     <div className="pb-24">
@@ -79,16 +94,16 @@ export default async function CommunityPage({
         {available && (
           <div className="flex flex-wrap gap-3">
             <Button asChild variant="primary" size="pill">
-              <Link href="/community/new">
+              <IntentLink href="/community/new">
                 <Plus aria-hidden="true" />
                 Add a place
-              </Link>
+              </IntentLink>
             </Button>
             <Button asChild variant="outline" size="pill">
-              <Link href="/community/verify">
+              <IntentLink href="/community/verify">
                 <ThumbsUp aria-hidden="true" />
                 Help verify new places
-              </Link>
+              </IntentLink>
             </Button>
           </div>
         )}
@@ -96,7 +111,15 @@ export default async function CommunityPage({
 
       <div className="shell mt-16 flex flex-col gap-10 md:mt-20">
         {!available ? (
-          <Unavailable />
+          <Unavailable icon={PlugZap} title="Community places are not available here">
+            This copy of the site is running without a database or sign-in, so community listings
+            are switched off. The rest of the site works as normal.
+          </Unavailable>
+        ) : !result.ok ? (
+          <Unavailable icon={CloudOff} title="Community places are temporarily unavailable">
+            We could not load community places just now. Please try again in a few minutes. The
+            rest of the site works as normal.
+          </Unavailable>
         ) : (
           <>
             <div className="border-b border-border-strong pb-6">
@@ -127,10 +150,10 @@ export default async function CommunityPage({
                   action={
                     <div className="flex flex-wrap justify-center gap-3">
                       <Button asChild variant="outline" size="pill">
-                        <Link href="/community">Clear all filters</Link>
+                        <IntentLink href="/community">Clear all filters</IntentLink>
                       </Button>
                       <Button asChild variant="primary" size="pill">
-                        <Link href="/community/new">Add a place</Link>
+                        <IntentLink href="/community/new">Add a place</IntentLink>
                       </Button>
                     </div>
                   }
@@ -142,10 +165,10 @@ export default async function CommunityPage({
                   action={
                     <div className="flex flex-wrap justify-center gap-3">
                       <Button asChild variant="primary" size="pill">
-                        <Link href="/community/new">Add the first place</Link>
+                        <IntentLink href="/community/new">Add the first place</IntentLink>
                       </Button>
                       <Button asChild variant="outline" size="pill">
-                        <Link href="/community/verify">See places waiting for votes</Link>
+                        <IntentLink href="/community/verify">See places waiting for votes</IntentLink>
                       </Button>
                     </div>
                   }
@@ -177,21 +200,22 @@ export default async function CommunityPage({
   );
 }
 
-/** A copy of the site running without a database or sign-in: say so calmly. */
-function Unavailable() {
+/**
+ * Why there is no list to show, said calmly: a copy of the site running
+ * without a database or sign-in, or a read that failed just now (an outage,
+ * which must not be presented as "nothing published yet").
+ */
+function Unavailable({ icon: Icon, title, children }: { icon: LucideIcon; title: string; children: ReactNode }) {
   return (
     <div className="flex flex-col items-center justify-center rounded-[var(--radius-lg)] border border-dashed border-border-strong bg-surface-sand px-6 py-20 text-center">
       <span className="mask-arch grid size-14 place-items-center bg-surface text-[var(--stone-700)] shadow-[var(--shadow-sm)]">
-        <PlugZap className="size-6" aria-hidden="true" />
+        <Icon className="size-6" aria-hidden="true" />
       </span>
-      <h2 className="mt-5 font-display text-2xl">Community places are not available here</h2>
-      <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-        This copy of the site is running without a database or sign-in, so community listings are
-        switched off. The rest of the site works as normal.
-      </p>
+      <h2 className="mt-5 font-display text-2xl">{title}</h2>
+      <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">{children}</p>
       <div className="mt-6">
         <Button asChild variant="outline" size="pill">
-          <Link href="/hotspots">Browse places to visit</Link>
+          <IntentLink href="/hotspots">Browse places to visit</IntentLink>
         </Button>
       </div>
     </div>

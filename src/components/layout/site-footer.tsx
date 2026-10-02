@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { IntentLink } from "@/components/shared/intent-link";
 
 import { Logo } from "@/components/layout/logo";
 import { footerNav } from "@/lib/nav";
@@ -39,7 +39,12 @@ export function SiteFooter() {
           </div>
 
           {/* The full site map. Everything the mega menu exposes is repeated
-              here, so the footer works as the fallback index it is meant to be. */}
+              here, so the footer works as the fallback index it is meant to be.
+              IntentLink, because this footer is on every page: with plain
+              links, scrolling to it prefetched some thirty routes per view,
+              several of them dynamic or behind the auth proxy (one function
+              invocation each). Now a route is prefetched only when pointed
+              at, focused or touched, and the dynamic ones never are. */}
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
             {footerNav.map((group) => (
               <div key={group.label}>
@@ -47,12 +52,12 @@ export function SiteFooter() {
                 <ul className="space-y-3">
                   {group.items.map((item) => (
                     <li key={item.href}>
-                      <Link
+                      <IntentLink
                         href={item.href}
                         className="text-sm text-ivory-50/70 transition-colors duration-200 hover:text-ivory-50"
                       >
                         {item.label}
-                      </Link>
+                      </IntentLink>
                     </li>
                   ))}
                 </ul>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { LegalBody, type LegalSection } from "@/components/content/legal-page";
 import { NoteBox } from "@/components/content/prose";
 import { PageHero } from "@/components/content/page-hero";
@@ -150,8 +150,10 @@ const sections: LegalSection[] = [
             Interaction data from Microsoft Clarity: clicks, taps, scrolling and mouse movement,
             the pages you visit, and your browser, device and approximate location. Clarity uses
             this to build heatmaps and session recordings that show us where pages confuse people.
-            Text you type into form fields is masked before a recording leaves your browser.
-            Clarity runs only on the live site and sets first-party cookies (described below).
+            Text you type into form fields is masked before a recording leaves your browser, and
+            so is everything shown in your account, the host dashboard, the admin area and your
+            conversations with the concierge. Recordings are made only on the live site, never on
+            preview or test copies of it. Clarity sets first-party cookies (described below).
             Microsoft processes this data under its{" "}
             <a
               href="https://privacy.microsoft.com/privacystatement"
@@ -307,7 +309,7 @@ const sections: LegalSection[] = [
         <ul>
           <li>
             <strong>Accounts and profiles:</strong> until you ask us to delete them, or until we
-            remove an account that breaks the <Link href="/terms">terms of use</Link>.
+            remove an account that breaks the <IntentLink href="/terms">terms of use</IntentLink>.
           </li>
           <li>
             <strong>Booking requests, saved trip plans and saved places held with your

@@ -229,6 +229,12 @@ export function Concierge({
         // Lenis hijacks wheel events document-wide; without this the transcript
         // cannot be scrolled with a wheel or trackpad at all.
         data-lenis-prevent
+        // Session replay (Microsoft Clarity, loaded in the root layout) must
+        // never record a conversation: travellers type dates, budgets, group
+        // details and sometimes contact details here, and the replies echo
+        // them. Clarity's default masking covers inputs, not rendered text,
+        // so the whole transcript is masked explicitly.
+        data-clarity-mask="true"
         role="log"
         aria-live="polite"
         aria-relevant="additions text"
@@ -298,6 +304,8 @@ export function Concierge({
         <div className="flex items-end gap-2">
           <textarea
             id={inputId}
+            // Masked like the transcript, not left to Clarity's input default.
+            data-clarity-mask="true"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => {

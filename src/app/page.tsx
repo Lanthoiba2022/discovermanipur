@@ -20,6 +20,7 @@ import {
   getTours,
 } from "@/lib/data";
 import { getHomeStats } from "@/lib/data/content";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo/og";
 
 export const metadata: Metadata = {
   title: "Discover Manipur: The Land of Jewels",
@@ -32,14 +33,10 @@ export const metadata: Metadata = {
       "Floating islands, cloud-caught hills and a thousand-year weave. Plan your Manipur journey with Discover Manipur.",
     url: "/",
     type: "website",
-    images: [
-      {
-        url: "/file-uploads/loktakComplete.png",
-        width: 2160,
-        height: 1350,
-        alt: "Aerial view of the floating phumdi islands of Loktak Lake, Manipur.",
-      },
-    ],
+    // The 1200x630 site card (about 75 KB). This used to name the raw 3.2 MB
+    // loktakComplete.png, which every share of the home page made crawlers
+    // download, and which several messengers drop as too heavy to preview.
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 

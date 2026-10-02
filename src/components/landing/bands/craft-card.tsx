@@ -2,7 +2,7 @@ import { Amphora, BadgeCheck, Gem, Hammer, Leaf, Music, Shirt, Wheat, type Lucid
 import Image from "next/image";
 
 import { isPlacePhoto } from "@/lib/data/photos";
-import Link from "next/link";
+import { IntentLink } from "@/components/shared/intent-link";
 
 import type { Craft, CraftCategory } from "@/types";
 
@@ -60,7 +60,8 @@ export function CraftShowcaseCard({ craft }: { craft: Craft }) {
               src={photo.src}
               alt={photo.alt || `${craft.name} made by ${craft.maker} in ${craft.location}`}
               fill
-              unoptimized={isPlacePhoto(photo.src)}
+              // Places and community photos bypass the optimizer (see showcase-card).
+              unoptimized={isPlacePhoto(photo.src) || photo.src.startsWith("/api/community/photos/")}
               sizes={RAIL_SIZES}
               className="object-cover transition-transform duration-[var(--dur-slow)] ease-[var(--ease-flat)] group-hover:scale-[1.04]"
             />
@@ -94,7 +95,7 @@ export function CraftShowcaseCard({ craft }: { craft: Craft }) {
           </p>
 
           <h3 className="font-display text-[1.375rem] leading-[1.18] text-balance text-ivory-50">
-            <Link
+            <IntentLink
               href={`/store/${craft.slug}`}
               // Stretched link: the whole card is the target, and the
               // accessible name stays the craft's name alone.
@@ -108,7 +109,7 @@ export function CraftShowcaseCard({ craft }: { craft: Craft }) {
               )}
             >
               {craft.name}
-            </Link>
+            </IntentLink>
           </h3>
 
           {mayek && <p className="-mt-1 font-mayek text-sm text-lily-300">{mayek}</p>}

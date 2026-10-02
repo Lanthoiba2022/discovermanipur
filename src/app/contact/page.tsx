@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Clock, HelpCircle } from "lucide-react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { getContactChannels } from "@/lib/data/content";
 import { iconFor } from "@/lib/icons";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo/og";
 import { NoteBox } from "@/components/content/prose";
 import { PageHero } from "@/components/content/page-hero";
 import { Reveal } from "@/components/motion/reveal";
@@ -17,6 +18,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Contact Discover Manipur",
     description: "Ask about a trip, about hosting, or tell us what we got wrong.",
+    // A page-level openGraph replaces the inherited one wholesale, so without
+    // this the root card is dropped and shares unfurl with no picture.
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 
@@ -67,7 +71,7 @@ export default async function ContactPage() {
                 >
                   GitHub
                 </a>
-                . See our <Link href="/privacy">privacy notice</Link> for what the site does and does
+                . See our <IntentLink href="/privacy">privacy notice</IntentLink> for what the site does and does
                 not collect.
               </p>
             </NoteBox>
@@ -138,33 +142,33 @@ export default async function ContactPage() {
                 </div>
                 <ul className="mt-5 space-y-2.5 text-sm">
                   <li>
-                    <Link href="/faq" className="text-primary underline underline-offset-4">
+                    <IntentLink href="/faq" className="text-primary underline underline-offset-4">
                       FAQ
-                    </Link>
+                    </IntentLink>
                     : permits, transport, food, festivals, accessibility.
                   </li>
                   <li>
-                    <Link
+                    <IntentLink
                       href="/responsible-travel"
                       className="text-primary underline underline-offset-4"
                     >
                       Responsible travel
-                    </Link>
+                    </IntentLink>
                     : what to do and not do here.
                   </li>
                   <li>
-                    <Link
+                    <IntentLink
                       href="/accessibility"
                       className="text-primary underline underline-offset-4"
                     >
                       Accessibility statement
-                    </Link>
+                    </IntentLink>
                     , and how to report a barrier.
                   </li>
                   <li>
-                    <Link href="/host" className="text-primary underline underline-offset-4">
+                    <IntentLink href="/host" className="text-primary underline underline-offset-4">
                       Become a host
-                    </Link>
+                    </IntentLink>
                     , if you run a stay, a kitchen or a vehicle.
                   </li>
                 </ul>

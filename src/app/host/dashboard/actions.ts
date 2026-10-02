@@ -4,9 +4,10 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath, updateTag } from "next/cache";
 import { z } from "zod";
 
-import { CATALOGUE_TAG } from "@/lib/data/cache";
+import { catalogueTableTag } from "@/lib/data/cache";
 import { getDb, schema } from "@/lib/db";
 import { getSessionUser } from "@/lib/host/role";
+import { logDbError } from "@/lib/log";
 
 export type ListingPauseResult = { ok: true; isActive: boolean } | { ok: false; message: string };
 
@@ -27,6 +28,13 @@ const FAILED: ListingPauseResult = {
  * the UPDATE matches on `host_id = <session user>` as well as the id: a host
  * who posts someone else's listing id updates nothing. Experiences have no
  * `is_active` column, so only homestays can be paused.
+ *
+ * Refreshing: `updateTag(catalogueTableTag("homestays"))` drops the cached
+ * homestay rows, and because Next copies that tag onto every prerendered page
+ * that read them (see src/lib/data/cache.ts), it also regenerates the detail
+ * page, the listing, the sitemap and any other page that shows homestays. No
+ * public `revalidatePath` is needed. The dashboard is dynamic and untagged, so it is revalidated by
+ * path to show the new state in this same response.
  */
 export async function setHomestayPaused(input: {
   listingId: string;
@@ -47,19 +55,14 @@ export async function setHomestayPaused(input: {
       .update(schema.homestays)
       .set({ is_active: !paused })
       .where(and(eq(schema.homestays.id, listingId), eq(schema.homestays.host_id, user.id)))
-      .returning({ slug: schema.homestays.slug, isActive: schema.homestays.is_active });
+      .returning({ isActive: schema.homestays.is_active });
     if (!row) return FAILED;
 
-    // Drop the cached catalogue rows, then rebuild the prerendered detail page,
-    // listing and sitemap that read them.
-    updateTag(CATALOGUE_TAG);
-    revalidatePath(`/homestays/${row.slug}`);
-    revalidatePath("/homestays");
-    revalidatePath("/sitemap.xml");
+    updateTag(catalogueTableTag("homestays"));
     revalidatePath("/host/dashboard");
     return { ok: true, isActive: row.isActive };
   } catch (err) {
-    console.error("[host-dashboard] pause failed:", err);
+    logDbError("host-dashboard.pause", err);
     return FAILED;
   }
 }

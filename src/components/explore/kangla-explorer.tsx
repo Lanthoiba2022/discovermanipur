@@ -2,13 +2,13 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import dynamic from "next/dynamic";
-import Image from "next/image";
-import Link from "next/link";
 import { ArrowLeft, ArrowRight, ChevronDown, ChevronRight, ChevronUp, Compass, Landmark, Minus, Plus, Tags, Volume2, VolumeX, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { IntentLink } from "@/components/shared/intent-link";
 import { kanglaPlaces, type KanglaPlace } from "@/lib/immersive/kangla-places";
 import { narrationFor, narrationLanguages } from "@/lib/immersive/narration";
 import { useNarration } from "@/components/immersive/use-narration";
+import { CatalogueImage } from "@/components/shared/catalogue-image";
 import styles from "./kangla-explorer.module.css";
 
 const Map = dynamic(() => import("./kangla-google-3d"), { ssr: false, loading: () => <div className={styles.loading}>Opening Kangla in 3D…</div> });
@@ -68,7 +68,7 @@ export function KanglaExplorer({ googleKey = "" }: { googleKey?: string }) {
   return <div className={styles.page}>
     <header className={styles.pageHead}>
       <div>
-        <Link href="/hotspots/kangla-fort" className={styles.back}><ArrowLeft size={14} /> Kangla visitor guide</Link>
+        <IntentLink href="/hotspots/kangla-fort" className={styles.back}><ArrowLeft size={14} /> Kangla visitor guide</IntentLink>
         <p className={styles.eyebrow}>Imphal · Manipur <span lang="mni-Mtei">ꯀꯪꯂꯥ</span></p>
         <h1>Kangla <em>in 3D.</em></h1>
       </div>
@@ -93,7 +93,7 @@ export function KanglaExplorer({ googleKey = "" }: { googleKey?: string }) {
                 <motion.div key={selected.id} className={styles.detail} {...slide}>
                   <div className={styles.figure} data-kind={selected.kind}>
                     {selected.image
-                      ? <Image src={selected.image} alt={selected.name} fill sizes="(max-width: 760px) 100vw, 380px" priority className={styles.photo} />
+                      ? <CatalogueImage src={selected.image} alt={selected.name} fill sizes="(max-width: 760px) 100vw, 380px" priority className={styles.photo} />
                       : <div className={styles.plate} aria-hidden><span>{selected.meiteiName ?? "ꯀꯪꯂꯥ"}</span></div>}
                     <div className={styles.figureActions}>
                       {collapseButton}

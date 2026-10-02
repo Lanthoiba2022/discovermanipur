@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRight, Bookmark, CalendarDays, User } from "lucide-react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAuth } from "@/lib/auth";
+import { useAuth } from "@/lib/auth/use-auth";
 import {
   getBookings,
   partitionBookings,
@@ -27,7 +27,7 @@ function StatCard({
   icon: typeof CalendarDays;
 }) {
   return (
-    <Link
+    <IntentLink
       href={href}
       className="group flex flex-col rounded-[var(--radius-lg)] border border-border bg-surface p-6 transition-shadow hover:shadow-[var(--shadow-md)]"
     >
@@ -44,7 +44,7 @@ function StatCard({
           aria-hidden="true"
         />
       </span>
-    </Link>
+    </IntentLink>
   );
 }
 

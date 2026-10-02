@@ -18,6 +18,7 @@ import {
 import { AMENITY_META } from "@/components/homestays/amenities";
 import { SaveButton } from "@/components/homestays/save-button";
 import { PLACEHOLDER_IMAGE } from "@/components/places/taxonomy";
+import { isPriced } from "@/lib/data/sort";
 import { formatINR } from "@/lib/utils";
 import type { Homestay } from "@/types";
 
@@ -53,6 +54,8 @@ export function HomestayCard({
               title: homestay.title,
               subtitle: homestay.location,
               image: cover?.src ?? PLACEHOLDER_IMAGE,
+              // Travels with the photo: a licence condition for Places photos.
+              imageCredit: cover?.credit,
               href: `/homestays/${homestay.slug}`,
             }}
           />
@@ -93,11 +96,17 @@ export function HomestayCard({
         </CardMeta>
 
         <CardFoot>
-          <CardPrice
-            value={formatINR(homestay.pricePerNight)}
-            unit="/ night"
-            label="Price per night"
-          />
+          {/* Most research stays carry no published rate (stored as 0). That
+              means "ask the host", not "free", so never print ₹0. */}
+          {isPriced(homestay.pricePerNight) ? (
+            <CardPrice
+              value={formatINR(homestay.pricePerNight)}
+              unit="/ night"
+              label="Price per night"
+            />
+          ) : (
+            <CardPrice value="Rate on request" label="Price per night" />
+          )}
           <CardRating rating={homestay.rating} count={homestay.reviewCount} />
         </CardFoot>
       </CardBody>

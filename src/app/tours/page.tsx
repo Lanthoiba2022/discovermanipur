@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Suspense } from "react";
 
 import {
   EmptyState,
@@ -7,9 +7,12 @@ import {
   FilterChips,
   FilterRow,
   FilterSelect,
+  FilterUrlModeProvider,
   SORT_OPTIONS,
-  type RawSearchParams,
 } from "@/components/filters";
+import { IntentLink } from "@/components/shared/intent-link";
+import { ListingResultCount } from "@/components/listing/listing-grid";
+import { UrlSearchBridge } from "@/components/listing/url-search-bridge";
 import { TourCard } from "@/components/tours/tour-card";
 import {
   DIFFICULTY_OPTIONS,
@@ -18,7 +21,9 @@ import {
   applyTourFilters,
   parseTourFilters,
   themeOptions,
+  type TourFacets,
 } from "@/components/tours/tour-filters";
+import { TourResults } from "@/components/tours/tour-results";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/content/page-hero";
 import { getTours } from "@/lib/data";
@@ -30,15 +35,37 @@ export const metadata: Metadata = {
     "Multi-day routes across Manipur (Loktak and the valley, the Ukhrul hills, Sangai season, weaving villages and the war trail), with day-by-day itineraries and fixed departures.",
 };
 
-export default async function ToursPage({
-  searchParams,
-}: {
-  searchParams: Promise<RawSearchParams>;
-}) {
-  const params = await searchParams;
-  const state = parseTourFilters(params);
+/**
+ * /tours is prerendered once and served from the CDN.
+ *
+ * The page reads no request data: every route is rendered here, in
+ * `getTours()` order, and `TourResults` filters and sorts the cards in the
+ * browser from the query string (copied into the listing store by
+ * `UrlSearchBridge`). The filter controls write with `pushState` (client URL
+ * mode), so shared links and the back button work exactly as before. Only the
+ * fields the filters read travel to the browser as facets.
+ */
+export default async function ToursPage() {
   const all = await getTours();
-  const rows = applyTourFilters(all, state);
+
+  // The unfiltered view, as the browser will order it: what the static HTML
+  // counts, and which cards lead it (those get their photos preloaded).
+  const defaultRows = applyTourFilters(all, parseTourFilters({}));
+  const defaultCount = defaultRows.length;
+  const leading = new Set(defaultRows.slice(0, 3).map((row) => row.id));
+
+  const items = all.map((tour) => ({
+    key: tour.id,
+    facets: {
+      durationDays: tour.durationDays,
+      difficulty: tour.difficulty,
+      themes: tour.themes,
+      pricePerPerson: tour.pricePerPerson,
+      rating: tour.rating,
+      featured: tour.featured,
+    } satisfies TourFacets,
+    node: <TourCard tour={tour} preload={leading.has(tour.id)} />,
+  }));
 
   const districtCount = new Set(all.flatMap((row) => row.districtsCovered ?? [])).size;
   const durations = all.map((row) => row.durationDays).filter((n): n is number => Number.isFinite(n));
@@ -50,6 +77,10 @@ export default async function ToursPage({
 
   return (
     <div className="pb-24">
+      <Suspense fallback={null}>
+        <UrlSearchBridge />
+      </Suspense>
+
       <PageHero
         eyebrow="Routes, not packages"
         title="Tours"
@@ -74,58 +105,67 @@ export default async function ToursPage({
       />
 
       <div className="shell mt-10 flex flex-col gap-10">
-        <FilterBar resultCount={rows.length} resultNoun="tour">
-          <FilterChips
-            name="duration"
-            label="Trip length"
-            allLabel="Any length"
-            options={TOUR_DURATION_BANDS.map((band) => ({ value: band.value, label: band.label }))}
-          />
-          <FilterRow>
-            <FilterSelect
-              name="difficulty"
-              label="Difficulty"
-              allLabel="Any difficulty"
-              options={DIFFICULTY_OPTIONS}
+        <FilterUrlModeProvider mode="client">
+          <FilterBar
+            resultCount={defaultCount}
+            resultNoun="tour"
+            resultSlot={<ListingResultCount total={defaultCount} noun="tour" />}
+          >
+            <FilterChips
+              name="duration"
+              label="Trip length"
+              allLabel="Any length"
+              options={TOUR_DURATION_BANDS.map((band) => ({ value: band.value, label: band.label }))}
             />
-            <FilterSelect
-              name="theme"
-              label="Theme"
-              allLabel="All themes"
-              options={themeOptions(all)}
-            />
-            <FilterSelect
-              name="price"
-              label="Price"
-              allLabel="Any price"
-              options={TOUR_PRICE_BANDS.map((band) => ({ value: band.value, label: band.label }))}
-            />
-            <FilterSelect name="sort" label="Sort" allLabel="Featured first" options={SORT_OPTIONS} />
-          </FilterRow>
-        </FilterBar>
+            <FilterRow>
+              <FilterSelect
+                name="difficulty"
+                label="Difficulty"
+                allLabel="Any difficulty"
+                options={DIFFICULTY_OPTIONS}
+              />
+              <FilterSelect
+                name="theme"
+                label="Theme"
+                allLabel="All themes"
+                options={themeOptions(all)}
+              />
+              <FilterSelect
+                name="price"
+                label="Price"
+                allLabel="Any price"
+                options={TOUR_PRICE_BANDS.map((band) => ({ value: band.value, label: band.label }))}
+              />
+              <FilterSelect name="sort" label="Sort" allLabel="Featured first" options={SORT_OPTIONS} />
+            </FilterRow>
+          </FilterBar>
+        </FilterUrlModeProvider>
 
-        {rows.length === 0 ? (
+        {all.length === 0 ? (
           <EmptyState
-            title={all.length === 0 ? "Routes are being mapped" : "No tours match those filters"}
-            description={
-              all.length === 0
-                ? "Our guides are finalising departure dates for the coming season. In the meantime, single-day experiences are already bookable."
-                : "Try a different trip length, or widen the price range. The longer hill routes cost more but cover far more ground."
-            }
+            title="Routes are being mapped"
+            description="Our guides are finalising departure dates for the coming season. In the meantime, single-day experiences are already bookable."
             action={
               <Button asChild variant="outline">
-                <Link href="/experiences">Browse day experiences</Link>
+                <IntentLink href="/experiences">Browse day experiences</IntentLink>
               </Button>
             }
           />
         ) : (
-          <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {rows.map((tour, index) => (
-              <li key={tour.id} className="flex">
-                <TourCard tour={tour} preload={index < 3} />
-              </li>
-            ))}
-          </ul>
+          <TourResults
+            items={items}
+            emptyNode={
+              <EmptyState
+                title="No tours match those filters"
+                description="Try a different trip length, or widen the price range. The longer hill routes cost more but cover far more ground."
+                action={
+                  <Button asChild variant="outline">
+                    <IntentLink href="/experiences">Browse day experiences</IntentLink>
+                  </Button>
+                }
+              />
+            }
+          />
         )}
       </div>
     </div>

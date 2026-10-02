@@ -1,9 +1,9 @@
 import { ArrowLeft, ExternalLink, MapPin } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { CommunityDecisionPanel } from "@/components/admin/community-decision-panel";
 import {
   CommunityStatusPill,
@@ -79,13 +79,13 @@ export default async function AdminCommunityPlacePage({ params }: { params: Para
 
   return (
     <article aria-labelledby="place-heading">
-      <Link
+      <IntentLink
         href="/admin/places"
         className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="size-4" aria-hidden="true" />
         Back to the review queue
-      </Link>
+      </IntentLink>
 
       <header className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
@@ -227,18 +227,18 @@ export default async function AdminCommunityPlacePage({ params }: { params: Para
                 </Field>
                 <Field label="Their other contributions">
                   <span className="flex flex-col gap-1">
-                    <Link
+                    <IntentLink
                       href={`/admin/places?submitter=${place.submitter.id}&status=all`}
                       className="text-primary underline-offset-4 hover:underline"
                     >
                       Places they listed
-                    </Link>
-                    <Link
+                    </IntentLink>
+                    <IntentLink
                       href={`/admin/photos?uploader=${place.submitter.id}`}
                       className="text-primary underline-offset-4 hover:underline"
                     >
                       Photos they uploaded
-                    </Link>
+                    </IntentLink>
                   </span>
                 </Field>
               </dl>

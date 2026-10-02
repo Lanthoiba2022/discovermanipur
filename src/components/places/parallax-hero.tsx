@@ -1,14 +1,28 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import Image from "next/image";
-import { useRef, type ReactNode } from "react";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { useEffect, useRef, type ReactNode } from "react";
 
+import { CatalogueImage } from "@/components/shared/catalogue-image";
 import { cn } from "@/lib/utils";
+
+/** Scroll progress through the hero, clamped like a ranged `useTransform`. */
+const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
 /**
  * Immersive header image that drifts slower than the page scroll.
  * Under `prefers-reduced-motion` it is a plain, static image.
+ *
+ * This is the LCP element of every hotspot and festival detail page, and its
+ * `src` is usually a Google Places photo, so it renders through
+ * `CatalogueImage`: Places sources skip `/_next/image` (which would answer 400
+ * on the proxy's 307 and leave the hero empty), our own files stay optimized.
  */
 export function ParallaxHero({
   src,
@@ -27,13 +41,35 @@ export function ParallaxHero({
   heightClassName?: string;
 }) {
   const ref = useRef<HTMLElement | null>(null);
-  const reduce = useReducedMotion();
+  /*
+   * Reduced motion is applied INSIDE the transforms, never by branching the
+   * `style` prop. `useReducedMotion()` is null during SSR and true on a
+   * reduced-motion client, so `style={reduce ? undefined : { y, scale }}`
+   * rendered different inline styles on server and client: a hydration
+   * mismatch on the LCP hero. Here `style` is always `{ y, scale }`; the flag
+   * lives in a motion value (0 on the server and on first client render, so
+   * both agree on `transform: none`), and flipping it re-runs the transforms
+   * straight to neutral without a React re-render or a scroll event.
+   *
+   * Same parallax range as before: y 0% to 16%, scale 1 to 1.12 over the
+   * hero's scroll-out.
+   */
+  const prefersReduced = useReducedMotion();
+  const still = useMotionValue(0);
+  useEffect(() => {
+    still.set(prefersReduced ? 1 : 0);
+  }, [prefersReduced, still]);
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "16%"]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
+  const y = useTransform([scrollYProgress, still], ([progress, off]: number[]) =>
+    off ? "0%" : `${clamp01(progress) * 16}%`,
+  );
+  const scale = useTransform([scrollYProgress, still], ([progress, off]: number[]) =>
+    off ? 1 : 1 + clamp01(progress) * 0.12,
+  );
 
   return (
     <header
@@ -47,11 +83,8 @@ export function ParallaxHero({
         className,
       )}
     >
-      <motion.div
-        className="absolute inset-0 -z-10"
-        style={reduce ? undefined : { y, scale }}
-      >
-        <Image
+      <motion.div className="absolute inset-0 -z-10" style={{ y, scale }}>
+        <CatalogueImage
           src={src}
           alt={alt}
           fill

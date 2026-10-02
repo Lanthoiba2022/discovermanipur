@@ -16,6 +16,7 @@ import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import type { BookingKind, UserRole } from "@/types";
 
 import { getDb, schema } from "@/lib/db";
+import { logDbError } from "@/lib/log";
 
 import { ADMIN_TIME_ZONE, fillMonths, recentMonths, windowLabel } from "./months";
 import type { AdminBookingRow, AdminOverview, ModerationRow } from "./types";
@@ -90,7 +91,7 @@ export async function getAdminOverview(now = new Date()): Promise<AdminOverview 
       windowLabel: windowLabel(months),
     };
   } catch (err) {
-    console.error("[admin] overview query failed:", err);
+    logDbError("admin.overview", err);
     return null;
   }
 }
@@ -151,7 +152,7 @@ export async function getAdminBookings(): Promise<AdminBookingRow[] | null> {
       };
     });
   } catch (err) {
-    console.error("[admin] bookings query failed:", err);
+    logDbError("admin.bookings", err);
     return null;
   }
 }
@@ -195,7 +196,7 @@ export async function getModerationRows(): Promise<ModerationRow[] | null> {
       ...experienceRows.map((r) => ({ ...r, kind: "experience" as const, isActive: true, canToggleActive: false })),
     ].map((r) => ({ ...r, rating: Number(r.rating) }));
   } catch (err) {
-    console.error("[admin] listings query failed:", err);
+    logDbError("admin.listings", err);
     return null;
   }
 }

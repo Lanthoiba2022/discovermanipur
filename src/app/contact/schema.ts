@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "@/lib/zod-mini";
 
 export const ENQUIRY_TYPES = [
   { value: "trip", label: "Planning a trip" },
@@ -14,26 +14,45 @@ export type EnquiryType = (typeof ENQUIRY_TYPES)[number]["value"];
 
 const enquiryValues = ENQUIRY_TYPES.map((t) => t.value) as [EnquiryType, ...EnquiryType[]];
 
+// `zod/mini` instead of classic `zod` (see @/lib/zod-mini): this schema is
+// shared by the contact form (a client component) and its Server Action, and
+// classic zod is about 95 KB gzip on /contact. The action returns issue
+// messages to the form, which is why the English locale that module sets
+// matters here.
+
+/**
+ * The contact form's fields, validated identically in the browser and in
+ * `./actions`.
+ */
 export const contactSchema = z.object({
   name: z
     .string()
-    .trim()
-    .min(2, "Please tell us your name (at least 2 characters).")
-    .max(80, "That name is longer than we can store: 80 characters maximum."),
+    .check(
+      z.trim(),
+      z.minLength(2, "Please tell us your name (at least 2 characters)."),
+      z.maxLength(80, "That name is longer than we can store: 80 characters maximum."),
+    ),
   email: z.email("That does not look like an email address we could reply to."),
   enquiryType: z.enum(enquiryValues, {
     message: "Choose the option that fits best.",
   }),
   subject: z
     .string()
-    .trim()
-    .min(4, "A short subject helps us route your message.")
-    .max(120, "Please keep the subject under 120 characters."),
+    .check(
+      z.trim(),
+      z.minLength(4, "A short subject helps us route your message."),
+      z.maxLength(120, "Please keep the subject under 120 characters."),
+    ),
   message: z
     .string()
-    .trim()
-    .min(20, "Please give us a little more detail: at least 20 characters.")
-    .max(4000, "That is longer than 4000 characters. Send the essentials and we will follow up."),
+    .check(
+      z.trim(),
+      z.minLength(20, "Please give us a little more detail: at least 20 characters."),
+      z.maxLength(
+        4000,
+        "That is longer than 4000 characters. Send the essentials and we will follow up.",
+      ),
+    ),
 });
 
 export type ContactInput = z.infer<typeof contactSchema>;

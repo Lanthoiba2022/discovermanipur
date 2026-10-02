@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { buildShowcase, isAIConfigured, isConciergeLive } from "@/lib/ai";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo/og";
 
 import { PlanClient } from "./plan-client";
 
@@ -15,6 +16,9 @@ export const metadata: Metadata = {
       "A warm, knowledgeable Manipur travel host. Ask anything, or let it build you a day-by-day plan from Discover Manipur's own catalogue.",
     url: "/plan",
     type: "website",
+    // A page-level openGraph replaces the inherited one wholesale, so without
+    // this the root card is dropped and shares unfurl with no picture.
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 

@@ -4,41 +4,59 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
+import * as z from "@/lib/zod-mini";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toISODate } from "@/lib/booking/pricing";
+import { useMounted } from "@/lib/use-mounted";
 import { formatINR } from "@/lib/utils";
 import type { TransportOption } from "@/types";
 
+/**
+ * Today as `YYYY-MM-DD` in the visitor's own time zone. The UTC slice this
+ * replaced was a day behind for evening visitors west of Greenwich (and a day
+ * ahead east of it before midnight UTC), so "today" could be rejected as past.
+ * The date input's value is a local calendar date, so it compares as one.
+ */
 function today() {
-  return new Date().toISOString().slice(0, 10);
+  return toISODate(new Date());
 }
 
+// `zod/mini` instead of classic `zod`, through @/lib/zod-mini, which also
+// registers zod's English messages: classic zod is about 95 KB gzip on each
+// page with this form.
 const makeSchema = (seats: number) =>
   z.object({
     pickupDate: z
       .string()
-      .min(1, "When do you need the vehicle?")
-      .refine((value) => value >= today(), "Pick today or a later date"),
+      .check(
+        z.minLength(1, "When do you need the vehicle?"),
+        z.refine((value) => value >= today(), "Pick today or a later date"),
+      ),
     days: z
       .number({ error: "How many days?" })
-      .int("Use a whole number")
-      .min(1, "At least one day")
-      .max(30, "For hires over 30 days, talk to the operator directly"),
+      .check(
+        z.int("Use a whole number"),
+        z.gte(1, "At least one day"),
+        z.lte(30, "For hires over 30 days, talk to the operator directly"),
+      ),
     passengers: z
       .number({ error: "How many passengers?" })
-      .int("Use a whole number")
-      .min(1, "At least one passenger")
-      .max(seats, `This vehicle seats ${seats}`),
-    pickup: z.string().trim().min(2, "Where should the driver pick you up?"),
-    name: z.string().trim().min(2, "Enter your name"),
+      .check(
+        z.int("Use a whole number"),
+        z.gte(1, "At least one passenger"),
+        z.lte(seats, `This vehicle seats ${seats}`),
+      ),
+    pickup: z.string().check(z.trim(), z.minLength(2, "Where should the driver pick you up?")),
+    name: z.string().check(z.trim(), z.minLength(2, "Enter your name")),
     phone: z
       .string()
-      .trim()
-      .regex(/^(\+\d{1,3}[\s-]?)?\d{7,12}$/, "Enter a valid phone number"),
-    notes: z.string().trim().max(500, "Keep notes under 500 characters").optional(),
+      .check(z.trim(), z.regex(/^(\+\d{1,3}[\s-]?)?\d{7,12}$/, "Enter a valid phone number")),
+    notes: z.optional(
+      z.string().check(z.trim(), z.maxLength(500, "Keep notes under 500 characters")),
+    ),
   });
 
 type EnquiryValues = {
@@ -54,6 +72,10 @@ type EnquiryValues = {
 export function TransportEnquiryForm({ option }: { option: TransportOption }) {
   const seats = Math.max(1, option.seats);
   const schema = makeSchema(seats);
+  // The `min` date is set only after hydration: this page is static, so a
+  // date rendered on the server is the build day and would not match the
+  // client's first render. The schema still rejects a past date on submit.
+  const mounted = useMounted();
 
   const {
     register,
@@ -123,7 +145,7 @@ export function TransportEnquiryForm({ option }: { option: TransportOption }) {
           <Input
             id="tr-date"
             type="date"
-            min={today()}
+            min={mounted ? today() : undefined}
             aria-invalid={Boolean(errors.pickupDate)}
             aria-describedby={errors.pickupDate ? "tr-date-error" : undefined}
             {...register("pickupDate")}

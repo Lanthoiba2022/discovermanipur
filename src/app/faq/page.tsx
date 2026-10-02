@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { NoteBox } from "@/components/content/prose";
 import { PageHero } from "@/components/content/page-hero";
 import { Button } from "@/components/ui/button";
 import { getAllFaqItems, getFaqGroups } from "@/lib/data/content";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo/og";
 import { FaqBrowser } from "./faq-browser";
 
 export const metadata: Metadata = {
@@ -15,6 +16,9 @@ export const metadata: Metadata = {
     title: "Manipur travel FAQ",
     description:
       "Inner Line Permits, monsoon roads, what to eat first, festival timing and accessibility, in plain language.",
+    // A page-level openGraph replaces the inherited one wholesale, so without
+    // this the root card is dropped and shares unfurl with no picture.
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 
@@ -72,10 +76,10 @@ export default async function FaqPage() {
                 question you expected to find; it tells us what to write next.
               </p>
               <Button asChild variant="primary" className="mt-6 w-full">
-                <Link href="/contact">Ask a question</Link>
+                <IntentLink href="/contact">Ask a question</IntentLink>
               </Button>
               <Button asChild variant="ghost" className="mt-2 w-full">
-                <Link href="/responsible-travel">Read the travel guidance</Link>
+                <IntentLink href="/responsible-travel">Read the travel guidance</IntentLink>
               </Button>
             </div>
           </aside>

@@ -1,6 +1,5 @@
 import { Inbox, LogIn, MailCheck, PlugZap, Plus, ShieldAlert, type LucideIcon } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { PageHero } from "@/components/content/page-hero";
@@ -8,6 +7,7 @@ import { PlaceCard } from "@/components/community/place-card";
 import { VerificationRules } from "@/components/community/verification-rules";
 import { VerifyEmailPanel } from "@/components/community/verify-email-panel";
 import { VoteButton } from "@/components/community/vote-button";
+import { IntentLink } from "@/components/shared/intent-link";
 import { Button } from "@/components/ui/button";
 import { isAuthConfigured } from "@/lib/auth/env";
 import { listVerificationQueue } from "@/lib/community/queries";
@@ -96,7 +96,7 @@ function Body({
         title="Sign in to see places waiting for votes"
         action={
           <Button asChild variant="primary" size="pill">
-            <Link href={SIGN_IN_HREF}>Sign in or create an account</Link>
+            <IntentLink href={SIGN_IN_HREF}>Sign in or create an account</IntentLink>
           </Button>
         }
       >
@@ -114,9 +114,9 @@ function Body({
       <Callout icon={ShieldAlert} title="This account cannot take part">
         <p>
           This account cannot list or vote on community places. If you think this is a mistake,{" "}
-          <Link href="/contact" className="font-medium text-primary underline underline-offset-4">
+          <IntentLink href="/contact" className="font-medium text-primary underline underline-offset-4">
             contact the team
-          </Link>
+          </IntentLink>
           .
         </p>
       </Callout>
@@ -143,13 +143,13 @@ function Body({
         action={
           <div className="flex flex-wrap justify-center gap-3">
             <Button asChild variant="primary" size="pill">
-              <Link href="/community/new">
+              <IntentLink href="/community/new">
                 <Plus aria-hidden="true" />
                 Add a place
-              </Link>
+              </IntentLink>
             </Button>
             <Button asChild variant="outline" size="pill">
-              <Link href="/community">See published places</Link>
+              <IntentLink href="/community">See published places</IntentLink>
             </Button>
           </div>
         }

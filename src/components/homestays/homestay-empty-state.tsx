@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { Compass, SearchX } from "lucide-react";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { Button } from "@/components/ui/button";
 
 export function HomestayEmptyState({ filtered }: { filtered: boolean }) {
@@ -22,11 +22,11 @@ export function HomestayEmptyState({ filtered }: { filtered: boolean }) {
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         {filtered && (
           <Button asChild variant="primary">
-            <Link href="/homestays">Clear all filters</Link>
+            <IntentLink href="/homestays">Clear all filters</IntentLink>
           </Button>
         )}
         <Button asChild variant="outline">
-          <Link href="/hotspots">Browse places</Link>
+          <IntentLink href="/hotspots">Browse places</IntentLink>
         </Button>
       </div>
     </div>

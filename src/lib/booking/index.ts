@@ -1,3 +1,10 @@
+/**
+ * The client-facing booking surface: pricing, persistence, links and the saved
+ * list. It deliberately exports no zod schemas. The server's request schema
+ * lives in `./schemas` and is imported by the Server Actions only, and each
+ * form defines its own small `zod/mini` schema, so a page that imports this
+ * barrel does not ship zod's full runtime.
+ */
 export {
   quoteStay,
   quoteExperience,
@@ -10,12 +17,6 @@ export {
   type StayQuote,
   type PerPersonQuote,
 } from "./pricing";
-export {
-  stayBookingSchema,
-  bookingRequestSchema,
-  type StayBookingValues,
-  type BookingRequest,
-} from "./schemas";
 export {
   getBookings,
   createBooking,

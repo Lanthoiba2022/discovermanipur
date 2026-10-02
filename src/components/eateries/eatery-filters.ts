@@ -1,3 +1,10 @@
+/**
+ * Filter vocabulary for /eateries. Pure, so it runs both on the server and in
+ * the browser, where the static listing re-filters its cards after a change
+ * to the URL. Imports the params module directly rather than the
+ * `@/components/filters` barrel, which would pull the filter UI into every
+ * client bundle that only needs these functions.
+ */
 import {
   type FilterOption,
   type RawSearchParams,
@@ -5,7 +12,7 @@ import {
   readOneOf,
   readParam,
   titleCase,
-} from "@/components/filters";
+} from "@/components/filters/params";
 import type { CuisineType, Eatery } from "@/types";
 
 export const CUISINES: CuisineType[] = [
@@ -59,7 +66,28 @@ export function parseEateryFilters(params: RawSearchParams): EateryFilterState {
   };
 }
 
-export function applyEateryFilters(rows: Eatery[], state: EateryFilterState) {
+/**
+ * The row fields `applyEateryFilters` reads. The listing passes slim facet
+ * objects of exactly this shape to the browser instead of whole rows.
+ */
+export type EateryFacets = Pick<
+  Eatery,
+  "cuisines" | "priceRange" | "district" | "acceptsReservations" | "rating" | "featured" | "sortWeight"
+>;
+
+/**
+ * Filter, then sort. Returns a new array; `rows` is not mutated.
+ *
+ * The default ("Featured first") order is cohort first (`sortWeight`
+ * descending), then featured, then rating, so the verified 2026 research rows
+ * lead the listing as the data layer intends (see `@/lib/data/sort`). The
+ * other sorts override the cohort, and the stable sort keeps the incoming
+ * order for ties.
+ */
+export function applyEateryFilters<T extends EateryFacets>(
+  rows: readonly T[],
+  state: EateryFilterState,
+): T[] {
   const filtered = rows.filter((row) => {
     if (state.cuisine && !row.cuisines.includes(state.cuisine)) return false;
     if (state.price && row.priceRange !== state.price) return false;
@@ -76,7 +104,12 @@ export function applyEateryFilters(rows: Eatery[], state: EateryFilterState) {
     case "price-desc":
       return filtered.sort((a, b) => b.priceRange - a.priceRange);
     default:
-      return filtered.sort((a, b) => Number(b.featured) - Number(a.featured) || b.rating - a.rating);
+      return filtered.sort(
+        (a, b) =>
+          (b.sortWeight ?? 0) - (a.sortWeight ?? 0) ||
+          Number(b.featured) - Number(a.featured) ||
+          b.rating - a.rating,
+      );
   }
 }
 

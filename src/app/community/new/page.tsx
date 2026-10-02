@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { Ban, LogIn, MailCheck, MapPinned } from "lucide-react";
 
 import { PlaceForm } from "@/components/community/place-form";
 import { VerifyEmailPanel } from "@/components/community/verify-email-panel";
+import { IntentLink } from "@/components/shared/intent-link";
 import { Button } from "@/components/ui/button";
 import { isAuthConfigured } from "@/lib/auth/env";
 import { LIMITS, UPVOTES_REQUIRED, VOTING_WINDOW_HOURS } from "@/lib/community/rules";
@@ -62,13 +62,13 @@ function WhatHappensNext() {
       </ol>
       <p className="mt-4 text-sm text-muted-foreground">
         You can list up to {LIMITS.submissionsPerDay} places in any 24 hours, and follow each one in{" "}
-        <Link href="/account/places" className="text-primary underline underline-offset-4">
+        <IntentLink href="/account/places" className="text-primary underline underline-offset-4">
           My places
-        </Link>
+        </IntentLink>
         .{" "}
-        <Link href="/community#how-verification-works" className="text-primary underline underline-offset-4">
+        <IntentLink href="/community#how-verification-works" className="text-primary underline underline-offset-4">
           How verification works
-        </Link>
+        </IntentLink>
       </p>
     </aside>
   );
@@ -118,7 +118,7 @@ async function Body() {
         title="Sign in to add a place"
         action={
           <Button asChild>
-            <Link href={`/auth?next=${encodeURIComponent(NEXT_PATH)}`}>Sign in to continue</Link>
+            <IntentLink href={`/auth?next=${encodeURIComponent(NEXT_PATH)}`}>Sign in to continue</IntentLink>
           </Button>
         }
       >
@@ -137,7 +137,7 @@ async function Body() {
         title="This account cannot add places"
         action={
           <Button asChild variant="outline">
-            <Link href="/contact">Contact us</Link>
+            <IntentLink href="/contact">Contact us</IntentLink>
           </Button>
         }
       >

@@ -6,6 +6,7 @@ import {
   Check,
   ChevronDown,
   Copy,
+  Loader2,
   Pencil,
   Route,
   Trash2,
@@ -27,7 +28,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ItineraryTimeline, itineraryToText } from "@/components/ai/itinerary-timeline";
-import { deleteItinerary, renameItinerary, savedToPlan } from "@/lib/itineraries";
+import {
+  dayCountOf,
+  deleteItinerary,
+  getItinerary,
+  isFullItinerary,
+  renameItinerary,
+  savedToPlan,
+  stopCountOf,
+  type SavedItineraryListItem,
+} from "@/lib/itineraries";
 import type { SavedItinerary } from "@/types";
 
 function inr(value: number): string {
@@ -44,7 +54,20 @@ function errorMessage(err: unknown, fallback: string): string {
   return err instanceof Error && err.message ? err.message : fallback;
 }
 
-export function SavedItineraryCard({ row }: { row: SavedItinerary }) {
+const LOAD_FAILED = "We could not load that plan. Try again in a moment.";
+const UNREACHABLE = "We could not reach the server. Check your connection and try again.";
+
+/** Thrown inside the copy flow when the plan itself could not be loaded. */
+class PlanNotLoaded extends Error {}
+
+/**
+ * One saved plan. In account mode `row` is a summary (no `days`), so the
+ * timeline and the copied text need the full plan first: "Open plan" and
+ * "Copy" load it through `getItinerary` (one row, fetched once per page) and
+ * show a spinner meanwhile, or an inline message when it cannot be loaded.
+ * A browser-mode row already carries everything and renders straight away.
+ */
+export function SavedItineraryCard({ row }: { row: SavedItineraryListItem }) {
   const panelId = useId();
   const renameId = useId();
 
@@ -53,9 +76,58 @@ export function SavedItineraryCard({ row }: { row: SavedItinerary }) {
   const [title, setTitle] = useState(row.title);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [loaded, setLoaded] = useState<SavedItinerary | null>(null);
+  const [loading, setLoading] = useState<"open" | "copy" | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
-  const plan = savedToPlan(row);
+  // The title always comes from the list row, so a rename shows at once even
+  // in a plan that was loaded before it.
+  const full: SavedItinerary | null = isFullItinerary(row)
+    ? row
+    : loaded
+      ? { ...loaded, title: row.title }
+      : null;
+  const plan = full ? savedToPlan(full) : null;
   const created = formatDate(row.createdAt);
+  const dayCount = dayCountOf(row);
+  const stopCount = stopCountOf(row);
+
+  /** The full plan, loading it the first time. `null` (with a message shown) on failure. */
+  async function ensureFull(): Promise<SavedItinerary | null> {
+    if (full) return full;
+    setLoadError(null);
+    try {
+      const fetched = await getItinerary(row.id);
+      if (!fetched) {
+        setLoadError(LOAD_FAILED);
+        return null;
+      }
+      setLoaded(fetched);
+      return { ...fetched, title: row.title };
+    } catch {
+      setLoadError(UNREACHABLE);
+      return null;
+    }
+  }
+
+  async function toggleOpen() {
+    if (open) {
+      setOpen(false);
+      return;
+    }
+    if (!full) {
+      setLoading("open");
+      const ready = await ensureFull();
+      setLoading(null);
+      if (!ready) return;
+    }
+    setOpen(true);
+  }
+
+  function markCopied() {
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2000);
+  }
 
   async function submitRename(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -86,12 +158,45 @@ export function SavedItineraryCard({ row }: { row: SavedItinerary }) {
   }
 
   async function copy() {
+    if (plan) {
+      try {
+        await navigator.clipboard.writeText(itineraryToText(plan));
+        markCopied();
+      } catch {
+        toast.error("Your browser blocked the clipboard");
+      }
+      return;
+    }
+
+    // The plan has to be fetched first. Safari only lets a page write to the
+    // clipboard inside the click itself, so where `ClipboardItem` exists the
+    // write starts now and is handed the text as a promise; elsewhere the
+    // text is awaited and written as usual.
+    setLoading("copy");
+    const text = ensureFull().then((ready) => {
+      if (!ready) throw new PlanNotLoaded();
+      return itineraryToText(savedToPlan(ready));
+    });
     try {
-      await navigator.clipboard.writeText(itineraryToText(plan));
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
+      if (typeof ClipboardItem !== "undefined" && typeof navigator.clipboard?.write === "function") {
+        const blob = text.then((value) => new Blob([value], { type: "text/plain" }));
+        await navigator.clipboard.write([new ClipboardItem({ "text/plain": blob })]);
+      } else {
+        await navigator.clipboard.writeText(await text);
+      }
+      markCopied();
     } catch {
-      toast.error("Your browser blocked the clipboard");
+      // A failed load has already said so inline. Otherwise the clipboard
+      // refused; the plan is in memory now, so a second press copies at once.
+      const loadedOk = await text.then(
+        () => true,
+        () => false,
+      );
+      if (loadedOk) {
+        toast.error("Your browser blocked the clipboard", { description: "Press Copy again to retry." });
+      }
+    } finally {
+      setLoading(null);
     }
   }
 
@@ -139,7 +244,7 @@ export function SavedItineraryCard({ row }: { row: SavedItinerary }) {
 
       <div className="mt-3 flex flex-wrap items-center gap-1.5">
         <Badge variant="primary">
-          {row.days.length} {row.days.length === 1 ? "day" : "days"}
+          {dayCount} {dayCount === 1 ? "day" : "days"}
         </Badge>
         {row.travelMonth && <Badge>{row.travelMonth}</Badge>}
         {row.estimatedCostInr ? (
@@ -156,7 +261,7 @@ export function SavedItineraryCard({ row }: { row: SavedItinerary }) {
         )}
         <span className="inline-flex items-center gap-1.5">
           <Route aria-hidden className="size-3.5" />
-          {row.days.reduce((total, day) => total + day.stops.length, 0)} stops
+          {stopCount} {stopCount === 1 ? "stop" : "stops"}
         </span>
         {row.estimatedCostInr ? (
           <span className="inline-flex items-center gap-1.5">
@@ -173,17 +278,37 @@ export function SavedItineraryCard({ row }: { row: SavedItinerary }) {
           size="sm"
           aria-expanded={open}
           aria-controls={panelId}
-          onClick={() => setOpen((value) => !value)}
+          aria-busy={loading === "open"}
+          disabled={loading !== null}
+          onClick={toggleOpen}
         >
-          <ChevronDown
-            aria-hidden
-            className={`size-4 transition-transform ${open ? "rotate-180" : ""}`}
-          />
-          {open ? "Hide plan" : "Open plan"}
+          {loading === "open" ? (
+            <Loader2 aria-hidden className="size-4 animate-spin" />
+          ) : (
+            <ChevronDown
+              aria-hidden
+              className={`size-4 transition-transform ${open ? "rotate-180" : ""}`}
+            />
+          )}
+          {loading === "open" ? "Loading plan" : open ? "Hide plan" : "Open plan"}
         </Button>
 
-        <Button type="button" variant="ghost" size="sm" onClick={copy} aria-live="polite">
-          {copied ? <Check aria-hidden className="size-4" /> : <Copy aria-hidden className="size-4" />}
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={copy}
+          aria-live="polite"
+          aria-busy={loading === "copy"}
+          disabled={loading !== null}
+        >
+          {loading === "copy" ? (
+            <Loader2 aria-hidden className="size-4 animate-spin" />
+          ) : copied ? (
+            <Check aria-hidden className="size-4" />
+          ) : (
+            <Copy aria-hidden className="size-4" />
+          )}
           {copied ? "Copied" : "Copy"}
         </Button>
 
@@ -210,8 +335,14 @@ export function SavedItineraryCard({ row }: { row: SavedItinerary }) {
         </Button>
       </div>
 
+      {loadError && (
+        <p role="alert" className="mt-3 text-sm text-destructive">
+          {loadError}
+        </p>
+      )}
+
       <div id={panelId} hidden={!open} className="mt-4">
-        {open && <ItineraryTimeline plan={plan} showSave={false} />}
+        {open && plan && <ItineraryTimeline plan={plan} showSave={false} />}
       </div>
 
       <Dialog open={confirmingDelete} onOpenChange={setConfirmingDelete}>

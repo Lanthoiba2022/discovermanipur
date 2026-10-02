@@ -10,6 +10,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
+import { skipsOptimizer } from "@/lib/data/photos";
 import { cn } from "@/lib/utils";
 
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -91,13 +92,6 @@ export default function HotspotMap({
 
     const markers: Marker[] = [];
 
-    /**
-     * The popup photo is 220px wide. `withPhotos` mints Places URLs at the
-     * 1200px default, so without this every popup pulls a 1200px image to show
-     * it at a fifth of that: wasted bytes on a hover interaction.
-     */
-    const narrow = (src: string) =>
-      src.startsWith("/api/place-photo") ? src.replace(/([?&])w=\d+/, "$1w=440") : src;
 
     for (const point of points) {
       const popupNode = document.createElement("div");
@@ -105,7 +99,7 @@ export default function HotspotMap({
       popupNode.innerHTML = `
         ${
           point.image
-            ? `<img src="${escapeHtml(narrow(point.image))}" alt="" loading="lazy" style="width:100%;height:110px;object-fit:cover;border-radius:10px;display:block" />
+            ? `<img src="${escapeHtml(popupImageSrc(point.image))}" alt="" loading="lazy" style="width:100%;height:110px;object-fit:cover;border-radius:10px;display:block" />
                ${
                  point.imageCredit
                    ? `<p style="margin:3px 0 0;font-size:9px;color:#8a8279;text-align:right">${escapeHtml(point.imageCredit)}</p>`
@@ -160,6 +154,29 @@ export default function HotspotMap({
       )}
     />
   );
+}
+
+/**
+ * The `src` for a popup's 220x110 photo. Popups are raw DOM built outside
+ * React, so `next/image` is not available and the URL is chosen here.
+ *
+ * - Google Places (`/api/place-photo`) and community photos pass through
+ *   VERBATIM. A Places URL may carry a signature (`&s=`) that covers its exact
+ *   query, and every distinct width is a separate CDN entry and a separate
+ *   billed Places call, so rewriting `w` for a thumbnail costs more than the
+ *   bytes it saves. These must also never reach `/_next/image` (see
+ *   `skipsOptimizer` in photos.ts).
+ * - Our own files go through the optimizer at 640px, q75: the seeds hold
+ *   originals of 2-3 MB (uhk.jpg is 3840x2564), far too much for a hover
+ *   card. 640 must stay in `images.deviceSizes` or the optimizer answers 400.
+ * - Anything else (an absolute URL, unexpected data) is left as it is.
+ */
+function popupImageSrc(src: string): string {
+  if (skipsOptimizer(src)) return src;
+  if (src.startsWith("/file-uploads/")) {
+    return `/_next/image?url=${encodeURIComponent(src)}&w=640&q=75`;
+  }
+  return src;
 }
 
 function escapeHtml(value: string) {

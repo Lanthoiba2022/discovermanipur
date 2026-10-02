@@ -10,8 +10,8 @@ import {
   XCircle,
 } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { IntentLink } from "@/components/shared/intent-link";
 import { ColumnChart } from "@/components/admin/column-chart";
 import { StatTile } from "@/components/admin/stat-tile";
 import { AdminUnavailable } from "@/components/admin/unavailable";
@@ -51,7 +51,7 @@ async function CommunityOverview() {
           </p>
         </div>
         <Button asChild variant="outline" size="sm" className="shrink-0">
-          <Link href="/admin/places">Open the review queue</Link>
+          <IntentLink href="/admin/places">Open the review queue</IntentLink>
         </Button>
       </div>
       {stats ? (
