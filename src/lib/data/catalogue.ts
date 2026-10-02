@@ -9,8 +9,9 @@
  * ~160 rows across nine tables, and `index.ts` already implements the exact
  * filter, sort, paginate and search semantics the UI expects. Loading the rows
  * and reusing that logic keeps behaviour identical whether rows come from the
- * database or the seed fallback. React's `cache` makes it one round trip per
- * table per render.
+ * database or the seed fallback. `sharedRead` (./cache.ts) makes it one round
+ * trip per table per deployment across all requests and build workers, and
+ * React's `cache` dedupes within a render.
  *
  * If the catalogue ever grows past a few thousand rows, this is the seam to
  * change: push `matches`/`sortRows`/`paginate` down into SQL.
@@ -45,6 +46,8 @@ import { creditLine, placePhotoUrl } from "./photos";
 
 import { getDb, schema } from "@/lib/db";
 
+import { CATALOGUE_TAG, sharedRead } from "./cache";
+
 import { crafts as seedCrafts } from "./seed/crafts";
 import { eateries as seedEateries } from "./seed/eateries";
 import { experiences as seedExperiences } from "./seed/experiences";
@@ -55,20 +58,15 @@ import { testimonials as seedTestimonials } from "./seed/testimonials";
 import { tours as seedTours } from "./seed/tours";
 import { transportOptions as seedTransport } from "./seed/transport";
 
-/** Fetch a whole table, or `null` if the database is unavailable or errors. */
-async function loadTable<TTable extends PgTable>(
+/** Fetch a whole table. Throws on a database error so the error is never cached. */
+async function readTable<TTable extends PgTable>(
   table: TTable,
   where?: SQL,
-): Promise<TTable["$inferSelect"][] | null> {
+): Promise<TTable["$inferSelect"][]> {
   const db = getDb();
-  if (!db) return null;
-  try {
-    const query = db.select().from(table as PgTable);
-    return (await (where ? query.where(where) : query)) as TTable["$inferSelect"][];
-  } catch (err) {
-    console.warn(`[catalogue] ${tableName(table)} fell back to seed:`, err);
-    return null;
-  }
+  if (!db) return [];
+  const query = db.select().from(table as PgTable);
+  return (await (where ? query.where(where) : query)) as TTable["$inferSelect"][];
 }
 
 function tableName(table: PgTable) {
@@ -78,7 +76,8 @@ function tableName(table: PgTable) {
 /**
  * Build a cached loader. An empty table is treated as "not seeded yet" and
  * falls back, so a half-migrated database shows content rather than a blank
- * catalogue.
+ * catalogue. The mapped rows are what gets cached; the seed fallback is chosen
+ * outside the cache, so an outage is retried on the next request.
  */
 function loader<T, TTable extends PgTable>(
   table: TTable,
@@ -86,10 +85,19 @@ function loader<T, TTable extends PgTable>(
   seed: T[],
   where?: SQL,
 ) {
+  const name = tableName(table);
+  const read = sharedRead(`catalogue:${name}`, CATALOGUE_TAG, async () =>
+    (await readTable(table, where)).map(map),
+  );
   return cache(async (): Promise<T[]> => {
-    const rows = await loadTable(table, where);
-    if (!rows || rows.length === 0) return seed;
-    return rows.map(map);
+    if (!getDb()) return seed;
+    try {
+      const rows = await read();
+      return rows.length > 0 ? rows : seed;
+    } catch (err) {
+      console.warn(`[catalogue] ${name} fell back to seed:`, err);
+      return seed;
+    }
   });
 }
 
@@ -214,9 +222,23 @@ export const loadHomestays = loader(
  * revalidation instead of 404ing until the next deploy; the page itself still
  * 404s while the listing is inactive.
  */
+const readAllHomestaySlugs = sharedRead("catalogue:homestays:slugs", CATALOGUE_TAG, async () => {
+  const db = getDb();
+  if (!db) return [];
+  const rows = await db.select({ slug: schema.homestays.slug }).from(schema.homestays);
+  return rows.map((r) => r.slug);
+});
+
 export const loadAllHomestaySlugs = cache(async (): Promise<string[]> => {
-  const rows = await loadTable(schema.homestays);
-  return rows?.length ? rows.map((r) => r.slug) : seedHomestays.map((h) => h.slug);
+  const fallback = seedHomestays.map((h) => h.slug);
+  if (!getDb()) return fallback;
+  try {
+    const slugs = await readAllHomestaySlugs();
+    return slugs.length ? slugs : fallback;
+  } catch (err) {
+    console.warn("[catalogue] homestay slugs fell back to seed:", err);
+    return fallback;
+  }
 });
 
 export const loadExperiences = loader(

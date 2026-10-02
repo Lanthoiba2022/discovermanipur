@@ -117,9 +117,14 @@ and differs from the seed files, so never run this against production to
   `src/lib/db/relations.ts`).
 - Both fall back to the seed modules when the database is unconfigured *or* a
   query fails. Content should go stale before it goes blank.
-- node-postgres does not go through Next's patched `fetch`, so these reads are
-  not captured by the build's fetch cache, and catalogue pages stay statically
-  generated because nothing here reads cookies.
+- Both go through `sharedRead` in `src/lib/data/cache.ts`, Next's data cache,
+  keyed by deployment. A build or a running deployment reads each table once,
+  not once per page or per visit. An edit made in the app (admin moderation,
+  a host pausing a listing) clears it with `updateTag`. **An edit made outside
+  the app (Neon console, `db:seed`) shows after the next deploy.** Any new code
+  that writes a catalogue table must call `updateTag(CATALOGUE_TAG)`.
+- Catalogue pages stay statically generated because nothing here reads
+  cookies and the cache has no time-based revalidate.
 
 ### What is deliberately NOT in the database
 Structure, as opposed to content:
