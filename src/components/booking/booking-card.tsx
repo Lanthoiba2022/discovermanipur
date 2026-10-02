@@ -338,11 +338,13 @@ export function BookingCard({
           size="lg"
           className="w-full"
           disabled={Boolean(blockedReason) || isLoading || !mode}
+          aria-busy={isLoading || undefined}
         >
+          {/* A neutral label while the session settles: the static HTML is
+              "loading" for every visitor, so a spinner here showed anonymous
+              visitors a session check they never need. */}
           {isLoading || !mode ? (
-            <>
-              <Loader2 className="size-4 animate-spin" aria-hidden="true" /> Checking your session…
-            </>
+            "Request to book"
           ) : isAuthenticated ? (
             "Review and request"
           ) : (

@@ -52,11 +52,26 @@ export function AuthGuard({ children }: { children: ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="space-y-4" aria-busy="true" aria-live="polite">
+      // The account shell's own shape (AccountHeader, AccountNav, a panel), so
+      // nothing reflows when the session resolves and the real one paints.
+      <div aria-busy="true" aria-live="polite">
         <span className="sr-only">Checking your session…</span>
-        <Skeleton className="h-10 w-64" />
-        <Skeleton className="h-4 w-full max-w-md" />
-        <Skeleton className="h-64 w-full rounded-[var(--radius-lg)]" />
+        <div className="flex flex-wrap items-center justify-between gap-5">
+          <div className="flex min-w-0 items-center gap-4">
+            <Skeleton className="size-14 shrink-0 rounded-full" />
+            <div className="space-y-2">
+              <Skeleton className="h-7 w-48 md:h-8" />
+              <Skeleton className="h-4 w-40" />
+            </div>
+          </div>
+          <Skeleton className="h-9 w-28 rounded-full" />
+        </div>
+        <Skeleton className="mt-8 h-11 w-full rounded-full" />
+        <div className="mt-8 space-y-4">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-full max-w-md" />
+          <Skeleton className="h-48 w-full rounded-[var(--radius-lg)]" />
+        </div>
       </div>
     );
   }

@@ -12,6 +12,7 @@ import {
   subscribeToBookings,
   useSavedItems,
 } from "@/lib/booking";
+import { useSavedStorage } from "@/lib/booking/wishlist";
 
 function StatCard({
   href,
@@ -22,7 +23,8 @@ function StatCard({
 }: {
   href: string;
   label: string;
-  value: string;
+  /** `null` while it loads: a skeleton the size of the figure, inside the card. */
+  value: string | null;
   hint: string;
   icon: typeof CalendarDays;
 }) {
@@ -34,7 +36,11 @@ function StatCard({
       <span className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
         <Icon className="size-5" aria-hidden="true" />
       </span>
-      <p className="mt-5 font-display text-3xl leading-none">{value}</p>
+      {value === null ? (
+        <Skeleton className="mt-5 h-[1em] w-10 text-3xl" aria-label="Loading" />
+      ) : (
+        <p className="mt-5 font-display text-3xl leading-none">{value}</p>
+      )}
       <p className="mt-2 font-medium">{label}</p>
       <p className="mt-1 text-sm text-muted-foreground">{hint}</p>
       <span className="mt-4 inline-flex items-center gap-1.5 text-sm text-primary">
@@ -51,7 +57,10 @@ function StatCard({
 export function OverviewPanel() {
   const { user, displayName } = useAuth();
   const saved = useSavedItems();
-  const [upcoming, setUpcoming] = useState<number | null>(null);
+  // "pending" until an account's list arrives; counting before then said "0".
+  const savedLoading = useSavedStorage() === "pending";
+  /** `null` while loading, `"error"` when the count could not be read. */
+  const [upcoming, setUpcoming] = useState<number | "error" | null>(null);
 
   const userId = user?.id ?? "";
 
@@ -64,7 +73,8 @@ export function OverviewPanel() {
         const rows = await getBookings(userId);
         if (alive) setUpcoming(partitionBookings(rows).upcoming.length);
       } catch {
-        // The bookings page shows the error; the count just stays a placeholder.
+        // The bookings page shows the error; here the figure just reads "–".
+        if (alive) setUpcoming((current) => (current === null ? "error" : current));
       }
     };
 
@@ -87,22 +97,18 @@ export function OverviewPanel() {
       </p>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {upcoming === null ? (
-          <Skeleton className="h-52 w-full rounded-[var(--radius-lg)]" />
-        ) : (
-          <StatCard
-            href="/account/bookings"
-            icon={CalendarDays}
-            value={String(upcoming)}
-            label={upcoming === 1 ? "Upcoming trip" : "Upcoming trips"}
-            hint="Requests and confirmed stays ahead of you"
-          />
-        )}
+        <StatCard
+          href="/account/bookings"
+          icon={CalendarDays}
+          value={upcoming === null ? null : upcoming === "error" ? "–" : String(upcoming)}
+          label={upcoming === 1 ? "Upcoming trip" : "Upcoming trips"}
+          hint="Requests and confirmed stays ahead of you"
+        />
 
         <StatCard
           href="/account/saved"
           icon={Bookmark}
-          value={String(saved.length)}
+          value={savedLoading ? null : String(saved.length)}
           label={saved.length === 1 ? "Saved place" : "Saved places"}
           hint="Homestays on your shortlist"
         />
