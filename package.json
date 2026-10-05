@@ -50,7 +50,7 @@
     "@vercel/blob": "^2.8.0",
     "@vercel/functions": "^3.9.9",
     "@vercel/speed-insights": "^2.0.0",
-    "ai": "^7.0.107",
+    "ai": "^7.0.122",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
