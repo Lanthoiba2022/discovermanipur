@@ -28,9 +28,9 @@
     "prebuild": "node scripts/copy-maplibre-worker.mjs && node scripts/clear-data-cache.mjs"
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "^4.0.65",
-    "@ai-sdk/google": "^4.0.82",
-    "@ai-sdk/react": "^4.0.121",
+    "@ai-sdk/anthropic": "^4.0.68",
+    "@ai-sdk/google": "^4.0.85",
+    "@ai-sdk/react": "^4.0.125",
     "@fontsource-variable/figtree": "^5.3.0",
     "@fontsource-variable/newsreader": "^5.3.0",
     "@fontsource-variable/noto-sans-meetei-mayek": "^5.3.0",
